@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { HeartIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
+import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartSolidIcon, StarIcon } from '@heroicons/react/24/solid'
 import { useState } from 'react'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -30,15 +30,18 @@ interface ProductCardProps {
   product: Product
   inWishlist?: boolean
   onWishlistChange?: (inWishlist: boolean) => void
+  showNew?: boolean
 }
 
 export default function ProductCard({
   product,
   inWishlist = false,
   onWishlistChange,
+  showNew = false,
 }: ProductCardProps) {
   const [isInWishlist, setIsInWishlist] = useState(inWishlist)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
@@ -85,96 +88,142 @@ export default function ProductCard({
   }
 
   return (
-    <Link to={`/product/${product.slug}`} className="product-card group block">
-      {/* Image */}
-      <div className="product-image relative">
-        {product.primary_image ? (
-          <img
-            src={product.primary_image}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full bg-dark-100 flex items-center justify-center">
-            <span className="text-dark-400">No image</span>
+    <Link to={`/product/${product.slug}`} className="group block">
+      <div className="product-card">
+        {/* Image Container */}
+        <div className="product-image">
+          {/* Loading skeleton */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 skeleton" />
+          )}
+
+          {product.primary_image ? (
+            <img
+              src={product.primary_image}
+              alt={product.name}
+              className={`w-full h-full object-cover transition-all duration-700 ease-out
+                        group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-dark-100 to-dark-200
+                          dark:from-dark-800 dark:to-dark-900 flex items-center justify-center">
+              <span className="text-4xl opacity-30">📦</span>
+            </div>
+          )}
+
+          {/* Gradient overlay on hover */}
+          <div className="product-overlay" />
+
+          {/* Badges */}
+          <div className="product-badge flex flex-col gap-2">
+            {discountPercentage && (
+              <span className="px-2.5 py-1 text-xs font-bold rounded-lg
+                             bg-gradient-to-r from-red-500 to-red-400 text-white shadow-lg">
+                -{discountPercentage}%
+              </span>
+            )}
+            {(product.is_new || showNew) && (
+              <span className="px-2.5 py-1 text-xs font-bold rounded-lg
+                             bg-gradient-to-r from-primary-500 to-primary-400 text-dark-900 shadow-lg">
+                NEW
+              </span>
+            )}
+            {product.is_bestseller && (
+              <span className="px-2.5 py-1 text-xs font-bold rounded-lg
+                             bg-dark-900 dark:bg-white text-white dark:text-dark-900 shadow-lg">
+                BEST
+              </span>
+            )}
           </div>
-        )}
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {discountPercentage && (
-            <span className="badge badge-danger">-{discountPercentage}%</span>
-          )}
-          {product.is_new && <span className="badge badge-primary">New</span>}
-          {product.is_bestseller && <span className="badge badge-dark">Bestseller</span>}
+          {/* Out of Stock Overlay */}
           {product.stock_status === 'out_of_stock' && (
-            <span className="badge bg-dark-500 text-white">Out of Stock</span>
+            <div className="absolute inset-0 bg-dark-900/60 flex items-center justify-center">
+              <span className="px-4 py-2 bg-white/90 dark:bg-dark-800/90 rounded-lg text-sm font-semibold
+                             text-dark-900 dark:text-white backdrop-blur-sm">
+                Out of Stock
+              </span>
+            </div>
           )}
-        </div>
 
-        {/* Quick actions */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* Wishlist Button */}
           <button
             onClick={handleToggleWishlist}
-            className="p-2 bg-white rounded-full shadow-md hover:bg-dark-50 transition-colors"
+            className="product-wishlist"
             aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
           >
             {isInWishlist ? (
               <HeartSolidIcon className="w-5 h-5 text-red-500" />
             ) : (
-              <HeartIcon className="w-5 h-5 text-dark-600" />
+              <HeartIcon className="w-5 h-5" />
             )}
           </button>
-        </div>
 
-        {/* Add to cart button */}
-        <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
-          <button
-            onClick={handleAddToCart}
-            disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-            className="w-full py-2.5 bg-dark-900 text-white text-sm font-medium rounded-lg flex items-center justify-center gap-2 hover:bg-dark-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ShoppingCartIcon className="w-4 h-4" />
-            {isAddingToCart ? 'Adding...' : 'Add to Cart'}
-          </button>
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="product-info">
-        {product.category && (
-          <p className="text-xs text-dark-500 mb-1">{product.category.name}</p>
-        )}
-        <h3 className="product-name">{product.name}</h3>
-
-        {/* Rating */}
-        {product.average_rating !== undefined && product.review_count !== undefined && product.review_count > 0 && (
-          <div className="flex items-center gap-1 mt-1">
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg
-                  key={star}
-                  className={`w-4 h-4 ${
-                    star <= Math.round(product.average_rating!) ? 'text-primary-500' : 'text-dark-200'
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <span className="text-xs text-dark-500">({product.review_count})</span>
+          {/* Quick Actions on Hover */}
+          <div className="product-actions">
+            <button
+              onClick={handleAddToCart}
+              disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
+              className="flex-1 py-3 bg-primary-500 hover:bg-primary-400
+                        text-dark-900 text-sm font-semibold rounded-xl
+                        flex items-center justify-center gap-2
+                        disabled:opacity-50 disabled:cursor-not-allowed
+                        transition-all duration-200 shadow-lg"
+            >
+              <ShoppingCartIcon className="w-4 h-4" />
+              {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+            </button>
+            <button
+              className="p-3 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
+                        text-dark-900 dark:text-white rounded-xl
+                        transition-all duration-200 shadow-lg"
+              aria-label="Quick view"
+            >
+              <EyeIcon className="w-5 h-5" />
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Price */}
-        <div className="flex items-center gap-2 mt-2">
-          <span className="product-price">{formatPrice(product.price)}</span>
-          {product.compare_price && product.compare_price > product.price && (
-            <span className="product-price-old">{formatPrice(product.compare_price)}</span>
+        {/* Product Info */}
+        <div className="product-info">
+          {/* Category */}
+          {product.category && (
+            <p className="product-category">{product.category.name}</p>
           )}
+
+          {/* Name */}
+          <h3 className="product-name">{product.name}</h3>
+
+          {/* Rating */}
+          {product.average_rating !== undefined && product.review_count !== undefined && product.review_count > 0 && (
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <StarIcon
+                    key={star}
+                    className={`w-4 h-4 ${
+                      star <= Math.round(product.average_rating!)
+                        ? 'text-primary-500'
+                        : 'text-dark-200 dark:text-dark-700'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-dark-500 dark:text-dark-400">
+                ({product.review_count})
+              </span>
+            </div>
+          )}
+
+          {/* Price */}
+          <div className="product-price">
+            <span>{formatPrice(product.price)}</span>
+            {product.compare_price && product.compare_price > product.price && (
+              <span className="product-price-old">{formatPrice(product.compare_price)}</span>
+            )}
+          </div>
         </div>
       </div>
     </Link>
