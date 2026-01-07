@@ -102,16 +102,21 @@ jobs:
             # Set permissions
             chmod -R 755 storage bootstrap/cache
 
+            # Ensure views directory exists
+            mkdir -p resources/views
+
             # Run migrations
             $PHP artisan migrate --force
 
             # Clear and rebuild caches
             $PHP artisan config:cache
             $PHP artisan route:cache
-            $PHP artisan view:cache
+            $PHP artisan view:cache || echo "View cache skipped"
 
-            # Create storage link
-            $PHP artisan storage:link
+            # Create storage link manually (exec() is disabled on Hostinger)
+            rm -rf public/storage
+            ln -s ../storage/app/public public/storage
+            echo "Storage link created manually"
 
       - name: Notify on success
         if: success()
