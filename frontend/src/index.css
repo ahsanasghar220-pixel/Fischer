@@ -116,9 +116,9 @@
     @apply text-dark-500 mt-2;
   }
 
-  /* Product card */
+  /* Product card - Note: 'group' class should be added in HTML, not via @apply */
   .product-card {
-    @apply card-hover group;
+    @apply card-hover;
   }
 
   .product-card .product-image {

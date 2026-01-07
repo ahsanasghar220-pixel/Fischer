@@ -89,15 +89,16 @@ export default function Register() {
       })
       toast.success('Account created successfully!')
       navigate('/')
-    } catch (error: Error & { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }) {
-      if (error.response?.data?.errors) {
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }
+      if (err.response?.data?.errors) {
         const serverErrors: Record<string, string> = {}
-        Object.entries(error.response.data.errors).forEach(([key, messages]) => {
-          serverErrors[key] = messages[0]
+        Object.entries(err.response.data.errors).forEach(([key, messages]) => {
+          serverErrors[key] = (messages as string[])[0]
         })
         setErrors(serverErrors)
       } else {
-        toast.error(error.response?.data?.message || 'Registration failed')
+        toast.error(err.response?.data?.message || 'Registration failed')
       }
     } finally {
       setIsLoading(false)

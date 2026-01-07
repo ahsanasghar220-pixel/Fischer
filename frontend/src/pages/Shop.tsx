@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { FunnelIcon, XMarkIcon, ChevronDownIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { formatPrice } from '@/lib/utils'
 
 interface Product {
   id: number

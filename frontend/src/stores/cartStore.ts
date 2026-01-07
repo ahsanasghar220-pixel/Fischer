@@ -12,12 +12,16 @@ interface CartItem {
     slug: string
     sku: string
     image: string | null
+    primary_image: string | null
+    price: number
     stock_quantity: number
     track_inventory: boolean
   }
   variant: {
     id: number
     sku: string
+    name: string
+    price: number
     attributes: Array<{ attribute: string; value: string }>
   } | null
   quantity: number
@@ -31,6 +35,7 @@ interface CartState {
   subtotal: number
   discount: number
   coupon_code: string | null
+  couponCode: string | null
   total: number
   items_count: number
   total_weight: number
@@ -38,6 +43,7 @@ interface CartState {
   fetchCart: () => Promise<void>
   addItem: (productId: number, quantity?: number, variantId?: number | null) => Promise<void>
   updateQuantity: (itemId: number, quantity: number) => Promise<void>
+  updateItemQuantity: (itemId: number, quantity: number) => Promise<void>
   removeItem: (itemId: number) => Promise<void>
   clearCart: () => Promise<void>
   applyCoupon: (code: string) => Promise<boolean>
@@ -49,6 +55,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   subtotal: 0,
   discount: 0,
   coupon_code: null,
+  couponCode: null,
   total: 0,
   items_count: 0,
   total_weight: 0,
@@ -65,6 +72,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         subtotal: data.subtotal || 0,
         discount: data.discount || 0,
         coupon_code: data.coupon_code,
+        couponCode: data.coupon_code,
         total: data.total || 0,
         items_count: data.items_count || 0,
         total_weight: data.total_weight || 0,
@@ -90,6 +98,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         subtotal: data.subtotal || 0,
         discount: data.discount || 0,
         coupon_code: data.coupon_code,
+        couponCode: data.coupon_code,
         total: data.total || 0,
         items_count: data.items_count || 0,
         isLoading: false,
@@ -121,6 +130,10 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
   },
 
+  updateItemQuantity: async (itemId: number, quantity: number) => {
+    return get().updateQuantity(itemId, quantity)
+  },
+
   removeItem: async (itemId: number) => {
     try {
       const response = await api.delete(`/cart/items/${itemId}`)
@@ -146,6 +159,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         subtotal: 0,
         discount: 0,
         coupon_code: null,
+        couponCode: null,
         total: 0,
         items_count: 0,
       })
@@ -161,6 +175,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       set({
         discount: data.discount || 0,
         coupon_code: data.coupon_code,
+        couponCode: data.coupon_code,
         total: data.total || get().subtotal,
       })
       toast.success('Coupon applied')
@@ -179,6 +194,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       set({
         discount: 0,
         coupon_code: null,
+        couponCode: null,
         total: data.total || get().subtotal,
       })
       toast.success('Coupon removed')

@@ -2,11 +2,23 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '@/lib/api'
 
+interface Address {
+  id: number
+  name: string
+  phone: string
+  address_line_1: string
+  address_line_2?: string
+  city: string
+  state: string
+  postal_code: string
+}
+
 interface User {
   id: number
   first_name: string
   last_name: string
   full_name: string
+  name: string
   email: string
   phone: string | null
   avatar: string | null
@@ -16,6 +28,7 @@ interface User {
   roles: string[]
   is_admin: boolean
   is_dealer: boolean
+  default_address?: Address | null
 }
 
 interface AuthState {
@@ -31,8 +44,9 @@ interface AuthState {
 }
 
 interface RegisterData {
-  first_name: string
-  last_name: string
+  first_name?: string
+  last_name?: string
+  name?: string
   email: string
   password: string
   password_confirmation: string

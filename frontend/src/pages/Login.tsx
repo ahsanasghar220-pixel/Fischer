@@ -36,8 +36,9 @@ export default function Login() {
       await login(formData.email, formData.password)
       toast.success('Welcome back!')
       navigate(from, { replace: true })
-    } catch (error: Error & { response?: { data?: { message?: string } } }) {
-      toast.error(error.response?.data?.message || 'Invalid credentials')
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } }
+      toast.error(err.response?.data?.message || 'Invalid credentials')
     } finally {
       setIsLoading(false)
     }

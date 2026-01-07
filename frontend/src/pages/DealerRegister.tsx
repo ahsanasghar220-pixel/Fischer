@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { BuildingStorefrontIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
@@ -19,7 +19,6 @@ const pakistanCities = [
 ]
 
 export default function DealerRegister() {
-  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [submitted, setSubmitted] = useState(false)
 

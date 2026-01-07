@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { WrenchScrewdriverIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
@@ -32,7 +32,6 @@ const pakistanCities = [
 ]
 
 export default function ServiceRequest() {
-  const navigate = useNavigate()
   const { isAuthenticated, user } = useAuthStore()
   const [step, setStep] = useState(1)
   const [submitted, setSubmitted] = useState(false)
