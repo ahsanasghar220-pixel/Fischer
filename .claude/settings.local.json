@@ -7,7 +7,26 @@
       "Bash(cmd /c \"C:\\\\xampp\\\\php\\\\php.exe C:\\\\ProgramData\\\\ComposerSetup\\\\bin\\\\composer.phar --version\")",
       "Bash(cmd /c \"php --version\")",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Fischer Pakistan E-Commerce Platform\n\nFeatures:\n- Laravel 11 backend with API\n- React 18 + TypeScript frontend\n- Full e-commerce functionality \\(products, cart, checkout\\)\n- User authentication with Laravel Sanctum\n- Admin dashboard\n- Dealer/B2B portal\n- Service request system\n- Payment integrations \\(COD, JazzCash, EasyPaisa, Cards\\)\n- Fischer branding \\(yellow #f4b42c, dark #313131\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh auth status:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(C:/xampp/php/php.exe C:/ProgramData/ComposerSetup/bin/composer.phar install)",
+      "Bash(C:xamppphpphp.exe C:ProgramDataComposerSetupbincomposer.phar install)",
+      "Bash(cmd /c \"cd /d c:\\\\xampp\\\\htdocs\\\\fischer\\\\backend && composer install\")",
+      "Bash(cmd /c \"cd /d c:\\\\xampp\\\\htdocs\\\\fischer\\\\backend && C:\\\\ProgramData\\\\ComposerSetup\\\\bin\\\\composer.bat install\")",
+      "Bash(cmd /c \"composer --version\")",
+      "Bash(powershell -Command \"composer --version\")",
+      "Bash(powershell -Command \"& ''C:\\\\ProgramData\\\\ComposerSetup\\\\bin\\\\composer.bat'' --version\")",
+      "Bash(powershell -Command:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd production config and fix migrations\n\n- Add production .env files for Hostinger deployment\n- Fix migration order \\(dealers before orders\\)\n- Fix duplicate index in activity_logs\n- Fix flash_sales timestamp columns\n- Update deployment guide with fischer.codeformulator.com\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(del nul)",
+      "Bash(git commit:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
