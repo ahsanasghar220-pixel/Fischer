@@ -1,0 +1,121 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { EnvelopeIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import api from '@/lib/api'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import toast from 'react-hot-toast'
+
+export default function ForgotPassword() {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const mutation = useMutation({
+    mutationFn: async (email: string) => {
+      await api.post('/auth/forgot-password', { email })
+    },
+    onSuccess: () => {
+      setSubmitted(true)
+    },
+    onError: (error: Error & { response?: { data?: { message?: string } } }) => {
+      toast.error(error.response?.data?.message || 'Failed to send reset link')
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate(email)
+  }
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-dark-50 flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircleIcon className="w-10 h-10 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-dark-900 mb-2">Check Your Email</h2>
+            <p className="text-dark-500 mb-6">
+              We've sent a password reset link to <strong>{email}</strong>
+            </p>
+            <p className="text-sm text-dark-400 mb-6">
+              If you don't see the email, check your spam folder or try again.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setSubmitted(false)}
+                className="btn btn-dark-outline"
+              >
+                Try Another Email
+              </button>
+              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                Back to Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-dark-50 flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block">
+            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto" />
+          </Link>
+          <h1 className="mt-6 text-3xl font-bold text-dark-900">Forgot Password?</h1>
+          <p className="mt-2 text-dark-500">
+            Enter your email and we'll send you a reset link
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-dark-700 mb-1">
+                Email address
+              </label>
+              <div className="relative">
+                <EnvelopeIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full btn btn-primary py-3 flex items-center justify-center"
+            >
+              {mutation.isPending ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Sending...
+                </>
+              ) : (
+                'Send Reset Link'
+              )}
+            </button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-dark-500">
+            Remember your password?{' '}
+            <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
