@@ -31,25 +31,14 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, pdo, pdo_mysql, xml, ctype, json, tokenizer, bcmath, gd
-          tools: composer:v2
-
-      - name: Install backend dependencies
-        working-directory: backend
-        run: |
-          composer install --no-dev --optimize-autoloader --no-interaction
-
       - name: Create deployment package
         run: |
           # Create deployment directory
           mkdir -p deploy
 
-          # Copy backend files
+          # Copy backend files (WITHOUT vendor - will install on server)
           cp -r backend/* deploy/
+          rm -rf deploy/vendor
 
           # Copy frontend build to public folder
           cp -r frontend/dist/* deploy/public/
@@ -69,9 +58,6 @@ jobs:
           mkdir -p deploy/storage/logs
           mkdir -p deploy/bootstrap/cache
 
-          # Set permissions file
-          echo "chmod -R 755 storage bootstrap/cache" > deploy/set-permissions.sh
-
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -84,6 +70,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/vendor/**
             **/.env
             .htaccess
 
@@ -97,10 +84,13 @@ jobs:
           script: |
             cd ${{ secrets.SSH_SERVER_DIR }}
 
+            # Install composer dependencies on server
+            composer install --no-dev --optimize-autoloader --no-interaction
+
             # Set permissions
             chmod -R 755 storage bootstrap/cache
 
-            # Run migrations (with backup)
+            # Run migrations
             php artisan migrate --force
 
             # Clear and rebuild caches
@@ -110,9 +100,6 @@ jobs:
 
             # Create storage link
             php artisan storage:link
-
-            # Restart queue workers if using
-            # php artisan queue:restart
 
       - name: Notify on success
         if: success()
