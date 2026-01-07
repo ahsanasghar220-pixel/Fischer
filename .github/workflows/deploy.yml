@@ -78,7 +78,6 @@ jobs:
             **/.git*/**
             **/node_modules/**
             **/.env
-            .htaccess
 
       - name: Post-deployment tasks
         uses: appleboy/ssh-action@v1.0.0
