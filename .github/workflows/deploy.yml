@@ -90,8 +90,14 @@ jobs:
           script: |
             cd ${{ secrets.SSH_SERVER_DIR }}
 
+            # Use PHP 8.2 explicitly (Hostinger path)
+            export PATH=/usr/local/php82/bin:$PATH
+
+            # Verify PHP version
+            php -v
+
             # Install composer dependencies on server
-            composer install --no-dev --optimize-autoloader --no-interaction
+            php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
 
             # Set permissions
             chmod -R 755 storage bootstrap/cache
