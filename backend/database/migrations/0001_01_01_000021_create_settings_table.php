@@ -44,8 +44,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('log_name');
-            $table->index(['subject_type', 'subject_id']);
-            $table->index(['causer_type', 'causer_id']);
         });
 
         // Newsletter subscribers
@@ -82,8 +80,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at');
+            $table->dateTime('starts_at');
+            $table->dateTime('ends_at');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

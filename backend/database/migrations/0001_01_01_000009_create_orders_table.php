@@ -89,7 +89,7 @@ return new class extends Migration
 
             // Coupon
             $table->string('coupon_code')->nullable();
-            $table->foreignId('coupon_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('coupon_id')->nullable();
 
             // Loyalty
             $table->integer('loyalty_points_earned')->default(0);

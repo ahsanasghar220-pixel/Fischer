@@ -1,5 +1,9 @@
 # Fischer E-Commerce Deployment Guide
 
+## Production URL
+- **Website:** https://fischer.codeformulator.com
+- **API:** https://fischer.codeformulator.com/api
+
 ## Prerequisites
 
 1. **Hostinger Shared Hosting** with:
@@ -18,7 +22,7 @@
    - `SSH_PASSWORD` - SSH password
    - `SSH_PORT` - SSH port (usually 22)
    - `SSH_SERVER_DIR` - Full path to deployment directory
-   - `VITE_API_URL` - API URL for frontend (e.g., `https://fischerpk.com/api`)
+   - `VITE_API_URL` - `https://fischer.codeformulator.com/api`
 
 ## Initial Setup (First Deployment)
 
@@ -39,7 +43,7 @@ APP_NAME="Fischer Pakistan"
 APP_ENV=production
 APP_KEY=base64:your-generated-key-here
 APP_DEBUG=false
-APP_URL=https://fischerpk.com
+APP_URL=https://fischer.codeformulator.com
 
 LOG_CHANNEL=single
 LOG_LEVEL=error
@@ -47,9 +51,9 @@ LOG_LEVEL=error
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=your_database_name
-DB_USERNAME=your_database_user
-DB_PASSWORD=your_database_password
+DB_DATABASE=u271928709_fischer
+DB_USERNAME=u271928709_fischer
+DB_PASSWORD=Fischerpk123*
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
@@ -64,7 +68,7 @@ MAIL_PORT=465
 MAIL_USERNAME=your-email@fischerpk.com
 MAIL_PASSWORD=your-email-password
 MAIL_ENCRYPTION=ssl
-MAIL_FROM_ADDRESS=noreply@fischerpk.com
+MAIL_FROM_ADDRESS=noreply@fischer.codeformulator.com
 MAIL_FROM_NAME="${APP_NAME}"
 
 # JazzCash Configuration
@@ -72,7 +76,7 @@ JAZZCASH_MERCHANT_ID=your_merchant_id
 JAZZCASH_PASSWORD=your_password
 JAZZCASH_INTEGRITY_SALT=your_salt
 JAZZCASH_ENVIRONMENT=production
-JAZZCASH_RETURN_URL=https://fischerpk.com/payment/jazzcash/callback
+JAZZCASH_RETURN_URL=https://fischer.codeformulator.com/payment/jazzcash/callback
 
 # EasyPaisa Configuration
 EASYPAISA_STORE_ID=your_store_id
