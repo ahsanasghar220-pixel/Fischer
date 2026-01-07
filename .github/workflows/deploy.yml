@@ -90,35 +90,28 @@ jobs:
           script: |
             cd ${{ secrets.SSH_SERVER_DIR }}
 
-            # Find PHP 8.2 location on Hostinger
-            echo "=== Finding PHP 8.2 ==="
-            which php8.2 || echo "php8.2 not in PATH"
-            ls -la /usr/bin/php* 2>/dev/null || echo "No /usr/bin/php*"
-            ls -la /opt/alt/php82/usr/bin/php 2>/dev/null || echo "No /opt/alt/php82"
-            ls -la /usr/local/bin/php82 2>/dev/null || echo "No /usr/local/bin/php82"
+            # PHP 8.2 path on Hostinger
+            PHP=/opt/alt/php82/usr/bin/php
 
-            # Try using php8.2 binary directly
-            PHP_BIN=$(which php8.2 2>/dev/null || echo "/usr/bin/php8.2")
+            echo "=== PHP Version ==="
+            $PHP -v
 
-            echo "=== Using PHP at: $PHP_BIN ==="
-            $PHP_BIN -v
-
-            # Install composer dependencies on server
-            $PHP_BIN /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+            # Install composer dependencies
+            $PHP /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
 
             # Set permissions
             chmod -R 755 storage bootstrap/cache
 
             # Run migrations
-            $PHP_BIN artisan migrate --force
+            $PHP artisan migrate --force
 
             # Clear and rebuild caches
-            $PHP_BIN artisan config:cache
-            $PHP_BIN artisan route:cache
-            $PHP_BIN artisan view:cache
+            $PHP artisan config:cache
+            $PHP artisan route:cache
+            $PHP artisan view:cache
 
             # Create storage link
-            $PHP_BIN artisan storage:link
+            $PHP artisan storage:link
 
       - name: Notify on success
         if: success()
