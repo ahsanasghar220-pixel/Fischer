@@ -1,4 +1,13 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Don't rewrite if already in public folder
+    RewriteCond %{REQUEST_URI} !^/public/
+
+    # Don't rewrite for existing files/directories in root
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Rewrite everything to public folder
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
