@@ -121,9 +121,12 @@ jobs:
             # Run migrations
             $PHP artisan migrate --force
 
-            # Seed database if tables are empty (first deployment)
-            echo "=== Checking if seeding is needed ==="
-            $PHP artisan db:seed --force || echo "Seeding skipped or failed (may already have data)"
+            # Seed database
+            echo "=== Running database seeder ==="
+            $PHP artisan db:seed --force --verbose 2>&1 || {
+              echo "Seeding failed, checking if tables exist..."
+              $PHP artisan migrate:status
+            }
 
             # Clear all caches first
             $PHP artisan cache:clear || true
