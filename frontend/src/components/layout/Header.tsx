@@ -119,8 +119,8 @@ export default function Header() {
                 src="/images/logo.png"
                 alt="Fischer"
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
-                  isHomePage && !isScrolled ? 'brightness-0 invert' : 'dark:brightness-0 dark:invert'
-                }`}
+                  isHomePage && !isScrolled ? 'brightness-0 invert' : ''
+                } dark:brightness-0 dark:invert`}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                   const span = document.createElement('span')

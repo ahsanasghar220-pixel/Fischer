@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
 import Layout from './components/layout/Layout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
+import ScrollToTop from './components/utils/ScrollToTop'
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'))
@@ -40,6 +41,7 @@ const AdminSettings = lazy(() => import('./pages/admin/Settings'))
 function App() {
   return (
     <Suspense fallback={<LoadingSpinner fullScreen />}>
+      <ScrollToTop />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Layout />}>
