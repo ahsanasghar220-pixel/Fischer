@@ -58,8 +58,8 @@ export default function AdminProducts() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-dark-900">Products</h1>
-          <p className="text-dark-500">Manage your product catalog</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Products</h1>
+          <p className="text-dark-500 dark:text-dark-400">Manage your product catalog</p>
         </div>
         <Link to="/admin/products/new" className="btn btn-primary flex items-center gap-2">
           <PlusIcon className="w-5 h-5" />
@@ -68,7 +68,7 @@ export default function AdminProducts() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-4">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" />
@@ -77,13 +77,13 @@ export default function AdminProducts() {
               placeholder="Search products..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <select
             value={status}
             onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="">All Status</option>
             <option value="active">Active</option>
@@ -95,7 +95,7 @@ export default function AdminProducts() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
@@ -104,23 +104,23 @@ export default function AdminProducts() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-dark-50 border-b">
+                <thead className="bg-dark-50 dark:bg-dark-700 border-b border-dark-200 dark:border-dark-600">
                   <tr>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Product</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">SKU</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Category</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Price</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Stock</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Status</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-dark-600">Actions</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Product</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">SKU</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Category</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Price</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Stock</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Status</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-dark-200 dark:divide-dark-700">
                   {data?.data.map((product) => (
-                    <tr key={product.id} className="hover:bg-dark-50">
+                    <tr key={product.id} className="hover:bg-dark-50 dark:hover:bg-dark-700/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-dark-100 rounded-lg overflow-hidden flex-shrink-0">
+                          <div className="w-12 h-12 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0">
                             {product.primary_image ? (
                               <img
                                 src={product.primary_image}
@@ -133,23 +133,23 @@ export default function AdminProducts() {
                               </div>
                             )}
                           </div>
-                          <span className="font-medium text-dark-900">{product.name}</span>
+                          <span className="font-medium text-dark-900 dark:text-white">{product.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-dark-600">{product.sku}</td>
-                      <td className="px-4 py-3 text-dark-600">{product.category?.name || '-'}</td>
-                      <td className="px-4 py-3 font-medium text-dark-900">{formatPrice(product.price)}</td>
+                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{product.sku}</td>
+                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{product.category?.name || '-'}</td>
+                      <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">{formatPrice(product.price)}</td>
                       <td className="px-4 py-3">
                         <span className={`${
-                          product.stock === 0 ? 'text-red-600' :
-                          product.stock <= 10 ? 'text-orange-600' : 'text-dark-600'
+                          product.stock === 0 ? 'text-red-600 dark:text-red-400' :
+                          product.stock <= 10 ? 'text-orange-600 dark:text-orange-400' : 'text-dark-600 dark:text-dark-400'
                         }`}>
                           {product.stock}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          product.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                          product.is_active ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                         }`}>
                           {product.is_active ? 'Active' : 'Inactive'}
                         </span>
@@ -159,17 +159,17 @@ export default function AdminProducts() {
                           <Link
                             to={`/product/${product.slug}`}
                             target="_blank"
-                            className="p-2 text-dark-400 hover:text-dark-600 hover:bg-dark-100 rounded"
+                            className="p-2 text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 rounded"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </Link>
                           <Link
                             to={`/admin/products/${product.id}`}
-                            className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 rounded"
+                            className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </Link>
-                          <button className="p-2 text-dark-400 hover:text-red-600 hover:bg-red-50 rounded">
+                          <button className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
                             <TrashIcon className="w-4 h-4" />
                           </button>
                         </div>
@@ -182,22 +182,22 @@ export default function AdminProducts() {
 
             {/* Pagination */}
             {data?.meta && data.meta.last_page > 1 && (
-              <div className="p-4 border-t flex items-center justify-between">
-                <p className="text-sm text-dark-500">
+              <div className="p-4 border-t border-dark-200 dark:border-dark-700 flex items-center justify-between">
+                <p className="text-sm text-dark-500 dark:text-dark-400">
                   Showing {((page - 1) * 15) + 1} to {Math.min(page * 15, data.meta.total)} of {data.meta.total} products
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage(page - 1)}
                     disabled={page === 1}
-                    className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+                    className="px-3 py-1 border border-dark-200 dark:border-dark-600 rounded text-sm text-dark-700 dark:text-dark-300 disabled:opacity-50 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setPage(page + 1)}
                     disabled={page === data.meta.last_page}
-                    className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+                    className="px-3 py-1 border border-dark-200 dark:border-dark-600 rounded text-sm text-dark-700 dark:text-dark-300 disabled:opacity-50 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Next
                   </button>

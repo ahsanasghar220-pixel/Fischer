@@ -45,32 +45,32 @@ export default function AdminCustomers() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-dark-900">Customers</h1>
-        <p className="text-dark-500">Manage your customer base</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Customers</h1>
+        <p className="text-dark-500 dark:text-dark-400">Manage your customer base</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900">1,234</p>
-          <p className="text-sm text-dark-500">Total Customers</p>
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">1,234</p>
+          <p className="text-sm text-dark-500 dark:text-dark-400">Total Customers</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900">56</p>
-          <p className="text-sm text-dark-500">New This Month</p>
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">56</p>
+          <p className="text-sm text-dark-500 dark:text-dark-400">New This Month</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900">78%</p>
-          <p className="text-sm text-dark-500">Repeat Customers</p>
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">78%</p>
+          <p className="text-sm text-dark-500 dark:text-dark-400">Repeat Customers</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900">{formatPrice(45000)}</p>
-          <p className="text-sm text-dark-500">Avg. Lifetime Value</p>
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">{formatPrice(45000)}</p>
+          <p className="text-sm text-dark-500 dark:text-dark-400">Avg. Lifetime Value</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-4">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" />
@@ -79,10 +79,10 @@ export default function AdminCustomers() {
               placeholder="Search by name, email, or phone..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <select className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <select className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
             <option value="">All Customers</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -92,7 +92,7 @@ export default function AdminCustomers() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
@@ -101,53 +101,53 @@ export default function AdminCustomers() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-dark-50 border-b">
+                <thead className="bg-dark-50 dark:bg-dark-700 border-b border-dark-200 dark:border-dark-600">
                   <tr>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Customer</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Phone</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Orders</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Total Spent</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Points</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600">Joined</th>
-                    <th className="text-right px-4 py-3 text-sm font-medium text-dark-600">Actions</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Customer</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Phone</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Orders</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Total Spent</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Points</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Joined</th>
+                    <th className="text-right px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-dark-200 dark:divide-dark-700">
                   {data?.data.map((customer) => (
-                    <tr key={customer.id} className="hover:bg-dark-50">
+                    <tr key={customer.id} className="hover:bg-dark-50 dark:hover:bg-dark-700/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                            <span className="text-primary-600 font-medium">
+                          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
+                            <span className="text-primary-600 dark:text-primary-400 font-medium">
                               {customer.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-medium text-dark-900">{customer.name}</p>
-                            <p className="text-xs text-dark-500">{customer.email}</p>
+                            <p className="font-medium text-dark-900 dark:text-white">{customer.name}</p>
+                            <p className="text-xs text-dark-500 dark:text-dark-400">{customer.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-dark-600">{customer.phone || '-'}</td>
-                      <td className="px-4 py-3 text-dark-900">{customer.orders_count}</td>
-                      <td className="px-4 py-3 font-medium text-dark-900">
+                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{customer.phone || '-'}</td>
+                      <td className="px-4 py-3 text-dark-900 dark:text-white">{customer.orders_count}</td>
+                      <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">
                         {formatPrice(customer.total_spent)}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-1 text-primary-600">
+                        <span className="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400">
                           <span className="text-sm">⭐</span>
                           {customer.loyalty_points}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-dark-600 text-sm">
+                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400 text-sm">
                         {formatDate(customer.created_at)}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <button className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 rounded">
+                          <button className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded">
                             <EyeIcon className="w-4 h-4" />
                           </button>
-                          <button className="p-2 text-dark-400 hover:text-dark-600 hover:bg-dark-100 rounded">
+                          <button className="p-2 text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 rounded">
                             <EnvelopeIcon className="w-4 h-4" />
                           </button>
                         </div>
@@ -160,22 +160,22 @@ export default function AdminCustomers() {
 
             {/* Pagination */}
             {data?.meta && data.meta.last_page > 1 && (
-              <div className="p-4 border-t flex items-center justify-between">
-                <p className="text-sm text-dark-500">
+              <div className="p-4 border-t border-dark-200 dark:border-dark-700 flex items-center justify-between">
+                <p className="text-sm text-dark-500 dark:text-dark-400">
                   Showing {((page - 1) * 15) + 1} to {Math.min(page * 15, data.meta.total)} of {data.meta.total} customers
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage(page - 1)}
                     disabled={page === 1}
-                    className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+                    className="px-3 py-1 border border-dark-200 dark:border-dark-600 rounded text-sm text-dark-700 dark:text-dark-300 disabled:opacity-50 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setPage(page + 1)}
                     disabled={page === data.meta.last_page}
-                    className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+                    className="px-3 py-1 border border-dark-200 dark:border-dark-600 rounded text-sm text-dark-700 dark:text-dark-300 disabled:opacity-50 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Next
                   </button>

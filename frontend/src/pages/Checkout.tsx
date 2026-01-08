@@ -240,10 +240,10 @@ export default function Checkout() {
 
   if (!items || items.length === 0) {
     return (
-      <div className="min-h-screen bg-dark-50 flex items-center justify-center">
+      <div className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center transition-colors">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-dark-900 mb-2">Your cart is empty</h1>
-          <p className="text-dark-500 mb-4">Add some products before checkout</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-2">Your cart is empty</h1>
+          <p className="text-dark-500 dark:text-dark-400 mb-4">Add some products before checkout</p>
           <Link to="/shop" className="btn btn-primary">Go Shopping</Link>
         </div>
       </div>
@@ -251,16 +251,16 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-50">
+    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 transition-colors">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-dark-900">Checkout</h1>
+          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">Checkout</h1>
         </div>
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center gap-4">
             {[
@@ -275,15 +275,15 @@ export default function Checkout() {
                       ? 'bg-green-500 text-white'
                       : step === s.num
                       ? 'bg-primary-500 text-white'
-                      : 'bg-dark-200 text-dark-500'
+                      : 'bg-dark-200 dark:bg-dark-600 text-dark-500 dark:text-dark-400'
                   }`}
                 >
                   {step > s.num ? <CheckCircleIcon className="w-5 h-5" /> : s.num}
                 </div>
-                <span className={`ml-2 ${step >= s.num ? 'text-dark-900 font-medium' : 'text-dark-400'}`}>
+                <span className={`ml-2 ${step >= s.num ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
                   {s.label}
                 </span>
-                {i < 2 && <div className="w-16 h-0.5 mx-4 bg-dark-200" />}
+                {i < 2 && <div className="w-16 h-0.5 mx-4 bg-dark-200 dark:bg-dark-600" />}
               </div>
             ))}
           </div>
@@ -297,13 +297,13 @@ export default function Checkout() {
             <div className="lg:col-span-2">
               {/* Step 1: Shipping Address */}
               {step === 1 && (
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-xl font-semibold text-dark-900 mb-6">Shipping Address</h2>
+                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">Shipping Address</h2>
 
                   {/* Saved Addresses */}
                   {addresses && addresses.length > 0 && (
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-dark-700 mb-2">
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
                         Saved Addresses
                       </label>
                       <div className="grid gap-3">
@@ -311,29 +311,29 @@ export default function Checkout() {
                           <div
                             key={address.id}
                             onClick={() => handleAddressSelect(address)}
-                            className={`p-4 border rounded-lg cursor-pointer ${
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                               selectedAddress?.id === address.id
-                                ? 'border-primary-500 bg-primary-50'
-                                : 'border-dark-200 hover:border-dark-400'
+                                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                                : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'
                             }`}
                           >
                             <div className="flex items-start justify-between">
                               <div>
-                                <span className="font-medium text-dark-900">{address.label}</span>
+                                <span className="font-medium text-dark-900 dark:text-white">{address.label}</span>
                                 {address.is_default && (
-                                  <span className="ml-2 text-xs bg-dark-100 text-dark-600 px-2 py-0.5 rounded">Default</span>
+                                  <span className="ml-2 text-xs bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 px-2 py-0.5 rounded">Default</span>
                                 )}
-                                <p className="text-sm text-dark-600 mt-1">
+                                <p className="text-sm text-dark-600 dark:text-dark-400 mt-1">
                                   {address.name} • {address.phone}
                                 </p>
-                                <p className="text-sm text-dark-500">
+                                <p className="text-sm text-dark-500 dark:text-dark-400">
                                   {address.address_line_1}, {address.city}
                                 </p>
                               </div>
                               <div className={`w-5 h-5 rounded-full border-2 ${
                                 selectedAddress?.id === address.id
                                   ? 'border-primary-500 bg-primary-500'
-                                  : 'border-dark-300'
+                                  : 'border-dark-300 dark:border-dark-500'
                               }`}>
                                 {selectedAddress?.id === address.id && (
                                   <CheckCircleIcon className="w-full h-full text-white" />
@@ -352,13 +352,13 @@ export default function Checkout() {
                   {/* Guest Email */}
                   {!isAuthenticated && (
                     <div className="mb-4">
-                      <label className="block text-sm font-medium text-dark-700 mb-1">Email *</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Email *</label>
                       <input
                         type="email"
                         name="email"
                         value={form.email}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       />
                     </div>
@@ -366,64 +366,64 @@ export default function Checkout() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-dark-700 mb-1">Full Name *</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Full Name *</label>
                       <input
                         type="text"
                         name="shipping_name"
                         value={form.shipping_name}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-dark-700 mb-1">Phone *</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Phone *</label>
                       <input
                         type="tel"
                         name="shipping_phone"
                         value={form.shipping_phone}
                         onChange={handleInputChange}
                         placeholder="03XX-XXXXXXX"
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-dark-700 mb-1">Address *</label>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Address *</label>
                     <input
                       type="text"
                       name="shipping_address_line_1"
                       value={form.shipping_address_line_1}
                       onChange={handleInputChange}
                       placeholder="Street address, house number"
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                       required
                     />
                   </div>
 
                   <div className="mt-4">
-                    <label className="block text-sm font-medium text-dark-700 mb-1">Address Line 2</label>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Address Line 2</label>
                     <input
                       type="text"
                       name="shipping_address_line_2"
                       value={form.shipping_address_line_2}
                       onChange={handleInputChange}
                       placeholder="Apartment, suite, unit, etc. (optional)"
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-4 mt-4">
                     <div>
-                      <label className="block text-sm font-medium text-dark-700 mb-1">City *</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">City *</label>
                       <div className="relative">
                         <select
                           name="shipping_city"
                           value={form.shipping_city}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2 border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500"
                           required
                         >
                           <option value="">Select city</option>
@@ -435,12 +435,12 @@ export default function Checkout() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-dark-700 mb-1">State/Province *</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">State/Province *</label>
                       <select
                         name="shipping_state"
                         value={form.shipping_state}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       >
                         <option value="Punjab">Punjab</option>
@@ -453,13 +453,13 @@ export default function Checkout() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-dark-700 mb-1">Postal Code</label>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Postal Code</label>
                       <input
                         type="text"
                         name="shipping_postal_code"
                         value={form.shipping_postal_code}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
                   </div>
@@ -474,8 +474,8 @@ export default function Checkout() {
 
               {/* Step 2: Delivery Method */}
               {step === 2 && (
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-xl font-semibold text-dark-900 mb-6">
+                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">
                     <TruckIcon className="w-6 h-6 inline-block mr-2" />
                     Delivery Method
                   </h2>
@@ -486,20 +486,20 @@ export default function Checkout() {
                         <div
                           key={method.id}
                           onClick={() => setForm(prev => ({ ...prev, shipping_method_id: method.id }))}
-                          className={`p-4 border rounded-lg cursor-pointer ${
+                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                             form.shipping_method_id === method.id
-                              ? 'border-primary-500 bg-primary-50'
-                              : 'border-dark-200 hover:border-dark-400'
+                              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                              : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'
                           }`}
                         >
                           <div className="flex items-center justify-between">
                             <div>
-                              <span className="font-medium text-dark-900">{method.name}</span>
-                              <p className="text-sm text-dark-500">{method.description}</p>
-                              <p className="text-sm text-dark-500">Delivery in {method.estimated_days}</p>
+                              <span className="font-medium text-dark-900 dark:text-white">{method.name}</span>
+                              <p className="text-sm text-dark-500 dark:text-dark-400">{method.description}</p>
+                              <p className="text-sm text-dark-500 dark:text-dark-400">Delivery in {method.estimated_days}</p>
                             </div>
                             <div className="text-right">
-                              <span className="font-semibold text-dark-900">
+                              <span className="font-semibold text-dark-900 dark:text-white">
                                 {method.price === 0 ? 'FREE' : formatPrice(method.price)}
                               </span>
                             </div>
@@ -508,7 +508,7 @@ export default function Checkout() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-dark-500">
+                    <div className="text-center py-8 text-dark-500 dark:text-dark-400">
                       {form.shipping_city
                         ? 'No shipping methods available for this location'
                         : 'Please select a city first'}
@@ -516,7 +516,7 @@ export default function Checkout() {
                   )}
 
                   <div className="mt-6 flex justify-between">
-                    <button type="button" onClick={() => setStep(1)} className="btn btn-dark-outline px-8">
+                    <button type="button" onClick={() => setStep(1)} className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8">
                       Back
                     </button>
                     <button type="button" onClick={nextStep} className="btn btn-primary px-8">
@@ -528,8 +528,8 @@ export default function Checkout() {
 
               {/* Step 3: Payment */}
               {step === 3 && (
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-xl font-semibold text-dark-900 mb-6">
+                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">
                     <CreditCardIcon className="w-6 h-6 inline-block mr-2" />
                     Payment Method
                   </h2>
@@ -539,17 +539,17 @@ export default function Checkout() {
                       <div
                         key={method.id}
                         onClick={() => setForm(prev => ({ ...prev, payment_method: method.id }))}
-                        className={`p-4 border rounded-lg cursor-pointer ${
+                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                           form.payment_method === method.id
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-dark-200 hover:border-dark-400'
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                            : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <span className="text-2xl">{method.icon}</span>
                           <div>
-                            <span className="font-medium text-dark-900">{method.name}</span>
-                            <p className="text-sm text-dark-500">{method.description}</p>
+                            <span className="font-medium text-dark-900 dark:text-white">{method.name}</span>
+                            <p className="text-sm text-dark-500 dark:text-dark-400">{method.description}</p>
                           </div>
                         </div>
                       </div>
@@ -558,7 +558,7 @@ export default function Checkout() {
 
                   {/* Order Notes */}
                   <div className="mt-6">
-                    <label className="block text-sm font-medium text-dark-700 mb-1">
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                       Order Notes (Optional)
                     </label>
                     <textarea
@@ -567,12 +567,12 @@ export default function Checkout() {
                       onChange={handleInputChange}
                       rows={3}
                       placeholder="Any special instructions for your order..."
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
 
                   <div className="mt-6 flex justify-between">
-                    <button type="button" onClick={() => setStep(2)} className="btn btn-dark-outline px-8">
+                    <button type="button" onClick={() => setStep(2)} className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8">
                       Back
                     </button>
                     <button
@@ -596,14 +596,14 @@ export default function Checkout() {
 
             {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-sm p-6 sticky top-4">
-                <h2 className="text-lg font-semibold text-dark-900 mb-4">Order Summary</h2>
+              <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6 sticky top-4">
+                <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Order Summary</h2>
 
                 {/* Items */}
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3">
-                      <div className="w-16 h-16 bg-dark-100 rounded-lg overflow-hidden flex-shrink-0">
+                      <div className="w-16 h-16 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0">
                         {item.product.primary_image ? (
                           <img
                             src={item.product.primary_image}
@@ -617,13 +617,13 @@ export default function Checkout() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-dark-900 truncate">{item.product.name}</p>
+                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{item.product.name}</p>
                         {item.variant && (
-                          <p className="text-xs text-dark-500">{item.variant.name}</p>
+                          <p className="text-xs text-dark-500 dark:text-dark-400">{item.variant.name}</p>
                         )}
-                        <p className="text-sm text-dark-500">Qty: {item.quantity}</p>
+                        <p className="text-sm text-dark-500 dark:text-dark-400">Qty: {item.quantity}</p>
                       </div>
-                      <span className="text-sm font-medium text-dark-900">
+                      <span className="text-sm font-medium text-dark-900 dark:text-white">
                         {formatPrice((item.variant?.price || item.product.price) * item.quantity)}
                       </span>
                     </div>
@@ -631,20 +631,20 @@ export default function Checkout() {
                 </div>
 
                 {/* Totals */}
-                <div className="border-t mt-4 pt-4 space-y-2">
+                <div className="border-t border-dark-200 dark:border-dark-700 mt-4 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-600">Subtotal</span>
-                    <span className="text-dark-900">{formatPrice(subtotal)}</span>
+                    <span className="text-dark-600 dark:text-dark-400">Subtotal</span>
+                    <span className="text-dark-900 dark:text-white">{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
-                    <div className="flex justify-between text-sm text-green-600">
+                    <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
                       <span>Discount</span>
                       <span>-{formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-600">Shipping</span>
-                    <span className="text-dark-900">
+                    <span className="text-dark-600 dark:text-dark-400">Shipping</span>
+                    <span className="text-dark-900 dark:text-white">
                       {selectedShippingMethod
                         ? selectedShippingMethod.price === 0
                           ? 'FREE'
@@ -652,14 +652,14 @@ export default function Checkout() {
                         : '—'}
                     </span>
                   </div>
-                  <div className="flex justify-between pt-2 border-t">
-                    <span className="font-semibold text-dark-900">Total</span>
-                    <span className="text-xl font-bold text-dark-900">{formatPrice(grandTotal)}</span>
+                  <div className="flex justify-between pt-2 border-t border-dark-200 dark:border-dark-700">
+                    <span className="font-semibold text-dark-900 dark:text-white">Total</span>
+                    <span className="text-xl font-bold text-dark-900 dark:text-white">{formatPrice(grandTotal)}</span>
                   </div>
                 </div>
 
                 {couponCode && (
-                  <div className="mt-4 p-2 bg-green-50 rounded text-sm text-green-700">
+                  <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 rounded text-sm text-green-700 dark:text-green-400">
                     Coupon applied: {couponCode}
                   </div>
                 )}

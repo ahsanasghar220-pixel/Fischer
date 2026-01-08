@@ -52,13 +52,13 @@ export default function AdminSettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900">Settings</h1>
-        <p className="text-dark-500">Configure your store settings</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Settings</h1>
+        <p className="text-dark-500 dark:text-dark-400">Configure your store settings</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
         {/* Tabs */}
-        <div className="border-b">
+        <div className="border-b border-dark-200 dark:border-dark-700">
           <div className="flex overflow-x-auto">
             {tabs.map((tab) => (
               <button
@@ -66,8 +66,8 @@ export default function AdminSettings() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'text-primary-600 border-b-2 border-primary-500'
-                    : 'text-dark-500 hover:text-dark-700'
+                    ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                    : 'text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200'
                 }`}
               >
                 {tab.label}
@@ -87,48 +87,48 @@ export default function AdminSettings() {
               className="space-y-4 max-w-2xl"
             >
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Site Name</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Site Name</label>
                 <input
                   type="text"
                   value={generalSettings.site_name}
                   onChange={(e) => setGeneralSettings({ ...generalSettings, site_name: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Tagline</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Tagline</label>
                 <input
                   type="text"
                   value={generalSettings.site_tagline}
                   onChange={(e) => setGeneralSettings({ ...generalSettings, site_tagline: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Contact Email</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Contact Email</label>
                 <input
                   type="email"
                   value={generalSettings.contact_email}
                   onChange={(e) => setGeneralSettings({ ...generalSettings, contact_email: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Contact Phone</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Contact Phone</label>
                 <input
                   type="text"
                   value={generalSettings.contact_phone}
                   onChange={(e) => setGeneralSettings({ ...generalSettings, contact_phone: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Address</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Address</label>
                 <textarea
                   value={generalSettings.address}
                   onChange={(e) => setGeneralSettings({ ...generalSettings, address: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <button
@@ -152,11 +152,11 @@ export default function AdminSettings() {
               className="space-y-4 max-w-2xl"
             >
               <div className="space-y-3">
-                <h3 className="font-medium text-dark-900">Payment Methods</h3>
-                <label className="flex items-center justify-between p-4 border rounded-lg">
+                <h3 className="font-medium text-dark-900 dark:text-white">Payment Methods</h3>
+                <label className="flex items-center justify-between p-4 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700">
                   <div>
-                    <span className="font-medium text-dark-900">Cash on Delivery</span>
-                    <p className="text-sm text-dark-500">Allow customers to pay when they receive</p>
+                    <span className="font-medium text-dark-900 dark:text-white">Cash on Delivery</span>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">Allow customers to pay when they receive</p>
                   </div>
                   <input
                     type="checkbox"
@@ -165,10 +165,10 @@ export default function AdminSettings() {
                     className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
                   />
                 </label>
-                <label className="flex items-center justify-between p-4 border rounded-lg">
+                <label className="flex items-center justify-between p-4 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700">
                   <div>
-                    <span className="font-medium text-dark-900">JazzCash</span>
-                    <p className="text-sm text-dark-500">Mobile wallet payment</p>
+                    <span className="font-medium text-dark-900 dark:text-white">JazzCash</span>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">Mobile wallet payment</p>
                   </div>
                   <input
                     type="checkbox"
@@ -177,10 +177,10 @@ export default function AdminSettings() {
                     className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
                   />
                 </label>
-                <label className="flex items-center justify-between p-4 border rounded-lg">
+                <label className="flex items-center justify-between p-4 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700">
                   <div>
-                    <span className="font-medium text-dark-900">EasyPaisa</span>
-                    <p className="text-sm text-dark-500">Mobile wallet payment</p>
+                    <span className="font-medium text-dark-900 dark:text-white">EasyPaisa</span>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">Mobile wallet payment</p>
                   </div>
                   <input
                     type="checkbox"
@@ -189,10 +189,10 @@ export default function AdminSettings() {
                     className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
                   />
                 </label>
-                <label className="flex items-center justify-between p-4 border rounded-lg">
+                <label className="flex items-center justify-between p-4 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700">
                   <div>
-                    <span className="font-medium text-dark-900">Credit/Debit Cards</span>
-                    <p className="text-sm text-dark-500">Visa, Mastercard</p>
+                    <span className="font-medium text-dark-900 dark:text-white">Credit/Debit Cards</span>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">Visa, Mastercard</p>
                   </div>
                   <input
                     type="checkbox"
@@ -203,14 +203,14 @@ export default function AdminSettings() {
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                   COD Extra Charges (PKR)
                 </label>
                 <input
                   type="number"
                   value={paymentSettings.cod_extra_charges}
                   onChange={(e) => setPaymentSettings({ ...paymentSettings, cod_extra_charges: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <button
@@ -234,37 +234,37 @@ export default function AdminSettings() {
               className="space-y-4 max-w-2xl"
             >
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                   Free Shipping Threshold (PKR)
                 </label>
                 <input
                   type="number"
                   value={shippingSettings.free_shipping_threshold}
                   onChange={(e) => setShippingSettings({ ...shippingSettings, free_shipping_threshold: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
-                <p className="text-xs text-dark-500 mt-1">Orders above this amount get free shipping</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400 mt-1">Orders above this amount get free shipping</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                   Default Shipping Cost (PKR)
                 </label>
                 <input
                   type="number"
                   value={shippingSettings.default_shipping_cost}
                   onChange={(e) => setShippingSettings({ ...shippingSettings, default_shipping_cost: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                   Express Shipping Cost (PKR)
                 </label>
                 <input
                   type="number"
                   value={shippingSettings.express_shipping_cost}
                   onChange={(e) => setShippingSettings({ ...shippingSettings, express_shipping_cost: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
               <button
@@ -281,14 +281,14 @@ export default function AdminSettings() {
           {/* Email Settings */}
           {activeTab === 'email' && (
             <div className="max-w-2xl">
-              <p className="text-dark-500">Email notification settings coming soon...</p>
+              <p className="text-dark-500 dark:text-dark-400">Email notification settings coming soon...</p>
             </div>
           )}
 
           {/* SEO Settings */}
           {activeTab === 'seo' && (
             <div className="max-w-2xl">
-              <p className="text-dark-500">SEO settings coming soon...</p>
+              <p className="text-dark-500 dark:text-dark-400">SEO settings coming soon...</p>
             </div>
           )}
         </div>

@@ -97,27 +97,27 @@ export default function AdminCategories() {
 
   const renderCategory = (category: Category, level = 0) => (
     <div key={category.id}>
-      <div className={`flex items-center justify-between p-4 hover:bg-dark-50 ${level > 0 ? 'ml-8' : ''}`}>
+      <div className={`flex items-center justify-between p-4 hover:bg-dark-50 dark:hover:bg-dark-700/50 ${level > 0 ? 'ml-8' : ''}`}>
         <div className="flex items-center gap-3">
-          {level > 0 && <ChevronRightIcon className="w-4 h-4 text-dark-300" />}
+          {level > 0 && <ChevronRightIcon className="w-4 h-4 text-dark-300 dark:text-dark-500" />}
           {category.image && (
             <img src={category.image} alt={category.name} className="w-10 h-10 rounded-lg object-cover" />
           )}
           <div>
-            <p className="font-medium text-dark-900">{category.name}</p>
-            <p className="text-xs text-dark-500">{category.products_count} products</p>
+            <p className="font-medium text-dark-900 dark:text-white">{category.name}</p>
+            <p className="text-xs text-dark-500 dark:text-dark-400">{category.products_count} products</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-            category.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            category.is_active ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
           }`}>
             {category.is_active ? 'Active' : 'Inactive'}
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleEdit(category)}
-              className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 rounded"
+              className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
             >
               <PencilIcon className="w-4 h-4" />
             </button>
@@ -127,7 +127,7 @@ export default function AdminCategories() {
                   deleteMutation.mutate(category.id)
                 }
               }}
-              className="p-2 text-dark-400 hover:text-red-600 hover:bg-red-50 rounded"
+              className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
             >
               <TrashIcon className="w-4 h-4" />
             </button>
@@ -143,8 +143,8 @@ export default function AdminCategories() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-dark-900">Categories</h1>
-          <p className="text-dark-500">Organize your products</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Categories</h1>
+          <p className="text-dark-500 dark:text-dark-400">Organize your products</p>
         </div>
         {!showForm && (
           <button
@@ -159,14 +159,14 @@ export default function AdminCategories() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-dark-900 mb-4">
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">
             {editingId ? 'Edit Category' : 'Add New Category'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Name *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -175,37 +175,37 @@ export default function AdminCategories() {
                     name: e.target.value,
                     slug: editingId ? formData.slug : generateSlug(e.target.value),
                   })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Slug *</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Slug *</label>
                 <input
                   type="text"
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1">Parent Category</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Parent Category</label>
                 <select
                   value={formData.parent_id}
                   onChange={(e) => setFormData({ ...formData, parent_id: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
                   <option value="">None (Top Level)</option>
                   {categories?.filter(c => c.id !== editingId).map((cat) => (
@@ -221,7 +221,7 @@ export default function AdminCategories() {
                     onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                     className="rounded text-primary-500 focus:ring-primary-500"
                   />
-                  <span className="text-dark-700">Active</span>
+                  <span className="text-dark-700 dark:text-dark-300">Active</span>
                 </label>
               </div>
             </div>
@@ -233,7 +233,7 @@ export default function AdminCategories() {
               >
                 {saveMutation.isPending ? 'Saving...' : editingId ? 'Update' : 'Create'}
               </button>
-              <button type="button" onClick={resetForm} className="btn btn-dark-outline">
+              <button type="button" onClick={resetForm} className="btn btn-dark-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700">
                 Cancel
               </button>
             </div>
@@ -242,17 +242,17 @@ export default function AdminCategories() {
       )}
 
       {/* Categories List */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
           </div>
         ) : categories && categories.length > 0 ? (
-          <div className="divide-y">
+          <div className="divide-y divide-dark-200 dark:divide-dark-700">
             {categories.filter(c => !c.parent_id).map((category) => renderCategory(category))}
           </div>
         ) : (
-          <div className="p-12 text-center text-dark-500">
+          <div className="p-12 text-center text-dark-500 dark:text-dark-400">
             No categories yet. Create your first category to get started.
           </div>
         )}

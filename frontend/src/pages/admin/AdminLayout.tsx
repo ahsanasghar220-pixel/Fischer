@@ -49,7 +49,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-100">
+    <div className="min-h-screen bg-dark-100 dark:bg-dark-900">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -128,10 +128,10 @@ export default function AdminLayout() {
       {/* Main content */}
       <div className="lg:ml-64">
         {/* Top bar */}
-        <header className="h-16 bg-white border-b flex items-center justify-between px-4 lg:px-6">
+        <header className="h-16 bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700 flex items-center justify-between px-4 lg:px-6">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-dark-600 hover:text-dark-900"
+            className="lg:hidden text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white"
           >
             <Bars3Icon className="w-6 h-6" />
           </button>
@@ -142,7 +142,7 @@ export default function AdminLayout() {
             <Link
               to="/"
               target="_blank"
-              className="text-sm text-dark-500 hover:text-dark-700"
+              className="text-sm text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200"
             >
               View Store →
             </Link>
