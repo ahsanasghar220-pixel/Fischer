@@ -48,6 +48,10 @@ Route::prefix('categories')->group(function () {
     Route::get('/{slug}', [CategoryController::class, 'show']);
 });
 
+// Brands (public)
+Route::get('/brands', [App\Http\Controllers\Api\BrandController::class, 'index']);
+Route::get('/brands/{slug}', [App\Http\Controllers\Api\BrandController::class, 'show']);
+
 // Cart (works for both guests and authenticated users)
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index']);

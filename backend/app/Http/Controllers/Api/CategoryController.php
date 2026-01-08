@@ -33,8 +33,17 @@ class CategoryController extends Controller
         ->active()
         ->firstOrFail();
 
-        // Get price range for products in this category
+        // Get all category IDs (including children) for product query
         $categoryIds = $category->getAllChildrenIds();
+
+        // Get products in this category
+        $products = \App\Models\Product::with(['images', 'category'])
+            ->active()
+            ->whereIn('category_id', $categoryIds)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Get price range for products in this category
         $priceRange = \App\Models\Product::active()
             ->whereIn('category_id', $categoryIds)
             ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
@@ -42,7 +51,8 @@ class CategoryController extends Controller
 
         return $this->success([
             'category' => $category,
-            'breadcrumb' => $category->breadcrumb,
+            'products' => $products,
+            'breadcrumb' => $category->breadcrumb ?? [],
             'price_range' => [
                 'min' => $priceRange->min_price ?? 0,
                 'max' => $priceRange->max_price ?? 0,
