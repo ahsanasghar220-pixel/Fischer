@@ -1,0 +1,302 @@
+// Custom SVG Category Icons - Modern gradient style with unique IDs per instance
+export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: string; className?: string }) {
+  // Generate unique ID prefix to avoid gradient conflicts when multiple icons render
+  const uid = slug.replace(/[^a-z]/g, '')
+
+  const icons: Record<string, JSX.Element> = {
+    // WATER COOLERS - Electric water cooler machine (tall standing unit with taps)
+    'water-coolers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}WC`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="100%" stopColor="#0ea5e9" />
+          </linearGradient>
+        </defs>
+        {/* Main cooler body - tall standing unit */}
+        <rect x="22" y="12" width="36" height="58" rx="4" stroke={`url(#${uid}WC)`} strokeWidth="2.5" fill="none" />
+        {/* Top cooling section with snowflake */}
+        <rect x="26" y="16" width="28" height="22" rx="2" fill={`url(#${uid}WC)`} opacity="0.15" />
+        <path d="M40 22 L40 32 M35 27 L45 27 M36 23 L44 31 M44 23 L36 31" stroke={`url(#${uid}WC)`} strokeWidth="2" strokeLinecap="round" />
+        {/* Cold water tap (blue) */}
+        <rect x="27" y="44" width="11" height="8" rx="2" fill={`url(#${uid}WC)`} />
+        <circle cx="32.5" cy="56" r="3" stroke={`url(#${uid}WC)`} strokeWidth="1.5" fill="none" />
+        {/* Hot water tap (red indicator) */}
+        <rect x="42" y="44" width="11" height="8" rx="2" fill="#ef4444" opacity="0.8" />
+        <circle cx="47.5" cy="56" r="3" stroke="#ef4444" strokeWidth="1.5" fill="none" opacity="0.8" />
+        {/* Base/legs */}
+        <rect x="24" y="70" width="8" height="6" rx="1" fill={`url(#${uid}WC)`} opacity="0.5" />
+        <rect x="48" y="70" width="8" height="6" rx="1" fill={`url(#${uid}WC)`} opacity="0.5" />
+      </svg>
+    ),
+
+    // STORAGE TYPE WATER COOLERS - Large horizontal/cylindrical storage tank
+    'storage-type-water-coolers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}ST`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0891b2" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+        </defs>
+        {/* Large cylindrical storage tank */}
+        <ellipse cx="40" cy="18" rx="22" ry="8" stroke={`url(#${uid}ST)`} strokeWidth="2.5" fill={`url(#${uid}ST)`} opacity="0.1" />
+        <path d="M18 18 L18 55 Q18 65 40 65 Q62 65 62 55 L62 18" stroke={`url(#${uid}ST)`} strokeWidth="2.5" fill="none" />
+        <ellipse cx="40" cy="55" rx="22" ry="8" stroke={`url(#${uid}ST)`} strokeWidth="2" fill={`url(#${uid}ST)`} opacity="0.15" />
+        {/* Capacity indicator lines */}
+        <line x1="22" y1="28" x2="22" y2="50" stroke={`url(#${uid}ST)`} strokeWidth="1.5" opacity="0.5" />
+        <line x1="20" y1="30" x2="24" y2="30" stroke={`url(#${uid}ST)`} strokeWidth="1.5" />
+        <line x1="20" y1="40" x2="24" y2="40" stroke={`url(#${uid}ST)`} strokeWidth="1.5" />
+        <line x1="20" y1="50" x2="24" y2="50" stroke={`url(#${uid}ST)`} strokeWidth="1.5" />
+        {/* Storage capacity text indicator */}
+        <text x="40" y="42" textAnchor="middle" fill={`url(#${uid}ST)`} fontSize="10" fontWeight="bold">LTR</text>
+        {/* Outlet tap on side */}
+        <rect x="60" y="38" width="12" height="8" rx="2" fill={`url(#${uid}ST)`} />
+        <circle cx="74" cy="42" r="2" fill={`url(#${uid}ST)`} opacity="0.6" />
+        {/* Support stand */}
+        <rect x="28" y="68" width="6" height="8" rx="1" fill={`url(#${uid}ST)`} opacity="0.4" />
+        <rect x="46" y="68" width="6" height="8" rx="1" fill={`url(#${uid}ST)`} opacity="0.4" />
+      </svg>
+    ),
+
+    // WATER DISPENSERS - Bottle-top dispenser (with inverted bottle on top)
+    'water-dispensers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}WD`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+        </defs>
+        {/* Inverted water bottle on top */}
+        <path d="M35 5 L35 12 L45 12 L45 5" stroke={`url(#${uid}WD)`} strokeWidth="2" fill={`url(#${uid}WD)`} opacity="0.3" />
+        <path d="M33 12 Q33 18 30 22 L30 28 L50 28 L50 22 Q47 18 47 12" stroke={`url(#${uid}WD)`} strokeWidth="2" fill={`url(#${uid}WD)`} opacity="0.2" />
+        {/* Main dispenser body */}
+        <rect x="24" y="28" width="32" height="38" rx="3" stroke={`url(#${uid}WD)`} strokeWidth="2.5" fill="none" />
+        {/* Control panel */}
+        <rect x="28" y="32" width="24" height="10" rx="2" fill={`url(#${uid}WD)`} opacity="0.15" />
+        <circle cx="34" cy="37" r="2.5" fill={`url(#${uid}WD)`} />
+        <circle cx="46" cy="37" r="2.5" fill="#ef4444" opacity="0.7" />
+        {/* Taps */}
+        <rect x="28" y="48" width="10" height="5" rx="1" fill={`url(#${uid}WD)`} />
+        <rect x="42" y="48" width="10" height="5" rx="1" fill="#ef4444" opacity="0.7" />
+        {/* Drip tray */}
+        <rect x="26" y="58" width="28" height="4" rx="1" fill={`url(#${uid}WD)`} opacity="0.3" />
+        {/* Base cabinet */}
+        <rect x="22" y="66" width="36" height="10" rx="2" stroke={`url(#${uid}WD)`} strokeWidth="2" fill="none" />
+      </svg>
+    ),
+
+    // GEYSERS & HEATERS - Wall-mounted water heater with flame
+    'geysers-heaters': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}GH`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fb923c" />
+          </linearGradient>
+          <linearGradient id={`${uid}FL`} x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#dc2626" />
+            <stop offset="50%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+        </defs>
+        {/* Wall mount bracket */}
+        <rect x="32" y="6" width="16" height="6" rx="1" fill={`url(#${uid}GH)`} opacity="0.5" />
+        {/* Main geyser body - cylindrical tank */}
+        <ellipse cx="40" cy="18" rx="18" ry="6" stroke={`url(#${uid}GH)`} strokeWidth="2.5" fill={`url(#${uid}GH)`} opacity="0.1" />
+        <path d="M22 18 L22 58 Q22 66 40 66 Q58 66 58 58 L58 18" stroke={`url(#${uid}GH)`} strokeWidth="2.5" fill="none" />
+        <ellipse cx="40" cy="58" rx="18" ry="6" fill={`url(#${uid}GH)`} opacity="0.15" />
+        {/* Temperature dial */}
+        <circle cx="40" cy="35" r="10" stroke={`url(#${uid}GH)`} strokeWidth="2" fill="none" />
+        <path d="M40 28 L40 35 L46 38" stroke={`url(#${uid}GH)`} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="40" cy="35" r="3" fill={`url(#${uid}GH)`} opacity="0.3" />
+        {/* Flame indicator */}
+        <path d="M35 50 Q32 46 35 42 Q38 38 40 42 Q42 38 45 42 Q48 46 45 50 Q42 54 40 52 Q38 54 35 50" fill={`url(#${uid}FL)`} />
+        {/* Input/output pipes */}
+        <path d="M28 18 L28 8 L22 8" stroke={`url(#${uid}GH)`} strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M52 18 L52 8 L58 8" stroke={`url(#${uid}GH)`} strokeWidth="2.5" strokeLinecap="round" />
+        {/* Heat waves */}
+        <path d="M16 45 Q14 40 16 35" stroke={`url(#${uid}GH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+        <path d="M64 45 Q66 40 64 35" stroke={`url(#${uid}GH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+      </svg>
+    ),
+
+    // COOKING RANGES - Free-standing stove with oven
+    'cooking-ranges': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}CR`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#a78bfa" />
+          </linearGradient>
+          <linearGradient id={`${uid}BF`} x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+        </defs>
+        {/* Cooktop surface */}
+        <rect x="10" y="8" width="60" height="22" rx="3" stroke={`url(#${uid}CR)`} strokeWidth="2.5" fill="none" />
+        {/* Burners with flames */}
+        <circle cx="25" cy="19" r="8" stroke={`url(#${uid}CR)`} strokeWidth="2" fill="none" />
+        <circle cx="25" cy="19" r="4" stroke={`url(#${uid}CR)`} strokeWidth="1" fill="none" />
+        <path d="M23 16 Q22 14 24 12 Q25 14 24 16" fill={`url(#${uid}BF)`} />
+        <path d="M27 16 Q26 14 28 12 Q29 14 28 16" fill={`url(#${uid}BF)`} />
+        <circle cx="55" cy="19" r="8" stroke={`url(#${uid}CR)`} strokeWidth="2" fill="none" />
+        <circle cx="55" cy="19" r="4" stroke={`url(#${uid}CR)`} strokeWidth="1" fill="none" />
+        {/* Oven body */}
+        <rect x="10" y="30" width="60" height="42" rx="3" stroke={`url(#${uid}CR)`} strokeWidth="2.5" fill="none" />
+        {/* Control knobs */}
+        <circle cx="18" cy="36" r="3" fill={`url(#${uid}CR)`} />
+        <circle cx="30" cy="36" r="3" fill={`url(#${uid}CR)`} />
+        <circle cx="50" cy="36" r="3" fill={`url(#${uid}CR)`} />
+        <circle cx="62" cy="36" r="3" fill={`url(#${uid}CR)`} />
+        {/* Oven window */}
+        <rect x="16" y="44" width="48" height="18" rx="2" fill={`url(#${uid}CR)`} opacity="0.15" stroke={`url(#${uid}CR)`} strokeWidth="1.5" />
+        {/* Oven handle */}
+        <rect x="28" y="66" width="24" height="4" rx="2" fill={`url(#${uid}CR)`} />
+      </svg>
+    ),
+
+    // BUILT-IN HOBS & HOODS - Kitchen hood above with built-in hob below
+    'built-in-hobs': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}HH`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#475569" />
+            <stop offset="100%" stopColor="#64748b" />
+          </linearGradient>
+          <linearGradient id={`${uid}HB`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1e293b" />
+            <stop offset="100%" stopColor="#334155" />
+          </linearGradient>
+        </defs>
+        {/* Range Hood - chimney style */}
+        <path d="M25 6 L25 16 L12 26 L12 36 L68 36 L68 26 L55 16 L55 6" stroke={`url(#${uid}HH)`} strokeWidth="2.5" fill={`url(#${uid}HH)`} opacity="0.15" />
+        {/* Hood filters */}
+        <rect x="18" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
+        <rect x="44" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
+        {/* Hood lights */}
+        <circle cx="30" cy="24" r="2" fill="#fbbf24" opacity="0.9" />
+        <circle cx="50" cy="24" r="2" fill="#fbbf24" opacity="0.9" />
+        {/* Steam rising */}
+        <path d="M32 40 Q30 44 32 48" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        <path d="M40 42 Q38 46 40 50" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        <path d="M48 40 Q46 44 48 48" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        {/* Built-in Hob - glass surface */}
+        <rect x="8" y="52" width="64" height="24" rx="3" stroke={`url(#${uid}HB)`} strokeWidth="2.5" fill={`url(#${uid}HB)`} opacity="0.1" />
+        {/* Burner zones */}
+        <circle cx="24" cy="64" r="8" stroke={`url(#${uid}HH)`} strokeWidth="2" fill="none" />
+        <circle cx="24" cy="64" r="4" stroke={`url(#${uid}HH)`} strokeWidth="1" fill="none" />
+        <circle cx="56" cy="64" r="8" stroke={`url(#${uid}HH)`} strokeWidth="2" fill="none" />
+        <circle cx="56" cy="64" r="4" stroke={`url(#${uid}HH)`} strokeWidth="1" fill="none" />
+        {/* Control touch panel */}
+        <rect x="35" y="58" width="10" height="12" rx="1" fill={`url(#${uid}HH)`} opacity="0.2" />
+        <circle cx="40" cy="62" r="1.5" fill={`url(#${uid}HH)`} />
+        <circle cx="40" cy="67" r="1.5" fill={`url(#${uid}HH)`} />
+      </svg>
+    ),
+
+    // KITCHEN APPLIANCES - Various small appliances
+    'kitchen-appliances': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}KA`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#34d399" />
+          </linearGradient>
+        </defs>
+        {/* Blender */}
+        <path d="M15 22 L12 55 L28 55 L25 22" stroke={`url(#${uid}KA)`} strokeWidth="2" fill={`url(#${uid}KA)`} opacity="0.15" />
+        <ellipse cx="20" cy="22" rx="6" ry="3" stroke={`url(#${uid}KA)`} strokeWidth="2" fill="none" />
+        <rect x="13" y="55" width="14" height="10" rx="2" fill={`url(#${uid}KA)`} opacity="0.3" />
+        <circle cx="20" cy="60" r="3" fill={`url(#${uid}KA)`} />
+        {/* Microwave */}
+        <rect x="42" y="40" width="32" height="22" rx="3" stroke={`url(#${uid}KA)`} strokeWidth="2" fill="none" />
+        <rect x="46" y="44" width="18" height="14" rx="1" fill={`url(#${uid}KA)`} opacity="0.15" />
+        <rect x="66" y="46" width="4" height="10" rx="1" fill={`url(#${uid}KA)`} opacity="0.3" />
+        <circle cx="68" cy="48" r="1.5" fill={`url(#${uid}KA)`} />
+        <circle cx="68" cy="53" r="1.5" fill={`url(#${uid}KA)`} />
+        {/* Electric Kettle */}
+        <ellipse cx="58" cy="18" rx="12" ry="5" stroke={`url(#${uid}KA)`} strokeWidth="2" fill="none" />
+        <path d="M46 18 L46 30 Q46 36 58 36 Q70 36 70 30 L70 18" stroke={`url(#${uid}KA)`} strokeWidth="2" fill={`url(#${uid}KA)`} opacity="0.15" />
+        <path d="M70 24 L76 22 L76 28 L70 26" fill={`url(#${uid}KA)`} />
+        {/* Steam from kettle */}
+        <path d="M54 12 Q53 9 54 6" stroke={`url(#${uid}KA)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+        <path d="M58 12 Q57 8 58 4" stroke={`url(#${uid}KA)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+        <path d="M62 12 Q61 9 62 6" stroke={`url(#${uid}KA)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+      </svg>
+    ),
+
+    // ACCESSORIES - Generic accessories icon
+    'accessories': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}AC`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f4b42c" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+        </defs>
+        {/* Wrench */}
+        <path d="M20 60 L35 45 L30 40 L15 55 Q12 58 15 61 Q18 64 21 61 Z" stroke={`url(#${uid}AC)`} strokeWidth="2" fill={`url(#${uid}AC)`} opacity="0.2" />
+        {/* Screwdriver */}
+        <rect x="45" y="15" width="6" height="30" rx="1" stroke={`url(#${uid}AC)`} strokeWidth="2" fill="none" />
+        <path d="M45 45 L48 55 L51 45" fill={`url(#${uid}AC)`} />
+        <rect x="44" y="10" width="8" height="8" rx="2" fill={`url(#${uid}AC)`} opacity="0.3" />
+        {/* Gear */}
+        <circle cx="58" cy="58" r="12" stroke={`url(#${uid}AC)`} strokeWidth="2" fill="none" />
+        <circle cx="58" cy="58" r="5" fill={`url(#${uid}AC)`} opacity="0.3" />
+        {/* Gear teeth */}
+        <rect x="56" y="44" width="4" height="6" fill={`url(#${uid}AC)`} />
+        <rect x="56" y="68" width="4" height="6" fill={`url(#${uid}AC)`} />
+        <rect x="44" y="56" width="6" height="4" fill={`url(#${uid}AC)`} />
+        <rect x="68" y="56" width="6" height="4" fill={`url(#${uid}AC)`} />
+      </svg>
+    ),
+  }
+
+  // Try to match slug variations
+  const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-')
+
+  // Check for partial matches (fallback for slug variations)
+  if (normalizedSlug.includes('storage') && normalizedSlug.includes('water')) {
+    return icons['storage-type-water-coolers']
+  }
+  if (normalizedSlug.includes('hob') || normalizedSlug.includes('hood')) {
+    return icons['built-in-hobs']
+  }
+  if (normalizedSlug.includes('geyser') || normalizedSlug.includes('heater')) {
+    return icons['geysers-heaters']
+  }
+  if (normalizedSlug.includes('dispenser')) {
+    return icons['water-dispensers']
+  }
+  if (normalizedSlug.includes('range') || normalizedSlug.includes('cooking')) {
+    return icons['cooking-ranges']
+  }
+  if (normalizedSlug.includes('cooler') && !normalizedSlug.includes('storage')) {
+    return icons['water-coolers']
+  }
+  if (normalizedSlug.includes('accessor')) {
+    return icons['accessories']
+  }
+  if (normalizedSlug.includes('kitchen') || normalizedSlug.includes('appliance')) {
+    return icons['kitchen-appliances']
+  }
+
+  return icons[normalizedSlug] || (
+    // Default icon - generic appliance
+    <svg viewBox="0 0 80 80" fill="none" className={className}>
+      <defs>
+        <linearGradient id={`${uid}DF`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f4b42c" />
+          <stop offset="100%" stopColor="#fbbf24" />
+        </linearGradient>
+      </defs>
+      <rect x="15" y="15" width="50" height="50" rx="8" stroke={`url(#${uid}DF)`} strokeWidth="2.5" fill={`url(#${uid}DF)`} opacity="0.15" />
+      <circle cx="40" cy="40" r="12" stroke={`url(#${uid}DF)`} strokeWidth="2" fill="none" />
+      <path d="M40 32 L40 40 L46 46" stroke={`url(#${uid}DF)`} strokeWidth="2" strokeLinecap="round" />
+      <circle cx="40" cy="40" r="3" fill={`url(#${uid}DF)`} />
+    </svg>
+  )
+}

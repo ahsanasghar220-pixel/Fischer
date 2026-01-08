@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import CategoryIcon from '@/components/ui/CategoryIcon'
 
 interface Category {
   id: number
@@ -92,15 +93,9 @@ export default function Category() {
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center gap-6">
-            {category.image && (
-              <div className="w-24 h-24 bg-dark-100 dark:bg-dark-700 rounded-xl overflow-hidden flex-shrink-0">
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            <div className="w-24 h-24 bg-dark-100 dark:bg-dark-700 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center">
+              <CategoryIcon slug={category.slug} className="w-16 h-16" />
+            </div>
             <div>
               <h1 className="text-3xl font-bold text-dark-900 dark:text-white">{category.name}</h1>
               {category.description && (
