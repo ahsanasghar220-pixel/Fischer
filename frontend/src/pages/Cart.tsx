@@ -91,7 +91,7 @@ export default function Cart() {
                         >
                           {(item.product.image || item.product.primary_image) ? (
                             <img
-                              src={item.product.image || item.product.primary_image}
+                              src={item.product.image ?? item.product.primary_image ?? ''}
                               alt={item.product.name}
                               className="w-full h-full object-cover"
                             />
