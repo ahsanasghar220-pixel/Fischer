@@ -29,7 +29,9 @@
       "Bash(npm install:*)",
       "Bash(php artisan serve:*)",
       "Bash(npm run dev:*)",
-      "Bash(C:/xampp/php/php.exe artisan serve)"
+      "Bash(C:/xampp/php/php.exe artisan serve)",
+      "Bash(mkdir:*)",
+      "Bash(curl:*)"
     ]
   }
 }

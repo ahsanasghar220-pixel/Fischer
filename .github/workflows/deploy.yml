@@ -107,7 +107,13 @@ jobs:
             # Run migrations
             $PHP artisan migrate --force
 
-            # Clear and rebuild caches
+            # Clear all caches first
+            $PHP artisan cache:clear || true
+            $PHP artisan config:clear
+            $PHP artisan route:clear
+            $PHP artisan view:clear || true
+
+            # Rebuild caches
             $PHP artisan config:cache
             $PHP artisan route:cache
             $PHP artisan view:cache || echo "View cache skipped"
