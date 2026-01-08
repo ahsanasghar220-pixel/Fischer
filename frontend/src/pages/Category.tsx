@@ -50,7 +50,7 @@ export default function Category() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -58,10 +58,10 @@ export default function Category() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-dark-900 mb-2">Category not found</h1>
-          <p className="text-dark-500 mb-4">The category you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-2">Category not found</h1>
+          <p className="text-dark-500 dark:text-dark-400 mb-4">The category you're looking for doesn't exist.</p>
           <Link to="/shop" className="btn btn-primary">Browse All Products</Link>
         </div>
       </div>
@@ -71,29 +71,29 @@ export default function Category() {
   const { category, products } = data
 
   return (
-    <div className="min-h-screen bg-dark-50">
+    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-2 text-sm text-dark-500 mb-4">
-            <Link to="/" className="hover:text-primary-600">Home</Link>
+          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
+            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
             <span>/</span>
-            <Link to="/shop" className="hover:text-primary-600">Shop</Link>
+            <Link to="/shop" className="hover:text-primary-600 dark:hover:text-primary-400">Shop</Link>
             {category.parent && (
               <>
                 <span>/</span>
-                <Link to={`/category/${category.parent.slug}`} className="hover:text-primary-600">
+                <Link to={`/category/${category.parent.slug}`} className="hover:text-primary-600 dark:hover:text-primary-400">
                   {category.parent.name}
                 </Link>
               </>
             )}
             <span>/</span>
-            <span className="text-dark-900">{category.name}</span>
+            <span className="text-dark-900 dark:text-white">{category.name}</span>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             {category.image && (
-              <div className="w-24 h-24 bg-dark-100 rounded-xl overflow-hidden flex-shrink-0">
+              <div className="w-24 h-24 bg-dark-100 dark:bg-dark-700 rounded-xl overflow-hidden flex-shrink-0">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -102,11 +102,11 @@ export default function Category() {
               </div>
             )}
             <div>
-              <h1 className="text-3xl font-bold text-dark-900">{category.name}</h1>
+              <h1 className="text-3xl font-bold text-dark-900 dark:text-white">{category.name}</h1>
               {category.description && (
-                <p className="text-dark-500 mt-2">{category.description}</p>
+                <p className="text-dark-500 dark:text-dark-400 mt-2">{category.description}</p>
               )}
-              <p className="text-dark-500 mt-1">{products.length} Products</p>
+              <p className="text-dark-500 dark:text-dark-400 mt-1">{products?.length || 0} Products</p>
             </div>
           </div>
         </div>
@@ -114,15 +114,15 @@ export default function Category() {
 
       {/* Subcategories */}
       {category.children && category.children.length > 0 && (
-        <div className="bg-white border-b">
+        <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center gap-3 overflow-x-auto">
-              <span className="text-dark-500 flex-shrink-0">Subcategories:</span>
+              <span className="text-dark-500 dark:text-dark-400 flex-shrink-0">Subcategories:</span>
               {category.children.map((child) => (
                 <Link
                   key={child.id}
                   to={`/category/${child.slug}`}
-                  className="px-4 py-2 bg-dark-100 rounded-full text-sm font-medium text-dark-600 hover:bg-primary-100 hover:text-primary-700 flex-shrink-0"
+                  className="px-4 py-2 bg-dark-100 dark:bg-dark-700 rounded-full text-sm font-medium text-dark-600 dark:text-dark-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-400 flex-shrink-0 transition-colors"
                 >
                   {child.name}
                 </Link>
@@ -134,17 +134,17 @@ export default function Category() {
 
       {/* Products */}
       <div className="container mx-auto px-4 py-8">
-        {products.length > 0 ? (
+        {products && products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl p-12 text-center">
+          <div className="bg-white dark:bg-dark-800 rounded-xl p-12 text-center">
             <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold text-dark-900 mb-2">No products found</h3>
-            <p className="text-dark-500 mb-6">
+            <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">No products found</h3>
+            <p className="text-dark-500 dark:text-dark-400 mb-6">
               There are no products in this category yet.
             </p>
             <Link to="/shop" className="btn btn-primary">Browse All Products</Link>

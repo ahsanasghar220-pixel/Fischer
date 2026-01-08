@@ -36,7 +36,7 @@ interface Brand {
   id: number
   name: string
   slug: string
-  products_count: number
+  products_count?: number
 }
 
 interface PaginatedProducts {
@@ -147,20 +147,20 @@ export default function Shop() {
   const hasActiveFilters = category || brand || minPrice || maxPrice || inStock || onSale || isNew || isBestseller || isFeatured
 
   return (
-    <div className="bg-dark-50 min-h-screen">
+    <div className="bg-dark-50 dark:bg-dark-900 min-h-screen transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2 text-sm text-dark-500 mb-4">
-            <Link to="/" className="hover:text-primary-600">Home</Link>
+          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
+            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
             <span>/</span>
-            <span className="text-dark-900">Shop</span>
+            <span className="text-dark-900 dark:text-white">Shop</span>
           </div>
-          <h1 className="text-3xl font-bold text-dark-900">
+          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">
             {search ? `Search: "${search}"` : 'All Products'}
           </h1>
           {productsData && (
-            <p className="text-dark-500 mt-2">
+            <p className="text-dark-500 dark:text-dark-400 mt-2">
               {productsData.meta.total} products found
             </p>
           )}
@@ -173,13 +173,15 @@ export default function Shop() {
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-4 space-y-6">
               {/* Categories */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <h3 className="font-semibold text-dark-900 mb-3">Categories</h3>
+              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+                <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Categories</h3>
                 <div className="space-y-2">
                   <button
                     onClick={() => updateFilter('category', '')}
-                    className={`block w-full text-left px-2 py-1.5 rounded ${
-                      !category ? 'bg-primary-100 text-primary-700' : 'text-dark-600 hover:bg-dark-50'
+                    className={`block w-full text-left px-2 py-1.5 rounded transition-colors ${
+                      !category
+                        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
+                        : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                     }`}
                   >
                     All Categories
@@ -188,11 +190,13 @@ export default function Shop() {
                     <button
                       key={cat.id}
                       onClick={() => updateFilter('category', cat.slug)}
-                      className={`block w-full text-left px-2 py-1.5 rounded ${
-                        category === cat.slug ? 'bg-primary-100 text-primary-700' : 'text-dark-600 hover:bg-dark-50'
+                      className={`block w-full text-left px-2 py-1.5 rounded transition-colors ${
+                        category === cat.slug
+                          ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
+                          : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                       }`}
                     >
-                      {cat.name} ({cat.products_count})
+                      {cat.name} ({cat.products_count || 0})
                     </button>
                   ))}
                 </div>
@@ -200,18 +204,20 @@ export default function Shop() {
 
               {/* Brands */}
               {brands && brands.length > 0 && (
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <h3 className="font-semibold text-dark-900 mb-3">Brands</h3>
+                <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+                  <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Brands</h3>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {brands.map((b) => (
                       <button
                         key={b.id}
                         onClick={() => updateFilter('brand', brand === b.slug ? '' : b.slug)}
-                        className={`block w-full text-left px-2 py-1.5 rounded ${
-                          brand === b.slug ? 'bg-primary-100 text-primary-700' : 'text-dark-600 hover:bg-dark-50'
+                        className={`block w-full text-left px-2 py-1.5 rounded transition-colors ${
+                          brand === b.slug
+                            ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
+                            : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                         }`}
                       >
-                        {b.name} ({b.products_count})
+                        {b.name}
                       </button>
                     ))}
                   </div>
@@ -219,15 +225,15 @@ export default function Shop() {
               )}
 
               {/* Price Range */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <h3 className="font-semibold text-dark-900 mb-3">Price Range</h3>
+              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+                <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Price Range</h3>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={minPrice}
                     onChange={(e) => updateFilter('min_price', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-sm bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400"
                   />
                   <span className="text-dark-400">-</span>
                   <input
@@ -235,50 +241,50 @@ export default function Shop() {
                     placeholder="Max"
                     value={maxPrice}
                     onChange={(e) => updateFilter('max_price', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-sm bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400"
                   />
                 </div>
               </div>
 
               {/* Quick Filters */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
-                <h3 className="font-semibold text-dark-900 mb-3">Quick Filters</h3>
+              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+                <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Quick Filters</h3>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={inStock}
                       onChange={() => toggleFilter('in_stock')}
-                      className="rounded text-primary-500 focus:ring-primary-500"
+                      className="rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
                     />
-                    <span className="text-dark-600">In Stock Only</span>
+                    <span className="text-dark-600 dark:text-dark-300">In Stock Only</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={onSale}
                       onChange={() => toggleFilter('on_sale')}
-                      className="rounded text-primary-500 focus:ring-primary-500"
+                      className="rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
                     />
-                    <span className="text-dark-600">On Sale</span>
+                    <span className="text-dark-600 dark:text-dark-300">On Sale</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isNew}
                       onChange={() => toggleFilter('new')}
-                      className="rounded text-primary-500 focus:ring-primary-500"
+                      className="rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
                     />
-                    <span className="text-dark-600">New Arrivals</span>
+                    <span className="text-dark-600 dark:text-dark-300">New Arrivals</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isBestseller}
                       onChange={() => toggleFilter('bestseller')}
-                      className="rounded text-primary-500 focus:ring-primary-500"
+                      className="rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
                     />
-                    <span className="text-dark-600">Bestsellers</span>
+                    <span className="text-dark-600 dark:text-dark-300">Bestsellers</span>
                   </label>
                 </div>
               </div>
@@ -286,7 +292,7 @@ export default function Shop() {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="w-full py-2 text-center text-primary-600 hover:text-primary-700 font-medium"
+                  className="w-full py-2 text-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                 >
                   Clear All Filters
                 </button>
@@ -297,12 +303,12 @@ export default function Shop() {
           {/* Main Content */}
           <div className="flex-1">
             {/* Toolbar */}
-            <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
+            <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm mb-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="lg:hidden flex items-center gap-2 text-dark-600 hover:text-dark-900"
+                    className="lg:hidden flex items-center gap-2 text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white"
                   >
                     <FunnelIcon className="w-5 h-5" />
                     Filters
@@ -316,13 +322,13 @@ export default function Shop() {
                   <div className="hidden sm:flex items-center gap-2">
                     <button
                       onClick={() => setViewMode('grid')}
-                      className={`p-2 rounded ${viewMode === 'grid' ? 'bg-dark-100 text-dark-900' : 'text-dark-400 hover:text-dark-600'}`}
+                      className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'bg-dark-100 dark:bg-dark-700 text-dark-900 dark:text-white' : 'text-dark-400 hover:text-dark-600 dark:hover:text-dark-300'}`}
                     >
                       <Squares2X2Icon className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => setViewMode('list')}
-                      className={`p-2 rounded ${viewMode === 'list' ? 'bg-dark-100 text-dark-900' : 'text-dark-400 hover:text-dark-600'}`}
+                      className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'bg-dark-100 dark:bg-dark-700 text-dark-900 dark:text-white' : 'text-dark-400 hover:text-dark-600 dark:hover:text-dark-300'}`}
                     >
                       <ListBulletIcon className="w-5 h-5" />
                     </button>
@@ -330,15 +336,15 @@ export default function Shop() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-dark-500 hidden sm:inline">Sort by:</span>
+                  <span className="text-sm text-dark-500 dark:text-dark-400 hidden sm:inline">Sort by:</span>
                   <div className="relative">
                     <select
                       value={sort}
                       onChange={(e) => updateFilter('sort', e.target.value)}
-                      className="appearance-none bg-transparent pr-8 py-2 text-sm font-medium text-dark-900 cursor-pointer focus:outline-none"
+                      className="appearance-none bg-transparent pr-8 py-2 text-sm font-medium text-dark-900 dark:text-white cursor-pointer focus:outline-none"
                     >
                       {sortOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <option key={option.value} value={option.value} className="bg-white dark:bg-dark-800">
                           {option.label}
                         </option>
                       ))}
@@ -352,21 +358,21 @@ export default function Shop() {
             {/* Mobile Filters */}
             {showFilters && (
               <div className="lg:hidden fixed inset-0 bg-black/50 z-50">
-                <div className="absolute right-0 top-0 bottom-0 w-80 bg-white overflow-y-auto">
-                  <div className="p-4 border-b flex items-center justify-between">
-                    <h3 className="font-semibold text-lg">Filters</h3>
-                    <button onClick={() => setShowFilters(false)}>
+                <div className="absolute right-0 top-0 bottom-0 w-80 bg-white dark:bg-dark-800 overflow-y-auto">
+                  <div className="p-4 border-b border-dark-200 dark:border-dark-700 flex items-center justify-between">
+                    <h3 className="font-semibold text-lg text-dark-900 dark:text-white">Filters</h3>
+                    <button onClick={() => setShowFilters(false)} className="text-dark-500 dark:text-dark-400">
                       <XMarkIcon className="w-6 h-6" />
                     </button>
                   </div>
                   <div className="p-4 space-y-6">
-                    {/* Same filters as sidebar */}
+                    {/* Categories */}
                     <div>
-                      <h4 className="font-medium text-dark-900 mb-2">Categories</h4>
+                      <h4 className="font-medium text-dark-900 dark:text-white mb-2">Categories</h4>
                       <div className="space-y-1">
                         <button
                           onClick={() => { updateFilter('category', ''); setShowFilters(false); }}
-                          className={`block w-full text-left px-2 py-1.5 rounded ${!category ? 'bg-primary-100 text-primary-700' : 'text-dark-600'}`}
+                          className={`block w-full text-left px-2 py-1.5 rounded ${!category ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-dark-600 dark:text-dark-300'}`}
                         >
                           All Categories
                         </button>
@@ -374,7 +380,7 @@ export default function Shop() {
                           <button
                             key={cat.id}
                             onClick={() => { updateFilter('category', cat.slug); setShowFilters(false); }}
-                            className={`block w-full text-left px-2 py-1.5 rounded ${category === cat.slug ? 'bg-primary-100 text-primary-700' : 'text-dark-600'}`}
+                            className={`block w-full text-left px-2 py-1.5 rounded ${category === cat.slug ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-dark-600 dark:text-dark-300'}`}
                           >
                             {cat.name}
                           </button>
@@ -382,55 +388,57 @@ export default function Shop() {
                       </div>
                     </div>
 
+                    {/* Price Range */}
                     <div>
-                      <h4 className="font-medium text-dark-900 mb-2">Price Range</h4>
+                      <h4 className="font-medium text-dark-900 dark:text-white mb-2">Price Range</h4>
                       <div className="flex items-center gap-2">
                         <input
                           type="number"
                           placeholder="Min"
                           value={minPrice}
                           onChange={(e) => updateFilter('min_price', e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-sm bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                         />
-                        <span>-</span>
+                        <span className="text-dark-400">-</span>
                         <input
                           type="number"
                           placeholder="Max"
                           value={maxPrice}
                           onChange={(e) => updateFilter('max_price', e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-sm bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                         />
                       </div>
                     </div>
 
+                    {/* Quick Filters */}
                     <div>
-                      <h4 className="font-medium text-dark-900 mb-2">Quick Filters</h4>
+                      <h4 className="font-medium text-dark-900 dark:text-white mb-2">Quick Filters</h4>
                       <div className="space-y-2">
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 text-dark-600 dark:text-dark-300">
                           <input
                             type="checkbox"
                             checked={inStock}
                             onChange={() => toggleFilter('in_stock')}
-                            className="rounded text-primary-500"
+                            className="rounded text-primary-500 bg-white dark:bg-dark-700"
                           />
                           <span>In Stock Only</span>
                         </label>
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 text-dark-600 dark:text-dark-300">
                           <input
                             type="checkbox"
                             checked={onSale}
                             onChange={() => toggleFilter('on_sale')}
-                            className="rounded text-primary-500"
+                            className="rounded text-primary-500 bg-white dark:bg-dark-700"
                           />
                           <span>On Sale</span>
                         </label>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t">
+                    <div className="pt-4 border-t border-dark-200 dark:border-dark-700">
                       <button
                         onClick={() => { clearFilters(); setShowFilters(false); }}
-                        className="w-full py-2 text-primary-600 font-medium"
+                        className="w-full py-2 text-primary-600 dark:text-primary-400 font-medium"
                       >
                         Clear All Filters
                       </button>
@@ -464,10 +472,10 @@ export default function Shop() {
                       <button
                         key={p}
                         onClick={() => updateFilter('page', p.toString())}
-                        className={`w-10 h-10 rounded-lg font-medium ${
+                        className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                           p === productsData.meta.current_page
                             ? 'bg-primary-500 text-white'
-                            : 'bg-white text-dark-600 hover:bg-dark-50'
+                            : 'bg-white dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                         }`}
                       >
                         {p}
@@ -477,10 +485,10 @@ export default function Shop() {
                 )}
               </>
             ) : (
-              <div className="bg-white rounded-xl p-12 text-center">
+              <div className="bg-white dark:bg-dark-800 rounded-xl p-12 text-center">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-dark-900 mb-2">No products found</h3>
-                <p className="text-dark-500 mb-6">
+                <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">No products found</h3>
+                <p className="text-dark-500 dark:text-dark-400 mb-6">
                   Try adjusting your filters or search terms
                 </p>
                 <button onClick={clearFilters} className="btn btn-primary">

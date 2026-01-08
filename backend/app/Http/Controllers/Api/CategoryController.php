@@ -10,9 +10,14 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::with('children')
+        $query = Category::with(['children' => function ($query) {
+                $query->active()
+                    ->ordered()
+                    ->withCount(['products' => fn($q) => $q->active()]);
+            }])
             ->active()
             ->topLevel()
+            ->withCount(['products' => fn($q) => $q->active()])
             ->ordered();
 
         if ($request->featured) {
