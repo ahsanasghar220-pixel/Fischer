@@ -78,7 +78,7 @@ export default function Shop() {
   const isFeatured = searchParams.get('featured') === '1'
 
   // Fetch categories
-  const { data: categories } = useQuery<Category[]>({
+  const { data: categoriesRaw } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
       const response = await api.get('/categories')
@@ -86,14 +86,32 @@ export default function Shop() {
     },
   })
 
+  // Deduplicate categories by slug (keep the one with highest products_count)
+  const categories = categoriesRaw?.reduce((acc: Category[], cat) => {
+    const existing = acc.find((c) => c.slug === cat.slug)
+    if (!existing) {
+      acc.push(cat)
+    } else if ((cat.products_count || 0) > (existing.products_count || 0)) {
+      // Replace with the one that has more products
+      const index = acc.indexOf(existing)
+      acc[index] = cat
+    }
+    return acc
+  }, [])
+
   // Fetch brands
-  const { data: brands } = useQuery<Brand[]>({
+  const { data: brandsRaw } = useQuery<Brand[]>({
     queryKey: ['brands'],
     queryFn: async () => {
       const response = await api.get('/brands')
       return response.data.data
     },
   })
+
+  // Deduplicate brands by slug
+  const brands = brandsRaw?.filter((brand, index, self) =>
+    index === self.findIndex((b) => b.slug === brand.slug)
+  )
 
   // Fetch products
   const { data: productsData, isLoading } = useQuery<PaginatedProducts>({

@@ -24,7 +24,8 @@ class CategoryController extends Controller
             $query->featured();
         }
 
-        $categories = $query->get();
+        // Get categories and ensure uniqueness by slug
+        $categories = $query->get()->unique('slug')->values();
 
         return $this->success($categories);
     }
