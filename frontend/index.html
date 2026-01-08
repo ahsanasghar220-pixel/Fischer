@@ -26,6 +26,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <title>Fischer Pakistan - Quality Home Appliances</title>
+
+    <!-- Prevent flash of wrong theme - runs before React loads -->
+    <script>
+      (function() {
+        var theme = localStorage.getItem('fischer-theme') || 'system';
+        var resolvedTheme = theme;
+        if (theme === 'system') {
+          resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.classList.add(resolvedTheme);
+      })();
+    </script>
+    <style>
+      /* Prevent white flash during page load */
+      html.dark { background-color: #09090b; }
+      html:not(.dark) { background-color: #fafafa; }
+    </style>
   </head>
   <body class="font-sans antialiased">
     <div id="root"></div>

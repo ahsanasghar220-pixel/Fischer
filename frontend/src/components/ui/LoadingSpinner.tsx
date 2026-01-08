@@ -20,7 +20,7 @@ export default function LoadingSpinner({
   const spinner = (
     <div
       className={clsx(
-        'animate-spin rounded-full border-dark-200 border-t-primary-500',
+        'animate-spin rounded-full border-dark-200 dark:border-dark-700 border-t-primary-500',
         sizeClasses[size],
         className
       )}
@@ -29,7 +29,7 @@ export default function LoadingSpinner({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-dark-900/80 backdrop-blur-sm z-50 transition-colors">
         {spinner}
       </div>
     )

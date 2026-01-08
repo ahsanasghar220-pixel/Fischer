@@ -89,14 +89,14 @@ export default function Cart() {
                           to={`/product/${item.product.slug}`}
                           className="w-20 h-20 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0"
                         >
-                          {item.product.primary_image ? (
+                          {(item.product.image || item.product.primary_image) ? (
                             <img
-                              src={item.product.primary_image}
+                              src={item.product.image || item.product.primary_image}
                               alt={item.product.name}
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-dark-400 text-sm">
+                            <div className="w-full h-full flex items-center justify-center text-dark-400 dark:text-dark-500 text-sm">
                               No image
                             </div>
                           )}

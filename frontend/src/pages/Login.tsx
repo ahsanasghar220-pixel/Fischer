@@ -45,20 +45,20 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-50 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center py-12 px-4 transition-colors">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto" />
+            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto dark:brightness-0 dark:invert" />
           </Link>
-          <h1 className="mt-6 text-3xl font-bold text-dark-900">Welcome back</h1>
-          <p className="mt-2 text-dark-500">Sign in to your account</p>
+          <h1 className="mt-6 text-3xl font-bold text-dark-900 dark:text-white">Welcome back</h1>
+          <p className="mt-2 text-dark-500 dark:text-dark-400">Sign in to your account</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-8">
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Email address
               </label>
               <input
@@ -69,13 +69,13 @@ export default function Login() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Password
               </label>
               <div className="relative">
@@ -87,13 +87,13 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
+                  className="w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500 hover:text-dark-600 dark:hover:text-dark-300"
                 >
                   {showPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -111,13 +111,13 @@ export default function Login() {
                   name="remember"
                   checked={formData.remember}
                   onChange={handleChange}
-                  className="rounded text-primary-500 focus:ring-primary-500"
+                  className="rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
                 />
-                <span className="text-sm text-dark-600">Remember me</span>
+                <span className="text-sm text-dark-600 dark:text-dark-400">Remember me</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Forgot password?
               </Link>
@@ -143,17 +143,17 @@ export default function Login() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-dark-200" />
+                <div className="w-full border-t border-dark-200 dark:border-dark-700" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-dark-500">Or continue with</span>
+                <span className="px-4 bg-white dark:bg-dark-800 text-dark-500 dark:text-dark-400">Or continue with</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-6">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-700 dark:text-dark-300"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -177,7 +177,7 @@ export default function Login() {
               </button>
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-700 dark:text-dark-300"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -187,9 +187,9 @@ export default function Login() {
             </div>
           </div>
 
-          <p className="mt-8 text-center text-sm text-dark-500">
+          <p className="mt-8 text-center text-sm text-dark-500 dark:text-dark-400">
             Don't have an account?{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/register" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
               Create an account
             </Link>
           </p>

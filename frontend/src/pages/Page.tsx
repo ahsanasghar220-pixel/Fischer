@@ -25,7 +25,7 @@ export default function Page() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900 transition-colors">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -33,10 +33,10 @@ export default function Page() {
 
   if (error || !page) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900 transition-colors">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-dark-900 mb-2">Page not found</h1>
-          <p className="text-dark-500 mb-4">The page you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-2">Page not found</h1>
+          <p className="text-dark-500 dark:text-dark-400 mb-4">The page you're looking for doesn't exist.</p>
           <Link to="/" className="btn btn-primary">Go Home</Link>
         </div>
       </div>
@@ -44,9 +44,9 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-dark-900 transition-colors">
       {/* Header */}
-      <div className="bg-dark-900 text-white py-12">
+      <div className="bg-dark-900 dark:bg-dark-800 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-2 text-sm text-dark-400 mb-4">
             <Link to="/" className="hover:text-white">Home</Link>
@@ -61,7 +61,7 @@ export default function Page() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div
-            className="prose prose-lg max-w-none"
+            className="prose prose-lg dark:prose-invert max-w-none text-dark-700 dark:text-dark-300"
             dangerouslySetInnerHTML={{ __html: page.content }}
           />
         </div>
