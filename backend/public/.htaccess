@@ -1,3 +1,8 @@
+# Force PHP 8.2 on Hostinger (CloudLinux)
+<IfModule mime_module>
+    AddHandler application/x-httpd-alt-php82 .php
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
