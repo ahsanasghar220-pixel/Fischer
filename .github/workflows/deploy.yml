@@ -118,6 +118,15 @@ jobs:
             # Ensure views directory exists
             mkdir -p resources/views
 
+            # Generate APP_KEY if not set
+            if ! grep -q "APP_KEY=base64:" .env; then
+              echo "=== Generating APP_KEY ==="
+              $PHP artisan key:generate --force
+            fi
+
+            # Clear config cache before migrations
+            $PHP artisan config:clear
+
             # Run migrations
             $PHP artisan migrate --force
 
