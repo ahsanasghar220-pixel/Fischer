@@ -24,8 +24,13 @@ class CategoryController extends Controller
             $query->featured();
         }
 
-        // Get categories and ensure uniqueness by slug
-        $categories = $query->get()->unique('slug')->values();
+        // Get categories and ensure uniqueness by name (keep the one with highest products_count)
+        $categories = $query->get()
+            ->groupBy('name')
+            ->map(function ($group) {
+                return $group->sortByDesc('products_count')->first();
+            })
+            ->values();
 
         return $this->success($categories);
     }

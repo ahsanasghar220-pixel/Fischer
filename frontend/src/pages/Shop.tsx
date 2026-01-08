@@ -86,9 +86,9 @@ export default function Shop() {
     },
   })
 
-  // Deduplicate categories by slug (keep the one with highest products_count)
+  // Deduplicate categories by NAME (keep the one with highest products_count)
   const categories = categoriesRaw?.reduce((acc: Category[], cat) => {
-    const existing = acc.find((c) => c.slug === cat.slug)
+    const existing = acc.find((c) => c.name === cat.name)
     if (!existing) {
       acc.push(cat)
     } else if ((cat.products_count || 0) > (existing.products_count || 0)) {
@@ -108,9 +108,9 @@ export default function Shop() {
     },
   })
 
-  // Deduplicate brands by slug
+  // Deduplicate brands by NAME
   const brands = brandsRaw?.filter((brand, index, self) =>
-    index === self.findIndex((b) => b.slug === brand.slug)
+    index === self.findIndex((b) => b.name === brand.name)
   )
 
   // Fetch products

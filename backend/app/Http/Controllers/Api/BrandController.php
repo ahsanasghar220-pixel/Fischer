@@ -9,12 +9,12 @@ class BrandController extends Controller
 {
     public function index()
     {
-        // Get brands and ensure uniqueness by slug
+        // Get brands and ensure uniqueness by name
         $brands = Brand::where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
-            ->unique('slug')
+            ->unique('name')
             ->values();
 
         return $this->success($brands);
