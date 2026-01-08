@@ -65,14 +65,249 @@ interface HomeData {
   bestsellers: Product[]
 }
 
-// Category icons based on Fischer's product lines
-const categoryIcons: Record<string, string> = {
-  'water-coolers': '❄️',
-  'geysers-heaters': '🔥',
-  'cooking-ranges': '🍳',
-  'hobs-hoods': '💨',
-  'water-dispensers': '💧',
-  'kitchen-appliances': '🏠',
+// Custom SVG Category Icons - Modern gradient style
+const CategoryIcon = ({ slug, className = "w-20 h-20" }: { slug: string; className?: string }) => {
+  const icons: Record<string, JSX.Element> = {
+    'water-coolers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="waterCoolerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="100%" stopColor="#0ea5e9" />
+          </linearGradient>
+        </defs>
+        {/* Water Cooler Body */}
+        <rect x="20" y="20" width="40" height="50" rx="4" stroke="url(#waterCoolerGrad)" strokeWidth="2.5" fill="none" />
+        <rect x="25" y="25" width="30" height="20" rx="2" fill="url(#waterCoolerGrad)" opacity="0.2" />
+        {/* Tap */}
+        <rect x="35" y="50" width="10" height="8" rx="1" fill="url(#waterCoolerGrad)" />
+        <circle cx="40" cy="62" r="3" fill="url(#waterCoolerGrad)" />
+        {/* Water drops */}
+        <path d="M40 68 L38 74 Q40 77 42 74 Z" fill="url(#waterCoolerGrad)" opacity="0.6" />
+        {/* Snowflake accent */}
+        <path d="M40 30 L40 40 M35 35 L45 35 M36 31 L44 39 M44 31 L36 39" stroke="url(#waterCoolerGrad)" strokeWidth="1.5" strokeLinecap="round" />
+        {/* Base */}
+        <rect x="18" y="70" width="44" height="4" rx="2" fill="url(#waterCoolerGrad)" opacity="0.4" />
+      </svg>
+    ),
+    'storage-type-water-coolers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="storageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0891b2" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+        </defs>
+        {/* Tank body */}
+        <ellipse cx="40" cy="22" rx="18" ry="6" stroke="url(#storageGrad)" strokeWidth="2.5" fill="none" />
+        <path d="M22 22 L22 60 Q22 68 40 68 Q58 68 58 60 L58 22" stroke="url(#storageGrad)" strokeWidth="2.5" fill="none" />
+        <ellipse cx="40" cy="60" rx="18" ry="6" stroke="url(#storageGrad)" strokeWidth="2" fill="url(#storageGrad)" opacity="0.15" />
+        {/* Water level indicator */}
+        <rect x="26" y="30" width="4" height="25" rx="2" stroke="url(#storageGrad)" strokeWidth="1.5" fill="none" />
+        <rect x="27" y="40" width="2" height="14" rx="1" fill="url(#storageGrad)" opacity="0.6" />
+        {/* Tap */}
+        <rect x="54" y="45" width="12" height="6" rx="2" fill="url(#storageGrad)" />
+        <circle cx="68" cy="48" r="2" fill="url(#storageGrad)" opacity="0.6" />
+        {/* Temperature gauge */}
+        <circle cx="40" cy="42" r="8" stroke="url(#storageGrad)" strokeWidth="1.5" fill="none" />
+        <path d="M40 36 L40 42 L44 44" stroke="url(#storageGrad)" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    ),
+    'water-dispensers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="dispenserGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+        </defs>
+        {/* Water bottle on top */}
+        <ellipse cx="40" cy="12" rx="8" ry="3" fill="url(#dispenserGrad)" opacity="0.3" />
+        <path d="M32 12 L32 8 Q32 5 40 5 Q48 5 48 8 L48 12" stroke="url(#dispenserGrad)" strokeWidth="2" fill="none" />
+        <path d="M34 12 L34 20 L46 20 L46 12" stroke="url(#dispenserGrad)" strokeWidth="2" fill="url(#dispenserGrad)" opacity="0.2" />
+        {/* Dispenser body */}
+        <rect x="24" y="20" width="32" height="45" rx="4" stroke="url(#dispenserGrad)" strokeWidth="2.5" fill="none" />
+        {/* Display panel */}
+        <rect x="29" y="25" width="22" height="12" rx="2" fill="url(#dispenserGrad)" opacity="0.15" />
+        <circle cx="35" cy="31" r="2" fill="url(#dispenserGrad)" />
+        <circle cx="45" cy="31" r="2" fill="url(#dispenserGrad)" opacity="0.5" />
+        {/* Taps */}
+        <rect x="28" y="45" width="10" height="6" rx="1" fill="url(#dispenserGrad)" />
+        <rect x="42" y="45" width="10" height="6" rx="1" fill="#ef4444" opacity="0.7" />
+        {/* Drip tray */}
+        <rect x="26" y="55" width="28" height="4" rx="1" fill="url(#dispenserGrad)" opacity="0.3" />
+        {/* Base */}
+        <rect x="22" y="65" width="36" height="8" rx="3" stroke="url(#dispenserGrad)" strokeWidth="2" fill="none" />
+      </svg>
+    ),
+    'geysers-heaters': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="geyserGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fb923c" />
+          </linearGradient>
+          <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="50%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#fef08a" />
+          </linearGradient>
+        </defs>
+        {/* Geyser tank */}
+        <ellipse cx="40" cy="18" rx="16" ry="5" stroke="url(#geyserGrad)" strokeWidth="2.5" fill="none" />
+        <path d="M24 18 L24 58 Q24 65 40 65 Q56 65 56 58 L56 18" stroke="url(#geyserGrad)" strokeWidth="2.5" fill="none" />
+        <ellipse cx="40" cy="58" rx="16" ry="5" fill="url(#geyserGrad)" opacity="0.15" />
+        {/* Temperature dial */}
+        <circle cx="40" cy="38" r="10" stroke="url(#geyserGrad)" strokeWidth="2" fill="none" />
+        <circle cx="40" cy="38" r="6" fill="url(#geyserGrad)" opacity="0.2" />
+        <path d="M40 32 L40 38 L45 41" stroke="url(#geyserGrad)" strokeWidth="2" strokeLinecap="round" />
+        {/* Flame icon inside */}
+        <path d="M37 48 Q34 44 37 40 Q40 36 40 40 Q40 36 43 40 Q46 44 43 48 Q40 52 37 48" fill="url(#flameGrad)" />
+        {/* Pipes */}
+        <path d="M30 18 L30 10 L25 10" stroke="url(#geyserGrad)" strokeWidth="2" strokeLinecap="round" />
+        <path d="M50 18 L50 10 L55 10" stroke="url(#geyserGrad)" strokeWidth="2" strokeLinecap="round" />
+        {/* Heat waves */}
+        <path d="M20 50 Q18 47 20 44" stroke="url(#geyserGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M60 50 Q62 47 60 44" stroke="url(#geyserGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
+    'cooking-ranges': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="rangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#a78bfa" />
+          </linearGradient>
+          <linearGradient id="burnerGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+        </defs>
+        {/* Stove top */}
+        <rect x="12" y="12" width="56" height="20" rx="3" stroke="url(#rangeGrad)" strokeWidth="2.5" fill="none" />
+        {/* Burners */}
+        <circle cx="28" cy="22" r="7" stroke="url(#burnerGrad)" strokeWidth="2" fill="none" />
+        <circle cx="28" cy="22" r="3" fill="url(#burnerGrad)" opacity="0.3" />
+        <circle cx="52" cy="22" r="7" stroke="url(#burnerGrad)" strokeWidth="2" fill="none" />
+        <circle cx="52" cy="22" r="3" fill="url(#burnerGrad)" opacity="0.3" />
+        {/* Oven body */}
+        <rect x="12" y="32" width="56" height="40" rx="3" stroke="url(#rangeGrad)" strokeWidth="2.5" fill="none" />
+        {/* Oven window */}
+        <rect x="18" y="40" width="44" height="20" rx="2" fill="url(#rangeGrad)" opacity="0.15" stroke="url(#rangeGrad)" strokeWidth="1.5" />
+        {/* Oven handle */}
+        <rect x="30" y="64" width="20" height="4" rx="2" fill="url(#rangeGrad)" />
+        {/* Control knobs */}
+        <circle cx="20" cy="36" r="2.5" fill="url(#rangeGrad)" />
+        <circle cx="32" cy="36" r="2.5" fill="url(#rangeGrad)" />
+        <circle cx="48" cy="36" r="2.5" fill="url(#rangeGrad)" />
+        <circle cx="60" cy="36" r="2.5" fill="url(#rangeGrad)" />
+        {/* Flame accents */}
+        <path d="M26 18 Q25 16 26 14 Q27 16 26 18" fill="url(#burnerGrad)" opacity="0.6" />
+        <path d="M30 18 Q29 16 30 14 Q31 16 30 18" fill="url(#burnerGrad)" opacity="0.6" />
+      </svg>
+    ),
+    'built-in-hobs-hoods': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="hobGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#64748b" />
+            <stop offset="100%" stopColor="#94a3b8" />
+          </linearGradient>
+          <linearGradient id="hoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#475569" />
+            <stop offset="100%" stopColor="#64748b" />
+          </linearGradient>
+        </defs>
+        {/* Hood */}
+        <path d="M15 8 L25 28 L55 28 L65 8 Z" stroke="url(#hoodGrad)" strokeWidth="2.5" fill="url(#hoodGrad)" opacity="0.15" />
+        <rect x="25" y="28" width="30" height="8" fill="url(#hoodGrad)" opacity="0.3" />
+        {/* Hood vents */}
+        <line x1="30" y1="31" x2="50" y2="31" stroke="url(#hoodGrad)" strokeWidth="1.5" />
+        <line x1="30" y1="34" x2="50" y2="34" stroke="url(#hoodGrad)" strokeWidth="1.5" />
+        {/* Hood lights */}
+        <circle cx="35" cy="24" r="2" fill="#fbbf24" opacity="0.8" />
+        <circle cx="45" cy="24" r="2" fill="#fbbf24" opacity="0.8" />
+        {/* Hob surface */}
+        <rect x="10" y="45" width="60" height="30" rx="3" stroke="url(#hobGrad)" strokeWidth="2.5" fill="url(#hobGrad)" opacity="0.1" />
+        {/* Burners */}
+        <circle cx="28" cy="55" r="8" stroke="url(#hobGrad)" strokeWidth="2" fill="none" />
+        <circle cx="28" cy="55" r="4" stroke="url(#hobGrad)" strokeWidth="1" fill="none" />
+        <circle cx="52" cy="55" r="8" stroke="url(#hobGrad)" strokeWidth="2" fill="none" />
+        <circle cx="52" cy="55" r="4" stroke="url(#hobGrad)" strokeWidth="1" fill="none" />
+        <circle cx="40" cy="68" r="5" stroke="url(#hobGrad)" strokeWidth="2" fill="none" />
+        {/* Steam/Air flow arrows */}
+        <path d="M35 40 L35 38 L33 38 L36 35 L39 38 L37 38 L37 40" fill="url(#hoodGrad)" opacity="0.4" />
+        <path d="M43 40 L43 38 L41 38 L44 35 L47 38 L45 38 L45 40" fill="url(#hoodGrad)" opacity="0.4" />
+      </svg>
+    ),
+    'kitchen-appliances': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id="kitchenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#34d399" />
+          </linearGradient>
+        </defs>
+        {/* Blender */}
+        <path d="M22 25 L18 60 L32 60 L28 25 Z" stroke="url(#kitchenGrad)" strokeWidth="2" fill="url(#kitchenGrad)" opacity="0.15" />
+        <ellipse cx="25" cy="25" rx="5" ry="2" stroke="url(#kitchenGrad)" strokeWidth="2" fill="none" />
+        <rect x="20" y="60" width="10" height="8" rx="2" fill="url(#kitchenGrad)" opacity="0.3" />
+        <circle cx="25" cy="64" r="2" fill="url(#kitchenGrad)" />
+        {/* Toaster */}
+        <rect x="45" y="45" width="24" height="18" rx="3" stroke="url(#kitchenGrad)" strokeWidth="2" fill="none" />
+        <rect x="50" y="40" width="4" height="8" rx="1" fill="url(#kitchenGrad)" opacity="0.4" />
+        <rect x="60" y="40" width="4" height="8" rx="1" fill="url(#kitchenGrad)" opacity="0.4" />
+        <circle cx="51" cy="56" r="2" fill="url(#kitchenGrad)" />
+        <rect x="45" y="63" width="24" height="4" rx="1" fill="url(#kitchenGrad)" opacity="0.2" />
+        {/* Kettle */}
+        <ellipse cx="57" cy="22" rx="10" ry="4" stroke="url(#kitchenGrad)" strokeWidth="2" fill="none" />
+        <path d="M47 22 L47 32 Q47 38 57 38 Q67 38 67 32 L67 22" stroke="url(#kitchenGrad)" strokeWidth="2" fill="url(#kitchenGrad)" opacity="0.15" />
+        <path d="M67 26 L72 24 L72 28 L67 26" fill="url(#kitchenGrad)" />
+        <path d="M52 18 Q51 15 52 12" stroke="url(#kitchenGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M57 18 Q56 14 57 10" stroke="url(#kitchenGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M62 18 Q61 15 62 12" stroke="url(#kitchenGrad)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
+  }
+
+  // Try to match slug variations
+  const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-')
+
+  // Check for partial matches
+  if (normalizedSlug.includes('storage') && normalizedSlug.includes('water')) {
+    return icons['storage-type-water-coolers'] || icons['water-coolers']
+  }
+  if (normalizedSlug.includes('hob') || normalizedSlug.includes('hood')) {
+    return icons['built-in-hobs-hoods']
+  }
+  if (normalizedSlug.includes('geyser') || normalizedSlug.includes('heater')) {
+    return icons['geysers-heaters']
+  }
+  if (normalizedSlug.includes('dispenser')) {
+    return icons['water-dispensers']
+  }
+  if (normalizedSlug.includes('range') || normalizedSlug.includes('cooking')) {
+    return icons['cooking-ranges']
+  }
+  if (normalizedSlug.includes('cooler')) {
+    return icons['water-coolers']
+  }
+
+  return icons[normalizedSlug] || (
+    // Default icon - generic appliance
+    <svg viewBox="0 0 80 80" fill="none" className={className}>
+      <defs>
+        <linearGradient id="defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f4b42c" />
+          <stop offset="100%" stopColor="#fbbf24" />
+        </linearGradient>
+      </defs>
+      <rect x="15" y="15" width="50" height="50" rx="8" stroke="url(#defaultGrad)" strokeWidth="2.5" fill="url(#defaultGrad)" opacity="0.15" />
+      <circle cx="40" cy="40" r="12" stroke="url(#defaultGrad)" strokeWidth="2" fill="none" />
+      <path d="M40 32 L40 40 L46 46" stroke="url(#defaultGrad)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="40" cy="40" r="3" fill="url(#defaultGrad)" />
+    </svg>
+  )
 }
 
 // Statistics for the hero section
@@ -599,17 +834,9 @@ export default function Home() {
 
                     {/* Icon/Image */}
                     <div className="relative h-full flex flex-col items-center justify-center">
-                      {category.image ? (
-                        <img
-                          src={category.image}
-                          alt={category.name}
-                          className="w-20 h-20 object-contain group-hover:scale-125 transition-transform duration-500"
-                        />
-                      ) : (
-                        <span className="text-6xl group-hover:scale-125 transition-transform duration-500">
-                          {categoryIcons[category.slug] || '📦'}
-                        </span>
-                      )}
+                      <div className="group-hover:scale-125 transition-transform duration-500">
+                        <CategoryIcon slug={category.slug} className="w-20 h-20" />
+                      </div>
                     </div>
 
                     {/* Overlay with info */}
