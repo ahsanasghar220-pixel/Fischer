@@ -206,7 +206,7 @@ const CategoryIcon = ({ slug, className = "w-20 h-20" }: { slug: string; classNa
         <path d="M30 18 Q29 16 30 14 Q31 16 30 18" fill="url(#burnerGrad)" opacity="0.6" />
       </svg>
     ),
-    'built-in-hobs-hoods': (
+    'built-in-hobs': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
         <defs>
           <linearGradient id="hobGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -273,12 +273,12 @@ const CategoryIcon = ({ slug, className = "w-20 h-20" }: { slug: string; classNa
   // Try to match slug variations
   const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-')
 
-  // Check for partial matches
+  // Check for partial matches (fallback for slug variations)
   if (normalizedSlug.includes('storage') && normalizedSlug.includes('water')) {
-    return icons['storage-type-water-coolers'] || icons['water-coolers']
+    return icons['storage-type-water-coolers']
   }
   if (normalizedSlug.includes('hob') || normalizedSlug.includes('hood')) {
-    return icons['built-in-hobs-hoods']
+    return icons['built-in-hobs']
   }
   if (normalizedSlug.includes('geyser') || normalizedSlug.includes('heater')) {
     return icons['geysers-heaters']
@@ -289,7 +289,7 @@ const CategoryIcon = ({ slug, className = "w-20 h-20" }: { slug: string; classNa
   if (normalizedSlug.includes('range') || normalizedSlug.includes('cooking')) {
     return icons['cooking-ranges']
   }
-  if (normalizedSlug.includes('cooler')) {
+  if (normalizedSlug.includes('cooler') && !normalizedSlug.includes('storage')) {
     return icons['water-coolers']
   }
 
