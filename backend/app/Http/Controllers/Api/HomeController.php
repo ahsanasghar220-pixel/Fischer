@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Banner;
-use App\Models\Testimonial;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -46,33 +45,26 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
-        // Home sliders
+        // Home hero banners
         $sliders = Banner::active()
-            ->position('home_slider')
+            ->position('home_hero')
             ->ordered()
             ->get();
 
-        // Promo banners
+        // Secondary banners
         $promoBanners = Banner::active()
-            ->position('promo_banner')
+            ->position('home_secondary')
             ->ordered()
             ->limit(3)
             ->get();
 
-        // Testimonials
-        $testimonials = Testimonial::where('is_active', true)
-            ->where('is_featured', true)
-            ->orderBy('sort_order')
-            ->limit(6)
-            ->get();
-
         // Settings
         $settings = [
-            'phone' => Setting::get('contact_phone', '+92 321 1146642'),
-            'email' => Setting::get('contact_email', 'fischer.few@gmail.com'),
-            'address' => Setting::get('contact_address'),
-            'social_facebook' => Setting::get('social_facebook'),
-            'social_instagram' => Setting::get('social_instagram'),
+            'phone' => Setting::get('phone', '+92 321 1146642'),
+            'email' => Setting::get('email', 'fischer.few@gmail.com'),
+            'address' => Setting::get('address'),
+            'social_facebook' => Setting::get('facebook_url'),
+            'social_instagram' => Setting::get('instagram_url'),
         ];
 
         return $this->success([
@@ -82,7 +74,7 @@ class HomeController extends Controller
             'new_arrivals' => $newArrivals,
             'bestsellers' => $bestsellers,
             'categories' => $categories,
-            'testimonials' => $testimonials,
+            'testimonials' => [],
             'settings' => $settings,
         ]);
     }
@@ -95,11 +87,6 @@ class HomeController extends Controller
 
     public function testimonials()
     {
-        $testimonials = Testimonial::where('is_active', true)
-            ->orderBy('sort_order')
-            ->orderByDesc('created_at')
-            ->get();
-
-        return $this->success($testimonials);
+        return $this->success([]);
     }
 }
