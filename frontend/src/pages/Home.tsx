@@ -292,11 +292,11 @@ export default function Home() {
                     <span className="font-bold text-dark-900">BEST SELLER</span>
                   </div>
                   <img
-                    src="/images/featured-product.png"
+                    src="/images/products/water-cooler-100ltr.png"
                     alt="Featured Product"
                     className="w-full h-80 object-contain animate-float"
                     onError={(e) => {
-                      e.currentTarget.src = 'https://placehold.co/400x400/27272a/f4b42c?text=Fischer'
+                      e.currentTarget.src = 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png'
                     }}
                   />
                   <div className="text-center mt-6">
