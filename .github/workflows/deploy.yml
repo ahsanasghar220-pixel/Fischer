@@ -95,8 +95,22 @@ jobs:
             echo "=== PHP Version ==="
             $PHP -v
 
-            # Install composer dependencies
-            $PHP /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+            # Find composer location
+            COMPOSER=$(which composer 2>/dev/null || echo "/usr/local/bin/composer")
+            echo "=== Composer location: $COMPOSER ==="
+
+            # Remove old vendor to force fresh install with correct PHP
+            rm -rf vendor
+
+            # Install composer dependencies using PHP 8.2
+            $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
+              echo "Trying alternative composer path..."
+              $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
+                echo "Trying to download composer..."
+                curl -sS https://getcomposer.org/installer | $PHP
+                $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction
+              }
+            }
 
             # Set permissions
             chmod -R 755 storage bootstrap/cache
