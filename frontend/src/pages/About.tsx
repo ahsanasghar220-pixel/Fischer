@@ -21,15 +21,15 @@ export default function About() {
   ]
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-dark-900 transition-colors">
       {/* Hero */}
-      <section className="bg-dark-900 text-white py-20">
+      <section className="bg-dark-900 dark:bg-dark-800 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               About Fischer Pakistan
             </h1>
-            <p className="text-xl text-dark-300 leading-relaxed">
+            <p className="text-xl text-dark-300 dark:text-dark-400 leading-relaxed">
               For over 25 years, Fischer has been a trusted name in Pakistani households,
               providing quality home appliances that make everyday life easier and more comfortable.
             </p>
@@ -38,12 +38,12 @@ export default function About() {
       </section>
 
       {/* Our Story */}
-      <section className="py-16">
+      <section className="py-16 bg-white dark:bg-dark-900">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-dark-900 mb-6">Our Story</h2>
-              <div className="space-y-4 text-dark-600">
+              <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-6">Our Story</h2>
+              <div className="space-y-4 text-dark-600 dark:text-dark-400">
                 <p>
                   Founded in 1995, Fischer Pakistan started with a simple mission: to provide
                   high-quality, affordable home appliances to Pakistani families. What began
@@ -81,37 +81,37 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="bg-dark-50 py-16">
+      <section className="bg-dark-50 dark:bg-dark-800 py-16 transition-colors">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <span className="text-4xl md:text-5xl font-bold text-primary-500">500+</span>
-              <span className="block text-dark-600 mt-2">Dealers Nationwide</span>
+              <span className="block text-dark-600 dark:text-dark-400 mt-2">Dealers Nationwide</span>
             </div>
             <div className="text-center">
               <span className="text-4xl md:text-5xl font-bold text-primary-500">1M+</span>
-              <span className="block text-dark-600 mt-2">Happy Customers</span>
+              <span className="block text-dark-600 dark:text-dark-400 mt-2">Happy Customers</span>
             </div>
             <div className="text-center">
               <span className="text-4xl md:text-5xl font-bold text-primary-500">50+</span>
-              <span className="block text-dark-600 mt-2">Products</span>
+              <span className="block text-dark-600 dark:text-dark-400 mt-2">Products</span>
             </div>
             <div className="text-center">
               <span className="text-4xl md:text-5xl font-bold text-primary-500">100+</span>
-              <span className="block text-dark-600 mt-2">Service Centers</span>
+              <span className="block text-dark-600 dark:text-dark-400 mt-2">Service Centers</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Timeline */}
-      <section className="py-16">
+      <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-dark-900 text-center mb-12">Our Journey</h2>
+          <h2 className="text-3xl font-bold text-dark-900 dark:text-white text-center mb-12">Our Journey</h2>
           <div className="max-w-4xl mx-auto">
             <div className="relative">
               {/* Line */}
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-dark-200" />
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-dark-200 dark:bg-dark-700" />
 
               {milestones.map((milestone, index) => (
                 <div
@@ -121,10 +121,10 @@ export default function About() {
                   }`}
                 >
                   <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'} pl-12 md:pl-0`}>
-                    <div className="bg-white p-6 rounded-xl shadow-sm">
+                    <div className="bg-white dark:bg-dark-800 p-6 rounded-xl shadow-sm border border-dark-100 dark:border-dark-700">
                       <span className="text-primary-500 font-bold">{milestone.year}</span>
-                      <h3 className="text-lg font-semibold text-dark-900 mt-1">{milestone.title}</h3>
-                      <p className="text-dark-500 text-sm mt-2">{milestone.description}</p>
+                      <h3 className="text-lg font-semibold text-dark-900 dark:text-white mt-1">{milestone.title}</h3>
+                      <p className="text-dark-500 dark:text-dark-400 text-sm mt-2">{milestone.description}</p>
                     </div>
                   </div>
                   <div className="absolute left-4 md:left-1/2 w-8 h-8 -translate-x-1/2 bg-primary-500 rounded-full flex items-center justify-center">
@@ -138,15 +138,15 @@ export default function About() {
       </section>
 
       {/* Values */}
-      <section className="bg-dark-900 text-white py-16">
+      <section className="bg-dark-900 dark:bg-dark-800 text-white py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {values.map((value) => (
-              <div key={value.title} className="bg-dark-800 p-6 rounded-xl">
+              <div key={value.title} className="bg-dark-800 dark:bg-dark-700 p-6 rounded-xl">
                 <CheckCircleIcon className="w-10 h-10 text-primary-500 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                <p className="text-dark-300">{value.description}</p>
+                <p className="text-dark-300 dark:text-dark-400">{value.description}</p>
               </div>
             ))}
           </div>
@@ -154,31 +154,31 @@ export default function About() {
       </section>
 
       {/* Certifications */}
-      <section className="py-16">
+      <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-dark-900 mb-4">Quality Certifications</h2>
-            <p className="text-dark-500 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-4">Quality Certifications</h2>
+            <p className="text-dark-500 dark:text-dark-400 max-w-2xl mx-auto">
               Our commitment to quality is backed by international certifications and standards
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-8">
-            <div className="w-32 h-32 bg-dark-100 rounded-xl flex items-center justify-center">
+            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
               <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900">ISO</span>
-                <span className="block text-sm text-dark-500">9001:2015</span>
+                <span className="text-2xl font-bold text-dark-900 dark:text-white">ISO</span>
+                <span className="block text-sm text-dark-500 dark:text-dark-400">9001:2015</span>
               </div>
             </div>
-            <div className="w-32 h-32 bg-dark-100 rounded-xl flex items-center justify-center">
+            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
               <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900">CE</span>
-                <span className="block text-sm text-dark-500">Certified</span>
+                <span className="text-2xl font-bold text-dark-900 dark:text-white">CE</span>
+                <span className="block text-sm text-dark-500 dark:text-dark-400">Certified</span>
               </div>
             </div>
-            <div className="w-32 h-32 bg-dark-100 rounded-xl flex items-center justify-center">
+            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
               <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900">PSQCA</span>
-                <span className="block text-sm text-dark-500">Approved</span>
+                <span className="text-2xl font-bold text-dark-900 dark:text-white">PSQCA</span>
+                <span className="block text-sm text-dark-500 dark:text-dark-400">Approved</span>
               </div>
             </div>
           </div>

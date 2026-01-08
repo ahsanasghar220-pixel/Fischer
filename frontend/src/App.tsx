@@ -22,6 +22,7 @@ const Addresses = lazy(() => import('./pages/account/Addresses'))
 const Settings = lazy(() => import('./pages/account/Settings'))
 const ServiceRequest = lazy(() => import('./pages/ServiceRequest'))
 const DealerRegister = lazy(() => import('./pages/DealerRegister'))
+const FindDealer = lazy(() => import('./pages/FindDealer'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Page = lazy(() => import('./pages/Page'))
@@ -69,6 +70,8 @@ function App() {
 
           {/* Dealer */}
           <Route path="dealer/register" element={<DealerRegister />} />
+          <Route path="become-dealer" element={<DealerRegister />} />
+          <Route path="find-dealer" element={<FindDealer />} />
 
           {/* Static pages */}
           <Route path="about" element={<About />} />

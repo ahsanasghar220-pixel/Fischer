@@ -106,21 +106,21 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-50 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center py-12 px-4 transition-colors">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto" />
+            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto dark:brightness-0 dark:invert" />
           </Link>
-          <h1 className="mt-6 text-3xl font-bold text-dark-900">Create account</h1>
-          <p className="mt-2 text-dark-500">Join Fischer and start shopping</p>
+          <h1 className="mt-6 text-3xl font-bold text-dark-900 dark:text-white">Create account</h1>
+          <p className="mt-2 text-dark-500 dark:text-dark-400">Join Fischer and start shopping</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-8">
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-8 transition-colors">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Full Name *
               </label>
               <input
@@ -131,8 +131,8 @@ export default function Register() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  errors.name ? 'border-red-500' : ''
+                className={`w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${
+                  errors.name ? 'border-red-500 dark:border-red-500' : ''
                 }`}
                 placeholder="John Doe"
               />
@@ -141,7 +141,7 @@ export default function Register() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Email address *
               </label>
               <input
@@ -152,8 +152,8 @@ export default function Register() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  errors.email ? 'border-red-500' : ''
+                className={`w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${
+                  errors.email ? 'border-red-500 dark:border-red-500' : ''
                 }`}
                 placeholder="you@example.com"
               />
@@ -162,7 +162,7 @@ export default function Register() {
 
             {/* Phone */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="phone" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Phone Number *
               </label>
               <input
@@ -173,8 +173,8 @@ export default function Register() {
                 required
                 value={formData.phone}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  errors.phone ? 'border-red-500' : ''
+                className={`w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${
+                  errors.phone ? 'border-red-500 dark:border-red-500' : ''
                 }`}
                 placeholder="03XX-XXXXXXX"
               />
@@ -183,7 +183,7 @@ export default function Register() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Password *
               </label>
               <div className="relative">
@@ -195,15 +195,15 @@ export default function Register() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12 ${
-                    errors.password ? 'border-red-500' : ''
+                  className={`w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12 transition-colors ${
+                    errors.password ? 'border-red-500 dark:border-red-500' : ''
                   }`}
                   placeholder="Min. 8 characters"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-dark-600 dark:text-dark-500 dark:hover:text-dark-300 transition-colors"
                 >
                   {showPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -217,7 +217,7 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="password_confirmation" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Confirm Password *
               </label>
               <input
@@ -228,8 +228,8 @@ export default function Register() {
                 required
                 value={formData.password_confirmation}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  errors.password_confirmation ? 'border-red-500' : ''
+                className={`w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors ${
+                  errors.password_confirmation ? 'border-red-500 dark:border-red-500' : ''
                 }`}
                 placeholder="Confirm your password"
               />
@@ -240,7 +240,7 @@ export default function Register() {
 
             {/* Referral Code */}
             <div>
-              <label htmlFor="referral_code" className="block text-sm font-medium text-dark-700 mb-1">
+              <label htmlFor="referral_code" className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                 Referral Code (Optional)
               </label>
               <input
@@ -249,7 +249,7 @@ export default function Register() {
                 type="text"
                 value={formData.referral_code}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 dark:placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
                 placeholder="Enter referral code"
               />
             </div>
@@ -262,15 +262,15 @@ export default function Register() {
                   name="terms"
                   checked={formData.terms}
                   onChange={handleChange}
-                  className="mt-1 rounded text-primary-500 focus:ring-primary-500"
+                  className="mt-1 rounded text-primary-500 focus:ring-primary-500 border-dark-300 dark:border-dark-600 dark:bg-dark-700"
                 />
-                <span className="text-sm text-dark-600">
+                <span className="text-sm text-dark-600 dark:text-dark-400">
                   I agree to the{' '}
-                  <Link to="/terms" className="text-primary-600 hover:underline">
+                  <Link to="/terms" className="text-primary-600 hover:underline dark:text-primary-400">
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link to="/privacy" className="text-primary-600 hover:underline">
+                  <Link to="/privacy" className="text-primary-600 hover:underline dark:text-primary-400">
                     Privacy Policy
                   </Link>
                 </span>
@@ -298,17 +298,17 @@ export default function Register() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-dark-200" />
+                <div className="w-full border-t border-dark-200 dark:border-dark-700" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-dark-500">Or sign up with</span>
+                <span className="px-4 bg-white dark:bg-dark-800 text-dark-500 dark:text-dark-400">Or sign up with</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mt-6">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -332,7 +332,7 @@ export default function Register() {
               </button>
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -342,9 +342,9 @@ export default function Register() {
             </div>
           </div>
 
-          <p className="mt-8 text-center text-sm text-dark-500">
+          <p className="mt-8 text-center text-sm text-dark-500 dark:text-dark-400">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/login" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
               Sign in
             </Link>
           </p>
