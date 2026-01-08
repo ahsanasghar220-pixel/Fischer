@@ -113,10 +113,14 @@ jobs:
             $PHP artisan route:clear
             $PHP artisan view:clear || true
 
-            # Rebuild caches
+            # Rebuild config cache only (skip route cache - can cause SPA issues)
             $PHP artisan config:cache
-            $PHP artisan route:cache
-            $PHP artisan view:cache || echo "View cache skipped"
+
+            # Debug: Test if Laravel is working
+            echo "=== Testing Laravel ==="
+            $PHP artisan --version
+            echo "=== Available API routes ==="
+            $PHP artisan route:list --path=api | head -20 || echo "Route listing failed"
 
             # Create storage link manually (exec() is disabled on Hostinger)
             rm -rf public/storage

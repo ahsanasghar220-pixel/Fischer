@@ -113,7 +113,7 @@ export default function Footer() {
             <div className="col-span-2">
               <Link to="/" className="inline-block">
                 <img
-                  src="/logo.png"
+                  src="/images/logo.png"
                   alt="Fischer"
                   className="h-12 w-auto brightness-0 invert"
                   onError={(e) => {

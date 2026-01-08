@@ -116,7 +116,7 @@ export default function Header() {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 relative group">
               <img
-                src="/logo.png"
+                src="/images/logo.png"
                 alt="Fischer"
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
                   isHomePage && !isScrolled ? 'brightness-0 invert' : 'dark:brightness-0 dark:invert'
@@ -436,7 +436,7 @@ export default function Header() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 h-16 border-b border-dark-100 dark:border-dark-800">
             <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-              <img src="/logo.png" alt="Fischer" className="h-8 w-auto dark:brightness-0 dark:invert" />
+              <img src="/images/logo.png" alt="Fischer" className="h-8 w-auto dark:brightness-0 dark:invert" />
             </Link>
             <button
               type="button"
