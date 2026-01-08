@@ -897,30 +897,42 @@ class ProductSeeder extends Seeder
         $this->createProducts($products, $category, $brand);
     }
 
-    private function createProducts(array $products, Category $category, Brand $brand): void
+    private function createProducts(array $products, ?Category $category, ?Brand $brand): void
     {
+        if (!$category || !$brand) {
+            return;
+        }
+
         foreach ($products as $productData) {
             $imageUrl = $productData['image'] ?? null;
             unset($productData['image']);
 
-            $product = Product::create(array_merge($productData, [
-                'category_id' => $category->id,
-                'brand_id' => $brand->id,
-                'is_active' => true,
-                'track_inventory' => true,
-                'stock_quantity' => $productData['stock_status'] === 'in_stock' ? 100 : 0,
-                'low_stock_threshold' => 10,
-                'warranty_period' => '1 Year',
-            ]));
+            $sku = $productData['sku'];
+            unset($productData['sku']);
 
-            if ($imageUrl) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $imageUrl,
-                    'alt_text' => $product->name,
-                    'is_primary' => true,
-                    'sort_order' => 0,
-                ]);
+            $product = Product::firstOrCreate(
+                ['sku' => $sku],
+                array_merge($productData, [
+                    'sku' => $sku,
+                    'category_id' => $category->id,
+                    'brand_id' => $brand->id,
+                    'is_active' => true,
+                    'track_inventory' => true,
+                    'stock_quantity' => ($productData['stock_status'] ?? 'in_stock') === 'in_stock' ? 100 : 0,
+                    'low_stock_threshold' => 10,
+                    'warranty_period' => '1 Year',
+                ])
+            );
+
+            if ($imageUrl && $product->wasRecentlyCreated) {
+                ProductImage::firstOrCreate(
+                    ['product_id' => $product->id, 'is_primary' => true],
+                    [
+                        'image' => $imageUrl,
+                        'alt_text' => $product->name,
+                        'sort_order' => 0,
+                    ]
+                );
             }
         }
     }
