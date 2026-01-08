@@ -37,11 +37,20 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
-        // Featured categories
-        $categories = Category::active()
+        // Featured categories - only get unique categories (avoid duplicates from multiple seeder runs)
+        $categories = Category::withCount('products')
+            ->active()
             ->featured()
             ->topLevel()
             ->ordered()
+            ->whereIn('id', function($query) {
+                // Get the first (oldest) category ID for each unique name
+                $query->selectRaw('MIN(id)')
+                    ->from('categories')
+                    ->whereNull('deleted_at')
+                    ->where('is_active', true)
+                    ->groupBy('name');
+            })
             ->limit(6)
             ->get();
 

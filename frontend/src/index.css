@@ -504,6 +504,16 @@
   .animation-delay-400 { animation-delay: 400ms; }
   .animation-delay-500 { animation-delay: 500ms; }
 
+  /* Enhanced shadow for dark mode glow */
+  .shadow-glow-lg {
+    box-shadow: 0 0 40px rgba(244, 180, 44, 0.4), 0 0 80px rgba(244, 180, 44, 0.2);
+  }
+
+  /* Hero section background pattern */
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
   /* Aspect ratios */
   .aspect-product { aspect-ratio: 4/5; }
   .aspect-banner { aspect-ratio: 21/9; }
