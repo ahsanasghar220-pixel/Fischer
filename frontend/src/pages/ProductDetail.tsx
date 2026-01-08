@@ -95,13 +95,16 @@ export default function ProductDetail() {
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
-  const { data: product, isLoading, error } = useQuery<Product>({
+  const { data: productData, isLoading, error } = useQuery<{ product: Product; related_products: Product[] }>({
     queryKey: ['product', slug],
     queryFn: async () => {
       const response = await api.get(`/products/${slug}`)
       return response.data.data
     },
   })
+
+  const product = productData?.product
+  const relatedProducts = productData?.related_products || []
 
   const handleAddToCart = async () => {
     if (!product) return
@@ -159,7 +162,7 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-dark-900">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -167,10 +170,10 @@ export default function ProductDetail() {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-dark-900">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-dark-900 mb-2">Product not found</h1>
-          <p className="text-dark-500 mb-4">The product you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-2">Product not found</h1>
+          <p className="text-dark-500 dark:text-dark-400 mb-4">The product you're looking for doesn't exist.</p>
           <Link to="/shop" className="btn btn-primary">
             Browse Products
           </Link>
@@ -180,24 +183,24 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-dark-900 min-h-screen">
       {/* Breadcrumb */}
-      <div className="bg-dark-50 border-b">
+      <div className="bg-dark-50 dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-2 text-sm text-dark-500">
-            <Link to="/" className="hover:text-primary-600">Home</Link>
+          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400">
+            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
             <span>/</span>
-            <Link to="/shop" className="hover:text-primary-600">Shop</Link>
+            <Link to="/shop" className="hover:text-primary-600 dark:hover:text-primary-400">Shop</Link>
             {product.category && (
               <>
                 <span>/</span>
-                <Link to={`/category/${product.category.slug}`} className="hover:text-primary-600">
+                <Link to={`/category/${product.category.slug}`} className="hover:text-primary-600 dark:hover:text-primary-400">
                   {product.category.name}
                 </Link>
               </>
             )}
             <span>/</span>
-            <span className="text-dark-900">{product.name}</span>
+            <span className="text-dark-900 dark:text-white">{product.name}</span>
           </div>
         </div>
       </div>
@@ -208,7 +211,7 @@ export default function ProductDetail() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Images */}
             <div>
-              <div className="aspect-square bg-dark-100 rounded-xl overflow-hidden mb-4">
+              <div className="aspect-square bg-dark-100 dark:bg-dark-800 rounded-xl overflow-hidden mb-4">
                 {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[selectedImage]?.image}
@@ -251,12 +254,12 @@ export default function ProductDetail() {
               </div>
 
               {product.brand && (
-                <Link to={`/brand/${product.brand.slug}`} className="text-sm text-primary-600 hover:underline">
+                <Link to={`/brand/${product.brand.slug}`} className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
                   {product.brand.name}
                 </Link>
               )}
 
-              <h1 className="text-2xl md:text-3xl font-bold text-dark-900 mt-1 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-dark-900 dark:text-white mt-1 mb-2">
                 {product.name}
               </h1>
 
@@ -268,11 +271,11 @@ export default function ProductDetail() {
                       star <= Math.round(product.average_rating || 0) ? (
                         <StarSolidIcon key={star} className="w-5 h-5 text-primary-500" />
                       ) : (
-                        <StarIcon key={star} className="w-5 h-5 text-dark-200" />
+                        <StarIcon key={star} className="w-5 h-5 text-dark-200 dark:text-dark-600" />
                       )
                     ))}
                   </div>
-                  <span className="text-dark-600">
+                  <span className="text-dark-600 dark:text-dark-400">
                     {product.average_rating?.toFixed(1)} ({product.review_count} reviews)
                   </span>
                 </div>
@@ -280,7 +283,7 @@ export default function ProductDetail() {
 
               {/* Price */}
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl font-bold text-dark-900">{formatPrice(currentPrice)}</span>
+                <span className="text-3xl font-bold text-dark-900 dark:text-white">{formatPrice(currentPrice)}</span>
                 {comparePrice && comparePrice > currentPrice && (
                   <span className="text-xl text-dark-400 line-through">{formatPrice(comparePrice)}</span>
                 )}
@@ -288,13 +291,13 @@ export default function ProductDetail() {
 
               {/* Short Description */}
               {product.short_description && (
-                <p className="text-dark-600 mb-6">{product.short_description}</p>
+                <p className="text-dark-600 dark:text-dark-400 mb-6">{product.short_description}</p>
               )}
 
               {/* Variants */}
               {product.variants && product.variants.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-dark-900 mb-2">
+                  <label className="block text-sm font-medium text-dark-900 dark:text-white mb-2">
                     Select Variant
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -305,10 +308,10 @@ export default function ProductDetail() {
                         disabled={variant.stock === 0}
                         className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
                           selectedVariant?.id === variant.id
-                            ? 'border-primary-500 bg-primary-50 text-primary-700'
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
                             : variant.stock === 0
-                            ? 'border-dark-200 text-dark-400 cursor-not-allowed'
-                            : 'border-dark-200 text-dark-600 hover:border-dark-400'
+                            ? 'border-dark-200 dark:border-dark-600 text-dark-400 cursor-not-allowed'
+                            : 'border-dark-200 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:border-dark-400 dark:hover:border-dark-500'
                         }`}
                       >
                         {variant.name}
@@ -322,28 +325,28 @@ export default function ProductDetail() {
               {/* Stock Status */}
               <div className="mb-6">
                 {product.stock_status === 'in_stock' ? (
-                  <span className="text-green-600 font-medium">✓ In Stock ({currentStock} available)</span>
+                  <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock ({currentStock} available)</span>
                 ) : product.stock_status === 'low_stock' ? (
-                  <span className="text-orange-600 font-medium">⚠ Low Stock - Only {currentStock} left</span>
+                  <span className="text-orange-600 dark:text-orange-400 font-medium">⚠ Low Stock - Only {currentStock} left</span>
                 ) : (
-                  <span className="text-red-600 font-medium">✕ Out of Stock</span>
+                  <span className="text-red-600 dark:text-red-400 font-medium">✕ Out of Stock</span>
                 )}
               </div>
 
               {/* Quantity & Add to Cart */}
               <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center border rounded-lg">
+                <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-lg">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-3 hover:bg-dark-50 transition-colors"
+                    className="p-3 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
                     disabled={quantity <= 1}
                   >
                     <MinusIcon className="w-5 h-5" />
                   </button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
+                  <span className="w-12 text-center font-medium text-dark-900 dark:text-white">{quantity}</span>
                   <button
                     onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
-                    className="p-3 hover:bg-dark-50 transition-colors"
+                    className="p-3 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
                     disabled={quantity >= currentStock}
                   >
                     <PlusIcon className="w-5 h-5" />
@@ -360,41 +363,41 @@ export default function ProductDetail() {
 
                 <button
                   onClick={handleToggleWishlist}
-                  className="p-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                  className="p-3 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
                 >
                   {isInWishlist ? (
                     <HeartSolidIcon className="w-6 h-6 text-red-500" />
                   ) : (
-                    <HeartIcon className="w-6 h-6 text-dark-600" />
+                    <HeartIcon className="w-6 h-6 text-dark-600 dark:text-dark-400" />
                   )}
                 </button>
 
                 <button
                   onClick={handleShare}
-                  className="p-3 border rounded-lg hover:bg-dark-50 transition-colors"
+                  className="p-3 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
                 >
-                  <ShareIcon className="w-6 h-6 text-dark-600" />
+                  <ShareIcon className="w-6 h-6 text-dark-600 dark:text-dark-400" />
                 </button>
               </div>
 
               {/* Features */}
-              <div className="grid grid-cols-3 gap-4 py-6 border-t border-b">
+              <div className="grid grid-cols-3 gap-4 py-6 border-t border-b border-dark-200 dark:border-dark-700">
                 <div className="text-center">
                   <TruckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
-                  <span className="text-sm text-dark-600">Free Delivery</span>
+                  <span className="text-sm text-dark-600 dark:text-dark-400">Free Delivery</span>
                 </div>
                 <div className="text-center">
                   <ShieldCheckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
-                  <span className="text-sm text-dark-600">1 Year Warranty</span>
+                  <span className="text-sm text-dark-600 dark:text-dark-400">1 Year Warranty</span>
                 </div>
                 <div className="text-center">
                   <ArrowPathIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
-                  <span className="text-sm text-dark-600">Easy Returns</span>
+                  <span className="text-sm text-dark-600 dark:text-dark-400">Easy Returns</span>
                 </div>
               </div>
 
               {/* SKU */}
-              <p className="text-sm text-dark-500 mt-4">
+              <p className="text-sm text-dark-500 dark:text-dark-400 mt-4">
                 SKU: {selectedVariant?.sku || product.sku}
               </p>
             </div>
@@ -403,17 +406,17 @@ export default function ProductDetail() {
       </section>
 
       {/* Tabs Section */}
-      <section className="py-8 bg-dark-50">
+      <section className="py-8 bg-dark-50 dark:bg-dark-800">
         <div className="container mx-auto px-4">
-          <div className="bg-white rounded-xl overflow-hidden">
+          <div className="bg-white dark:bg-dark-900 rounded-xl overflow-hidden border border-dark-200 dark:border-dark-700">
             {/* Tab Headers */}
-            <div className="flex border-b">
+            <div className="flex border-b border-dark-200 dark:border-dark-700">
               <button
                 onClick={() => setActiveTab('description')}
                 className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
                   activeTab === 'description'
-                    ? 'text-primary-600 border-b-2 border-primary-500'
-                    : 'text-dark-500 hover:text-dark-900'
+                    ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                    : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'
                 }`}
               >
                 Description
@@ -422,8 +425,8 @@ export default function ProductDetail() {
                 onClick={() => setActiveTab('specifications')}
                 className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
                   activeTab === 'specifications'
-                    ? 'text-primary-600 border-b-2 border-primary-500'
-                    : 'text-dark-500 hover:text-dark-900'
+                    ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                    : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'
                 }`}
               >
                 Specifications
@@ -432,8 +435,8 @@ export default function ProductDetail() {
                 onClick={() => setActiveTab('reviews')}
                 className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
                   activeTab === 'reviews'
-                    ? 'text-primary-600 border-b-2 border-primary-500'
-                    : 'text-dark-500 hover:text-dark-900'
+                    ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
+                    : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'
                 }`}
               >
                 Reviews ({product.review_count || 0})
@@ -443,12 +446,12 @@ export default function ProductDetail() {
             {/* Tab Content */}
             <div className="p-6">
               {activeTab === 'description' && (
-                <div className="prose max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                <div className="prose dark:prose-invert max-w-none">
+                  <div className="text-dark-700 dark:text-dark-300" dangerouslySetInnerHTML={{ __html: product.description || 'No description available.' }} />
                   {product.warranty_info && (
-                    <div className="mt-6 p-4 bg-dark-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">Warranty Information</h4>
-                      <p>{product.warranty_info}</p>
+                    <div className="mt-6 p-4 bg-dark-50 dark:bg-dark-800 rounded-lg">
+                      <h4 className="font-semibold text-dark-900 dark:text-white mb-2">Warranty Information</h4>
+                      <p className="text-dark-600 dark:text-dark-400">{product.warranty_info}</p>
                     </div>
                   )}
                 </div>
@@ -460,15 +463,15 @@ export default function ProductDetail() {
                     <table className="w-full">
                       <tbody>
                         {Object.entries(product.specifications).map(([key, value]) => (
-                          <tr key={key} className="border-b last:border-0">
-                            <td className="py-3 font-medium text-dark-900 w-1/3">{key}</td>
-                            <td className="py-3 text-dark-600">{value}</td>
+                          <tr key={key} className="border-b border-dark-200 dark:border-dark-700 last:border-0">
+                            <td className="py-3 font-medium text-dark-900 dark:text-white w-1/3">{key}</td>
+                            <td className="py-3 text-dark-600 dark:text-dark-400">{value}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   ) : (
-                    <p className="text-dark-500">No specifications available.</p>
+                    <p className="text-dark-500 dark:text-dark-400">No specifications available.</p>
                   )}
                 </div>
               )}
@@ -478,25 +481,25 @@ export default function ProductDetail() {
                   {product.reviews && product.reviews.length > 0 ? (
                     <div className="space-y-6">
                       {product.reviews.map((review) => (
-                        <div key={review.id} className="border-b pb-6 last:border-0">
+                        <div key={review.id} className="border-b border-dark-200 dark:border-dark-700 pb-6 last:border-0">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
                                 star <= review.rating ? (
                                   <StarSolidIcon key={star} className="w-4 h-4 text-primary-500" />
                                 ) : (
-                                  <StarIcon key={star} className="w-4 h-4 text-dark-200" />
+                                  <StarIcon key={star} className="w-4 h-4 text-dark-200 dark:text-dark-600" />
                                 )
                               ))}
                             </div>
-                            <span className="font-medium text-dark-900">{review.user.name}</span>
+                            <span className="font-medium text-dark-900 dark:text-white">{review.user.name}</span>
                             <span className="text-dark-400">•</span>
-                            <span className="text-sm text-dark-500">{formatDate(review.created_at)}</span>
+                            <span className="text-sm text-dark-500 dark:text-dark-400">{formatDate(review.created_at)}</span>
                           </div>
                           {review.title && (
-                            <h4 className="font-medium text-dark-900 mb-1">{review.title}</h4>
+                            <h4 className="font-medium text-dark-900 dark:text-white mb-1">{review.title}</h4>
                           )}
-                          <p className="text-dark-600">{review.comment}</p>
+                          <p className="text-dark-600 dark:text-dark-400">{review.comment}</p>
                           {review.images && review.images.length > 0 && (
                             <div className="flex gap-2 mt-3">
                               {review.images.map((img, i) => (
@@ -514,7 +517,7 @@ export default function ProductDetail() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <p className="text-dark-500 mb-4">No reviews yet. Be the first to review this product!</p>
+                      <p className="text-dark-500 dark:text-dark-400 mb-4">No reviews yet. Be the first to review this product!</p>
                       {isAuthenticated && (
                         <button className="btn btn-primary">Write a Review</button>
                       )}
@@ -528,12 +531,12 @@ export default function ProductDetail() {
       </section>
 
       {/* Related Products */}
-      {product.related_products && product.related_products.length > 0 && (
+      {relatedProducts && relatedProducts.length > 0 && (
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold text-dark-900 mb-6">Related Products</h2>
+            <h2 className="text-2xl font-bold text-dark-900 dark:text-white mb-6">Related Products</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-              {product.related_products.slice(0, 5).map((relatedProduct) => (
+              {relatedProducts.slice(0, 5).map((relatedProduct) => (
                 <ProductCard key={relatedProduct.id} product={relatedProduct} />
               ))}
             </div>

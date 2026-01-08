@@ -124,7 +124,7 @@ export default function Cart() {
                       {/* Price */}
                       <div className="col-span-2 text-center hidden md:block">
                         <span className="text-dark-900 dark:text-white font-medium">
-                          {formatPrice(item.variant?.price || item.product.price)}
+                          {formatPrice(item.unit_price || item.variant?.price || item.product?.price || 0)}
                         </span>
                       </div>
 
@@ -151,7 +151,7 @@ export default function Cart() {
                       {/* Total */}
                       <div className="col-span-2 text-right hidden md:flex md:items-center md:justify-end md:gap-4">
                         <span className="font-semibold text-dark-900 dark:text-white">
-                          {formatPrice((item.variant?.price || item.product.price) * item.quantity)}
+                          {formatPrice(item.total_price || (item.unit_price || item.variant?.price || item.product?.price || 0) * item.quantity)}
                         </span>
                         <button
                           onClick={() => removeItem(item.id)}
@@ -164,10 +164,10 @@ export default function Cart() {
                       {/* Mobile Price & Total */}
                       <div className="flex items-center justify-between mt-4 md:hidden">
                         <span className="text-dark-500 dark:text-dark-400">
-                          {formatPrice(item.variant?.price || item.product.price)} × {item.quantity}
+                          {formatPrice(item.unit_price || item.variant?.price || item.product?.price || 0)} × {item.quantity}
                         </span>
                         <span className="font-semibold text-dark-900 dark:text-white">
-                          {formatPrice((item.variant?.price || item.product.price) * item.quantity)}
+                          {formatPrice(item.total_price || (item.unit_price || item.variant?.price || item.product?.price || 0) * item.quantity)}
                         </span>
                       </div>
                     </div>
