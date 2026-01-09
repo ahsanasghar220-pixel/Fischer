@@ -26,6 +26,17 @@ use Illuminate\Support\Facades\Route;
 // Home page data
 Route::get('/home', [HomeController::class, 'index']);
 
+// TEMPORARY: Setup admin - DELETE THIS AFTER USE
+Route::get('/setup-admin-temp-xyz123', function () {
+    $user = \App\Models\User::where('email', 'admin@fischer.pk')->first();
+    if ($user) {
+        $user->password = \Illuminate\Support\Facades\Hash::make('Admin@123');
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Admin password updated']);
+    }
+    return response()->json(['success' => false, 'message' => 'User not found']);
+});
+
 // Products
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
