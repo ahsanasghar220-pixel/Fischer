@@ -216,6 +216,8 @@ export default function ProductDetail() {
                   <img
                     src={product.images[selectedImage]?.image}
                     alt={product.images[selectedImage]?.alt_text || product.name}
+                    width={600}
+                    height={600}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -237,6 +239,8 @@ export default function ProductDetail() {
                       <img
                         src={image.image}
                         alt={image.alt_text || `${product.name} ${index + 1}`}
+                        width={80}
+                        height={80}
                         className="w-full h-full object-cover"
                       />
                     </button>
@@ -507,6 +511,8 @@ export default function ProductDetail() {
                                   key={i}
                                   src={img.image}
                                   alt={`Review image ${i + 1}`}
+                                  width={80}
+                                  height={80}
                                   className="w-20 h-20 object-cover rounded"
                                 />
                               ))}

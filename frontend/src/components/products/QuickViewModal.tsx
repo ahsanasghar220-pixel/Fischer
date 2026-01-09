@@ -148,6 +148,8 @@ const QuickViewModal = memo(function QuickViewModal({
                         <img
                           src={images[selectedImage]?.image_path || product.primary_image || ''}
                           alt={product.name}
+                          width={400}
+                          height={400}
                           className="w-full h-full object-contain"
                         />
                       ) : (
@@ -201,6 +203,8 @@ const QuickViewModal = memo(function QuickViewModal({
                             <img
                               src={image.image_path}
                               alt={`${product.name} - ${index + 1}`}
+                              width={64}
+                              height={64}
                               className="w-full h-full object-cover"
                             />
                           </button>

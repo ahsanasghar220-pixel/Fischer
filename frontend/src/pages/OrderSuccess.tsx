@@ -316,6 +316,8 @@ export default function OrderSuccess() {
                       <img
                         src={item.product.primary_image}
                         alt={item.product.name}
+                        width={80}
+                        height={80}
                         className="w-full h-full object-cover"
                       />
                     ) : (

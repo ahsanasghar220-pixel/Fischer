@@ -108,6 +108,8 @@ export default function Wishlist() {
                       <img
                         src={item.product.primary_image}
                         alt={item.product.name}
+                        width={96}
+                        height={96}
                         className="w-full h-full object-cover"
                       />
                     ) : (

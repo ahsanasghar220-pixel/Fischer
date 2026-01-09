@@ -110,7 +110,7 @@ export default function Register() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img src="/images/logo.png" alt="Fischer" className="h-12 mx-auto dark:brightness-0 dark:invert" />
+            <img src="/images/logo.png" alt="Fischer" width={144} height={48} className="h-12 w-auto mx-auto dark:brightness-0 dark:invert" />
           </Link>
           <h1 className="mt-6 text-3xl font-bold text-dark-900 dark:text-white">Create account</h1>
           <p className="mt-2 text-dark-500 dark:text-dark-400">Join Fischer and start shopping</p>

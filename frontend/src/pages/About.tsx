@@ -66,7 +66,9 @@ export default function About() {
               <img
                 src="/images/about-factory.jpg"
                 alt="Fischer Factory"
-                className="rounded-xl shadow-2xl"
+                width={600}
+                height={400}
+                className="rounded-xl shadow-2xl w-full h-auto"
                 onError={(e) => {
                   e.currentTarget.src = 'https://placehold.co/600x400/313131/f4b42c?text=Fischer+Factory'
                 }}
