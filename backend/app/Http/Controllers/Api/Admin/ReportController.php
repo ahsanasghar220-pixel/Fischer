@@ -103,23 +103,22 @@ class ReportController extends Controller
         $endDate = $request->get('end') ? Carbon::parse($request->get('end')) : Carbon::now();
 
         try {
-            // Customer segments
-            $newCustomers = User::role('customer')
-                ->whereBetween('created_at', [$startDate, $endDate])
+            // Get users who have placed orders (customers)
+            $totalCustomers = User::whereHas('orders')->count();
+
+            // New customers in date range
+            $newCustomers = User::whereBetween('created_at', [$startDate, $endDate])
+                ->whereHas('orders')
                 ->count();
 
-            $totalCustomers = User::role('customer')->count();
+            // Returning customers (more than 1 order)
+            $returningCustomers = User::has('orders', '>', 1)->count();
 
-            $returningCustomers = User::role('customer')
-                ->whereHas('orders', function ($q) {
-                    $q->groupBy('user_id')->havingRaw('COUNT(*) > 1');
-                })
-                ->count();
-
-            // VIP customers (spent more than 50000)
-            $vipCustomers = User::role('customer')
-                ->withSum('orders', 'total')
-                ->having('orders_sum_total', '>', 50000)
+            // VIP customers - get users with order totals > 50000
+            $vipCustomers = Order::select('user_id')
+                ->whereNotNull('user_id')
+                ->groupBy('user_id')
+                ->havingRaw('SUM(total) > 50000')
                 ->count();
 
             $segments = [

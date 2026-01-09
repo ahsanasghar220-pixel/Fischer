@@ -15,9 +15,9 @@ class ServiceRequestController extends Controller
         // Search
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_email', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%")
                   ->orWhere('product_name', 'like', "%{$search}%")
                   ->orWhere('ticket_number', 'like', "%{$search}%");
             });
@@ -31,18 +31,18 @@ class ServiceRequestController extends Controller
         $requests = $query->orderByDesc('created_at')->paginate(15);
 
         // Transform for frontend
-        $transformedRequests = collect($requests->items())->map(function ($request) {
+        $transformedRequests = collect($requests->items())->map(function ($serviceRequest) {
             return [
-                'id' => $request->id,
-                'ticket_number' => $request->ticket_number,
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'product_name' => $request->product_name ?? 'N/A',
-                'issue_type' => $request->issue_type ?? 'General',
-                'description' => $request->description,
-                'status' => $request->status ?? 'pending',
-                'created_at' => $request->created_at->toISOString(),
+                'id' => $serviceRequest->id,
+                'ticket_number' => $serviceRequest->ticket_number,
+                'name' => $serviceRequest->customer_name,
+                'email' => $serviceRequest->customer_email,
+                'phone' => $serviceRequest->customer_phone,
+                'product_name' => $serviceRequest->product_name ?? 'N/A',
+                'issue_type' => $serviceRequest->service_type ?? 'General',
+                'description' => $serviceRequest->problem_description,
+                'status' => $serviceRequest->status ?? 'pending',
+                'created_at' => $serviceRequest->created_at->toISOString(),
             ];
         });
 
