@@ -17,6 +17,12 @@ class CategoryController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
+        // Get only parent categories with their children
+        $query->whereNull('parent_id')
+              ->with(['children' => function ($q) {
+                  $q->withCount('products')->orderBy('sort_order')->orderBy('name');
+              }]);
+
         $categories = $query->orderBy('sort_order')->orderBy('name')->get();
 
         // Return categories directly without extra wrapper
