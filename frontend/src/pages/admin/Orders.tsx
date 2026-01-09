@@ -53,7 +53,7 @@ export default function AdminOrders() {
       if (status) params.set('status', status)
       if (paymentStatus) params.set('payment_status', paymentStatus)
       const response = await api.get(`/admin/orders?${params.toString()}`)
-      return response.data
+      return response.data.data
     },
   })
 

@@ -37,7 +37,7 @@ export default function AdminCustomers() {
       params.set('page', page.toString())
       if (search) params.set('search', search)
       const response = await api.get(`/admin/customers?${params.toString()}`)
-      return response.data
+      return response.data.data
     },
   })
 

@@ -49,7 +49,7 @@ export default function AdminProducts() {
       if (search) params.set('search', search)
       if (status) params.set('status', status)
       const response = await api.get(`/admin/products?${params.toString()}`)
-      return response.data
+      return response.data.data
     },
   })
 
