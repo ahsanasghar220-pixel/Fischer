@@ -34,6 +34,10 @@
 
     <title>Fischer Pakistan - Quality Home Appliances</title>
 
+    <!-- Preload LCP image for faster rendering -->
+    <link rel="preload" href="/images/logo.png" as="image" type="image/png">
+    <link rel="preload" href="/images/products/water-cooler-100ltr.png" as="image" type="image/png">
+
     <!-- Prevent flash of wrong theme - runs before React loads -->
     <script>
       (function() {
@@ -46,9 +50,18 @@
       })();
     </script>
     <style>
-      /* Prevent white flash during page load */
-      html.dark { background-color: #09090b; }
-      html:not(.dark) { background-color: #fafafa; }
+      /* Critical CSS - Prevent layout shift and flash */
+      html.dark { background-color: #09090b; color: #fafafa; }
+      html:not(.dark) { background-color: #fafafa; color: #18181b; }
+      body { margin: 0; min-height: 100vh; }
+      #root { min-height: 100vh; }
+      /* Loading state styles */
+      .loading-spinner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
     </style>
   </head>
   <body class="font-sans antialiased">

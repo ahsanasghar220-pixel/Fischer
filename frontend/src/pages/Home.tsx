@@ -416,6 +416,8 @@ export default function Home() {
                       alt="Featured Product - Electric Water Cooler FE-100"
                       width={280}
                       height={280}
+                      loading="eager"
+                      fetchPriority="high"
                       className="max-h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => {
                         e.currentTarget.src = 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png'

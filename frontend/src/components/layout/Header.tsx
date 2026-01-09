@@ -123,6 +123,8 @@ export default function Header() {
                 alt="Fischer"
                 width={120}
                 height={48}
+                loading="eager"
+                fetchPriority="high"
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
                   isHomePage && !isScrolled ? 'brightness-0 invert' : ''
                 } dark:brightness-0 dark:invert`}
