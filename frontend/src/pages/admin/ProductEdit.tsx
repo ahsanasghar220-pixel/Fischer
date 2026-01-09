@@ -80,7 +80,8 @@ export default function ProductEdit() {
     queryKey: ['admin-product', id],
     queryFn: async () => {
       const response = await api.get(`/admin/products/${id}`)
-      return response.data.data
+      // Backend returns { success, data: { data: product } }
+      return response.data.data.data
     },
     enabled: !isNew,
   })
@@ -90,7 +91,8 @@ export default function ProductEdit() {
     queryKey: ['admin-categories-list'],
     queryFn: async () => {
       const response = await api.get('/admin/categories')
-      return response.data.data
+      // Backend returns { success, data: { data: [...] } }
+      return response.data.data.data
     },
   })
 
