@@ -53,19 +53,65 @@
       /* Critical CSS - Prevent layout shift and flash */
       html.dark { background-color: #09090b; color: #fafafa; }
       html:not(.dark) { background-color: #fafafa; color: #18181b; }
-      body { margin: 0; min-height: 100vh; }
+      body { margin: 0; min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; }
       #root { min-height: 100vh; }
-      /* Loading state styles */
-      .loading-spinner {
+      /* Initial loading skeleton - shows immediately */
+      .initial-skeleton {
+        min-height: 100vh;
+        background: linear-gradient(to bottom right, #09090b, #18181b, #09090b);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
+        padding: 2rem;
+      }
+      html:not(.dark) .initial-skeleton {
+        background: linear-gradient(to bottom right, #f4f4f5, #e4e4e7, #f4f4f5);
+      }
+      .skeleton-logo {
+        width: 120px;
+        height: 48px;
+        background: rgba(244,180,44,0.2);
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      .skeleton-title {
+        width: 280px;
+        height: 48px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      html:not(.dark) .skeleton-title {
+        background: rgba(0,0,0,0.1);
+      }
+      .skeleton-text {
+        width: 200px;
+        height: 24px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 4px;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      html:not(.dark) .skeleton-text {
+        background: rgba(0,0,0,0.05);
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
     </style>
   </head>
   <body class="font-sans antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial skeleton shown while React loads -->
+      <div class="initial-skeleton">
+        <div class="skeleton-logo"></div>
+        <div class="skeleton-title"></div>
+        <div class="skeleton-text"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -144,7 +144,7 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
-  const { data, isLoading } = useQuery<HomeData>({
+  const { data } = useQuery<HomeData>({
     queryKey: ['home'],
     queryFn: async () => {
       const response = await api.get('/home')
@@ -174,21 +174,7 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [])
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-950">
-        <div className="text-center">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-primary-500/30 rounded-full animate-spin border-t-primary-500" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <SparklesIcon className="w-8 h-8 text-primary-500 animate-pulse" />
-            </div>
-          </div>
-          <p className="mt-6 text-dark-500 dark:text-dark-400 animate-pulse font-medium">Loading amazing products...</p>
-        </div>
-      </div>
-    )
-  }
+  // Don't block rendering - show content immediately with fallback data
 
   const banners = data?.banners?.length ? data.banners : [
     {
@@ -211,55 +197,38 @@ export default function Home() {
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950" />
 
-          {/* Animated gradient orbs - static positions for faster initial paint */}
+          {/* Animated gradient orbs - hidden on mobile for performance */}
           <div
-            className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-[120px]"
+            className="hidden md:block absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[80px]"
             style={{
               background: 'radial-gradient(circle, rgba(244,180,44,0.4) 0%, transparent 70%)',
               left: '20%',
               top: '10%',
               transform: 'translate(-50%, -50%)',
-              willChange: 'transform',
             }}
           />
           <div
-            className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
+            className="hidden lg:block absolute w-[400px] h-[400px] rounded-full opacity-15 blur-[60px]"
             style={{
-              background: 'radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
               right: '10%',
               bottom: '20%',
-              willChange: 'transform',
             }}
           />
-          <div
-            className="absolute w-[500px] h-[500px] rounded-full opacity-20 blur-[80px]"
-            style={{
-              background: 'radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%)',
-              left: '60%',
-              top: '60%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-
-          {/* Grid pattern overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(244,180,44,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(244,180,44,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
-
-          {/* Noise texture */}
-          <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }} />
         </div>
 
-        {/* Floating Particles - Deferred to not block initial paint */}
+        {/* Floating Particles - Hidden on mobile for performance */}
         {isVisible && (
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(12)].map((_, i) => (
+          <div className="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-primary-500/40 rounded-full animate-float"
                 style={{
-                  left: `${10 + (i * 7) % 80}%`,
-                  top: `${5 + (i * 11) % 90}%`,
-                  animationDelay: `${i * 0.4}s`,
-                  animationDuration: `${6 + (i % 4) * 2}s`,
+                  left: `${10 + (i * 10) % 80}%`,
+                  top: `${5 + (i * 12) % 90}%`,
+                  animationDelay: `${i * 0.5}s`,
+                  animationDuration: `${8 + (i % 3) * 2}s`,
                 }}
               />
             ))}
