@@ -49,7 +49,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img src="/logo.svg" alt="Fischer" className="h-12 mx-auto dark:brightness-0 dark:invert" />
+            <img src="/images/logo.png" alt="Fischer" className="h-12 mx-auto dark:brightness-0 dark:invert" />
           </Link>
           <h1 className="mt-6 text-3xl font-bold text-dark-900 dark:text-white">Welcome back</h1>
           <p className="mt-2 text-dark-500 dark:text-dark-400">Sign in to your account</p>
