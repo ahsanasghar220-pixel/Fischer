@@ -33,8 +33,8 @@ export default function AdminCategories() {
     queryKey: ['admin-categories'],
     queryFn: async () => {
       const response = await api.get('/admin/categories')
-      // Backend returns { success, data: { data: [...] } }
-      return response.data.data.data
+      // Backend returns { success, data: [...] }
+      return response.data.data
     },
   })
 

@@ -19,9 +19,8 @@ class CategoryController extends Controller
 
         $categories = $query->orderBy('sort_order')->orderBy('name')->get();
 
-        return $this->success([
-            'data' => $categories,
-        ]);
+        // Return categories directly without extra wrapper
+        return $this->success($categories);
     }
 
     public function show($id)

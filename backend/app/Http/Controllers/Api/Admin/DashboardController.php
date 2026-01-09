@@ -140,10 +140,23 @@ class DashboardController extends Controller
                 $primaryImage = $product->images->where('is_primary', true)->first()
                     ?? $product->images->first();
 
+                // Get image URL - field is 'image' not 'image_path'
+                $imageUrl = null;
+                if ($primaryImage && $primaryImage->image) {
+                    $image = $primaryImage->image;
+                    // If already a full URL, use as-is
+                    if (str_starts_with($image, 'http')) {
+                        $imageUrl = $image;
+                    } else {
+                        // Relative path - use as-is if starts with /, otherwise prepend /
+                        $imageUrl = str_starts_with($image, '/') ? $image : '/' . $image;
+                    }
+                }
+
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'primary_image' => $primaryImage ? asset('storage/' . $primaryImage->image_path) : null,
+                    'primary_image' => $imageUrl,
                     'total_sold' => $product->sales_count ?? 0,
                     'revenue' => ($product->sales_count ?? 0) * $product->price,
                 ];

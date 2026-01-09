@@ -38,6 +38,12 @@ const AdminCustomers = lazy(() => import('./pages/admin/Customers'))
 const AdminCategories = lazy(() => import('./pages/admin/Categories'))
 const AdminSettings = lazy(() => import('./pages/admin/Settings'))
 const AdminProductEdit = lazy(() => import('./pages/admin/ProductEdit'))
+const AdminDealers = lazy(() => import('./pages/admin/Dealers'))
+const AdminServiceRequests = lazy(() => import('./pages/admin/ServiceRequests'))
+const AdminPages = lazy(() => import('./pages/admin/Pages'))
+const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'))
+const AdminReports = lazy(() => import('./pages/admin/Reports'))
+const AdminHomePageSettings = lazy(() => import('./pages/admin/HomePageSettings'))
 
 function App() {
   return (
@@ -93,6 +99,12 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="categories" element={<AdminCategories />} />
+          <Route path="dealers" element={<AdminDealers />} />
+          <Route path="service-requests" element={<AdminServiceRequests />} />
+          <Route path="pages" element={<AdminPages />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="homepage" element={<AdminHomePageSettings />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>

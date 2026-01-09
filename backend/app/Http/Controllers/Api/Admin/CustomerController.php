@@ -27,10 +27,25 @@ class CustomerController extends Controller
             $query->where('status', $status);
         }
 
-        $customers = $query->orderByDesc('created_at')->paginate(15);
+        $customers = $query->withSum('orders', 'total')->orderByDesc('created_at')->paginate(15);
+
+        // Transform for frontend
+        $transformedCustomers = collect($customers->items())->map(function ($customer) {
+            return [
+                'id' => $customer->id,
+                'name' => trim($customer->first_name . ' ' . $customer->last_name),
+                'email' => $customer->email,
+                'phone' => $customer->phone,
+                'orders_count' => $customer->orders_count ?? 0,
+                'total_spent' => $customer->orders_sum_total ?? 0,
+                'loyalty_points' => $customer->loyalty_points ?? 0,
+                'created_at' => $customer->created_at->toISOString(),
+                'last_order_at' => $customer->orders()->latest()->first()?->created_at?->toISOString(),
+            ];
+        });
 
         return $this->success([
-            'data' => $customers->items(),
+            'data' => $transformedCustomers,
             'meta' => [
                 'current_page' => $customers->currentPage(),
                 'last_page' => $customers->lastPage(),

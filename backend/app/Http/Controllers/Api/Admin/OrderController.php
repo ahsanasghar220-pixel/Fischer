@@ -44,8 +44,24 @@ class OrderController extends Controller
 
         $orders = $query->orderByDesc('created_at')->paginate(15);
 
+        // Transform orders for frontend
+        $transformedOrders = collect($orders->items())->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'customer_name' => $order->user ? ($order->user->first_name . ' ' . $order->user->last_name) : ($order->shipping_name ?? 'Guest'),
+                'customer_email' => $order->user->email ?? $order->shipping_email ?? '',
+                'status' => $order->status,
+                'payment_status' => $order->payment_status ?? 'pending',
+                'payment_method' => $order->payment_method ?? 'cod',
+                'total' => $order->total,
+                'items_count' => $order->items->count(),
+                'created_at' => $order->created_at->toISOString(),
+            ];
+        });
+
         return $this->success([
-            'data' => $orders->items(),
+            'data' => $transformedOrders,
             'meta' => [
                 'current_page' => $orders->currentPage(),
                 'last_page' => $orders->lastPage(),

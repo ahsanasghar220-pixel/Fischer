@@ -76,9 +76,8 @@ class ProductController extends Controller
     {
         $product = Product::with(['category', 'images'])->findOrFail($id);
 
-        return $this->success([
-            'data' => $product,
-        ]);
+        // Return product directly without extra wrapper
+        return $this->success($product);
     }
 
     public function store(Request $request)
