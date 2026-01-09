@@ -35,7 +35,14 @@ export default function Login() {
     try {
       await login(formData.email, formData.password)
       toast.success('Welcome back!')
-      navigate(from, { replace: true })
+
+      // Get updated user from store to check if admin
+      const user = useAuthStore.getState().user
+      if (user?.is_admin) {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate(from, { replace: true })
+      }
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } }
       toast.error(err.response?.data?.message || 'Invalid credentials')
