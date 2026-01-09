@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -20,7 +20,6 @@ import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import CategoryIcon from '@/components/ui/CategoryIcon'
-import { throttle } from '@/lib/utils'
 
 interface Category {
   id: number
@@ -143,9 +142,6 @@ const trustedBrands = [
 export default function Home() {
   const [currentBanner, setCurrentBanner] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [scrollY, setScrollY] = useState(0)
-  const heroRef = useRef<HTMLDivElement>(null)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
   const { data, isLoading } = useQuery<HomeData>({
@@ -160,44 +156,6 @@ export default function Home() {
   useEffect(() => {
     setIsVisible(true)
   }, [])
-
-  // Throttled scroll handler - fires at most every 16ms (~60fps)
-  const throttledScrollHandler = useMemo(
-    () => throttle(() => setScrollY(window.scrollY), 16),
-    []
-  )
-
-  // Parallax effect with throttled scroll
-  useEffect(() => {
-    window.addEventListener('scroll', throttledScrollHandler, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', throttledScrollHandler)
-      throttledScrollHandler.cancel()
-    }
-  }, [throttledScrollHandler])
-
-  // Throttled mouse move handler - fires at most every 32ms (~30fps for smooth but not excessive)
-  const throttledMouseHandler = useMemo(
-    () => throttle((e: MouseEvent) => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect()
-        setMousePosition({
-          x: (e.clientX - rect.left) / rect.width,
-          y: (e.clientY - rect.top) / rect.height,
-        })
-      }
-    }, 32),
-    []
-  )
-
-  // Mouse tracking for hero section with throttling
-  useEffect(() => {
-    window.addEventListener('mousemove', throttledMouseHandler)
-    return () => {
-      window.removeEventListener('mousemove', throttledMouseHandler)
-      throttledMouseHandler.cancel()
-    }
-  }, [throttledMouseHandler])
 
   // Auto-slide banners
   useEffect(() => {
@@ -248,28 +206,29 @@ export default function Home() {
       {/* ==========================================
           HERO SECTION - Ultra Modern Animated Hero
           ========================================== */}
-      <section ref={heroRef} className="relative min-h-[100vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden">
         {/* Animated Mesh Gradient Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950" />
 
-          {/* Animated gradient orbs */}
+          {/* Animated gradient orbs - static positions for faster initial paint */}
           <div
-            className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-[120px] transition-transform duration-1000"
+            className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-[120px]"
             style={{
               background: 'radial-gradient(circle, rgba(244,180,44,0.4) 0%, transparent 70%)',
-              left: `${20 + mousePosition.x * 10}%`,
-              top: `${10 + mousePosition.y * 10}%`,
-              transform: `translate(-50%, -50%) translateY(${scrollY * 0.1}px)`,
+              left: '20%',
+              top: '10%',
+              transform: 'translate(-50%, -50%)',
+              willChange: 'transform',
             }}
           />
           <div
-            className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px] transition-transform duration-1000"
+            className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
             style={{
               background: 'radial-gradient(circle, rgba(59,130,246,0.5) 0%, transparent 70%)',
-              right: `${10 + mousePosition.x * 5}%`,
-              bottom: `${20 + mousePosition.y * 5}%`,
-              transform: `translateY(${scrollY * -0.05}px)`,
+              right: '10%',
+              bottom: '20%',
+              willChange: 'transform',
             }}
           />
           <div
@@ -278,7 +237,7 @@ export default function Home() {
               background: 'radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%)',
               left: '60%',
               top: '60%',
-              transform: `translate(-50%, -50%) translateY(${scrollY * 0.08}px)`,
+              transform: 'translate(-50%, -50%)',
             }}
           />
 
@@ -289,21 +248,23 @@ export default function Home() {
           <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }} />
         </div>
 
-        {/* Floating Particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-primary-500/40 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 10}s`,
-              }}
-            />
-          ))}
-        </div>
+        {/* Floating Particles - Deferred to not block initial paint */}
+        {isVisible && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-primary-500/40 rounded-full animate-float"
+                style={{
+                  left: `${10 + (i * 7) % 80}%`,
+                  top: `${5 + (i * 11) % 90}%`,
+                  animationDelay: `${i * 0.4}s`,
+                  animationDuration: `${6 + (i % 4) * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Hero Content */}
         <div className="relative container-xl py-20 lg:py-32 z-10">
