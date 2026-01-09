@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState, useRef } from 'react'
-import { CheckCircleIcon, TruckIcon, PrinterIcon, ShareIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { TruckIcon, PrinterIcon, ShareIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import { formatPrice, formatDate } from '@/lib/utils'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -275,7 +275,7 @@ export default function OrderSuccess() {
             </div>
 
             {/* Share Button */}
-            {navigator.share && (
+            {'share' in navigator && (
               <button
                 onClick={handleShare}
                 className="mt-6 inline-flex items-center gap-2 px-4 py-2 text-sm text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-fade-in-up opacity-0"

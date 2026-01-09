@@ -72,12 +72,12 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   }
 }
 
-interface ThrottledFunction<T extends (...args: unknown[]) => unknown> {
+interface ThrottledFunction<T extends (...args: never[]) => void> {
   (...args: Parameters<T>): void
   cancel: () => void
 }
 
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: never[]) => void>(
   func: T,
   limit: number
 ): ThrottledFunction<T> {
@@ -85,7 +85,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
   let lastArgs: Parameters<T> | null = null
   let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-  const throttled = (...args: Parameters<T>) => {
+  const throttled = ((...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args)
       inThrottle = true
@@ -99,7 +99,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
     } else {
       lastArgs = args
     }
-  }
+  }) as ThrottledFunction<T>
 
   throttled.cancel = () => {
     if (timeoutId) {
