@@ -114,6 +114,8 @@ const ProductCard = memo(function ProductCard({
             <img
               src={product.primary_image}
               alt={product.name}
+              width={300}
+              height={300}
               className={`w-full h-full object-cover transition-all duration-700 ease-out
                         group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               loading="lazy"

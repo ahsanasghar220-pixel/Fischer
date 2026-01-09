@@ -111,6 +111,7 @@ export default function Header() {
               type="button"
               className="lg:hidden -ml-2 p-2 rounded-xl text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
               onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
             >
               <Bars3Icon className="h-6 w-6" />
             </button>
@@ -120,6 +121,8 @@ export default function Header() {
               <img
                 src="/images/logo.png"
                 alt="Fischer"
+                width={120}
+                height={48}
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
                   isHomePage && !isScrolled ? 'brightness-0 invert' : ''
                 } dark:brightness-0 dark:invert`}
@@ -230,6 +233,7 @@ export default function Header() {
                     ? 'text-white hover:bg-white/10'
                     : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                 }`}
+                aria-label="Search products"
               >
                 <MagnifyingGlassIcon className="h-5 w-5" />
               </button>
@@ -261,6 +265,7 @@ export default function Header() {
                     ? 'text-white hover:bg-white/10'
                     : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                 }`}
+                aria-label={`Shopping cart${cartItemsCount > 0 ? ` with ${cartItemsCount} items` : ''}`}
               >
                 <ShoppingCartIcon className="h-5 w-5" />
                 {cartItemsCount > 0 && (
@@ -438,12 +443,13 @@ export default function Header() {
           {/* Header */}
           <div className="flex items-center justify-between px-5 h-16 border-b border-dark-100 dark:border-dark-800">
             <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-              <img src="/images/logo.png" alt="Fischer" className="h-8 w-auto dark:brightness-0 dark:invert" />
+              <img src="/images/logo.png" alt="Fischer" width={100} height={32} className="h-8 w-auto dark:brightness-0 dark:invert" />
             </Link>
             <button
               type="button"
               className="p-2 rounded-xl text-dark-500 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-800"
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>

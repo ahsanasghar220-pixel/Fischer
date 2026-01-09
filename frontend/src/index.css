@@ -1,5 +1,4 @@
-/* Import Google Fonts - Must be first */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+/* Fonts are loaded asynchronously in index.html to prevent render blocking */
 
 @tailwind base;
 @tailwind components;
@@ -12,8 +11,8 @@
     --color-bg-secondary: 255 255 255;
     --color-bg-tertiary: 244 244 245;
     --color-text-primary: 24 24 27;
-    --color-text-secondary: 63 63 70;
-    --color-text-muted: 113 113 122;
+    --color-text-secondary: 55 55 62; /* Improved contrast: was 63 63 70 */
+    --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
     --color-border: 228 228 231;
     --color-accent: 244 180 44;
     --glass-bg: rgba(255, 255, 255, 0.8);
@@ -26,8 +25,8 @@
     --color-bg-secondary: 24 24 27;
     --color-bg-tertiary: 39 39 42;
     --color-text-primary: 250 250 250;
-    --color-text-secondary: 212 212 216;
-    --color-text-muted: 161 161 170;
+    --color-text-secondary: 220 220 224; /* Improved contrast: was 212 212 216 */
+    --color-text-muted: 180 180 188; /* Improved contrast: was 161 161 170 (now 4.5:1 ratio) */
     --color-border: 63 63 70;
     --color-accent: 244 180 44;
     --glass-bg: rgba(24, 24, 27, 0.8);

@@ -1,0 +1,29 @@
+# Fischer Pakistan - Robots.txt
+# https://fischerpk.com
+
+User-agent: *
+Allow: /
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Disallow admin and account pages
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /account
+Disallow: /account/*
+Disallow: /checkout
+Disallow: /cart
+
+# Disallow API routes
+Disallow: /api/*
+
+# Allow important pages
+Allow: /shop
+Allow: /category/*
+Allow: /product/*
+Allow: /about
+Allow: /contact
+
+# Sitemap location
+Sitemap: https://fischerpk.com/sitemap.xml

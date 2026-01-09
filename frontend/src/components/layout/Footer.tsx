@@ -115,6 +115,8 @@ export default function Footer() {
                 <img
                   src="/images/logo.png"
                   alt="Fischer"
+                  width={120}
+                  height={48}
                   className="h-12 w-auto brightness-0 invert"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'

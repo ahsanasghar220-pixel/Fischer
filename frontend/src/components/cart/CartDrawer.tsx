@@ -72,6 +72,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                       <button
                         onClick={onClose}
                         className="p-2 rounded-xl text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
+                        aria-label="Close cart"
                       >
                         <XMarkIcon className="w-6 h-6" />
                       </button>
@@ -113,6 +114,9 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                     <img
                                       src={item.product.primary_image || item.product.image || ''}
                                       alt={item.product.name}
+                                      width={80}
+                                      height={80}
+                                      loading="lazy"
                                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     />
                                   ) : (
@@ -152,6 +156,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                         onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                         disabled={item.quantity <= 1 || isLoading}
                                         className="w-8 h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors"
+                                        aria-label="Decrease quantity"
                                       >
                                         <MinusIcon className="w-4 h-4" />
                                       </button>
@@ -162,6 +167,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                         disabled={isLoading}
                                         className="w-8 h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors"
+                                        aria-label="Increase quantity"
                                       >
                                         <PlusIcon className="w-4 h-4" />
                                       </button>
@@ -170,6 +176,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                       onClick={() => handleRemoveItem(item.id)}
                                       disabled={isLoading}
                                       className="p-2 text-dark-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                                      aria-label="Remove item"
                                     >
                                       <TrashIcon className="w-5 h-5" />
                                     </button>

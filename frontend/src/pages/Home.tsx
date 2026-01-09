@@ -413,7 +413,9 @@ export default function Home() {
                   <div className="relative h-72 flex items-center justify-center mb-6">
                     <img
                       src="/images/products/water-cooler-100ltr.png"
-                      alt="Featured Product"
+                      alt="Featured Product - Electric Water Cooler FE-100"
+                      width={280}
+                      height={280}
                       className="max-h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-700"
                       onError={(e) => {
                         e.currentTarget.src = 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png'
@@ -466,6 +468,7 @@ export default function Home() {
             <button
               onClick={() => setCurrentBanner((prev) => (prev - 1 + banners.length) % banners.length)}
               className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-110"
+              aria-label="Previous banner"
             >
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
@@ -476,12 +479,14 @@ export default function Home() {
                   onClick={() => setCurrentBanner(index)}
                   className={`h-2 rounded-full transition-all duration-500
                             ${index === currentBanner ? 'w-10 bg-primary-500' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+                  aria-label={`Go to banner ${index + 1}`}
                 />
               ))}
             </div>
             <button
               onClick={() => setCurrentBanner((prev) => (prev + 1) % banners.length)}
               className="p-3 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-110"
+              aria-label="Next banner"
             >
               <ChevronRightIcon className="w-5 h-5" />
             </button>
@@ -839,6 +844,8 @@ export default function Home() {
                       <img
                         src={testimonial.image}
                         alt={testimonial.name}
+                        width={64}
+                        height={64}
                         className="w-16 h-16 rounded-2xl object-cover ring-4 ring-primary-100 dark:ring-primary-900/30"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none'
@@ -874,6 +881,7 @@ export default function Home() {
                   onClick={() => setActiveTestimonial(index)}
                   className={`h-3 rounded-full transition-all duration-300
                             ${index === activeTestimonial ? 'w-10 bg-primary-500' : 'w-3 bg-dark-300 dark:bg-dark-600 hover:bg-primary-300'}`}
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
@@ -896,7 +904,9 @@ export default function Home() {
                 <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
                   <img
                     src="/images/about-fischer.jpg"
-                    alt="Fischer Factory"
+                    alt="Fischer Factory - Manufacturing Facility"
+                    width={600}
+                    height={450}
                     className="w-full aspect-[4/3] object-cover"
                     onError={(e) => {
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80'

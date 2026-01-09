@@ -35,9 +35,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          // Core React libraries
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['@headlessui/react', '@heroicons/react', 'framer-motion'],
+          // UI component libraries
+          ui: ['@headlessui/react', 'framer-motion'],
+          // Icons - separate chunk as they're large
+          icons: ['@heroicons/react'],
+          // Data fetching
           query: ['@tanstack/react-query'],
+          // Toast notifications
+          toast: ['react-hot-toast'],
+          // State management
+          state: ['zustand'],
         },
       },
     },
