@@ -129,7 +129,7 @@ class ProductController extends Controller
 
     public function featured()
     {
-        $products = Product::with(['category', 'images'])
+        $products = Product::with(['category', 'brand', 'images'])
             ->active()
             ->featured()
             ->orderByDesc('created_at')
@@ -141,7 +141,7 @@ class ProductController extends Controller
 
     public function newArrivals()
     {
-        $products = Product::with(['category', 'images'])
+        $products = Product::with(['category', 'brand', 'images'])
             ->active()
             ->new()
             ->orderByDesc('created_at')
@@ -153,7 +153,7 @@ class ProductController extends Controller
 
     public function bestsellers()
     {
-        $products = Product::with(['category', 'images'])
+        $products = Product::with(['category', 'brand', 'images'])
             ->active()
             ->bestseller()
             ->orderByDesc('sales_count')
@@ -184,7 +184,7 @@ class ProductController extends Controller
 
         $categoryIds = $category->getAllChildrenIds();
 
-        $query = Product::with(['category', 'images'])
+        $query = Product::with(['category', 'brand', 'images'])
             ->active()
             ->whereIn('category_id', $categoryIds);
 
@@ -244,11 +244,18 @@ class ProductController extends Controller
 
     protected function getRatingDistribution(Product $product): array
     {
-        $distribution = [];
         $total = $product->review_count ?: 1;
 
+        // Single query to get all rating counts instead of N+1 queries
+        $counts = $product->approvedReviews()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        $distribution = [];
         for ($i = 5; $i >= 1; $i--) {
-            $count = $product->approvedReviews()->where('rating', $i)->count();
+            $count = $counts[$i] ?? 0;
             $distribution[$i] = [
                 'count' => $count,
                 'percentage' => round(($count / $total) * 100),

@@ -72,6 +72,47 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   }
 }
 
+interface ThrottledFunction<T extends (...args: unknown[]) => unknown> {
+  (...args: Parameters<T>): void
+  cancel: () => void
+}
+
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number
+): ThrottledFunction<T> {
+  let inThrottle = false
+  let lastArgs: Parameters<T> | null = null
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+  const throttled = (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args)
+      inThrottle = true
+      timeoutId = setTimeout(() => {
+        inThrottle = false
+        if (lastArgs) {
+          throttled(...lastArgs)
+          lastArgs = null
+        }
+      }, limit)
+    } else {
+      lastArgs = args
+    }
+  }
+
+  throttled.cancel = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
+    inThrottle = false
+    lastArgs = null
+  }
+
+  return throttled
+}
+
 export function getOrderStatusColor(status: string): string {
   const colors: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-800',

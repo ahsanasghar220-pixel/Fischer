@@ -8,29 +8,51 @@ use App\Models\Category;
 use App\Models\Banner;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Featured products
-        $featuredProducts = Product::with(['images', 'category'])
+        // Cache home page data for 30 minutes for better performance
+        $homeData = Cache::remember('home_page_data', 1800, function () {
+            return $this->getHomePageData();
+        });
+
+        // Settings are cached separately (they change less frequently)
+        $settings = Cache::remember('home_settings', 3600, function () {
+            return [
+                'phone' => Setting::get('phone', '+92 321 1146642'),
+                'email' => Setting::get('email', 'fischer.few@gmail.com'),
+                'address' => Setting::get('address'),
+                'social_facebook' => Setting::get('facebook_url'),
+                'social_instagram' => Setting::get('instagram_url'),
+            ];
+        });
+
+        return $this->success(array_merge($homeData, ['settings' => $settings]));
+    }
+
+    protected function getHomePageData(): array
+    {
+        // Featured products - added 'brand' eager loading
+        $featuredProducts = Product::with(['images', 'category', 'brand'])
             ->active()
             ->featured()
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
-        // New arrivals
-        $newArrivals = Product::with(['images', 'category'])
+        // New arrivals - added 'brand' eager loading
+        $newArrivals = Product::with(['images', 'category', 'brand'])
             ->active()
             ->new()
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
-        // Bestsellers
-        $bestsellers = Product::with(['images', 'category'])
+        // Bestsellers - added 'brand' eager loading
+        $bestsellers = Product::with(['images', 'category', 'brand'])
             ->active()
             ->bestseller()
             ->orderByDesc('sales_count')
@@ -67,16 +89,7 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        // Settings
-        $settings = [
-            'phone' => Setting::get('phone', '+92 321 1146642'),
-            'email' => Setting::get('email', 'fischer.few@gmail.com'),
-            'address' => Setting::get('address'),
-            'social_facebook' => Setting::get('facebook_url'),
-            'social_instagram' => Setting::get('instagram_url'),
-        ];
-
-        return $this->success([
+        return [
             'sliders' => $sliders,
             'promo_banners' => $promoBanners,
             'featured_products' => $featuredProducts,
@@ -84,8 +97,7 @@ class HomeController extends Controller
             'bestsellers' => $bestsellers,
             'categories' => $categories,
             'testimonials' => [],
-            'settings' => $settings,
-        ]);
+        ];
     }
 
     public function banners(string $position)

@@ -35,7 +35,7 @@ class CategoryController extends Controller
         return $this->success($categories);
     }
 
-    public function show(string $slug)
+    public function show(string $slug, Request $request)
     {
         $category = Category::with(['children' => function ($query) {
             $query->active()->ordered();
@@ -47,26 +47,39 @@ class CategoryController extends Controller
         // Get all category IDs (including children) for product query
         $categoryIds = $category->getAllChildrenIds();
 
-        // Get products in this category
-        $products = \App\Models\Product::with(['images', 'category'])
+        // Get products in this category with pagination (fixed: was loading ALL products)
+        $perPage = min($request->per_page ?? 24, 50);
+        $products = \App\Models\Product::with(['images', 'category', 'brand'])
             ->active()
             ->whereIn('category_id', $categoryIds)
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate($perPage);
 
-        // Get price range for products in this category
-        $priceRange = \App\Models\Product::active()
-            ->whereIn('category_id', $categoryIds)
-            ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
-            ->first();
+        // Cache price range for this category (changes infrequently)
+        $cacheKey = "category_price_range_{$category->id}";
+        $priceRange = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($categoryIds) {
+            return \App\Models\Product::active()
+                ->whereIn('category_id', $categoryIds)
+                ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
+                ->first();
+        });
 
-        return $this->success([
-            'category' => $category,
-            'products' => $products,
-            'breadcrumb' => $category->breadcrumb ?? [],
-            'price_range' => [
-                'min' => $priceRange->min_price ?? 0,
-                'max' => $priceRange->max_price ?? 0,
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'category' => $category,
+                'breadcrumb' => $category->breadcrumb ?? [],
+                'price_range' => [
+                    'min' => $priceRange->min_price ?? 0,
+                    'max' => $priceRange->max_price ?? 0,
+                ],
+            ],
+            'products' => $products->items(),
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
             ],
         ]);
     }

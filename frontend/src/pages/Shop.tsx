@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { FunnelIcon, XMarkIcon, ChevronDownIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
+import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 interface Product {
@@ -63,6 +64,7 @@ export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
 
   const page = parseInt(searchParams.get('page') || '1')
   const sort = searchParams.get('sort') || 'latest'
@@ -77,6 +79,8 @@ export default function Shop() {
   const isBestseller = searchParams.get('bestseller') === '1'
   const isFeatured = searchParams.get('featured') === '1'
 
+  const queryClient = useQueryClient()
+
   // Fetch categories
   const { data: categoriesRaw } = useQuery<Category[]>({
     queryKey: ['categories'],
@@ -84,20 +88,21 @@ export default function Shop() {
       const response = await api.get('/categories')
       return response.data.data
     },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   })
 
-  // Deduplicate categories by NAME (keep the one with highest products_count)
-  const categories = categoriesRaw?.reduce((acc: Category[], cat) => {
-    const existing = acc.find((c) => c.name === cat.name)
-    if (!existing) {
-      acc.push(cat)
-    } else if ((cat.products_count || 0) > (existing.products_count || 0)) {
-      // Replace with the one that has more products
-      const index = acc.indexOf(existing)
-      acc[index] = cat
+  // Memoize category deduplication - O(n) using Map instead of O(n²) with find()
+  const categories = useMemo(() => {
+    if (!categoriesRaw) return undefined
+    const categoryMap = new Map<string, Category>()
+    for (const cat of categoriesRaw) {
+      const existing = categoryMap.get(cat.name)
+      if (!existing || (cat.products_count || 0) > (existing.products_count || 0)) {
+        categoryMap.set(cat.name, cat)
+      }
     }
-    return acc
-  }, [])
+    return Array.from(categoryMap.values())
+  }, [categoriesRaw])
 
   // Fetch brands
   const { data: brandsRaw } = useQuery<Brand[]>({
@@ -106,12 +111,19 @@ export default function Shop() {
       const response = await api.get('/brands')
       return response.data.data
     },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   })
 
-  // Deduplicate brands by NAME
-  const brands = brandsRaw?.filter((brand, index, self) =>
-    index === self.findIndex((b) => b.name === brand.name)
-  )
+  // Memoize brand deduplication - O(n) using Set instead of O(n²) with findIndex()
+  const brands = useMemo(() => {
+    if (!brandsRaw) return undefined
+    const seen = new Set<string>()
+    return brandsRaw.filter((brand) => {
+      if (seen.has(brand.name)) return false
+      seen.add(brand.name)
+      return true
+    })
+  }, [brandsRaw])
 
   // Fetch products
   const { data: productsData, isLoading } = useQuery<PaginatedProducts>({
@@ -136,18 +148,21 @@ export default function Shop() {
     },
   })
 
-  const updateFilter = (key: string, value: string) => {
+  // Memoized filter update functions to prevent unnecessary re-renders
+  const updateFilter = useCallback((key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams)
     if (value) {
       newParams.set(key, value)
     } else {
       newParams.delete(key)
     }
-    newParams.set('page', '1')
+    if (key !== 'page') {
+      newParams.set('page', '1')
+    }
     setSearchParams(newParams)
-  }
+  }, [searchParams, setSearchParams])
 
-  const toggleFilter = (key: string) => {
+  const toggleFilter = useCallback((key: string) => {
     const newParams = new URLSearchParams(searchParams)
     if (newParams.get(key) === '1') {
       newParams.delete(key)
@@ -156,13 +171,44 @@ export default function Shop() {
     }
     newParams.set('page', '1')
     setSearchParams(newParams)
-  }
+  }, [searchParams, setSearchParams])
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchParams({})
-  }
+  }, [setSearchParams])
 
-  const hasActiveFilters = category || brand || minPrice || maxPrice || inStock || onSale || isNew || isBestseller || isFeatured
+  // Memoize hasActiveFilters check
+  const hasActiveFilters = useMemo(() =>
+    !!(category || brand || minPrice || maxPrice || inStock || onSale || isNew || isBestseller || isFeatured),
+    [category, brand, minPrice, maxPrice, inStock, onSale, isNew, isBestseller, isFeatured]
+  )
+
+  // Prefetch next page for faster pagination
+  const prefetchNextPage = useCallback(() => {
+    if (productsData && page < productsData.meta.last_page) {
+      const nextPage = page + 1
+      queryClient.prefetchQuery({
+        queryKey: ['products', nextPage, sort, category, brand, minPrice, maxPrice, search, inStock, onSale, isNew, isBestseller, isFeatured],
+        queryFn: async () => {
+          const params = new URLSearchParams()
+          params.set('page', nextPage.toString())
+          params.set('sort', sort)
+          if (category) params.set('category', category)
+          if (brand) params.set('brand', brand)
+          if (minPrice) params.set('min_price', minPrice)
+          if (maxPrice) params.set('max_price', maxPrice)
+          if (search) params.set('search', search)
+          if (inStock) params.set('in_stock', '1')
+          if (onSale) params.set('on_sale', '1')
+          if (isNew) params.set('new', '1')
+          if (isBestseller) params.set('bestseller', '1')
+          if (isFeatured) params.set('featured', '1')
+          const response = await api.get(`/products?${params.toString()}`)
+          return response.data
+        },
+      })
+    }
+  }, [queryClient, productsData, page, sort, category, brand, minPrice, maxPrice, search, inStock, onSale, isNew, isBestseller, isFeatured])
 
   return (
     <div className="bg-dark-50 dark:bg-dark-900 min-h-screen transition-colors duration-300">
@@ -479,13 +525,20 @@ export default function Shop() {
                     : 'grid-cols-1'
                 }`}>
                   {productsData.data.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onQuickView={setQuickViewProduct}
+                    />
                   ))}
                 </div>
 
                 {/* Pagination */}
                 {productsData.meta.last_page > 1 && (
-                  <div className="mt-8 flex items-center justify-center gap-2">
+                  <div
+                    className="mt-8 flex items-center justify-center gap-2"
+                    onMouseEnter={prefetchNextPage}
+                  >
                     {Array.from({ length: productsData.meta.last_page }, (_, i) => i + 1).map((p) => (
                       <button
                         key={p}
@@ -517,6 +570,13 @@ export default function Shop() {
           </div>
         </div>
       </div>
+
+      {/* Quick View Modal */}
+      <QuickViewModal
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        product={quickViewProduct}
+      />
     </div>
   )
 }

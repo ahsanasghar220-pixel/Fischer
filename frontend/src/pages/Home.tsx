@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -20,6 +20,7 @@ import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import CategoryIcon from '@/components/ui/CategoryIcon'
+import { throttle } from '@/lib/utils'
 
 interface Category {
   id: number
@@ -160,16 +161,24 @@ export default function Home() {
     setIsVisible(true)
   }, [])
 
-  // Parallax effect
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  // Throttled scroll handler - fires at most every 16ms (~60fps)
+  const throttledScrollHandler = useMemo(
+    () => throttle(() => setScrollY(window.scrollY), 16),
+    []
+  )
 
-  // Mouse tracking for hero section
+  // Parallax effect with throttled scroll
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    window.addEventListener('scroll', throttledScrollHandler, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', throttledScrollHandler)
+      throttledScrollHandler.cancel()
+    }
+  }, [throttledScrollHandler])
+
+  // Throttled mouse move handler - fires at most every 32ms (~30fps for smooth but not excessive)
+  const throttledMouseHandler = useMemo(
+    () => throttle((e: MouseEvent) => {
       if (heroRef.current) {
         const rect = heroRef.current.getBoundingClientRect()
         setMousePosition({
@@ -177,10 +186,18 @@ export default function Home() {
           y: (e.clientY - rect.top) / rect.height,
         })
       }
+    }, 32),
+    []
+  )
+
+  // Mouse tracking for hero section with throttling
+  useEffect(() => {
+    window.addEventListener('mousemove', throttledMouseHandler)
+    return () => {
+      window.removeEventListener('mousemove', throttledMouseHandler)
+      throttledMouseHandler.cancel()
     }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  }, [throttledMouseHandler])
 
   // Auto-slide banners
   useEffect(() => {

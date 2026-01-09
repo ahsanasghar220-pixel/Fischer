@@ -14,6 +14,7 @@ import {
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import CartDrawer from '@/components/cart/CartDrawer'
 
 const navigation = {
   categories: [
@@ -37,6 +38,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -252,8 +254,8 @@ export default function Header() {
               )}
 
               {/* Cart */}
-              <Link
-                to="/cart"
+              <button
+                onClick={() => setCartDrawerOpen(true)}
                 className={`relative p-2.5 rounded-xl transition-all duration-200 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
@@ -266,7 +268,7 @@ export default function Header() {
                     {cartItemsCount > 99 ? '99+' : cartItemsCount}
                   </span>
                 )}
-              </Link>
+              </button>
 
               {/* User menu */}
               {isAuthenticated ? (
@@ -567,6 +569,9 @@ export default function Header() {
           </div>
         </Dialog.Panel>
       </Dialog>
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={cartDrawerOpen} onClose={() => setCartDrawerOpen(false)} />
     </>
   )
 }

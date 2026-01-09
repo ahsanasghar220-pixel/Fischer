@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon, StarIcon } from '@heroicons/react/24/solid'
-import { useState } from 'react'
+import { useState, useCallback, memo, useMemo } from 'react'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
@@ -30,13 +30,16 @@ interface ProductCardProps {
   product: Product
   inWishlist?: boolean
   onWishlistChange?: (inWishlist: boolean) => void
+  onQuickView?: (product: Product) => void
   showNew?: boolean
 }
 
-export default function ProductCard({
+// Memoized ProductCard to prevent unnecessary re-renders
+const ProductCard = memo(function ProductCard({
   product,
   inWishlist = false,
   onWishlistChange,
+  onQuickView,
   showNew = false,
 }: ProductCardProps) {
   const [isInWishlist, setIsInWishlist] = useState(inWishlist)
@@ -45,12 +48,16 @@ export default function ProductCard({
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
-  const discountPercentage =
-    product.compare_price && product.compare_price > product.price
-      ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
-      : null
+  // Memoize discount calculation
+  const discountPercentage = useMemo(() => {
+    if (product.compare_price && product.compare_price > product.price) {
+      return Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
+    }
+    return null
+  }, [product.compare_price, product.price])
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
+  // Memoize event handlers to prevent child re-renders
+  const handleAddToCart = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -65,9 +72,9 @@ export default function ProductCard({
     } finally {
       setIsAddingToCart(false)
     }
-  }
+  }, [product.id, product.stock_status, addItem])
 
-  const handleToggleWishlist = async (e: React.MouseEvent) => {
+  const handleToggleWishlist = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -85,7 +92,13 @@ export default function ProductCard({
     } catch {
       toast.error('Failed to update wishlist')
     }
-  }
+  }, [product.id, isAuthenticated, onWishlistChange])
+
+  const handleQuickView = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onQuickView?.(product)
+  }, [product, onQuickView])
 
   return (
     <Link to={`/product/${product.slug}`} className="group block">
@@ -176,6 +189,7 @@ export default function ProductCard({
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}
             </button>
             <button
+              onClick={handleQuickView}
               className="p-3 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
                         text-dark-900 dark:text-white rounded-xl
                         transition-all duration-200 shadow-lg"
@@ -228,4 +242,6 @@ export default function ProductCard({
       </div>
     </Link>
   )
-}
+})
+
+export default ProductCard
