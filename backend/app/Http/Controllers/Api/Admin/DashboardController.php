@@ -17,112 +17,139 @@ class DashboardController extends Controller
             $today = Carbon::today();
             $thisMonth = Carbon::now()->startOfMonth();
             $lastMonth = Carbon::now()->subMonth()->startOfMonth();
+            $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
 
-            // Basic stats - wrap in try-catch for each section
-            $stats = [
-                'orders' => $this->getOrderStats($today, $thisMonth),
-                'revenue' => $this->getRevenueStats($today, $thisMonth, $lastMonth),
-                'customers' => $this->getCustomerStats($thisMonth),
-                'products' => $this->getProductStats(),
-            ];
+            // Revenue stats
+            $revenueThisMonth = $this->safeSum(Order::class, 'total', fn($q) => $q->where('created_at', '>=', $thisMonth));
+            $revenueLastMonth = $this->safeSum(Order::class, 'total', fn($q) => $q->whereBetween('created_at', [$lastMonth, $lastMonthEnd]));
+            $revenueGrowth = $revenueLastMonth > 0 ? round((($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth) * 100, 1) : 0;
+
+            // Order stats
+            $ordersThisMonth = $this->safeCount(Order::class, fn($q) => $q->where('created_at', '>=', $thisMonth));
+            $ordersLastMonth = $this->safeCount(Order::class, fn($q) => $q->whereBetween('created_at', [$lastMonth, $lastMonthEnd]));
+            $ordersGrowth = $ordersLastMonth > 0 ? round((($ordersThisMonth - $ordersLastMonth) / $ordersLastMonth) * 100, 1) : 0;
+
+            // Customer stats
+            $customersTotal = $this->safeCount(User::class);
+            $customersThisMonth = $this->safeCount(User::class, fn($q) => $q->where('created_at', '>=', $thisMonth));
+            $customersLastMonth = $this->safeCount(User::class, fn($q) => $q->whereBetween('created_at', [$lastMonth, $lastMonthEnd]));
+            $customersGrowth = $customersLastMonth > 0 ? round((($customersThisMonth - $customersLastMonth) / $customersLastMonth) * 100, 1) : 0;
+
+            // Product stats
+            $productsTotal = $this->safeCount(Product::class);
+            $lowStock = $this->safeCount(Product::class, fn($q) => $q->where('stock', '<=', 10)->where('stock', '>', 0));
+            $outOfStock = $this->safeCount(Product::class, fn($q) => $q->where('stock', '<=', 0));
 
             // Recent orders
-            $recentOrders = [];
-            try {
-                $recentOrders = Order::with(['user:id,first_name,last_name,email'])
-                    ->orderByDesc('created_at')
-                    ->limit(10)
-                    ->get();
-            } catch (\Exception $e) {
-                // Orders table might not exist
-            }
+            $recentOrders = $this->getRecentOrders();
 
-            // Top selling products
-            $topProducts = [];
-            try {
-                $topProducts = Product::with('images')
-                    ->where('is_active', true)
-                    ->orderByDesc('id')
-                    ->limit(5)
-                    ->get(['id', 'name', 'slug', 'price']);
-            } catch (\Exception $e) {
-                // Products table might have issues
-            }
-
-            // Low stock products
-            $lowStockProducts = [];
-            try {
-                $lowStockProducts = Product::where('is_active', true)
-                    ->where('stock', '<=', 10)
-                    ->where('stock', '>', 0)
-                    ->orderBy('stock')
-                    ->limit(10)
-                    ->get(['id', 'name', 'sku', 'stock']);
-            } catch (\Exception $e) {
-                // Stock column might not exist
-            }
+            // Top products
+            $topProducts = $this->getTopProducts();
 
             return $this->success([
-                'stats' => $stats,
+                'revenue' => [
+                    'today' => $this->safeSum(Order::class, 'total', fn($q) => $q->whereDate('created_at', $today)),
+                    'this_month' => $revenueThisMonth,
+                    'last_month' => $revenueLastMonth,
+                    'growth' => $revenueGrowth,
+                ],
+                'orders' => [
+                    'total' => $ordersThisMonth,
+                    'pending' => $this->safeCount(Order::class, fn($q) => $q->where('status', 'pending')),
+                    'processing' => $this->safeCount(Order::class, fn($q) => $q->whereIn('status', ['confirmed', 'processing', 'shipped'])),
+                    'delivered' => $this->safeCount(Order::class, fn($q) => $q->where('status', 'delivered')),
+                    'growth' => $ordersGrowth,
+                ],
+                'customers' => [
+                    'total' => $customersTotal,
+                    'new_this_month' => $customersThisMonth,
+                    'growth' => $customersGrowth,
+                ],
+                'products' => [
+                    'total' => $productsTotal,
+                    'low_stock' => $lowStock,
+                    'out_of_stock' => $outOfStock,
+                ],
                 'recent_orders' => $recentOrders,
                 'top_products' => $topProducts,
-                'low_stock_products' => $lowStockProducts,
             ]);
         } catch (\Exception $e) {
             return $this->error('Failed to load dashboard: ' . $e->getMessage(), 500);
         }
     }
 
-    private function getOrderStats($today, $thisMonth)
+    private function safeCount($model, $callback = null)
     {
         try {
-            return [
-                'today' => Order::whereDate('created_at', $today)->count(),
-                'this_month' => Order::where('created_at', '>=', $thisMonth)->count(),
-                'pending' => Order::where('status', 'pending')->count(),
-                'processing' => Order::whereIn('status', ['confirmed', 'processing', 'shipped'])->count(),
-            ];
+            $query = $model::query();
+            if ($callback) {
+                $callback($query);
+            }
+            return $query->count();
         } catch (\Exception $e) {
-            return ['today' => 0, 'this_month' => 0, 'pending' => 0, 'processing' => 0];
+            return 0;
         }
     }
 
-    private function getRevenueStats($today, $thisMonth, $lastMonth)
+    private function safeSum($model, $column, $callback = null)
     {
         try {
-            return [
-                'today' => Order::whereDate('created_at', $today)->sum('total') ?? 0,
-                'this_month' => Order::where('created_at', '>=', $thisMonth)->sum('total') ?? 0,
-                'last_month' => Order::whereBetween('created_at', [$lastMonth, $thisMonth])->sum('total') ?? 0,
-            ];
+            $query = $model::query();
+            if ($callback) {
+                $callback($query);
+            }
+            return $query->sum($column) ?? 0;
         } catch (\Exception $e) {
-            return ['today' => 0, 'this_month' => 0, 'last_month' => 0];
+            return 0;
         }
     }
 
-    private function getCustomerStats($thisMonth)
+    private function getRecentOrders()
     {
         try {
-            return [
-                'total' => User::count(),
-                'new_this_month' => User::where('created_at', '>=', $thisMonth)->count(),
-            ];
+            $orders = Order::with(['user:id,first_name,last_name,email'])
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get();
+
+            return $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'customer_name' => $order->user ? ($order->user->first_name . ' ' . $order->user->last_name) : 'Guest',
+                    'total' => $order->total,
+                    'status' => $order->status,
+                    'created_at' => $order->created_at->toISOString(),
+                ];
+            });
         } catch (\Exception $e) {
-            return ['total' => 0, 'new_this_month' => 0];
+            return [];
         }
     }
 
-    private function getProductStats()
+    private function getTopProducts()
     {
         try {
-            return [
-                'total' => Product::count(),
-                'active' => Product::where('is_active', true)->count(),
-                'low_stock' => Product::where('stock', '<=', 10)->where('stock', '>', 0)->count(),
-                'out_of_stock' => Product::where('stock', 0)->orWhere('stock_status', 'out_of_stock')->count(),
-            ];
+            $products = Product::with('images')
+                ->where('is_active', true)
+                ->orderByDesc('id')
+                ->limit(5)
+                ->get();
+
+            return $products->map(function ($product) {
+                $primaryImage = $product->images->where('is_primary', true)->first()
+                    ?? $product->images->first();
+
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'primary_image' => $primaryImage ? asset('storage/' . $primaryImage->image_path) : null,
+                    'total_sold' => $product->sales_count ?? 0,
+                    'revenue' => ($product->sales_count ?? 0) * $product->price,
+                ];
+            });
         } catch (\Exception $e) {
-            return ['total' => 0, 'active' => 0, 'low_stock' => 0, 'out_of_stock' => 0];
+            return [];
         }
     }
 
