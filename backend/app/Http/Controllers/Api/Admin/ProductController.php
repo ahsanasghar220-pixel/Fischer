@@ -54,7 +54,7 @@ class ProductController extends Controller
                 'slug' => $product->slug,
                 'sku' => $product->sku,
                 'price' => $product->price,
-                'stock' => $product->stock ?? 0,
+                'stock' => $product->stock_quantity ?? 0,
                 'stock_status' => $product->stock_status,
                 'is_active' => $product->is_active,
                 'primary_image' => $product->primary_image,
@@ -106,6 +106,12 @@ class ProductController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
+        // Map 'stock' to 'stock_quantity' if sent from frontend
+        if (isset($validated['stock'])) {
+            $validated['stock_quantity'] = $validated['stock'];
+            unset($validated['stock']);
+        }
+
         $validated['slug'] = Str::slug($validated['name']);
 
         // Check for duplicate slug
@@ -134,6 +140,7 @@ class ProductController extends Controller
             'compare_price' => 'nullable|numeric|min:0',
             'cost_price' => 'nullable|numeric|min:0',
             'stock' => 'sometimes|integer|min:0',
+            'stock_quantity' => 'sometimes|integer|min:0',
             'low_stock_threshold' => 'nullable|integer|min:0',
             'stock_status' => 'nullable|string|in:in_stock,out_of_stock,backorder,preorder',
             'is_active' => 'boolean',
@@ -147,6 +154,12 @@ class ProductController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
+
+        // Map 'stock' to 'stock_quantity' if sent from frontend
+        if (isset($validated['stock'])) {
+            $validated['stock_quantity'] = $validated['stock'];
+            unset($validated['stock']);
+        }
 
         // Update slug if name changed
         if (isset($validated['name']) && $validated['name'] !== $product->name) {

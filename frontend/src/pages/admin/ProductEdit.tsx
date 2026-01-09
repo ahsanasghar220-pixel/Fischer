@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import toast from 'react-hot-toast'
 
 interface Category {
   id: number
@@ -27,7 +28,8 @@ interface Product {
   price: number
   compare_price: number | null
   cost_price: number | null
-  stock: number
+  stock?: number
+  stock_quantity?: number
   low_stock_threshold: number
   stock_status: string
   is_active: boolean
@@ -107,7 +109,7 @@ export default function ProductEdit() {
         price: product.price?.toString() || '',
         compare_price: product.compare_price?.toString() || '',
         cost_price: product.cost_price?.toString() || '',
-        stock: product.stock?.toString() || '0',
+        stock: (product.stock_quantity ?? product.stock)?.toString() || '0',
         low_stock_threshold: product.low_stock_threshold?.toString() || '5',
         stock_status: product.stock_status || 'in_stock',
         is_active: product.is_active ?? true,
@@ -148,11 +150,18 @@ export default function ProductEdit() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['admin-product', id] })
+      toast.success(isNew ? 'Product created successfully' : 'Product updated successfully')
       navigate('/admin/products')
     },
     onError: (error: any) => {
+      console.error('Save error:', error)
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors)
+        toast.error('Please fix the validation errors')
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error('Failed to save product')
       }
     },
   })

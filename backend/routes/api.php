@@ -256,6 +256,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
 
     // Settings
     Route::get('/settings', [App\Http\Controllers\Api\Admin\SettingController::class, 'index']);
+    Route::put('/settings', [App\Http\Controllers\Api\Admin\SettingController::class, 'update']);
     Route::post('/settings', [App\Http\Controllers\Api\Admin\SettingController::class, 'update']);
     Route::get('/settings/{group}', [App\Http\Controllers\Api\Admin\SettingController::class, 'group']);
 
