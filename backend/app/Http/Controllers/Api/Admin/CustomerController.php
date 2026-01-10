@@ -11,8 +11,11 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get users who have placed orders (customers) - avoid Spatie role dependency
-            $query = User::whereHas('orders')->withCount('orders');
+            // Get users who have placed orders (customers) - optimized query
+            $query = User::whereHas('orders')
+                ->withCount('orders')
+                ->withSum('orders', 'total')
+                ->withMax('orders', 'created_at'); // Get last order date efficiently
 
             // Search
             if ($search = $request->get('search')) {
@@ -29,11 +32,10 @@ class CustomerController extends Controller
                 $query->where('status', $status);
             }
 
-            $customers = $query->withSum('orders', 'total')->orderByDesc('created_at')->paginate(15);
+            $customers = $query->orderByDesc('created_at')->paginate(15);
 
-            // Transform for frontend
+            // Transform for frontend - no additional queries needed!
             $transformedCustomers = collect($customers->items())->map(function ($customer) {
-                $lastOrder = $customer->orders()->latest()->first();
                 return [
                     'id' => $customer->id,
                     'name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
@@ -44,7 +46,7 @@ class CustomerController extends Controller
                     'loyalty_points' => $customer->loyalty_points ?? 0,
                     'status' => $customer->status ?? 'active',
                     'created_at' => $customer->created_at ? $customer->created_at->toISOString() : null,
-                    'last_order_at' => $lastOrder ? $lastOrder->created_at->toISOString() : null,
+                    'last_order_at' => $customer->orders_max_created_at,
                 ];
             });
 

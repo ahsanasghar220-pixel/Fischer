@@ -10,7 +10,9 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Order::with(['user:id,first_name,last_name,email', 'items.product:id,name,slug']);
+        // Optimized query - use withCount instead of loading all items
+        $query = Order::with(['user:id,first_name,last_name,email'])
+            ->withCount('items');
 
         // Search
         if ($search = $request->get('search')) {
@@ -55,7 +57,7 @@ class OrderController extends Controller
                 'payment_status' => $order->payment_status ?? 'pending',
                 'payment_method' => $order->payment_method ?? 'cod',
                 'total' => $order->total,
-                'items_count' => $order->items->count(),
+                'items_count' => $order->items_count ?? 0,
                 'created_at' => $order->created_at->toISOString(),
             ];
         });
