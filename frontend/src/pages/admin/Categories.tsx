@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { PlusIcon, PencilIcon, TrashIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, PencilIcon, TrashIcon, ChevronRightIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
+import CategoryIcon from '@/components/ui/CategoryIcon'
 
 interface Category {
   id: number
@@ -21,6 +22,7 @@ export default function AdminCategories() {
   const queryClient = useQueryClient()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -96,14 +98,15 @@ export default function AdminCategories() {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
   }
 
-  const renderCategory = (category: Category, level = 0) => (
+  // List view render
+  const renderCategoryList = (category: Category, level = 0) => (
     <div key={category.id}>
       <div className={`flex items-center justify-between p-4 hover:bg-dark-50 dark:hover:bg-dark-700/50 ${level > 0 ? 'ml-8' : ''}`}>
         <div className="flex items-center gap-3">
           {level > 0 && <ChevronRightIcon className="w-4 h-4 text-dark-300 dark:text-dark-500" />}
-          {category.image && (
-            <img src={category.image} alt={category.name} className="w-10 h-10 rounded-lg object-cover" />
-          )}
+          <div className="w-12 h-12 bg-gradient-to-br from-dark-800 to-dark-900 rounded-xl flex items-center justify-center">
+            <CategoryIcon slug={category.slug} className="w-8 h-8" />
+          </div>
           <div>
             <p className="font-medium text-dark-900 dark:text-white">{category.name}</p>
             <p className="text-xs text-dark-500 dark:text-dark-400">{category.products_count} products</p>
@@ -135,7 +138,89 @@ export default function AdminCategories() {
           </div>
         </div>
       </div>
-      {category.children?.map((child) => renderCategory(child, level + 1))}
+      {category.children?.map((child) => renderCategoryList(child, level + 1))}
+    </div>
+  )
+
+  // Grid view card render
+  const renderCategoryCard = (category: Category) => (
+    <div
+      key={category.id}
+      className="group relative bg-gradient-to-br from-dark-800 to-dark-900 rounded-2xl overflow-hidden border border-dark-700 hover:border-primary-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10"
+    >
+      {/* Status badge */}
+      <div className="absolute top-3 left-3 z-10">
+        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+          category.is_active
+            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+        }`}>
+          {category.is_active ? 'Active' : 'Inactive'}
+        </span>
+      </div>
+
+      {/* Action buttons */}
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => handleEdit(category)}
+          className="p-2 bg-dark-700/80 backdrop-blur-sm rounded-lg text-dark-300 hover:text-primary-400 hover:bg-dark-600 transition-colors"
+        >
+          <PencilIcon className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => {
+            if (confirm('Are you sure you want to delete this category?')) {
+              deleteMutation.mutate(category.id)
+            }
+          }}
+          className="p-2 bg-dark-700/80 backdrop-blur-sm rounded-lg text-dark-300 hover:text-red-400 hover:bg-dark-600 transition-colors"
+        >
+          <TrashIcon className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Icon area */}
+      <div className="h-36 flex items-center justify-center relative overflow-hidden">
+        {/* Background gradient effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-500/0 group-hover:from-primary-500/10 group-hover:to-amber-500/10 transition-all duration-500" />
+
+        {/* Icon with hover scale */}
+        <div className="group-hover:scale-110 transition-transform duration-500">
+          <CategoryIcon slug={category.slug} className="w-20 h-20" />
+        </div>
+      </div>
+
+      {/* Info section */}
+      <div className="p-4 bg-dark-800/50 border-t border-dark-700">
+        <h3 className="font-bold text-white truncate">{category.name}</h3>
+        <p className="text-sm text-dark-400">{category.products_count} products</p>
+
+        {/* Children count if any */}
+        {category.children && category.children.length > 0 && (
+          <p className="text-xs text-primary-400 mt-1">
+            {category.children.length} subcategories
+          </p>
+        )}
+      </div>
+
+      {/* Subcategories preview */}
+      {category.children && category.children.length > 0 && (
+        <div className="px-4 pb-4 flex flex-wrap gap-1">
+          {category.children.slice(0, 3).map((child) => (
+            <span
+              key={child.id}
+              className="px-2 py-0.5 text-xs bg-dark-700 text-dark-300 rounded-full truncate max-w-[100px]"
+            >
+              {child.name}
+            </span>
+          ))}
+          {category.children.length > 3 && (
+            <span className="px-2 py-0.5 text-xs bg-dark-700 text-dark-400 rounded-full">
+              +{category.children.length - 3} more
+            </span>
+          )}
+        </div>
+      )}
     </div>
   )
 
@@ -147,15 +232,42 @@ export default function AdminCategories() {
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Categories</h1>
           <p className="text-dark-500 dark:text-dark-400">Organize your products</p>
         </div>
-        {!showForm && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn btn-primary flex items-center gap-2"
-          >
-            <PlusIcon className="w-5 h-5" />
-            Add Category
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {/* View toggle */}
+          <div className="flex items-center bg-dark-100 dark:bg-dark-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-white dark:bg-dark-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                  : 'text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200'
+              }`}
+              title="Grid view"
+            >
+              <Squares2X2Icon className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'list'
+                  ? 'bg-white dark:bg-dark-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                  : 'text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200'
+              }`}
+              title="List view"
+            >
+              <ListBulletIcon className="w-5 h-5" />
+            </button>
+          </div>
+          {!showForm && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="btn btn-primary flex items-center gap-2"
+            >
+              <PlusIcon className="w-5 h-5" />
+              Add Category
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Form */}
@@ -242,22 +354,30 @@ export default function AdminCategories() {
         </div>
       )}
 
-      {/* Categories List */}
-      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <LoadingSpinner size="lg" />
-          </div>
-        ) : categories && categories.length > 0 ? (
-          <div className="divide-y divide-dark-200 dark:divide-dark-700">
-            {categories.filter(c => !c.parent_id).map((category) => renderCategory(category))}
+      {/* Categories Display */}
+      {isLoading ? (
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-12 flex items-center justify-center">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : categories && categories.length > 0 ? (
+        viewMode === 'grid' ? (
+          // Grid View
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {categories.filter(c => !c.parent_id).map((category) => renderCategoryCard(category))}
           </div>
         ) : (
-          <div className="p-12 text-center text-dark-500 dark:text-dark-400">
-            No categories yet. Create your first category to get started.
+          // List View
+          <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
+            <div className="divide-y divide-dark-200 dark:divide-dark-700">
+              {categories.filter(c => !c.parent_id).map((category) => renderCategoryList(category))}
+            </div>
           </div>
-        )}
-      </div>
+        )
+      ) : (
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-12 text-center text-dark-500 dark:text-dark-400">
+          No categories yet. Create your first category to get started.
+        </div>
+      )}
     </div>
   )
 }
