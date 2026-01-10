@@ -5,28 +5,71 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::withCount('products');
+        $search = $request->get('search');
 
-        if ($search = $request->get('search')) {
+        // Cache categories for 10 minutes if no search
+        $cacheKey = $search ? null : 'admin_categories';
+        if ($cacheKey && Cache::has($cacheKey)) {
+            return $this->success(Cache::get($cacheKey));
+        }
+
+        // Fast raw query for parent categories
+        $query = DB::table('categories')
+            ->select([
+                'id', 'name', 'slug', 'description', 'image', 'icon',
+                'parent_id', 'sort_order', 'is_active', 'is_featured',
+                DB::raw('(SELECT COUNT(*) FROM products WHERE products.category_id = categories.id AND products.deleted_at IS NULL) as products_count'),
+            ])
+            ->whereNull('deleted_at')
+            ->whereNull('parent_id');
+
+        if ($search) {
             $query->where('name', 'like', "%{$search}%");
         }
 
-        // Get only parent categories with their children
-        $query->whereNull('parent_id')
-              ->with(['children' => function ($q) {
-                  $q->withCount('products')->orderBy('sort_order')->orderBy('name');
-              }]);
+        $parentCategories = $query->orderBy('sort_order')->orderBy('name')->get();
 
-        $categories = $query->orderBy('sort_order')->orderBy('name')->get();
+        // Get all children in one query
+        $parentIds = $parentCategories->pluck('id')->toArray();
+        $childrenMap = [];
 
-        // Return categories directly without extra wrapper
-        return $this->success($categories);
+        if (!empty($parentIds)) {
+            $children = DB::table('categories')
+                ->select([
+                    'id', 'name', 'slug', 'description', 'image', 'icon',
+                    'parent_id', 'sort_order', 'is_active', 'is_featured',
+                    DB::raw('(SELECT COUNT(*) FROM products WHERE products.category_id = categories.id AND products.deleted_at IS NULL) as products_count'),
+                ])
+                ->whereIn('parent_id', $parentIds)
+                ->whereNull('deleted_at')
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get();
+
+            foreach ($children as $child) {
+                $childrenMap[$child->parent_id][] = $child;
+            }
+        }
+
+        // Build result with children attached
+        $result = $parentCategories->map(function ($cat) use ($childrenMap) {
+            $cat->children = $childrenMap[$cat->id] ?? [];
+            return $cat;
+        });
+
+        if ($cacheKey) {
+            Cache::put($cacheKey, $result, 600);
+        }
+
+        return $this->success($result);
     }
 
     public function show($id)

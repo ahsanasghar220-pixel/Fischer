@@ -5,78 +5,125 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category:id,name,slug', 'images']);
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $categoryId = $request->get('category_id');
+        $perPage = 15;
+
+        // Raw query for maximum speed
+        $query = DB::table('products')
+            ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+            ->leftJoin('product_images', function ($join) {
+                $join->on('products.id', '=', 'product_images.product_id')
+                    ->where('product_images.is_primary', '=', true);
+            })
+            ->select([
+                'products.id',
+                'products.name',
+                'products.slug',
+                'products.sku',
+                'products.price',
+                'products.stock_quantity',
+                'products.stock_status',
+                'products.is_active',
+                'categories.id as category_id',
+                'categories.name as category_name',
+                'categories.slug as category_slug',
+                'product_images.image as primary_image',
+            ])
+            ->whereNull('products.deleted_at');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
+                $q->where('products.name', 'like', "%{$search}%")
+                  ->orWhere('products.sku', 'like', "%{$search}%");
             });
         }
 
         // Filter by status
-        if ($status = $request->get('status')) {
+        if ($status) {
             switch ($status) {
                 case 'active':
-                    $query->where('is_active', true);
+                    $query->where('products.is_active', true);
                     break;
                 case 'inactive':
-                    $query->where('is_active', false);
+                    $query->where('products.is_active', false);
                     break;
                 case 'out_of_stock':
-                    $query->where('stock', 0);
+                    $query->where('products.stock_quantity', '<=', 0);
                     break;
                 case 'low_stock':
-                    $query->where('stock', '>', 0)->where('stock', '<=', 10);
+                    $query->where('products.stock_quantity', '>', 0)
+                          ->where('products.stock_quantity', '<=', 10);
                     break;
             }
         }
 
         // Filter by category
-        if ($categoryId = $request->get('category_id')) {
-            $query->where('category_id', $categoryId);
+        if ($categoryId) {
+            $query->where('products.category_id', $categoryId);
         }
 
-        $products = $query->orderByDesc('created_at')->paginate(15);
+        // Get total
+        $total = $query->count();
 
-        // Transform the data
-        $products->getCollection()->transform(function ($product) {
+        // Get paginated results
+        $products = $query->orderByDesc('products.created_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        // Transform
+        $transformedProducts = $products->map(function ($product) {
+            $imageUrl = null;
+            if ($product->primary_image) {
+                $imageUrl = str_starts_with($product->primary_image, 'http')
+                    ? $product->primary_image
+                    : (str_starts_with($product->primary_image, '/') ? $product->primary_image : '/' . $product->primary_image);
+            }
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
                 'sku' => $product->sku,
-                'price' => $product->price,
-                'stock' => $product->stock_quantity ?? 0,
+                'price' => (float) $product->price,
+                'stock' => (int) ($product->stock_quantity ?? 0),
                 'stock_status' => $product->stock_status,
-                'is_active' => $product->is_active,
-                'primary_image' => $product->primary_image,
-                'category' => $product->category,
+                'is_active' => (bool) $product->is_active,
+                'primary_image' => $imageUrl,
+                'category' => $product->category_id ? [
+                    'id' => $product->category_id,
+                    'name' => $product->category_name,
+                    'slug' => $product->category_slug,
+                ] : null,
             ];
         });
 
         return $this->success([
-            'data' => $products->items(),
+            'data' => $transformedProducts,
             'meta' => [
-                'current_page' => $products->currentPage(),
-                'last_page' => $products->lastPage(),
-                'total' => $products->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
         ]);
     }
 
     public function show($id)
     {
-        $product = Product::with(['category', 'images'])->findOrFail($id);
+        $product = Product::with(['category:id,name,slug', 'images'])->findOrFail($id);
 
-        // Return product directly without extra wrapper
         return $this->success($product);
     }
 
@@ -105,7 +152,6 @@ class ProductController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        // Map 'stock' to 'stock_quantity' if sent from frontend
         if (isset($validated['stock'])) {
             $validated['stock_quantity'] = $validated['stock'];
             unset($validated['stock']);
@@ -120,6 +166,9 @@ class ProductController extends Controller
         }
 
         $product = Product::create($validated);
+
+        // Clear dashboard cache
+        Cache::forget('admin_dashboard');
 
         return $this->success([
             'data' => $product,
@@ -154,13 +203,11 @@ class ProductController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        // Map 'stock' to 'stock_quantity' if sent from frontend
         if (isset($validated['stock'])) {
             $validated['stock_quantity'] = $validated['stock'];
             unset($validated['stock']);
         }
 
-        // Update slug if name changed
         if (isset($validated['name']) && $validated['name'] !== $product->name) {
             $validated['slug'] = Str::slug($validated['name']);
             $slugCount = Product::where('slug', $validated['slug'])->where('id', '!=', $id)->count();
@@ -171,6 +218,9 @@ class ProductController extends Controller
 
         $product->update($validated);
 
+        // Clear dashboard cache
+        Cache::forget('admin_dashboard');
+
         return $this->success([
             'data' => $product->fresh(),
         ], 'Product updated successfully');
@@ -180,6 +230,9 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
+
+        // Clear dashboard cache
+        Cache::forget('admin_dashboard');
 
         return $this->success(null, 'Product deleted successfully');
     }
@@ -197,7 +250,7 @@ class ProductController extends Controller
         foreach ($request->file('images') as $image) {
             $path = $image->store('products', 'public');
             $productImage = $product->images()->create([
-                'url' => '/storage/' . $path,
+                'image' => '/storage/' . $path,
                 'is_primary' => $product->images()->count() === 0,
             ]);
             $uploadedImages[] = $productImage;
@@ -213,9 +266,10 @@ class ProductController extends Controller
         $product = Product::findOrFail($productId);
         $image = $product->images()->findOrFail($imageId);
 
-        // Delete file from storage
-        $path = str_replace('/storage/', '', $image->url);
-        \Storage::disk('public')->delete($path);
+        $path = str_replace('/storage/', '', $image->image ?? $image->url ?? '');
+        if ($path) {
+            \Storage::disk('public')->delete($path);
+        }
 
         $image->delete();
 

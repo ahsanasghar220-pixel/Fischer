@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class ReportController extends Controller
@@ -17,34 +19,46 @@ class ReportController extends Controller
         $endDate = $request->get('end') ? Carbon::parse($request->get('end')) : Carbon::now();
 
         try {
-            // Get orders in date range
-            $orders = Order::whereBetween('created_at', [$startDate, $endDate])->get();
+            // Single aggregated query - no loading all orders!
+            $summary = DB::table('orders')
+                ->selectRaw('
+                    COALESCE(SUM(total), 0) as total_revenue,
+                    COUNT(*) as total_orders,
+                    COALESCE(AVG(total), 0) as avg_order_value
+                ')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereNull('deleted_at')
+                ->first();
 
-            // Calculate totals
-            $totalRevenue = $orders->sum('total');
-            $totalOrders = $orders->count();
-            $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
-
-            // Group by week for chart data
-            $salesByWeek = $orders->groupBy(function ($order) {
-                return $order->created_at->startOfWeek()->format('M d');
-            })->map(function ($weekOrders, $week) {
-                return [
-                    'date' => $week,
-                    'revenue' => $weekOrders->sum('total'),
-                    'orders' => $weekOrders->count(),
-                    'profit' => $weekOrders->sum('total') * 0.2, // Estimated profit margin
-                ];
-            })->values();
+            // Weekly aggregation at database level
+            $weeklyData = DB::table('orders')
+                ->selectRaw('
+                    DATE(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY)) as week_start,
+                    SUM(total) as revenue,
+                    COUNT(*) as orders
+                ')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->whereNull('deleted_at')
+                ->groupBy('week_start')
+                ->orderBy('week_start')
+                ->get()
+                ->map(function ($row) {
+                    return [
+                        'date' => Carbon::parse($row->week_start)->format('M d'),
+                        'revenue' => (float) $row->revenue,
+                        'orders' => (int) $row->orders,
+                        'profit' => (float) $row->revenue * 0.2,
+                    ];
+                });
 
             return $this->success([
                 'summary' => [
-                    'total_revenue' => $totalRevenue,
-                    'total_orders' => $totalOrders,
-                    'avg_order_value' => round($avgOrderValue, 2),
-                    'total_profit' => $totalRevenue * 0.2,
+                    'total_revenue' => (float) $summary->total_revenue,
+                    'total_orders' => (int) $summary->total_orders,
+                    'avg_order_value' => round((float) $summary->avg_order_value, 2),
+                    'total_profit' => (float) $summary->total_revenue * 0.2,
                 ],
-                'chart_data' => $salesByWeek,
+                'chart_data' => $weeklyData,
             ]);
         } catch (\Exception $e) {
             return $this->success([
@@ -65,30 +79,40 @@ class ReportController extends Controller
         $endDate = $request->get('end') ? Carbon::parse($request->get('end')) : Carbon::now();
 
         try {
-            // Get top selling products
-            $products = Product::with('orderItems')
-                ->withCount(['orderItems as units_sold' => function ($q) use ($startDate, $endDate) {
-                    $q->whereHas('order', function ($oq) use ($startDate, $endDate) {
-                        $oq->whereBetween('created_at', [$startDate, $endDate]);
-                    });
-                }])
+            // Fast raw query with join
+            $products = DB::table('products')
+                ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+                ->leftJoin('orders', function ($join) use ($startDate, $endDate) {
+                    $join->on('order_items.order_id', '=', 'orders.id')
+                        ->whereBetween('orders.created_at', [$startDate, $endDate])
+                        ->whereNull('orders.deleted_at');
+                })
+                ->select([
+                    'products.id',
+                    'products.name',
+                    'products.sku',
+                    'products.price',
+                    'products.stock_quantity',
+                    DB::raw('COALESCE(SUM(order_items.quantity), 0) as units_sold'),
+                ])
+                ->whereNull('products.deleted_at')
+                ->groupBy('products.id', 'products.name', 'products.sku', 'products.price', 'products.stock_quantity')
                 ->orderByDesc('units_sold')
                 ->limit(10)
-                ->get();
-
-            $productData = $products->map(function ($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'sku' => $product->sku,
-                    'sold' => $product->units_sold ?? 0,
-                    'revenue' => ($product->units_sold ?? 0) * $product->price,
-                    'stock' => $product->stock_quantity ?? 0,
-                ];
-            });
+                ->get()
+                ->map(function ($product) {
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'sku' => $product->sku,
+                        'sold' => (int) $product->units_sold,
+                        'revenue' => (float) ($product->units_sold * $product->price),
+                        'stock' => (int) ($product->stock_quantity ?? 0),
+                    ];
+                });
 
             return $this->success([
-                'products' => $productData,
+                'products' => $products,
             ]);
         } catch (\Exception $e) {
             return $this->success([
@@ -103,23 +127,27 @@ class ReportController extends Controller
         $endDate = $request->get('end') ? Carbon::parse($request->get('end')) : Carbon::now();
 
         try {
-            // Get users who have placed orders (customers)
-            $totalCustomers = User::whereHas('orders')->count();
+            // Single query to get all customer stats
+            $stats = DB::selectOne("
+                SELECT
+                    (SELECT COUNT(DISTINCT user_id) FROM orders WHERE user_id IS NOT NULL AND deleted_at IS NULL) as total_customers,
+                    (SELECT COUNT(DISTINCT u.id) FROM users u
+                     INNER JOIN orders o ON u.id = o.user_id
+                     WHERE u.created_at >= ? AND u.created_at <= ? AND o.deleted_at IS NULL) as new_customers,
+                    (SELECT COUNT(*) FROM (
+                        SELECT user_id FROM orders WHERE user_id IS NOT NULL AND deleted_at IS NULL
+                        GROUP BY user_id HAVING COUNT(*) > 1
+                    ) as returning) as returning_customers,
+                    (SELECT COUNT(*) FROM (
+                        SELECT user_id FROM orders WHERE user_id IS NOT NULL AND deleted_at IS NULL
+                        GROUP BY user_id HAVING SUM(total) > 50000
+                    ) as vip) as vip_customers
+            ", [$startDate, $endDate]);
 
-            // New customers in date range
-            $newCustomers = User::whereBetween('created_at', [$startDate, $endDate])
-                ->whereHas('orders')
-                ->count();
-
-            // Returning customers (more than 1 order)
-            $returningCustomers = User::has('orders', '>', 1)->count();
-
-            // VIP customers - get users with order totals > 50000
-            $vipCustomers = Order::select('user_id')
-                ->whereNotNull('user_id')
-                ->groupBy('user_id')
-                ->havingRaw('SUM(total) > 50000')
-                ->count();
+            $totalCustomers = (int) $stats->total_customers;
+            $newCustomers = (int) $stats->new_customers;
+            $returningCustomers = (int) $stats->returning_customers;
+            $vipCustomers = (int) $stats->vip_customers;
 
             $segments = [
                 ['segment' => 'New', 'count' => $newCustomers, 'value' => $newCustomers * 15000],
@@ -143,11 +171,23 @@ class ReportController extends Controller
     public function inventory(Request $request)
     {
         try {
-            $inStock = Product::where('stock_quantity', '>', 10)->count();
-            $lowStock = Product::where('stock_quantity', '>', 0)->where('stock_quantity', '<=', 10)->count();
-            $outOfStock = Product::where('stock_quantity', '<=', 0)->count();
-            $discontinued = Product::where('is_active', false)->count();
-            $total = Product::count();
+            // Single query for all inventory stats
+            $stats = DB::table('products')
+                ->selectRaw("
+                    COUNT(*) as total,
+                    SUM(CASE WHEN stock_quantity > 10 THEN 1 ELSE 0 END) as in_stock,
+                    SUM(CASE WHEN stock_quantity > 0 AND stock_quantity <= 10 THEN 1 ELSE 0 END) as low_stock,
+                    SUM(CASE WHEN stock_quantity <= 0 THEN 1 ELSE 0 END) as out_of_stock,
+                    SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as discontinued
+                ")
+                ->whereNull('deleted_at')
+                ->first();
+
+            $total = (int) $stats->total;
+            $inStock = (int) $stats->in_stock;
+            $lowStock = (int) $stats->low_stock;
+            $outOfStock = (int) $stats->out_of_stock;
+            $discontinued = (int) $stats->discontinued;
 
             $status = [
                 ['status' => 'In Stock', 'count' => $inStock, 'percentage' => $total > 0 ? round(($inStock / $total) * 100) : 0],
@@ -156,19 +196,14 @@ class ReportController extends Controller
                 ['status' => 'Discontinued', 'count' => $discontinued, 'percentage' => $total > 0 ? round(($discontinued / $total) * 100) : 0],
             ];
 
-            // Low stock products
-            $lowStockProducts = Product::where('stock_quantity', '>', 0)
+            // Low stock products - simple query
+            $lowStockProducts = DB::table('products')
+                ->select(['id', 'name', 'sku', 'stock_quantity as stock'])
+                ->where('stock_quantity', '>', 0)
                 ->where('stock_quantity', '<=', 10)
+                ->whereNull('deleted_at')
                 ->limit(10)
-                ->get()
-                ->map(function ($product) {
-                    return [
-                        'id' => $product->id,
-                        'name' => $product->name,
-                        'sku' => $product->sku,
-                        'stock' => $product->stock_quantity,
-                    ];
-                });
+                ->get();
 
             return $this->success([
                 'status' => $status,

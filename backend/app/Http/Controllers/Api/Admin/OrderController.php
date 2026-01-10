@@ -5,69 +5,101 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        // Optimized query - use withCount instead of loading all items
-        $query = Order::with(['user:id,first_name,last_name,email'])
-            ->withCount('items');
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $paymentStatus = $request->get('payment_status');
+        $from = $request->get('from');
+        $to = $request->get('to');
+
+        // Build raw query for maximum performance
+        $query = DB::table('orders')
+            ->leftJoin('users', 'orders.user_id', '=', 'users.id')
+            ->select([
+                'orders.id',
+                'orders.order_number',
+                'orders.status',
+                'orders.payment_status',
+                'orders.payment_method',
+                'orders.total',
+                'orders.created_at',
+                'orders.shipping_first_name',
+                'orders.shipping_last_name',
+                'orders.shipping_email',
+                'users.first_name as user_first_name',
+                'users.last_name as user_last_name',
+                'users.email as user_email',
+                DB::raw('(SELECT COUNT(*) FROM order_items WHERE order_items.order_id = orders.id) as items_count')
+            ])
+            ->whereNull('orders.deleted_at');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhereHas('user', function ($userQuery) use ($search) {
-                      $userQuery->where('email', 'like', "%{$search}%")
-                               ->orWhere('first_name', 'like', "%{$search}%")
-                               ->orWhere('last_name', 'like', "%{$search}%");
-                  });
+                $q->where('orders.order_number', 'like', "%{$search}%")
+                  ->orWhere('users.email', 'like', "%{$search}%")
+                  ->orWhere('users.first_name', 'like', "%{$search}%")
+                  ->orWhere('users.last_name', 'like', "%{$search}%");
             });
         }
 
-        // Filter by status
-        if ($status = $request->get('status')) {
-            $query->where('status', $status);
+        // Filters
+        if ($status) {
+            $query->where('orders.status', $status);
+        }
+        if ($paymentStatus) {
+            $query->where('orders.payment_status', $paymentStatus);
+        }
+        if ($from) {
+            $query->whereDate('orders.created_at', '>=', $from);
+        }
+        if ($to) {
+            $query->whereDate('orders.created_at', '<=', $to);
         }
 
-        // Filter by payment status
-        if ($paymentStatus = $request->get('payment_status')) {
-            $query->where('payment_status', $paymentStatus);
-        }
+        // Get total count for pagination
+        $total = $query->count();
 
-        // Filter by date range
-        if ($from = $request->get('from')) {
-            $query->whereDate('created_at', '>=', $from);
-        }
-        if ($to = $request->get('to')) {
-            $query->whereDate('created_at', '<=', $to);
-        }
+        // Get paginated results
+        $perPage = 15;
+        $orders = $query->orderByDesc('orders.created_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
 
-        $orders = $query->orderByDesc('created_at')->paginate(15);
+        // Transform
+        $transformedOrders = $orders->map(function ($order) {
+            $customerName = $order->user_first_name
+                ? trim($order->user_first_name . ' ' . $order->user_last_name)
+                : trim(($order->shipping_first_name ?? '') . ' ' . ($order->shipping_last_name ?? '')) ?: 'Guest';
 
-        // Transform orders for frontend
-        $transformedOrders = collect($orders->items())->map(function ($order) {
             return [
                 'id' => $order->id,
                 'order_number' => $order->order_number,
-                'customer_name' => $order->user ? ($order->user->first_name . ' ' . $order->user->last_name) : ($order->shipping_name ?? 'Guest'),
-                'customer_email' => $order->user->email ?? $order->shipping_email ?? '',
+                'customer_name' => $customerName,
+                'customer_email' => $order->user_email ?? $order->shipping_email ?? '',
                 'status' => $order->status,
                 'payment_status' => $order->payment_status ?? 'pending',
                 'payment_method' => $order->payment_method ?? 'cod',
-                'total' => $order->total,
-                'items_count' => $order->items_count ?? 0,
-                'created_at' => $order->created_at->toISOString(),
+                'total' => (float) $order->total,
+                'items_count' => (int) $order->items_count,
+                'created_at' => $order->created_at,
             ];
         });
 
         return $this->success([
             'data' => $transformedOrders,
             'meta' => [
-                'current_page' => $orders->currentPage(),
-                'last_page' => $orders->lastPage(),
-                'total' => $orders->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
         ]);
     }
@@ -96,6 +128,9 @@ class OrderController extends Controller
 
         $order->update($validated);
 
+        // Clear dashboard cache when order status changes
+        Cache::forget('admin_dashboard');
+
         return $this->success([
             'data' => $order->fresh(),
         ], 'Order updated successfully');
@@ -110,6 +145,9 @@ class OrderController extends Controller
         ]);
 
         $order->update(['status' => $validated['status']]);
+
+        // Clear dashboard cache
+        Cache::forget('admin_dashboard');
 
         return $this->success([
             'data' => $order->fresh(),
