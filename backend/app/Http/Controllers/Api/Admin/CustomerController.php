@@ -11,82 +11,97 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $page = $request->get('page', 1);
-        $search = $request->get('search');
-        $status = $request->get('status');
-        $perPage = 15;
+        try {
+            $page = $request->get('page', 1);
+            $search = $request->get('search');
+            $status = $request->get('status');
+            $perPage = 15;
 
-        // Ultra-fast raw query with correlated subqueries
-        $query = DB::table('users')
-            ->select([
-                'users.id',
-                'users.first_name',
-                'users.last_name',
-                'users.email',
-                'users.phone',
-                'users.loyalty_points',
-                'users.status',
-                'users.created_at',
-                DB::raw('(SELECT COUNT(*) FROM orders WHERE orders.user_id = users.id AND orders.deleted_at IS NULL) as orders_count'),
-                DB::raw('(SELECT COALESCE(SUM(total), 0) FROM orders WHERE orders.user_id = users.id AND orders.deleted_at IS NULL) as total_spent'),
-                DB::raw('(SELECT MAX(created_at) FROM orders WHERE orders.user_id = users.id AND orders.deleted_at IS NULL) as last_order_at'),
-            ])
-            ->whereExists(function ($q) {
-                $q->select(DB::raw(1))
-                  ->from('orders')
-                  ->whereRaw('orders.user_id = users.id')
-                  ->whereNull('orders.deleted_at');
-            })
-            ->whereNull('users.deleted_at');
+            // Get users who have placed orders
+            $query = DB::table('users')
+                ->select([
+                    'users.id',
+                    'users.first_name',
+                    'users.last_name',
+                    'users.email',
+                    'users.phone',
+                    'users.loyalty_points',
+                    'users.status',
+                    'users.created_at',
+                ])
+                ->whereNull('users.deleted_at');
 
-        // Search
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('users.email', 'like', "%{$search}%")
-                  ->orWhere('users.first_name', 'like', "%{$search}%")
-                  ->orWhere('users.last_name', 'like', "%{$search}%")
-                  ->orWhere('users.phone', 'like', "%{$search}%");
+            // Search
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('users.email', 'like', "%{$search}%")
+                      ->orWhere('users.first_name', 'like', "%{$search}%")
+                      ->orWhere('users.last_name', 'like', "%{$search}%")
+                      ->orWhere('users.phone', 'like', "%{$search}%");
+                });
+            }
+
+            // Filter by status
+            if ($status) {
+                $query->where('users.status', $status);
+            }
+
+            // Get total for pagination
+            $total = $query->count();
+
+            // Get paginated results
+            $customers = $query->orderByDesc('users.created_at')
+                ->offset(($page - 1) * $perPage)
+                ->limit($perPage)
+                ->get();
+
+            // Get order stats for these customers in separate query
+            $customerIds = $customers->pluck('id')->toArray();
+            $orderStats = [];
+            if (!empty($customerIds)) {
+                $orderStats = DB::table('orders')
+                    ->select([
+                        'user_id',
+                        DB::raw('COUNT(*) as orders_count'),
+                        DB::raw('COALESCE(SUM(total), 0) as total_spent'),
+                        DB::raw('MAX(created_at) as last_order_at'),
+                    ])
+                    ->whereIn('user_id', $customerIds)
+                    ->whereNull('deleted_at')
+                    ->groupBy('user_id')
+                    ->get()
+                    ->keyBy('user_id')
+                    ->toArray();
+            }
+
+            // Transform
+            $transformedCustomers = $customers->map(function ($customer) use ($orderStats) {
+                $stats = $orderStats[$customer->id] ?? null;
+                return [
+                    'id' => $customer->id,
+                    'name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
+                    'email' => $customer->email,
+                    'phone' => $customer->phone,
+                    'orders_count' => (int) ($stats->orders_count ?? 0),
+                    'total_spent' => (float) ($stats->total_spent ?? 0),
+                    'loyalty_points' => (int) ($customer->loyalty_points ?? 0),
+                    'status' => $customer->status ?? 'active',
+                    'created_at' => $customer->created_at,
+                    'last_order_at' => $stats->last_order_at ?? null,
+                ];
             });
+
+            return $this->success([
+                'data' => $transformedCustomers,
+                'meta' => [
+                    'current_page' => (int) $page,
+                    'last_page' => (int) ceil($total / $perPage),
+                    'total' => $total,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return $this->error('Failed to load customers: ' . $e->getMessage(), 500);
         }
-
-        // Filter by status
-        if ($status) {
-            $query->where('users.status', $status);
-        }
-
-        // Get total for pagination
-        $total = $query->count();
-
-        // Get paginated results
-        $customers = $query->orderByDesc('users.created_at')
-            ->offset(($page - 1) * $perPage)
-            ->limit($perPage)
-            ->get();
-
-        // Transform
-        $transformedCustomers = $customers->map(function ($customer) {
-            return [
-                'id' => $customer->id,
-                'name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
-                'email' => $customer->email,
-                'phone' => $customer->phone,
-                'orders_count' => (int) $customer->orders_count,
-                'total_spent' => (float) $customer->total_spent,
-                'loyalty_points' => (int) ($customer->loyalty_points ?? 0),
-                'status' => $customer->status ?? 'active',
-                'created_at' => $customer->created_at,
-                'last_order_at' => $customer->last_order_at,
-            ];
-        });
-
-        return $this->success([
-            'data' => $transformedCustomers,
-            'meta' => [
-                'current_page' => (int) $page,
-                'last_page' => (int) ceil($total / $perPage),
-                'total' => $total,
-            ],
-        ]);
     }
 
     public function show($id)
