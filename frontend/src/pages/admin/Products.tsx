@@ -53,6 +53,8 @@ export default function AdminProducts() {
     },
   })
 
+  const products = data?.data || []
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -100,6 +102,13 @@ export default function AdminProducts() {
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
           </div>
+        ) : products.length === 0 ? (
+          <div className="p-12 text-center">
+            <p className="text-dark-500 dark:text-dark-400">No products found.</p>
+            <Link to="/admin/products/new" className="text-primary-600 dark:text-primary-400 hover:underline mt-2 inline-block">
+              Add your first product
+            </Link>
+          </div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -116,7 +125,7 @@ export default function AdminProducts() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-dark-200 dark:divide-dark-700">
-                  {data?.data.map((product) => (
+                  {products.map((product) => (
                     <tr key={product.id} className="hover:bg-dark-50 dark:hover:bg-dark-700/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">

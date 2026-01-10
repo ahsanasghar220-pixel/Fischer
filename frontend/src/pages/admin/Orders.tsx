@@ -28,6 +28,13 @@ interface PaginatedOrders {
   }
 }
 
+interface OrderStats {
+  pending: number
+  processing: number
+  shipped: number
+  delivered: number
+}
+
 const statusOptions = [
   { value: '', label: 'All Status' },
   { value: 'pending', label: 'Pending' },
@@ -44,6 +51,22 @@ export default function AdminOrders() {
   const [status, setStatus] = useState('')
   const [paymentStatus, setPaymentStatus] = useState('')
 
+  // Fetch order stats from dashboard
+  const { data: dashboardData } = useQuery({
+    queryKey: ['admin-dashboard-stats'],
+    queryFn: async () => {
+      const response = await api.get('/admin/dashboard')
+      return response.data.data
+    },
+  })
+
+  const stats: OrderStats = {
+    pending: dashboardData?.orders?.pending || 0,
+    processing: dashboardData?.orders?.processing || 0,
+    shipped: 0, // Not in dashboard, would need separate endpoint
+    delivered: dashboardData?.orders?.delivered || 0,
+  }
+
   const { data, isLoading } = useQuery<PaginatedOrders>({
     queryKey: ['admin-orders', page, search, status, paymentStatus],
     queryFn: async () => {
@@ -57,6 +80,8 @@ export default function AdminOrders() {
     },
   })
 
+  const orders = data?.data || []
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -68,19 +93,19 @@ export default function AdminOrders() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
-          <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">24</p>
+          <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.pending}</p>
           <p className="text-sm text-yellow-700 dark:text-yellow-300">Pending</p>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">18</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.processing}</p>
           <p className="text-sm text-blue-700 dark:text-blue-300">Processing</p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
-          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">12</p>
+          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.shipped}</p>
           <p className="text-sm text-purple-700 dark:text-purple-300">Shipped</p>
         </div>
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">156</p>
+          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.delivered}</p>
           <p className="text-sm text-green-700 dark:text-green-300">Delivered</p>
         </div>
       </div>
@@ -126,6 +151,11 @@ export default function AdminOrders() {
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
           </div>
+        ) : orders.length === 0 ? (
+          <div className="p-12 text-center">
+            <p className="text-dark-500 dark:text-dark-400">No orders found.</p>
+            <p className="text-sm text-dark-400 dark:text-dark-500 mt-1">Orders will appear here when customers place them.</p>
+          </div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -142,7 +172,7 @@ export default function AdminOrders() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-dark-200 dark:divide-dark-700">
-                  {data?.data.map((order) => (
+                  {orders.map((order) => (
                     <tr key={order.id} className="hover:bg-dark-50 dark:hover:bg-dark-700/50">
                       <td className="px-4 py-3">
                         <Link
@@ -166,7 +196,7 @@ export default function AdminOrders() {
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusColor(order.payment_status)}`}>
                           {order.payment_status}
                         </span>
-                        <p className="text-xs text-dark-500 dark:text-dark-400 capitalize mt-0.5">{order.payment_method.replace('_', ' ')}</p>
+                        <p className="text-xs text-dark-500 dark:text-dark-400 capitalize mt-0.5">{order.payment_method?.replace('_', ' ') || 'N/A'}</p>
                       </td>
                       <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">
                         {formatPrice(order.total)}

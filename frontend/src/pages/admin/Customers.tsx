@@ -30,6 +30,15 @@ export default function AdminCustomers() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
 
+  // Fetch dashboard stats for customer counts
+  const { data: dashboardData } = useQuery({
+    queryKey: ['admin-dashboard-stats'],
+    queryFn: async () => {
+      const response = await api.get('/admin/dashboard')
+      return response.data.data
+    },
+  })
+
   const { data, isLoading } = useQuery<PaginatedCustomers>({
     queryKey: ['admin-customers', page, search],
     queryFn: async () => {
@@ -40,6 +49,10 @@ export default function AdminCustomers() {
       return response.data.data
     },
   })
+
+  const customers = data?.data || []
+  const totalCustomers = dashboardData?.customers?.total || data?.meta?.total || 0
+  const newThisMonth = dashboardData?.customers?.new_this_month || 0
 
   return (
     <div className="space-y-6">
@@ -52,19 +65,19 @@ export default function AdminCustomers() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900 dark:text-white">1,234</p>
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">{totalCustomers}</p>
           <p className="text-sm text-dark-500 dark:text-dark-400">Total Customers</p>
         </div>
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900 dark:text-white">56</p>
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">{newThisMonth}</p>
           <p className="text-sm text-dark-500 dark:text-dark-400">New This Month</p>
         </div>
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900 dark:text-white">78%</p>
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">-</p>
           <p className="text-sm text-dark-500 dark:text-dark-400">Repeat Customers</p>
         </div>
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
-          <p className="text-2xl font-bold text-dark-900 dark:text-white">{formatPrice(45000)}</p>
+          <p className="text-2xl font-bold text-dark-900 dark:text-white">-</p>
           <p className="text-sm text-dark-500 dark:text-dark-400">Avg. Lifetime Value</p>
         </div>
       </div>
@@ -97,6 +110,11 @@ export default function AdminCustomers() {
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
           </div>
+        ) : customers.length === 0 ? (
+          <div className="p-12 text-center">
+            <p className="text-dark-500 dark:text-dark-400">No customers found.</p>
+            <p className="text-sm text-dark-400 dark:text-dark-500 mt-1">Customers will appear here when they place orders.</p>
+          </div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -113,17 +131,17 @@ export default function AdminCustomers() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-dark-200 dark:divide-dark-700">
-                  {data?.data.map((customer) => (
+                  {customers.map((customer) => (
                     <tr key={customer.id} className="hover:bg-dark-50 dark:hover:bg-dark-700/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
                             <span className="text-primary-600 dark:text-primary-400 font-medium">
-                              {customer.name.charAt(0).toUpperCase()}
+                              {customer.name?.charAt(0)?.toUpperCase() || '?'}
                             </span>
                           </div>
                           <div>
-                            <p className="font-medium text-dark-900 dark:text-white">{customer.name}</p>
+                            <p className="font-medium text-dark-900 dark:text-white">{customer.name || 'Unknown'}</p>
                             <p className="text-xs text-dark-500 dark:text-dark-400">{customer.email}</p>
                           </div>
                         </div>
@@ -131,16 +149,16 @@ export default function AdminCustomers() {
                       <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{customer.phone || '-'}</td>
                       <td className="px-4 py-3 text-dark-900 dark:text-white">{customer.orders_count}</td>
                       <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">
-                        {formatPrice(customer.total_spent)}
+                        {formatPrice(customer.total_spent || 0)}
                       </td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400">
                           <span className="text-sm">⭐</span>
-                          {customer.loyalty_points}
+                          {customer.loyalty_points || 0}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-dark-600 dark:text-dark-400 text-sm">
-                        {formatDate(customer.created_at)}
+                        {customer.created_at ? formatDate(customer.created_at) : '-'}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
