@@ -45,12 +45,29 @@ export default function Header() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const cartItemsCount = useCartStore((state) => state.items_count)
 
-  // Handle scroll effect
+  // Handle scroll effect with hysteresis to prevent flickering
   useEffect(() => {
+    let lastScrollY = window.scrollY
+    let ticking = false
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          // Use hysteresis: scroll down triggers at 50px, scroll up resets at 10px
+          if (currentScrollY > 50) {
+            setIsScrolled(true)
+          } else if (currentScrollY < 10) {
+            setIsScrolled(false)
+          }
+          lastScrollY = currentScrollY
+          ticking = false
+        })
+        ticking = true
+      }
     }
-    window.addEventListener('scroll', handleScroll)
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -124,7 +141,7 @@ export default function Header() {
                 width={120}
                 height={48}
                 loading="eager"
-                fetchPriority="high"
+                {...{ fetchpriority: "high" } as any}
                 className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
                   isHomePage && !isScrolled ? 'brightness-0 invert' : ''
                 } dark:brightness-0 dark:invert`}

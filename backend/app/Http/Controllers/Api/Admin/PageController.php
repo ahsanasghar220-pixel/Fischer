@@ -13,70 +13,63 @@ class PageController extends Controller
 {
     public function index(Request $request)
     {
-        $page = $request->get('page', 1);
-        $search = $request->get('search');
-        $perPage = 15;
+        try {
+            $page = $request->get('page', 1);
+            $search = $request->get('search');
+            $perPage = 15;
 
-        // Cache pages list for 5 minutes when no search
-        $cacheKey = $search ? null : 'admin_pages_list';
-        if ($cacheKey && Cache::has($cacheKey)) {
-            return $this->success(Cache::get($cacheKey));
-        }
+            // Raw query for maximum speed
+            $query = DB::table('pages')
+                ->select([
+                    'id', 'title', 'slug', 'content', 'meta_title',
+                    'meta_description', 'status', 'created_at', 'updated_at',
+                ])
+                ->whereNull('deleted_at');
 
-        // Raw query for maximum speed
-        $query = DB::table('pages')
-            ->select([
-                'id', 'title', 'slug', 'content', 'meta_title',
-                'meta_description', 'is_active', 'created_at', 'updated_at',
-            ])
-            ->whereNull('deleted_at');
+            // Search
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('slug', 'like', "%{$search}%");
+                });
+            }
 
-        // Search
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+            // Get total
+            $total = $query->count();
+
+            // Get paginated results
+            $pages = $query->orderByDesc('updated_at')
+                ->offset(($page - 1) * $perPage)
+                ->limit($perPage)
+                ->get();
+
+            // Transform
+            $transformedPages = $pages->map(function ($pg) {
+                return [
+                    'id' => $pg->id,
+                    'title' => $pg->title,
+                    'slug' => $pg->slug,
+                    'content' => $pg->content,
+                    'meta_title' => $pg->meta_title,
+                    'meta_description' => $pg->meta_description,
+                    'is_active' => ($pg->status ?? 'draft') === 'published',
+                    'status' => $pg->status ?? 'draft',
+                    'created_at' => $pg->created_at,
+                    'updated_at' => $pg->updated_at,
+                ];
             });
+
+            return $this->success([
+                'data' => $transformedPages,
+                'meta' => [
+                    'current_page' => (int) $page,
+                    'last_page' => (int) ceil($total / $perPage),
+                    'total' => $total,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return $this->error('Failed to load pages: ' . $e->getMessage(), 500);
         }
-
-        // Get total
-        $total = $query->count();
-
-        // Get paginated results
-        $pages = $query->orderByDesc('updated_at')
-            ->offset(($page - 1) * $perPage)
-            ->limit($perPage)
-            ->get();
-
-        // Transform
-        $transformedPages = $pages->map(function ($pg) {
-            return [
-                'id' => $pg->id,
-                'title' => $pg->title,
-                'slug' => $pg->slug,
-                'content' => $pg->content,
-                'meta_title' => $pg->meta_title,
-                'meta_description' => $pg->meta_description,
-                'is_active' => (bool) ($pg->is_active ?? true),
-                'created_at' => $pg->created_at,
-                'updated_at' => $pg->updated_at,
-            ];
-        });
-
-        $result = [
-            'data' => $transformedPages,
-            'meta' => [
-                'current_page' => (int) $page,
-                'last_page' => (int) ceil($total / $perPage),
-                'total' => $total,
-            ],
-        ];
-
-        if ($cacheKey) {
-            Cache::put($cacheKey, $result, 300);
-        }
-
-        return $this->success($result);
     }
 
     public function show($id)

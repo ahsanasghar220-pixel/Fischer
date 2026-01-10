@@ -88,9 +88,12 @@ class OrderController extends Controller
 
             // Transform
             $transformedOrders = $orders->map(function ($order) use ($itemsCounts) {
-                $customerName = $order->user_first_name
-                    ? trim($order->user_first_name . ' ' . $order->user_last_name)
-                    : trim(($order->shipping_first_name ?? '') . ' ' . ($order->shipping_last_name ?? '')) ?: 'Guest';
+                if ($order->user_first_name) {
+                    $customerName = trim($order->user_first_name . ' ' . $order->user_last_name);
+                } else {
+                    $shippingName = trim(($order->shipping_first_name ?? '') . ' ' . ($order->shipping_last_name ?? ''));
+                    $customerName = $shippingName ?: 'Guest';
+                }
 
                 return [
                     'id' => $order->id,

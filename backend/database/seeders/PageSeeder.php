@@ -16,7 +16,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getAboutContent(),
                 'meta_title' => 'About Fischer Pakistan - Leading Appliances Manufacturer Since 1990',
                 'meta_description' => 'Learn about Fischer (Fatima Engineering Works), Pakistan\'s leading appliances manufacturer since 1990. ISO 9001-2008 certified and PSQCA approved.',
-                'is_active' => true,
+                'status' => 'published',
             ],
             [
                 'title' => 'Contact Us',
@@ -24,7 +24,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getContactContent(),
                 'meta_title' => 'Contact Fischer Pakistan - Get in Touch',
                 'meta_description' => 'Contact Fischer Pakistan for water coolers, geysers, cooking ranges. Call +92 321 1146642 or email fischer.few@gmail.com',
-                'is_active' => true,
+                'status' => 'published',
             ],
             [
                 'title' => 'Find a Dealer',
@@ -32,7 +32,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getDealerContent(),
                 'meta_title' => 'Find a Fischer Dealer Near You',
                 'meta_description' => 'Locate authorized Fischer dealers across Pakistan. Contact us on WhatsApp to find the nearest dealer in your city.',
-                'is_active' => true,
+                'status' => 'published',
             ],
             [
                 'title' => 'Become a Dealer',
@@ -40,7 +40,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getBecomeDealerContent(),
                 'meta_title' => 'Become a Fischer Dealer - Partnership Opportunities',
                 'meta_description' => 'Join the Fischer dealer network. Apply to become an authorized dealer for water coolers, geysers, and kitchen appliances in Pakistan.',
-                'is_active' => true,
+                'status' => 'published',
             ],
             [
                 'title' => 'Service & Repair',
@@ -48,7 +48,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getServiceContent(),
                 'meta_title' => 'Fischer Service & Repair - Product Support',
                 'meta_description' => 'Request service and repair for your Fischer products. Expert technicians, genuine parts, and quick turnaround.',
-                'is_active' => true,
+                'status' => 'published',
             ],
             [
                 'title' => 'Our Clients',
@@ -56,7 +56,7 @@ class PageSeeder extends Seeder
                 'content' => $this->getClientsContent(),
                 'meta_title' => 'Fischer Clients - Trusted by Leading Organizations',
                 'meta_description' => 'See the organizations that trust Fischer for their water cooling, heating, and kitchen solutions.',
-                'is_active' => true,
+                'status' => 'published',
             ],
         ];
 

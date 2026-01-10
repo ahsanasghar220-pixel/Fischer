@@ -37,11 +37,24 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-dark-50 dark:bg-dark-950 text-dark-900 dark:text-dark-50 transition-colors duration-300;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Fix iOS touch delay */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Ensure #root doesn't overflow */
+  #root {
+    overflow-x: hidden;
+    min-height: 100vh;
   }
 
   /* Custom scrollbar - Light mode */
@@ -531,5 +544,91 @@
 
   .dark .border-gradient {
     background-image: linear-gradient(#18181b, #18181b), linear-gradient(to right, #f4b42c, #fbbf24);
+  }
+}
+
+/* ========================================
+   MOBILE RESPONSIVENESS FIXES
+   ======================================== */
+@media (max-width: 640px) {
+  /* Ensure text is readable on mobile */
+  html {
+    font-size: 15px;
+  }
+
+  /* Better touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+
+  /* Fix button sizes on mobile */
+  .btn {
+    @apply px-4 py-3 text-sm;
+  }
+
+  /* Prevent text from being too large */
+  h1 {
+    @apply text-3xl !important;
+  }
+
+  h2 {
+    @apply text-2xl !important;
+  }
+
+  /* Better spacing on mobile */
+  .container-xl {
+    @apply px-4;
+  }
+
+  /* Fix product cards on mobile */
+  .product-card .product-image {
+    @apply aspect-square;
+  }
+
+  /* Smaller images on mobile */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Fix table overflow on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Hide scrollbar on mobile for horizontal scroll elements */
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ========================================
+   TABLET FIXES
+   ======================================== */
+@media (min-width: 641px) and (max-width: 1023px) {
+  /* Better grid layouts for tablets */
+  .grid-cols-4 {
+    @apply grid-cols-2;
+  }
+
+  .grid-cols-3 {
+    @apply grid-cols-2;
+  }
+}
+
+/* ========================================
+   SAFE AREA INSETS (for notched phones)
+   ======================================== */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+
+  /* Bottom navigation/footer padding */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
