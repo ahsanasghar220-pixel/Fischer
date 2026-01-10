@@ -47,7 +47,6 @@ export default function Header() {
 
   // Handle scroll effect with hysteresis to prevent flickering
   useEffect(() => {
-    let lastScrollY = window.scrollY
     let ticking = false
 
     const handleScroll = () => {
@@ -60,7 +59,6 @@ export default function Header() {
           } else if (currentScrollY < 10) {
             setIsScrolled(false)
           }
-          lastScrollY = currentScrollY
           ticking = false
         })
         ticking = true
