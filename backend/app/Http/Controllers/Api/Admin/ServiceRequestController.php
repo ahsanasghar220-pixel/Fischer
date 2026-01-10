@@ -5,15 +5,28 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ServiceRequestController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ServiceRequest::query();
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $perPage = 15;
+
+        // Raw query for maximum speed
+        $query = DB::table('service_requests')
+            ->select([
+                'id', 'ticket_number', 'customer_name', 'customer_email',
+                'customer_phone', 'product_name', 'service_type',
+                'problem_description', 'status', 'assigned_to', 'created_at',
+            ])
+            ->whereNull('deleted_at');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
                   ->orWhere('customer_email', 'like', "%{$search}%")
@@ -24,14 +37,21 @@ class ServiceRequestController extends Controller
         }
 
         // Filter by status
-        if ($status = $request->get('status')) {
+        if ($status) {
             $query->where('status', $status);
         }
 
-        $requests = $query->orderByDesc('created_at')->paginate(15);
+        // Get total
+        $total = $query->count();
 
-        // Transform for frontend
-        $transformedRequests = collect($requests->items())->map(function ($serviceRequest) {
+        // Get paginated results
+        $requests = $query->orderByDesc('created_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        // Transform
+        $transformedRequests = $requests->map(function ($serviceRequest) {
             return [
                 'id' => $serviceRequest->id,
                 'ticket_number' => $serviceRequest->ticket_number,
@@ -42,23 +62,31 @@ class ServiceRequestController extends Controller
                 'issue_type' => $serviceRequest->service_type ?? 'General',
                 'description' => $serviceRequest->problem_description,
                 'status' => $serviceRequest->status ?? 'pending',
-                'created_at' => $serviceRequest->created_at->toISOString(),
+                'assigned_to' => $serviceRequest->assigned_to,
+                'created_at' => $serviceRequest->created_at,
             ];
         });
 
         return $this->success([
             'data' => $transformedRequests,
             'meta' => [
-                'current_page' => $requests->currentPage(),
-                'last_page' => $requests->lastPage(),
-                'total' => $requests->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
         ]);
     }
 
     public function show($id)
     {
-        $request = ServiceRequest::findOrFail($id);
+        $request = DB::table('service_requests')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$request) {
+            return $this->error('Service request not found', 404);
+        }
 
         return $this->success([
             'data' => $request,

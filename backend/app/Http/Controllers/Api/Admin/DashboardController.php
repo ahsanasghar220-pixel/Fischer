@@ -63,8 +63,8 @@ class DashboardController extends Controller
         $productStats = DB::table('products')
             ->selectRaw("
                 COUNT(*) as total,
-                COUNT(CASE WHEN stock <= 10 AND stock > 0 THEN 1 END) as low_stock,
-                COUNT(CASE WHEN stock <= 0 THEN 1 END) as out_of_stock
+                COUNT(CASE WHEN stock_quantity <= 10 AND stock_quantity > 0 THEN 1 END) as low_stock,
+                COUNT(CASE WHEN stock_quantity <= 0 THEN 1 END) as out_of_stock
             ")
             ->whereNull('deleted_at')
             ->first();

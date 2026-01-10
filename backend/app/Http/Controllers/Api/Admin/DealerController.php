@@ -5,15 +5,28 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Dealer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class DealerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Dealer::query();
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $status = $request->get('status');
+        $perPage = 15;
+
+        // Raw query for maximum speed
+        $query = DB::table('dealers')
+            ->select([
+                'id', 'business_name', 'contact_person', 'email',
+                'phone', 'city', 'address', 'status', 'created_at',
+            ])
+            ->whereNull('deleted_at');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('business_name', 'like', "%{$search}%")
                   ->orWhere('contact_person', 'like', "%{$search}%")
@@ -24,14 +37,21 @@ class DealerController extends Controller
         }
 
         // Filter by status
-        if ($status = $request->get('status')) {
+        if ($status) {
             $query->where('status', $status);
         }
 
-        $dealers = $query->orderByDesc('created_at')->paginate(15);
+        // Get total
+        $total = $query->count();
 
-        // Transform for frontend
-        $transformedDealers = collect($dealers->items())->map(function ($dealer) {
+        // Get paginated results
+        $dealers = $query->orderByDesc('created_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        // Transform
+        $transformedDealers = $dealers->map(function ($dealer) {
             return [
                 'id' => $dealer->id,
                 'business_name' => $dealer->business_name,
@@ -41,23 +61,30 @@ class DealerController extends Controller
                 'city' => $dealer->city,
                 'address' => $dealer->address,
                 'status' => $dealer->status ?? 'pending',
-                'created_at' => $dealer->created_at->toISOString(),
+                'created_at' => $dealer->created_at,
             ];
         });
 
         return $this->success([
             'data' => $transformedDealers,
             'meta' => [
-                'current_page' => $dealers->currentPage(),
-                'last_page' => $dealers->lastPage(),
-                'total' => $dealers->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
         ]);
     }
 
     public function show($id)
     {
-        $dealer = Dealer::findOrFail($id);
+        $dealer = DB::table('dealers')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$dealer) {
+            return $this->error('Dealer not found', 404);
+        }
 
         return $this->success([
             'data' => $dealer,

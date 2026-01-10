@@ -5,53 +5,90 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Page::query();
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $perPage = 15;
+
+        // Cache pages list for 5 minutes when no search
+        $cacheKey = $search ? null : 'admin_pages_list';
+        if ($cacheKey && Cache::has($cacheKey)) {
+            return $this->success(Cache::get($cacheKey));
+        }
+
+        // Raw query for maximum speed
+        $query = DB::table('pages')
+            ->select([
+                'id', 'title', 'slug', 'content', 'meta_title',
+                'meta_description', 'is_active', 'created_at', 'updated_at',
+            ])
+            ->whereNull('deleted_at');
 
         // Search
-        if ($search = $request->get('search')) {
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                  ->orWhere('slug', 'like', "%{$search}%");
             });
         }
 
-        $pages = $query->orderByDesc('updated_at')->paginate(15);
+        // Get total
+        $total = $query->count();
 
-        // Transform for frontend
-        $transformedPages = collect($pages->items())->map(function ($page) {
+        // Get paginated results
+        $pages = $query->orderByDesc('updated_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        // Transform
+        $transformedPages = $pages->map(function ($pg) {
             return [
-                'id' => $page->id,
-                'title' => $page->title,
-                'slug' => $page->slug,
-                'content' => $page->content,
-                'meta_title' => $page->meta_title,
-                'meta_description' => $page->meta_description,
-                'is_active' => (bool) ($page->is_active ?? true),
-                'created_at' => $page->created_at->toISOString(),
-                'updated_at' => $page->updated_at->toISOString(),
+                'id' => $pg->id,
+                'title' => $pg->title,
+                'slug' => $pg->slug,
+                'content' => $pg->content,
+                'meta_title' => $pg->meta_title,
+                'meta_description' => $pg->meta_description,
+                'is_active' => (bool) ($pg->is_active ?? true),
+                'created_at' => $pg->created_at,
+                'updated_at' => $pg->updated_at,
             ];
         });
 
-        return $this->success([
+        $result = [
             'data' => $transformedPages,
             'meta' => [
-                'current_page' => $pages->currentPage(),
-                'last_page' => $pages->lastPage(),
-                'total' => $pages->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
-        ]);
+        ];
+
+        if ($cacheKey) {
+            Cache::put($cacheKey, $result, 300);
+        }
+
+        return $this->success($result);
     }
 
     public function show($id)
     {
-        $page = Page::findOrFail($id);
+        $page = DB::table('pages')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$page) {
+            return $this->error('Page not found', 404);
+        }
 
         return $this->success([
             'data' => $page,
@@ -76,6 +113,9 @@ class PageController extends Controller
 
         $page = Page::create($validated);
 
+        // Clear cache
+        Cache::forget('admin_pages_list');
+
         return $this->success([
             'data' => $page,
         ], 'Page created successfully', 201);
@@ -96,6 +136,9 @@ class PageController extends Controller
 
         $page->update($validated);
 
+        // Clear cache
+        Cache::forget('admin_pages_list');
+
         return $this->success([
             'data' => $page->fresh(),
         ], 'Page updated successfully');
@@ -105,6 +148,9 @@ class PageController extends Controller
     {
         $page = Page::findOrFail($id);
         $page->delete();
+
+        // Clear cache
+        Cache::forget('admin_pages_list');
 
         return $this->success(null, 'Page deleted successfully');
     }

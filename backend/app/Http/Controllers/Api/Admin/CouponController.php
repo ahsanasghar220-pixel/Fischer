@@ -5,25 +5,45 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CouponController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Coupon::query();
+        $page = $request->get('page', 1);
+        $search = $request->get('search');
+        $perPage = 15;
 
-        if ($search = $request->get('search')) {
+        // Raw query for maximum speed
+        $query = DB::table('coupons')
+            ->select([
+                'id', 'code', 'type', 'value', 'min_order_amount',
+                'max_discount', 'usage_limit', 'used_count',
+                'starts_at', 'expires_at', 'is_active', 'created_at',
+            ])
+            ->whereNull('deleted_at');
+
+        if ($search) {
             $query->where('code', 'like', "%{$search}%");
         }
 
-        $coupons = $query->orderByDesc('created_at')->paginate(15);
+        // Get total
+        $total = $query->count();
+
+        // Get paginated results
+        $coupons = $query->orderByDesc('created_at')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
 
         return $this->success([
-            'data' => $coupons->items(),
+            'data' => $coupons,
             'meta' => [
-                'current_page' => $coupons->currentPage(),
-                'last_page' => $coupons->lastPage(),
-                'total' => $coupons->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
         ]);
     }
@@ -49,7 +69,15 @@ class CouponController extends Controller
 
     public function show($id)
     {
-        $coupon = Coupon::findOrFail($id);
+        $coupon = DB::table('coupons')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$coupon) {
+            return $this->error('Coupon not found', 404);
+        }
+
         return $this->success(['data' => $coupon]);
     }
 

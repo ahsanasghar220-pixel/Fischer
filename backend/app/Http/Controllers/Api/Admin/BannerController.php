@@ -5,27 +5,59 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class BannerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Banner::query();
+        $page = $request->get('page', 1);
+        $position = $request->get('position');
+        $perPage = 15;
 
-        if ($position = $request->get('position')) {
+        // Cache banners for 5 minutes when no filters
+        $cacheKey = $position ? null : 'admin_banners_list';
+        if ($cacheKey && Cache::has($cacheKey)) {
+            return $this->success(Cache::get($cacheKey));
+        }
+
+        // Raw query for maximum speed
+        $query = DB::table('banners')
+            ->select([
+                'id', 'title', 'subtitle', 'image', 'link',
+                'position', 'sort_order', 'is_active',
+                'starts_at', 'ends_at', 'created_at',
+            ])
+            ->whereNull('deleted_at');
+
+        if ($position) {
             $query->where('position', $position);
         }
 
-        $banners = $query->orderBy('sort_order')->paginate(15);
+        // Get total
+        $total = $query->count();
 
-        return $this->success([
-            'data' => $banners->items(),
+        // Get paginated results
+        $banners = $query->orderBy('sort_order')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
+
+        $result = [
+            'data' => $banners,
             'meta' => [
-                'current_page' => $banners->currentPage(),
-                'last_page' => $banners->lastPage(),
-                'total' => $banners->total(),
+                'current_page' => (int) $page,
+                'last_page' => (int) ceil($total / $perPage),
+                'total' => $total,
             ],
-        ]);
+        ];
+
+        if ($cacheKey) {
+            Cache::put($cacheKey, $result, 300);
+        }
+
+        return $this->success($result);
     }
 
     public function store(Request $request)
@@ -44,12 +76,23 @@ class BannerController extends Controller
 
         $banner = Banner::create($validated);
 
+        // Clear cache
+        Cache::forget('admin_banners_list');
+
         return $this->success(['data' => $banner], 'Banner created successfully', 201);
     }
 
     public function show($id)
     {
-        $banner = Banner::findOrFail($id);
+        $banner = DB::table('banners')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$banner) {
+            return $this->error('Banner not found', 404);
+        }
+
         return $this->success(['data' => $banner]);
     }
 
@@ -71,6 +114,9 @@ class BannerController extends Controller
 
         $banner->update($validated);
 
+        // Clear cache
+        Cache::forget('admin_banners_list');
+
         return $this->success(['data' => $banner->fresh()], 'Banner updated successfully');
     }
 
@@ -78,6 +124,9 @@ class BannerController extends Controller
     {
         $banner = Banner::findOrFail($id);
         $banner->delete();
+
+        // Clear cache
+        Cache::forget('admin_banners_list');
 
         return $this->success(null, 'Banner deleted successfully');
     }
