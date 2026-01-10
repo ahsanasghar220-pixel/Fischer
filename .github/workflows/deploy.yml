@@ -143,8 +143,10 @@ jobs:
             $PHP artisan route:clear
             $PHP artisan view:clear || true
 
-            # Rebuild config cache only (skip route cache - can cause SPA issues)
+            # Rebuild caches for production performance
             $PHP artisan config:cache
+            $PHP artisan route:cache
+            $PHP artisan view:cache
 
             # Debug: Test if Laravel is working
             echo "=== Testing Laravel ==="

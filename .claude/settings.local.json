@@ -34,7 +34,16 @@
       "Bash(curl:*)",
       "Bash(python3:*)",
       "Bash(cat:*)",
-      "Bash(php artisan db:seed:*)"
+      "Bash(php artisan db:seed:*)",
+      "Bash(xargs:*)",
+      "Bash(find:*)",
+      "Bash(npx tsc:*)",
+      "Bash(findstr:*)",
+      "Bash(ls \"c:\\\\xampp\\\\htdocs\\\\fischer\\\\backend\\\\app\\\\Models\"\" | grep -E \"Testimonial)",
+      "Bash(Faq \")",
+      "Bash(tasklist:*)",
+      "Bash(php -l:*)",
+      "Bash(php:*)"
     ]
   }
 }
