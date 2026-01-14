@@ -214,6 +214,8 @@ class CartController extends Controller
                     'slug' => $item->product->slug,
                     'sku' => $item->product->sku,
                     'image' => $item->product->primary_image,
+                    'primary_image' => $item->product->primary_image,
+                    'price' => $item->product->price,
                     'stock_quantity' => $item->product_variant_id
                         ? $item->productVariant->stock_quantity
                         : $item->product->stock_quantity,
@@ -222,6 +224,8 @@ class CartController extends Controller
                 'variant' => $item->productVariant ? [
                     'id' => $item->productVariant->id,
                     'sku' => $item->productVariant->sku,
+                    'name' => $item->productVariant->name ?? $item->variant_info,
+                    'price' => $item->productVariant->price,
                     'attributes' => $item->variant_info,
                 ] : null,
                 'quantity' => $item->quantity,

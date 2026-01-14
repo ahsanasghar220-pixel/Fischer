@@ -67,6 +67,48 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Public view for order success page (works for guest checkout)
+     */
+    public function publicShow(string $orderNumber)
+    {
+        $order = Order::where('order_number', $orderNumber)
+            ->with(['items.product'])
+            ->firstOrFail();
+
+        // Format the response for the frontend
+        return $this->success([
+            'id' => $order->id,
+            'order_number' => $order->order_number,
+            'status' => $order->status,
+            'payment_method' => $order->payment_method,
+            'payment_status' => $order->payment_status,
+            'subtotal' => $order->subtotal,
+            'shipping_cost' => $order->shipping_amount,
+            'discount' => $order->discount_amount,
+            'total' => $order->total,
+            'created_at' => $order->created_at,
+            'shipping_name' => trim(($order->shipping_first_name ?? '') . ' ' . ($order->shipping_last_name ?? '')),
+            'shipping_phone' => $order->shipping_phone,
+            'shipping_address' => $order->shipping_address_line_1,
+            'shipping_city' => $order->shipping_city,
+            'items' => $order->items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'product' => [
+                        'name' => $item->product_name,
+                        'primary_image' => $item->product_image,
+                    ],
+                    'variant' => $item->variant_attributes ? [
+                        'name' => $item->variant_attributes,
+                    ] : null,
+                    'quantity' => $item->quantity,
+                    'price' => $item->unit_price,
+                ];
+            }),
+        ]);
+    }
+
     public function cancel(Request $request, string $orderNumber)
     {
         $user = $request->user();

@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Dialog, Popover, Transition } from '@headlessui/react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import {
   Bars3Icon,
   XMarkIcon,
@@ -80,37 +81,50 @@ export default function Header() {
 
   const isHomePage = location.pathname === '/'
 
+  // Scroll progress indicator
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-500 ${
           isScrolled || !isHomePage
-            ? 'bg-white/80 dark:bg-dark-900/80 backdrop-blur-xl shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
+            ? 'bg-white/70 dark:bg-dark-900/70 backdrop-blur-xl backdrop-saturate-150 shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
             : 'bg-transparent'
         }`}
       >
+        {/* Scroll progress indicator */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 origin-left z-10"
+          style={{ scaleX }}
+        />
         {/* Top bar - Only show when scrolled or not on homepage */}
         <div className={`transition-all duration-300 overflow-hidden ${
           isScrolled || !isHomePage ? 'h-0' : 'h-10'
         }`}>
-          <div className={`h-10 bg-dark-900 dark:bg-dark-950 ${isHomePage ? 'bg-dark-900/50 backdrop-blur-sm' : ''}`}>
+          <div className={`h-10 bg-dark-100 dark:bg-dark-900 ${isHomePage ? 'dark:bg-dark-900/50 backdrop-blur-sm' : ''}`}>
             <div className="container-xl h-full flex items-center justify-between text-sm">
               <div className="flex items-center gap-4">
                 <a
                   href="tel:+923211146642"
-                  className="flex items-center gap-1.5 text-dark-300 hover:text-primary-400 transition-colors"
+                  className="flex items-center gap-1.5 text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                 >
                   <PhoneIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">+92 321 1146642</span>
                 </a>
-                <span className="hidden md:inline text-dark-500">|</span>
-                <span className="hidden md:inline text-dark-400">Free shipping on orders over PKR 10,000</span>
+                <span className="hidden md:inline text-dark-400 dark:text-dark-500">|</span>
+                <span className="hidden md:inline text-dark-500 dark:text-dark-400">Free shipping on orders over PKR 10,000</span>
               </div>
               <div className="flex items-center gap-4">
-                <Link to="/track-order" className="text-dark-300 hover:text-primary-400 transition-colors">
+                <Link to="/track-order" className="text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Track Order
                 </Link>
-                <Link to="/become-dealer" className="text-dark-300 hover:text-primary-400 transition-colors">
+                <Link to="/become-dealer" className="text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Become a Dealer
                 </Link>
               </div>
@@ -140,9 +154,7 @@ export default function Header() {
                 height={48}
                 loading="eager"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-10 lg:h-12 w-auto transition-all duration-300 ${
-                  isHomePage && !isScrolled ? 'brightness-0 invert' : ''
-                } dark:brightness-0 dark:invert`}
+                className="h-10 lg:h-12 w-auto transition-all duration-300 dark:brightness-0 dark:invert"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                   const span = document.createElement('span')
@@ -158,14 +170,14 @@ export default function Header() {
             <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
               {/* Products Dropdown */}
               <Popover className="relative">
-                {({ open, close }) => (
+                {({ open, close }: { open: boolean; close: () => void }) => (
                   <>
                     <Popover.Button
                       className={`flex items-center gap-x-1 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                         open
                           ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
                           : isHomePage && !isScrolled
-                          ? 'text-white hover:text-primary-300'
+                          ? 'text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-300'
                           : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
                       }`}
                     >
@@ -231,7 +243,7 @@ export default function Header() {
                     location.pathname === page.href
                       ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
                       : isHomePage && !isScrolled
-                      ? 'text-white hover:text-primary-300'
+                      ? 'text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-300'
                       : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
                   }`}
                 >
@@ -247,7 +259,7 @@ export default function Header() {
                 onClick={() => setSearchOpen(true)}
                 className={`p-2.5 rounded-xl transition-all duration-200 ${
                   isHomePage && !isScrolled
-                    ? 'text-white hover:bg-white/10'
+                    ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
                     : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                 }`}
                 aria-label="Search products"
@@ -266,7 +278,7 @@ export default function Header() {
                   to="/account/wishlist"
                   className={`p-2.5 rounded-xl transition-all duration-200 hidden sm:flex ${
                     isHomePage && !isScrolled
-                      ? 'text-white hover:bg-white/10'
+                      ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
                       : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                   }`}
                 >
@@ -279,7 +291,7 @@ export default function Header() {
                 onClick={() => setCartDrawerOpen(true)}
                 className={`relative p-2.5 rounded-xl transition-all duration-200 ${
                   isHomePage && !isScrolled
-                    ? 'text-white hover:bg-white/10'
+                    ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
                     : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                 }`}
                 aria-label={`Shopping cart${cartItemsCount > 0 ? ` with ${cartItemsCount} items` : ''}`}
@@ -298,7 +310,7 @@ export default function Header() {
                   <Popover.Button
                     className={`p-2.5 rounded-xl transition-all duration-200 ${
                       isHomePage && !isScrolled
-                        ? 'text-white hover:bg-white/10'
+                        ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
                         : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                     }`}
                   >
@@ -378,7 +390,7 @@ export default function Header() {
                   to="/login"
                   className={`hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isHomePage && !isScrolled
-                      ? 'text-white hover:bg-white/10'
+                      ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
                       : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                   }`}
                 >

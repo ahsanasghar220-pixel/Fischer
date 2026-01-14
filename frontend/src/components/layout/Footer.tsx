@@ -51,9 +51,9 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-dark-900 dark:bg-dark-950">
+    <footer className="bg-dark-100 dark:bg-dark-900">
       {/* Newsletter Section */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-dark-900 dark:bg-dark-950">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 to-primary-400/10" />
         <div className="absolute top-0 left-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary-400/5 rounded-full blur-3xl" />
@@ -106,7 +106,7 @@ export default function Footer() {
       </div>
 
       {/* Main Footer */}
-      <div className="border-t border-dark-800">
+      <div className="border-t border-dark-200 dark:border-dark-800">
         <div className="container-xl py-12 lg:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">
             {/* Brand Column */}
@@ -117,7 +117,7 @@ export default function Footer() {
                   alt="Fischer"
                   width={120}
                   height={48}
-                  className="h-12 w-auto brightness-0 invert"
+                  className="h-12 w-auto dark:brightness-0 dark:invert"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'
                     const span = document.createElement('span')
@@ -127,7 +127,7 @@ export default function Footer() {
                   }}
                 />
               </Link>
-              <p className="mt-6 text-dark-400 text-sm leading-relaxed max-w-xs">
+              <p className="mt-6 text-dark-600 dark:text-dark-400 text-sm leading-relaxed max-w-xs">
                 Pakistan's trusted home appliance brand since 1990.
                 ISO 9001:2015 & PSQCA certified manufacturing excellence.
               </p>
@@ -136,24 +136,24 @@ export default function Footer() {
               <div className="mt-6 space-y-3">
                 <a
                   href="tel:+923211146642"
-                  className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors text-sm group"
+                  className="flex items-center gap-3 text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-dark-200 dark:bg-dark-800 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
                     <PhoneIcon className="w-4 h-4" />
                   </div>
                   +92 321 1146642
                 </a>
                 <a
                   href="mailto:fischer.few@gmail.com"
-                  className="flex items-center gap-3 text-dark-400 hover:text-primary-400 transition-colors text-sm group"
+                  className="flex items-center gap-3 text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-dark-200 dark:bg-dark-800 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
                     <EnvelopeIcon className="w-4 h-4" />
                   </div>
                   fischer.few@gmail.com
                 </a>
-                <div className="flex items-center gap-3 text-dark-400 text-sm">
-                  <div className="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center">
+                <div className="flex items-center gap-3 text-dark-600 dark:text-dark-400 text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-dark-200 dark:bg-dark-800 flex items-center justify-center">
                     <MapPinIcon className="w-4 h-4" />
                   </div>
                   Peco Road, Lahore, Pakistan
@@ -163,7 +163,7 @@ export default function Footer() {
 
             {/* Products */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mb-4">
                 Products
               </h4>
               <ul className="space-y-3">
@@ -171,7 +171,7 @@ export default function Footer() {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="text-dark-400 hover:text-primary-400 transition-colors text-sm inline-block"
+                      className="text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm inline-block"
                     >
                       {item.name}
                     </Link>
@@ -182,7 +182,7 @@ export default function Footer() {
 
             {/* Support */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mb-4">
                 Support
               </h4>
               <ul className="space-y-3">
@@ -190,7 +190,7 @@ export default function Footer() {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="text-dark-400 hover:text-primary-400 transition-colors text-sm inline-block"
+                      className="text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm inline-block"
                     >
                       {item.name}
                     </Link>
@@ -201,7 +201,7 @@ export default function Footer() {
 
             {/* Company */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mb-4">
                 Company
               </h4>
               <ul className="space-y-3">
@@ -209,7 +209,7 @@ export default function Footer() {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className="text-dark-400 hover:text-primary-400 transition-colors text-sm inline-block"
+                      className="text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm inline-block"
                     >
                       {item.name}
                     </Link>
@@ -220,7 +220,7 @@ export default function Footer() {
 
             {/* Follow Us */}
             <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mb-4">
                 Follow Us
               </h4>
               <div className="flex gap-3">
@@ -228,8 +228,8 @@ export default function Footer() {
                   href="https://facebook.com/fischerpakistan"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
-                           text-dark-400 hover:text-primary-400 transition-all duration-200"
+                  className="w-10 h-10 rounded-xl bg-dark-200 dark:bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
+                           text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
                   aria-label="Facebook"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -240,8 +240,8 @@ export default function Footer() {
                   href="https://instagram.com/fischerpklhr"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
-                           text-dark-400 hover:text-primary-400 transition-all duration-200"
+                  className="w-10 h-10 rounded-xl bg-dark-200 dark:bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
+                           text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
                   aria-label="Instagram"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -252,8 +252,8 @@ export default function Footer() {
                   href="https://wa.me/923211146642"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
-                           text-dark-400 hover:text-primary-400 transition-all duration-200"
+                  className="w-10 h-10 rounded-xl bg-dark-200 dark:bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
+                           text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
                   aria-label="WhatsApp"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -264,8 +264,8 @@ export default function Footer() {
                   href="https://youtube.com/@fischerpakistan"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-xl bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
-                           text-dark-400 hover:text-primary-400 transition-all duration-200"
+                  className="w-10 h-10 rounded-xl bg-dark-200 dark:bg-dark-800 hover:bg-primary-500/20 flex items-center justify-center
+                           text-dark-600 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200"
                   aria-label="YouTube"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -275,15 +275,15 @@ export default function Footer() {
               </div>
 
               {/* Payment Methods */}
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mt-8 mb-4">
+              <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mt-8 mb-4">
                 We Accept
               </h4>
               <div className="flex flex-wrap gap-2">
                 {paymentMethods.map((method) => (
                   <span
                     key={method}
-                    className="px-3 py-1.5 text-xs font-medium text-dark-400
-                             bg-dark-800 rounded-lg"
+                    className="px-3 py-1.5 text-xs font-medium text-dark-600 dark:text-dark-400
+                             bg-dark-200 dark:bg-dark-800 rounded-lg"
                   >
                     {method}
                   </span>
@@ -295,7 +295,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-dark-800">
+      <div className="border-t border-dark-200 dark:border-dark-800">
         <div className="container-xl py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-dark-500 text-sm text-center md:text-left">
@@ -304,13 +304,13 @@ export default function Footer() {
             <div className="flex items-center gap-6">
               {/* Certifications */}
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-800 rounded-lg">
-                  <span className="text-xs font-bold text-primary-400">ISO</span>
-                  <span className="text-xs text-dark-400">9001:2015</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
+                  <span className="text-xs font-bold text-primary-600 dark:text-primary-400">ISO</span>
+                  <span className="text-xs text-dark-600 dark:text-dark-400">9001:2015</span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-800 rounded-lg">
-                  <span className="text-xs font-bold text-primary-400">PSQCA</span>
-                  <span className="text-xs text-dark-400">Certified</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
+                  <span className="text-xs font-bold text-primary-600 dark:text-primary-400">PSQCA</span>
+                  <span className="text-xs text-dark-600 dark:text-dark-400">Certified</span>
                 </div>
               </div>
             </div>

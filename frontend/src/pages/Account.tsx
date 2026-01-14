@@ -41,18 +41,18 @@ export default function Account() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-50">
+    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 transition-colors">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2 text-sm text-dark-500 mb-4">
-            <Link to="/" className="hover:text-primary-600">Home</Link>
+          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
+            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
             <span>/</span>
-            <span className="text-dark-900">My Account</span>
+            <span className="text-dark-900 dark:text-white">My Account</span>
           </div>
-          <h1 className="text-3xl font-bold text-dark-900">My Account</h1>
+          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">My Account</h1>
           {user && (
-            <p className="text-dark-500 mt-1">Welcome back, {user.name}</p>
+            <p className="text-dark-500 dark:text-dark-400 mt-1">Welcome back, {user.name}</p>
           )}
         </div>
       </div>
@@ -61,18 +61,18 @@ export default function Account() {
         <div className="flex gap-8">
           {/* Sidebar - Desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden sticky top-4">
+            <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden sticky top-4">
               {/* User Info */}
-              <div className="p-6 border-b">
+              <div className="p-6 border-b border-dark-200 dark:border-dark-700">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-primary-600">
+                  <div className="w-14 h-14 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
+                    <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
                       {user?.name?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-dark-900">{user?.name}</h3>
-                    <p className="text-sm text-dark-500">{user?.email}</p>
+                    <h3 className="font-semibold text-dark-900 dark:text-white">{user?.name}</h3>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">{user?.email}</p>
                   </div>
                 </div>
               </div>
@@ -87,8 +87,8 @@ export default function Account() {
                       to={item.path}
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
                         isActive(item.path, item.exact)
-                          ? 'bg-primary-50 text-primary-600'
-                          : 'text-dark-600 hover:bg-dark-50'
+                          ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                          : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -98,7 +98,7 @@ export default function Account() {
                 })}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left text-red-600 hover:bg-red-50 transition-colors mt-4"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mt-4"
                 >
                   <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   Logout
@@ -111,11 +111,11 @@ export default function Account() {
           <div className="lg:hidden mb-4 w-full">
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="w-full bg-white rounded-xl shadow-sm p-4 flex items-center justify-between"
+              className="w-full bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4 flex items-center justify-between"
             >
-              <span className="font-medium text-dark-900">Account Menu</span>
+              <span className="font-medium text-dark-900 dark:text-white">Account Menu</span>
               <svg
-                className={`w-5 h-5 transition-transform ${showMobileMenu ? 'rotate-180' : ''}`}
+                className={`w-5 h-5 text-dark-600 dark:text-dark-400 transition-transform ${showMobileMenu ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -125,7 +125,7 @@ export default function Account() {
             </button>
 
             {showMobileMenu && (
-              <div className="bg-white rounded-xl shadow-sm mt-2 overflow-hidden">
+              <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm mt-2 overflow-hidden">
                 {menuItems.map((item) => {
                   const Icon = item.icon
                   return (
@@ -133,10 +133,10 @@ export default function Account() {
                       key={item.path}
                       to={item.path}
                       onClick={() => setShowMobileMenu(false)}
-                      className={`flex items-center gap-3 px-4 py-3 border-b last:border-0 ${
+                      className={`flex items-center gap-3 px-4 py-3 border-b border-dark-200 dark:border-dark-700 last:border-0 ${
                         isActive(item.path, item.exact)
-                          ? 'bg-primary-50 text-primary-600'
-                          : 'text-dark-600'
+                          ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                          : 'text-dark-600 dark:text-dark-300'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -146,7 +146,7 @@ export default function Account() {
                 })}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 w-full text-left text-red-600"
+                  className="flex items-center gap-3 px-4 py-3 w-full text-left text-red-600 dark:text-red-400"
                 >
                   <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   Logout

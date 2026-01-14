@@ -190,7 +190,8 @@ export default function OrderSuccess() {
   const { data: order, isLoading, error } = useQuery<Order>({
     queryKey: ['order', orderNumber],
     queryFn: async () => {
-      const response = await api.get(`/orders/${orderNumber}`)
+      // Use public endpoint that works for guest checkout
+      const response = await api.get(`/orders/${orderNumber}/view`)
       return response.data.data
     },
   })

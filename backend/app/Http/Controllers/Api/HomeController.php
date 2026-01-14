@@ -35,26 +35,29 @@ class HomeController extends Controller
 
     protected function getHomePageData(): array
     {
-        // Featured products - added 'brand' eager loading
+        // Featured products - only show products with images
         $featuredProducts = Product::with(['images', 'category', 'brand'])
             ->active()
             ->featured()
+            ->whereHas('images')
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
-        // New arrivals - added 'brand' eager loading
+        // New arrivals - only show products with images
         $newArrivals = Product::with(['images', 'category', 'brand'])
             ->active()
             ->new()
+            ->whereHas('images')
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
-        // Bestsellers - added 'brand' eager loading
+        // Bestsellers - only show products with images
         $bestsellers = Product::with(['images', 'category', 'brand'])
             ->active()
             ->bestseller()
+            ->whereHas('images')
             ->orderByDesc('sales_count')
             ->limit(8)
             ->get();

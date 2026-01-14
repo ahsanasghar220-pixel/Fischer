@@ -124,10 +124,17 @@ class OrderController extends Controller
 
     public function show($id)
     {
+        // Support both ID and order_number
         $order = Order::with([
             'user:id,first_name,last_name,email,phone',
             'items.product:id,name,slug,sku',
-        ])->findOrFail($id);
+        ]);
+
+        if (is_numeric($id)) {
+            $order = $order->findOrFail($id);
+        } else {
+            $order = $order->where('order_number', $id)->firstOrFail();
+        }
 
         return $this->success([
             'data' => $order,
@@ -136,12 +143,12 @@ class OrderController extends Controller
 
     public function update(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        $order = $this->findOrder($id);
 
         $validated = $request->validate([
             'status' => 'sometimes|string|in:pending,confirmed,processing,shipped,delivered,cancelled',
             'payment_status' => 'sometimes|string|in:pending,paid,failed,refunded',
-            'notes' => 'nullable|string',
+            'admin_notes' => 'nullable|string',
         ]);
 
         $order->update($validated);
@@ -156,13 +163,23 @@ class OrderController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        $order = $this->findOrder($id);
 
         $validated = $request->validate([
             'status' => 'required|string|in:pending,confirmed,processing,shipped,delivered,cancelled',
         ]);
 
+        $oldStatus = $order->status;
         $order->update(['status' => $validated['status']]);
+
+        // Update timestamps based on status
+        if ($validated['status'] === 'shipped' && $oldStatus !== 'shipped') {
+            $order->update(['shipped_at' => now()]);
+        } elseif ($validated['status'] === 'delivered' && $oldStatus !== 'delivered') {
+            $order->update(['delivered_at' => now()]);
+        } elseif ($validated['status'] === 'cancelled' && $oldStatus !== 'cancelled') {
+            $order->update(['cancelled_at' => now()]);
+        }
 
         // Clear dashboard cache
         Cache::forget('admin_dashboard');
@@ -174,7 +191,7 @@ class OrderController extends Controller
 
     public function updateTracking(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        $order = $this->findOrder($id);
 
         $validated = $request->validate([
             'tracking_number' => 'required|string|max:100',
@@ -187,5 +204,16 @@ class OrderController extends Controller
         return $this->success([
             'data' => $order->fresh(),
         ], 'Tracking information updated');
+    }
+
+    /**
+     * Find order by ID or order_number
+     */
+    protected function findOrder($id): Order
+    {
+        if (is_numeric($id)) {
+            return Order::findOrFail($id);
+        }
+        return Order::where('order_number', $id)->firstOrFail();
     }
 }

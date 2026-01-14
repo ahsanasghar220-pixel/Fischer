@@ -73,8 +73,8 @@ class CheckoutController extends Controller
         // Calculate loyalty points discount
         $loyaltyDiscount = 0;
         $loyaltyPoints = $request->loyalty_points ?? 0;
-        if ($loyaltyPoints > 0 && auth()->check()) {
-            $user = auth()->user();
+        $user = auth('sanctum')->user();
+        if ($loyaltyPoints > 0 && $user) {
             $maxPoints = min($loyaltyPoints, $user->loyalty_points);
             $loyaltyDiscount = $maxPoints * 0.1; // 1 point = Rs. 0.10
             $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount); // Can't exceed order total
@@ -96,9 +96,10 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         $validated = $request->validate([
-            // Shipping info
-            'shipping_first_name' => 'required|string|max:255',
-            'shipping_last_name' => 'required|string|max:255',
+            // Shipping info (accept either name or first_name/last_name)
+            'shipping_name' => 'required_without_all:shipping_first_name,shipping_last_name|nullable|string|max:255',
+            'shipping_first_name' => 'required_without:shipping_name|nullable|string|max:255',
+            'shipping_last_name' => 'required_without:shipping_name|nullable|string|max:255',
             'shipping_phone' => 'required|string|max:20',
             'shipping_email' => 'nullable|email|max:255',
             'shipping_address_line_1' => 'required|string|max:500',
@@ -108,12 +109,13 @@ class CheckoutController extends Controller
             'shipping_postal_code' => 'nullable|string|max:10',
 
             // Billing (optional)
-            'same_billing_address' => 'boolean',
-            'billing_first_name' => 'required_if:same_billing_address,false|nullable|string|max:255',
-            'billing_last_name' => 'required_if:same_billing_address,false|nullable|string|max:255',
-            'billing_phone' => 'required_if:same_billing_address,false|nullable|string|max:20',
-            'billing_address_line_1' => 'required_if:same_billing_address,false|nullable|string|max:500',
-            'billing_city' => 'required_if:same_billing_address,false|nullable|string|max:255',
+            'billing_same_as_shipping' => 'boolean',
+            'billing_name' => 'nullable|string|max:255',
+            'billing_first_name' => 'nullable|string|max:255',
+            'billing_last_name' => 'nullable|string|max:255',
+            'billing_phone' => 'nullable|string|max:20',
+            'billing_address_line_1' => 'nullable|string|max:500',
+            'billing_city' => 'nullable|string|max:255',
 
             // Payment
             'payment_method' => 'required|in:cod,bank_transfer,jazzcash,easypaisa,card',
@@ -125,8 +127,25 @@ class CheckoutController extends Controller
             'loyalty_points' => 'nullable|integer|min:0',
 
             // Notes
-            'customer_notes' => 'nullable|string|max:1000',
+            'notes' => 'nullable|string|max:1000',
         ]);
+
+        // Parse shipping name into first/last if not provided separately
+        if (!empty($validated['shipping_name']) && empty($validated['shipping_first_name'])) {
+            $nameParts = explode(' ', $validated['shipping_name'], 2);
+            $validated['shipping_first_name'] = $nameParts[0];
+            $validated['shipping_last_name'] = $nameParts[1] ?? '';
+        }
+
+        // Parse billing name if provided
+        if (!empty($validated['billing_name']) && empty($validated['billing_first_name'])) {
+            $nameParts = explode(' ', $validated['billing_name'], 2);
+            $validated['billing_first_name'] = $nameParts[0];
+            $validated['billing_last_name'] = $nameParts[1] ?? '';
+        }
+
+        // Map notes field
+        $validated['customer_notes'] = $validated['notes'] ?? null;
 
         $cart = $this->getCart($request);
 
@@ -142,7 +161,8 @@ class CheckoutController extends Controller
         }
 
         return DB::transaction(function () use ($validated, $cart, $request) {
-            $user = auth()->user();
+            // Try to get authenticated user (works even without auth:sanctum middleware)
+            $user = auth('sanctum')->user();
 
             // Calculate amounts
             $subtotal = $cart->subtotal;
@@ -175,8 +195,8 @@ class CheckoutController extends Controller
             // Create order
             $order = Order::create([
                 'user_id' => $user?->id,
-                'guest_email' => $user ? null : $validated['shipping_email'],
-                'guest_phone' => $user ? null : $validated['shipping_phone'],
+                'guest_email' => $user ? null : ($validated['shipping_email'] ?? null),
+                'guest_phone' => $user ? null : ($validated['shipping_phone'] ?? null),
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $validated['payment_method'],
@@ -190,7 +210,7 @@ class CheckoutController extends Controller
                 'shipping_first_name' => $validated['shipping_first_name'],
                 'shipping_last_name' => $validated['shipping_last_name'],
                 'shipping_phone' => $validated['shipping_phone'],
-                'shipping_email' => $validated['shipping_email'] ?? $user?->email,
+                'shipping_email' => ($validated['shipping_email'] ?? null) ?? $user?->email,
                 'shipping_address_line_1' => $validated['shipping_address_line_1'],
                 'shipping_address_line_2' => $validated['shipping_address_line_2'] ?? null,
                 'shipping_city' => $validated['shipping_city'],
@@ -198,7 +218,7 @@ class CheckoutController extends Controller
                 'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
                 'shipping_country' => 'Pakistan',
 
-                'same_billing_address' => $validated['same_billing_address'] ?? true,
+                'same_billing_address' => $validated['billing_same_as_shipping'] ?? true,
                 'billing_first_name' => $validated['billing_first_name'] ?? null,
                 'billing_last_name' => $validated['billing_last_name'] ?? null,
                 'billing_phone' => $validated['billing_phone'] ?? null,
@@ -319,7 +339,8 @@ class CheckoutController extends Controller
 
     protected function getCart(Request $request): ?Cart
     {
-        $userId = auth()->id();
+        // Use sanctum guard to get authenticated user even without middleware
+        $userId = auth('sanctum')->id();
         $sessionId = $request->header('X-Session-ID') ?? $request->session_id;
 
         if ($userId) {

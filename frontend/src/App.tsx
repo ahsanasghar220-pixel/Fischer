@@ -18,9 +18,12 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const Account = lazy(() => import('./pages/Account'))
 const Dashboard = lazy(() => import('./pages/account/Dashboard'))
 const Orders = lazy(() => import('./pages/account/Orders'))
+const OrderDetail = lazy(() => import('./pages/account/OrderDetail'))
 const Wishlist = lazy(() => import('./pages/account/Wishlist'))
 const Addresses = lazy(() => import('./pages/account/Addresses'))
 const Settings = lazy(() => import('./pages/account/Settings'))
+const LoyaltyPoints = lazy(() => import('./pages/account/LoyaltyPoints'))
+const MyServiceRequests = lazy(() => import('./pages/account/MyServiceRequests'))
 const ServiceRequest = lazy(() => import('./pages/ServiceRequest'))
 const DealerRegister = lazy(() => import('./pages/DealerRegister'))
 const FindDealer = lazy(() => import('./pages/FindDealer'))
@@ -34,6 +37,7 @@ const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'))
 const AdminProducts = lazy(() => import('./pages/admin/Products'))
 const AdminOrders = lazy(() => import('./pages/admin/Orders'))
+const AdminOrderDetail = lazy(() => import('./pages/admin/OrderDetail'))
 const AdminCustomers = lazy(() => import('./pages/admin/Customers'))
 const AdminCategories = lazy(() => import('./pages/admin/Categories'))
 const AdminSettings = lazy(() => import('./pages/admin/Settings'))
@@ -69,8 +73,11 @@ function App() {
           <Route path="account" element={<Account />}>
             <Route index element={<Dashboard />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="orders/:orderNumber" element={<OrderDetail />} />
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="addresses" element={<Addresses />} />
+            <Route path="loyalty" element={<LoyaltyPoints />} />
+            <Route path="service-requests" element={<MyServiceRequests />} />
             <Route path="settings" element={<Settings />} />
           </Route>
 
@@ -97,6 +104,7 @@ function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/:id" element={<AdminProductEdit />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:orderNumber" element={<AdminOrderDetail />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="dealers" element={<AdminDealers />} />

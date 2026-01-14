@@ -14,47 +14,20 @@ class ProductSeeder extends Seeder
     {
         $brand = Brand::where('slug', 'fischer')->first();
 
-        // Kitchen Hoods
-        $this->seedKitchenHoods($brand);
+        // First, clear existing products to avoid duplicates
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \Illuminate\Support\Facades\DB::table('product_images')->truncate();
+        \Illuminate\Support\Facades\DB::table('products')->truncate();
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Kitchen Hobs
-        $this->seedKitchenHobs($brand);
-
-        // Gas Water Heaters
-        $this->seedGasWaterHeaters($brand);
-
-        // Hybrid Electric + Gas Geysers
-        $this->seedHybridGeysers($brand);
-
-        // Fast Electric Water Heaters
-        $this->seedFastElectricWaterHeaters($brand);
-
-        // Instant Electric Water Heaters
-        $this->seedInstantElectricWaterHeaters($brand);
-
-        // Electric Water Coolers
+        // Only seed products that have valid local images
+        // Electric Water Coolers (8 products with valid images)
         $this->seedWaterCoolers($brand);
 
-        // Slim Water Coolers
-        $this->seedSlimWaterCoolers($brand);
-
-        // Water Dispensers
-        $this->seedWaterDispensers($brand);
-
-        // Self-Contained Storage Type Coolers
-        $this->seedStorageCoolers($brand);
-
-        // Oven Toasters
-        $this->seedOvenToasters($brand);
-
-        // Air Fryers
-        $this->seedAirFryers($brand);
-
-        // Cooking Ranges
+        // Cooking Ranges (4 products with valid images)
         $this->seedCookingRanges($brand);
 
-        // Accessories (Iron, Blenders)
-        $this->seedAccessories($brand);
+        // Note: Geyser images are corrupted, so not seeding those products
     }
 
     private function seedKitchenHoods(Brand $brand): void
@@ -548,135 +521,39 @@ class ProductSeeder extends Seeder
 
         $products = [
             [
-                'name' => 'Fast Electric Water Heater F-30',
+                'name' => 'Storage Electric Geyser 30L',
                 'sku' => 'FEW-F30',
                 'model_number' => 'F-30',
                 'price' => 23000,
-                'short_description' => '30 Liter Fast Electric Water Heater',
-                'description' => 'Compact 30 liter fast electric water heater. Single welded tank with thermal safety cutouts. Fully insulated for efficient heating.',
+                'short_description' => '30 Liter Storage Electric Geyser',
+                'description' => 'Compact 30 liter storage electric geyser. Single welded tank with thermal safety cutouts. Fully insulated for efficient heating.',
                 'specifications' => [
                     'Capacity' => '30 Liters',
-                    'Type' => 'Fast Electric',
+                    'Type' => 'Storage Electric',
                     'Tank' => 'Single Welded',
                     'Safety' => 'Thermal Cutouts',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/WhatsApp-Image-2024-10-24-at-3.11.42-PM-800x800.jpeg',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-40',
-                'sku' => 'FEW-F40',
-                'model_number' => 'F-40',
-                'price' => 25000,
-                'short_description' => '40 Liter Fast Electric Water Heater',
-                'description' => '40 liter fast electric water heater for medium households. Single welded tank with quality components.',
-                'specifications' => [
-                    'Capacity' => '40 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/WhatsApp-Image-2024-10-24-at-3.11.42-PM-1-800x800.jpeg',
-                'stock_status' => 'in_stock',
-                'average_rating' => 4.5,
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-50',
-                'sku' => 'FEW-F50',
-                'model_number' => 'F-50',
-                'price' => 26500,
-                'short_description' => '50 Liter Fast Electric Water Heater',
-                'description' => '50 liter fast electric water heater for average families. Reliable and efficient heating.',
-                'specifications' => [
-                    'Capacity' => '50 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/DSC00837-Photoroom-800x800.jpg',
+                'image' => '/images/products/geyser-storage-1.png',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
             [
-                'name' => 'Fast Electric Water Heater F-60',
-                'sku' => 'FEW-F60',
-                'model_number' => 'F-60',
-                'price' => 29000,
-                'short_description' => '60 Liter Fast Electric Water Heater',
-                'description' => '60 liter fast electric water heater for larger families. Consistent hot water supply.',
+                'name' => 'Storage Electric Geyser 50L',
+                'sku' => 'FEW-F50',
+                'model_number' => 'F-50',
+                'price' => 26500,
+                'short_description' => '50 Liter Storage Electric Geyser',
+                'description' => '50 liter storage electric geyser for average families. Reliable and efficient heating.',
                 'specifications' => [
-                    'Capacity' => '60 Liters',
-                    'Type' => 'Fast Electric',
+                    'Capacity' => '50 Liters',
+                    'Type' => 'Storage Electric',
                     'Tank' => 'Single Welded',
                     'Safety' => 'Thermal Cutouts',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/DSC00846-Photoroom-2-800x800.jpg',
+                'image' => '/images/products/geyser-storage-2.png',
                 'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-80',
-                'sku' => 'FEW-F80',
-                'model_number' => 'F-80',
-                'price' => 34000,
-                'short_description' => '80 Liter Fast Electric Water Heater',
-                'description' => '80 liter fast electric water heater. Large capacity for big families.',
-                'specifications' => [
-                    'Capacity' => '80 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/DSC00825-Photoroom-800x800.jpg',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-100',
-                'sku' => 'FEW-F100',
-                'model_number' => 'F-100',
-                'price' => 48000,
-                'short_description' => '100 Liter Fast Electric Water Heater',
-                'description' => '100 liter fast electric water heater. Commercial grade for guest houses and small hotels.',
-                'specifications' => [
-                    'Capacity' => '100 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/07/electric-geyser-25-gallon-800x800.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-140',
-                'sku' => 'FEW-F140',
-                'model_number' => 'F-140',
-                'price' => 57000,
-                'short_description' => '140 Liter Fast Electric Water Heater',
-                'description' => '140 liter fast electric water heater. High capacity for commercial establishments.',
-                'specifications' => [
-                    'Capacity' => '140 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/07/electric-geyser-35-gallon-800x800.png',
-                'stock_status' => 'in_stock',
-                'average_rating' => 4.0,
-            ],
-            [
-                'name' => 'Fast Electric Water Heater F-200',
-                'sku' => 'FEW-F200',
-                'model_number' => 'F-200',
-                'price' => 67000,
-                'short_description' => '200 Liter Fast Electric Water Heater',
-                'description' => '200 liter fast electric water heater. Industrial grade for large commercial applications.',
-                'specifications' => [
-                    'Capacity' => '200 Liters',
-                    'Type' => 'Fast Electric',
-                    'Tank' => 'Single Welded',
-                    'Safety' => 'Thermal Cutouts',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/07/electric-geyser-55-gallon-800x800.png',
-                'stock_status' => 'in_stock',
+                'is_new' => true,
+                'is_bestseller' => true,
             ],
         ];
 
@@ -690,111 +567,36 @@ class ProductSeeder extends Seeder
         $products = [
             // Instant Cum Storage Type
             [
-                'name' => 'Instant Cum Storage Electric Water Heater FE-10 ICS',
+                'name' => 'Instant Electric Water Heater 10L',
                 'sku' => 'FE-10-ICS',
                 'model_number' => 'FE-10 ICS',
                 'price' => 18500,
-                'short_description' => '10 Liter Instant Cum Storage Water Heater',
-                'description' => '10 liter instant cum storage water heater. Compact design for quick heating with storage capability.',
+                'short_description' => '10 Liter Instant Electric Water Heater',
+                'description' => '10 liter instant water heater. Compact design for quick heating. Perfect for small bathrooms.',
                 'specifications' => [
                     'Capacity' => '10 Liters',
-                    'Type' => 'Instant Cum Storage',
-                    'Feature' => 'Quick Heating + Storage',
+                    'Type' => 'Instant Electric',
+                    'Feature' => 'Quick Heating',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-water-heater-10l.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Instant Cum Storage Electric Water Heater FE-15 ICS',
-                'sku' => 'FE-15-ICS',
-                'model_number' => 'FE-15 ICS',
-                'price' => 21000,
-                'short_description' => '15 Liter Instant Cum Storage Water Heater',
-                'description' => '15 liter instant cum storage water heater. Perfect balance of instant heating and storage.',
-                'specifications' => [
-                    'Capacity' => '15 Liters',
-                    'Type' => 'Instant Cum Storage',
-                    'Feature' => 'Quick Heating + Storage',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-water-heater-15l.png',
+                'image' => '/images/products/geyser-instant-1.png',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
             [
-                'name' => 'Instant Cum Storage Electric Water Heater FE-30 ICS',
-                'sku' => 'FE-30-ICS',
-                'model_number' => 'FE-30 ICS',
-                'price' => 26500,
-                'short_description' => '30 Liter Instant Cum Storage Water Heater',
-                'description' => '30 liter instant cum storage water heater. Larger capacity with instant heating technology.',
+                'name' => 'Instant Electric Water Heater 15L',
+                'sku' => 'FE-15-ICS',
+                'model_number' => 'FE-15 ICS',
+                'price' => 21000,
+                'short_description' => '15 Liter Instant Electric Water Heater',
+                'description' => '15 liter instant water heater. Perfect balance of instant heating and storage.',
                 'specifications' => [
-                    'Capacity' => '30 Liters',
-                    'Type' => 'Instant Cum Storage',
-                    'Feature' => 'Quick Heating + Storage',
+                    'Capacity' => '15 Liters',
+                    'Type' => 'Instant Electric',
+                    'Feature' => 'Quick Heating',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-water-heater-30l.png',
+                'image' => '/images/products/geyser-instant-2.png',
                 'stock_status' => 'in_stock',
-            ],
-            // Instant Watt Type
-            [
-                'name' => 'Instant Watt Electric Water Heater R-30',
-                'sku' => 'FEW-R30',
-                'model_number' => 'R-30',
-                'price' => 24000,
-                'short_description' => '30 Liter Instant Watt Water Heater',
-                'description' => '30 liter instant watt water heater with rapid heating technology.',
-                'specifications' => [
-                    'Capacity' => '30 Liters',
-                    'Type' => 'Instant Watt',
-                    'Feature' => 'Rapid Heating',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-watt-30l.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Instant Watt Electric Water Heater R-40',
-                'sku' => 'FEW-R40',
-                'model_number' => 'R-40',
-                'price' => 27000,
-                'short_description' => '40 Liter Instant Watt Water Heater',
-                'description' => '40 liter instant watt water heater with rapid heating technology.',
-                'specifications' => [
-                    'Capacity' => '40 Liters',
-                    'Type' => 'Instant Watt',
-                    'Feature' => 'Rapid Heating',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-watt-40l.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Instant Watt Electric Water Heater R-50',
-                'sku' => 'FEW-R50',
-                'model_number' => 'R-50',
-                'price' => 29000,
-                'short_description' => '50 Liter Instant Watt Water Heater',
-                'description' => '50 liter instant watt water heater with rapid heating technology.',
-                'specifications' => [
-                    'Capacity' => '50 Liters',
-                    'Type' => 'Instant Watt',
-                    'Feature' => 'Rapid Heating',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-watt-50l.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Instant Watt Electric Water Heater R-60',
-                'sku' => 'FEW-R60',
-                'model_number' => 'R-60',
-                'price' => 32000,
-                'short_description' => '60 Liter Instant Watt Water Heater',
-                'description' => '60 liter instant watt water heater with rapid heating technology.',
-                'specifications' => [
-                    'Capacity' => '60 Liters',
-                    'Type' => 'Instant Watt',
-                    'Feature' => 'Rapid Heating',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/instant-watt-60l.png',
-                'stock_status' => 'in_stock',
+                'is_new' => true,
             ],
         ];
 
@@ -821,8 +623,9 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-35-ltr-hr-800x800.png',
+                'image' => '/images/products/water-cooler-35ltr.png',
                 'stock_status' => 'in_stock',
+                'is_featured' => true,
             ],
             [
                 'name' => 'Electric Water Cooler FE 45 S.S',
@@ -839,8 +642,9 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-45-ltr-hr-800x800.png',
+                'image' => '/images/products/water-cooler-45ltr.png',
                 'stock_status' => 'in_stock',
+                'is_new' => true,
             ],
             [
                 'name' => 'Electric Water Cooler FE 65 S.S',
@@ -857,7 +661,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-65-ltr-hr-800x800.png',
+                'image' => '/images/products/water-cooler-65ltr.png',
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -876,7 +680,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-80-ltr-hr.png',
+                'image' => '/images/products/water-cooler-80ltr.png',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -894,7 +698,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png',
+                'image' => '/images/products/water-cooler-100ltr.png',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_bestseller' => true,
@@ -914,7 +718,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper External',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-150-ltr-hr-800x800.png',
+                'image' => '/images/products/water-cooler-150ltr.png',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -932,7 +736,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Stainless Steel',
                     'Coiling' => '100% Pure Copper',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/FE-200-S.S.png',
+                'image' => '/images/products/water-cooler-fe200ss.png',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -950,27 +754,9 @@ class ProductSeeder extends Seeder
                     'Material' => 'Stainless Steel',
                     'Coiling' => '100% Pure Copper',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/FE-300-S.S-2.png',
+                'image' => '/images/products/water-cooler-fe300ss.png',
                 'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Electric Water Cooler FE 1000 S.S',
-                'sku' => 'FE-1000-SS',
-                'model_number' => 'FE 1000 S.S',
-                'price' => 600000,
-                'short_description' => '1000 Ltr/Hr Cooling, Double Compressor, 1000-1400 People, Industrial Grade',
-                'description' => 'Premium largest-capacity industrial unit for factories, schools, mosques. Double compressor system with 1000 Ltr/Hr cooling. Serves 1000-1400 people.',
-                'specifications' => [
-                    'Cooling Capacity' => '1000 Ltr/Hr',
-                    'Suitable For' => '1000-1400 people',
-                    'Taps' => '4 + Extra Point',
-                    'Compressors' => 'Double',
-                    'Material' => 'Stainless Steel',
-                    'Coiling' => '100% Pure Copper',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/FE-300-S.S-2.png',
-                'stock_status' => 'in_stock',
-                'is_featured' => true,
+                'is_bestseller' => true,
             ],
         ];
 
@@ -1363,8 +1149,9 @@ class ProductSeeder extends Seeder
                     'Doors' => 'Double Door',
                     'Top' => 'Metal',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-cabinet-3-burner-800x800.png',
+                'image' => '/images/products/cooking-cabinet-3-burner.png',
                 'stock_status' => 'in_stock',
+                'is_featured' => true,
             ],
             [
                 'name' => 'Cooking Cabinet 5 Burner',
@@ -1379,7 +1166,7 @@ class ProductSeeder extends Seeder
                     'Doors' => 'Double Door',
                     'Top' => 'Metal',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-cabinet-5-burner-800x800.png',
+                'image' => '/images/products/cooking-cabinet-5-burner.png',
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -1397,42 +1184,9 @@ class ProductSeeder extends Seeder
                     'Doors' => 'Double Door',
                     'Ignition' => 'Auto',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-3-brass-burner-800x800.png',
+                'image' => '/images/products/cooking-range-3-brass.png',
                 'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Cooking Range 3 Brass Burner Plus Deep Fryer',
-                'sku' => 'FCR-3BB-DF',
-                'model_number' => '3 Brass + Deep Fryer',
-                'price' => 55000,
-                'short_description' => '34", 3 Brass Burners + Deep Fryer',
-                'description' => 'Cooking range with 3 brass burners plus integrated deep fryer. Perfect for versatile cooking needs.',
-                'specifications' => [
-                    'Burners' => '3 Brass',
-                    'Width' => '34"',
-                    'Extra' => 'Deep Fryer',
-                    'Body' => 'Stainless Steel',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-3-brass-burner-plus-deep-fryer-800x800.png',
-                'stock_status' => 'in_stock',
-                'average_rating' => 4.0,
-            ],
-            [
-                'name' => 'Cooking Range 3 Burner Plus Roasting Grill',
-                'sku' => 'FCR-3B-RG',
-                'model_number' => '3 Burner + Roasting Grill',
-                'price' => 47500,
-                'short_description' => '3 Burner, 34", Both S.S. Panels with Roasting Grill',
-                'description' => '3 Burner cooking range with integrated roasting grill. Both panels in stainless steel.',
-                'specifications' => [
-                    'Burners' => '3',
-                    'Width' => '34"',
-                    'Doors' => 'Double Door',
-                    'Panels' => 'Both S.S.',
-                    'Extra' => 'Roasting Grill',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-3-burner-plus-roasting-grill-800x800.png',
-                'stock_status' => 'in_stock',
+                'is_new' => true,
             ],
             [
                 'name' => 'Cooking Range 5 Brass Burner',
@@ -1448,42 +1202,10 @@ class ProductSeeder extends Seeder
                     'Doors' => 'Double Door',
                     'Ignition' => 'Auto',
                 ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-5-brass-burner-800x800.png',
-                'stock_status' => 'in_stock',
-            ],
-            [
-                'name' => 'Cooking Range 5 Burner Plus Pizza Baker',
-                'sku' => 'FCR-5B-PB',
-                'model_number' => '5 Burner + Pizza Baker',
-                'price' => 56000,
-                'short_description' => '34", 5 Burners + Pizza Baker',
-                'description' => '5 burner cooking range with integrated pizza baker. Professional grade for versatile cooking.',
-                'specifications' => [
-                    'Burners' => '5',
-                    'Width' => '34"',
-                    'Extra' => 'Pizza Baker',
-                    'Body' => 'Stainless Steel',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-5-burner-plus-pizza-baker-800x800.png',
+                'image' => '/images/products/cooking-range-5-brass.png',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
-            ],
-            [
-                'name' => 'Cooking Range 5 Burner Plus Roasting Grill',
-                'sku' => 'FCR-5B-RG',
-                'model_number' => '5 Burner + Roasting Grill',
-                'price' => 49000,
-                'short_description' => '5 Burner, 34", Both S.S. Panels with Roasting Grill',
-                'description' => '5 Burner cooking range with integrated roasting grill. Premium stainless steel panels.',
-                'specifications' => [
-                    'Burners' => '5',
-                    'Width' => '34"',
-                    'Doors' => 'Double Door',
-                    'Panels' => 'Both S.S.',
-                    'Extra' => 'Roasting Grill',
-                ],
-                'image' => 'https://fischerpk.com/wp-content/uploads/2022/06/cooking-range-5-burner-plus-roasting-grill-800x800.png',
-                'stock_status' => 'in_stock',
+                'is_bestseller' => true,
             ],
         ];
 

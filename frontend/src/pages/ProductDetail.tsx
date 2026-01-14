@@ -17,6 +17,7 @@ import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ProductCard from '@/components/products/ProductCard'
+import AuthModal from '@/components/ui/AuthModal'
 import { formatPrice, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -91,6 +92,7 @@ export default function ProductDetail() {
   const [isInWishlist, setIsInWishlist] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description')
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -124,10 +126,21 @@ export default function ProductDetail() {
 
   const handleToggleWishlist = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to add items to wishlist')
+      setShowAuthModal(true)
       return
     }
 
+    try {
+      const response = await api.post('/wishlist/toggle', { product_id: product?.id })
+      setIsInWishlist(response.data.data.in_wishlist)
+      toast.success(response.data.data.in_wishlist ? 'Added to wishlist' : 'Removed from wishlist')
+    } catch {
+      toast.error('Failed to update wishlist')
+    }
+  }
+
+  const handleAuthSuccess = async () => {
+    // After successful auth, add to wishlist
     try {
       const response = await api.post('/wishlist/toggle', { product_id: product?.id })
       setIsInWishlist(response.data.data.in_wishlist)
@@ -549,6 +562,14 @@ export default function ProductDetail() {
           </div>
         </section>
       )}
+
+      {/* Auth Modal for wishlist */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+        message="Sign in to add items to your wishlist"
+      />
     </div>
   )
 }

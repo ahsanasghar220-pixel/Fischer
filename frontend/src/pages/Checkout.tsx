@@ -11,10 +11,11 @@ import toast from 'react-hot-toast'
 
 interface ShippingMethod {
   id: number
+  code: string
   name: string
   description: string
-  price: number
-  estimated_days: string
+  cost: number
+  estimated_delivery: string
 }
 
 interface Address {
@@ -120,8 +121,9 @@ export default function Checkout() {
   // Place order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async (data: CheckoutForm) => {
-      const response = await api.post('/checkout', {
+      const response = await api.post('/checkout/place-order', {
         ...data,
+        shipping_email: data.email,
         items: items.map(item => ({
           product_id: item.product.id,
           variant_id: item.variant?.id,
@@ -132,10 +134,10 @@ export default function Checkout() {
       return response.data
     },
     onSuccess: (data) => {
-      if (data.redirect_url) {
-        window.location.href = data.redirect_url
+      if (data.data?.payment?.redirect_url) {
+        window.location.href = data.data.payment.redirect_url
       } else {
-        navigate(`/order-success/${data.data.order_number}`)
+        navigate(`/order-success/${data.data?.order?.order_number}`)
       }
     },
     onError: (error: Error & { response?: { data?: { message?: string } } }) => {
@@ -235,7 +237,7 @@ export default function Checkout() {
   }
 
   const selectedShippingMethod = shippingMethods?.find(m => m.id === form.shipping_method_id)
-  const shippingCost = selectedShippingMethod?.price || 0
+  const shippingCost = selectedShippingMethod?.cost || 0
   const grandTotal = total + shippingCost
 
   if (!items || items.length === 0) {
@@ -496,11 +498,11 @@ export default function Checkout() {
                             <div>
                               <span className="font-medium text-dark-900 dark:text-white">{method.name}</span>
                               <p className="text-sm text-dark-500 dark:text-dark-400">{method.description}</p>
-                              <p className="text-sm text-dark-500 dark:text-dark-400">Delivery in {method.estimated_days}</p>
+                              <p className="text-sm text-dark-500 dark:text-dark-400">Delivery in {method.estimated_delivery}</p>
                             </div>
                             <div className="text-right">
                               <span className="font-semibold text-dark-900 dark:text-white">
-                                {method.price === 0 ? 'FREE' : formatPrice(method.price)}
+                                {method.cost === 0 ? 'FREE' : formatPrice(method.cost)}
                               </span>
                             </div>
                           </div>
@@ -648,9 +650,9 @@ export default function Checkout() {
                     <span className="text-dark-600 dark:text-dark-400">Shipping</span>
                     <span className="text-dark-900 dark:text-white">
                       {selectedShippingMethod
-                        ? selectedShippingMethod.price === 0
+                        ? selectedShippingMethod.cost === 0
                           ? 'FREE'
-                          : formatPrice(selectedShippingMethod.price)
+                          : formatPrice(selectedShippingMethod.cost)
                         : '—'}
                     </span>
                   </div>

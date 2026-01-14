@@ -209,12 +209,17 @@ export default function AdminOrders() {
                           <Link
                             to={`/admin/orders/${order.order_number}`}
                             className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
+                            title="View Order"
                           >
                             <EyeIcon className="w-4 h-4" />
                           </Link>
-                          <button className="p-2 text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 rounded">
+                          <Link
+                            to={`/admin/orders/${order.order_number}`}
+                            className="p-2 text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 rounded"
+                            title="Print Invoice"
+                          >
                             <PrinterIcon className="w-4 h-4" />
-                          </button>
+                          </Link>
                         </div>
                       </td>
                     </tr>

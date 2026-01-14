@@ -32,11 +32,29 @@ class SettingController extends Controller
                     'footer_text' => '',
                 ],
                 'payment' => [
+                    // Cash on Delivery
                     'cod_enabled' => true,
-                    'jazzcash_enabled' => true,
-                    'easypaisa_enabled' => true,
-                    'card_enabled' => true,
                     'cod_extra_charges' => 0,
+                    // JazzCash
+                    'jazzcash_enabled' => false,
+                    'jazzcash_sandbox' => true,
+                    'jazzcash_merchant_id' => '',
+                    'jazzcash_password' => '',
+                    'jazzcash_integrity_salt' => '',
+                    'jazzcash_return_url' => '',
+                    // EasyPaisa
+                    'easypaisa_enabled' => false,
+                    'easypaisa_sandbox' => true,
+                    'easypaisa_store_id' => '',
+                    'easypaisa_hash_key' => '',
+                    'easypaisa_return_url' => '',
+                    // Stripe/Card payments
+                    'card_enabled' => false,
+                    'stripe_sandbox' => true,
+                    'stripe_publishable_key' => '',
+                    'stripe_secret_key' => '',
+                    'stripe_webhook_secret' => '',
+                    // Bank Transfer
                     'bank_transfer_enabled' => true,
                     'bank_name' => '',
                     'bank_account_title' => '',

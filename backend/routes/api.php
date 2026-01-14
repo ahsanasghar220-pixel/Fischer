@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\AccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,9 @@ Route::prefix('cart')->group(function () {
     Route::delete('/coupon', [CartController::class, 'removeCoupon']);
 });
 
+// Shipping methods (GET for frontend compatibility)
+Route::get('/shipping/methods', [CheckoutController::class, 'getShippingMethods']);
+
 // Checkout
 Route::prefix('checkout')->group(function () {
     Route::post('/shipping-methods', [CheckoutController::class, 'getShippingMethods']);
@@ -70,8 +74,9 @@ Route::prefix('checkout')->group(function () {
     Route::post('/place-order', [CheckoutController::class, 'placeOrder']);
 });
 
-// Order tracking (public)
+// Order tracking and viewing (public - for guest checkout)
 Route::get('/orders/{orderNumber}/track', [OrderController::class, 'track']);
+Route::get('/orders/{orderNumber}/view', [OrderController::class, 'publicShow']);
 
 // Payment callbacks
 Route::prefix('payments')->group(function () {
@@ -125,6 +130,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/password', [AuthController::class, 'updatePassword']);
         Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
         Route::post('/resend-verification', [AuthController::class, 'resendVerification']);
+    });
+
+    // Account
+    Route::prefix('account')->group(function () {
+        Route::get('/dashboard', [AccountController::class, 'dashboard']);
+        Route::put('/profile', [AuthController::class, 'updateProfile']);
+        Route::put('/password', [AuthController::class, 'updatePassword']);
+        Route::get('/loyalty-points', [AccountController::class, 'loyaltyPoints']);
+        Route::get('/service-requests', [AccountController::class, 'serviceRequests']);
     });
 
     // Addresses

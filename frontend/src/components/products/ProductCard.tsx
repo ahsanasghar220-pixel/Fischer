@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import { formatPrice } from '@/lib/utils'
+import AuthModal from '@/components/ui/AuthModal'
 
 interface Product {
   id: number
@@ -45,6 +46,9 @@ const ProductCard = memo(function ProductCard({
   const [isInWishlist, setIsInWishlist] = useState(inWishlist)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [pendingWishlistAction, setPendingWishlistAction] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
@@ -79,7 +83,8 @@ const ProductCard = memo(function ProductCard({
     e.stopPropagation()
 
     if (!isAuthenticated) {
-      toast.error('Please login to add items to wishlist')
+      setPendingWishlistAction(true)
+      setShowAuthModal(true)
       return
     }
 
@@ -94,6 +99,22 @@ const ProductCard = memo(function ProductCard({
     }
   }, [product.id, isAuthenticated, onWishlistChange])
 
+  // Handle successful auth - add to wishlist if that was the pending action
+  const handleAuthSuccess = useCallback(async () => {
+    if (pendingWishlistAction) {
+      setPendingWishlistAction(false)
+      try {
+        const response = await api.post('/wishlist/toggle', { product_id: product.id })
+        const newState = response.data.data.in_wishlist
+        setIsInWishlist(newState)
+        onWishlistChange?.(newState)
+        toast.success(newState ? 'Added to wishlist' : 'Removed from wishlist')
+      } catch {
+        toast.error('Failed to update wishlist')
+      }
+    }
+  }, [pendingWishlistAction, product.id, onWishlistChange])
+
   const handleQuickView = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -102,7 +123,7 @@ const ProductCard = memo(function ProductCard({
 
   return (
     <Link to={`/product/${product.slug}`} className="group block">
-      <div className="product-card">
+      <div className="product-card card-shine relative transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary-500/20">
         {/* Image Container */}
         <div className="product-image">
           {/* Loading skeleton */}
@@ -110,7 +131,7 @@ const ProductCard = memo(function ProductCard({
             <div className="absolute inset-0 skeleton" />
           )}
 
-          {product.primary_image ? (
+          {product.primary_image && !imageError ? (
             <img
               src={product.primary_image}
               alt={product.name}
@@ -120,11 +141,15 @@ const ProductCard = memo(function ProductCard({
                         group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               loading="lazy"
               onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-dark-100 to-dark-200
                           dark:from-dark-800 dark:to-dark-900 flex items-center justify-center">
-              <span className="text-4xl opacity-30">📦</span>
+              <div className="text-center">
+                <span className="text-5xl block mb-2">📦</span>
+                <span className="text-xs text-dark-400 dark:text-dark-500">No Image</span>
+              </div>
             </div>
           )}
 
@@ -235,13 +260,38 @@ const ProductCard = memo(function ProductCard({
 
           {/* Price */}
           <div className="product-price">
-            <span>{formatPrice(product.price)}</span>
+            <span className="bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black">
+              {formatPrice(product.price)}
+            </span>
             {product.compare_price && product.compare_price > product.price && (
               <span className="product-price-old">{formatPrice(product.compare_price)}</span>
             )}
           </div>
         </div>
+
+        {/* Subtle glow on hover */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+             style={{
+               background: 'radial-gradient(circle at 50% 0%, rgba(244, 180, 44, 0.15) 0%, transparent 50%)',
+             }}
+        />
+
+        {/* Shine sweep effect on hover */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+        </div>
       </div>
+
+      {/* Auth Modal for wishlist */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => {
+          setShowAuthModal(false)
+          setPendingWishlistAction(false)
+        }}
+        onSuccess={handleAuthSuccess}
+        message="Sign in to add items to your wishlist"
+      />
     </Link>
   )
 })

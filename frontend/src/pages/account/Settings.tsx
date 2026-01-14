@@ -70,41 +70,41 @@ export default function Settings() {
   return (
     <div className="space-y-6">
       {/* Profile Settings */}
-      <div className="bg-white rounded-xl shadow-sm">
-        <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold text-dark-900">Profile Settings</h2>
-          <p className="text-sm text-dark-500 mt-1">Update your personal information</p>
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm">
+        <div className="p-4 border-b border-dark-200 dark:border-dark-700">
+          <h2 className="text-xl font-semibold text-dark-900 dark:text-white">Profile Settings</h2>
+          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Update your personal information</p>
         </div>
         <form onSubmit={handleProfileSubmit} className="p-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Full Name</label>
               <input
                 type="text"
                 value={profileData.name}
                 onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Email</label>
               <input
                 type="email"
                 value={profileData.email}
                 onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Phone Number</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Phone Number</label>
               <input
                 type="tel"
                 value={profileData.phone}
                 onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                 placeholder="03XX-XXXXXXX"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -122,27 +122,27 @@ export default function Settings() {
       </div>
 
       {/* Password Settings */}
-      <div className="bg-white rounded-xl shadow-sm">
-        <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold text-dark-900">Change Password</h2>
-          <p className="text-sm text-dark-500 mt-1">Update your password</p>
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm">
+        <div className="p-4 border-b border-dark-200 dark:border-dark-700">
+          <h2 className="text-xl font-semibold text-dark-900 dark:text-white">Change Password</h2>
+          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Update your password</p>
         </div>
         <form onSubmit={handlePasswordSubmit} className="p-6">
           <div className="space-y-4 max-w-md">
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Current Password</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Current Password</label>
               <div className="relative">
                 <input
                   type={showCurrentPassword ? 'text' : 'password'}
                   value={passwordData.current_password}
                   onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500 hover:text-dark-600 dark:hover:text-dark-300"
                 >
                   {showCurrentPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -153,20 +153,20 @@ export default function Settings() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">New Password</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">New Password</label>
               <div className="relative">
                 <input
                   type={showNewPassword ? 'text' : 'password'}
                   value={passwordData.password}
                   onChange={(e) => setPasswordData({ ...passwordData, password: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 pr-12"
                   required
                   minLength={8}
                 />
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500 hover:text-dark-600 dark:hover:text-dark-300"
                 >
                   {showNewPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -175,15 +175,15 @@ export default function Settings() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-dark-500 mt-1">Minimum 8 characters</p>
+              <p className="text-xs text-dark-500 dark:text-dark-400 mt-1">Minimum 8 characters</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-700 mb-1">Confirm New Password</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Confirm New Password</label>
               <input
                 type={showNewPassword ? 'text' : 'password'}
                 value={passwordData.password_confirmation}
                 onChange={(e) => setPasswordData({ ...passwordData, password_confirmation: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
               />
             </div>
@@ -202,55 +202,55 @@ export default function Settings() {
       </div>
 
       {/* Email Preferences */}
-      <div className="bg-white rounded-xl shadow-sm">
-        <div className="p-4 border-b">
-          <h2 className="text-xl font-semibold text-dark-900">Email Preferences</h2>
-          <p className="text-sm text-dark-500 mt-1">Manage your email notifications</p>
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm">
+        <div className="p-4 border-b border-dark-200 dark:border-dark-700">
+          <h2 className="text-xl font-semibold text-dark-900 dark:text-white">Email Preferences</h2>
+          <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">Manage your email notifications</p>
         </div>
         <div className="p-6 space-y-4">
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <span className="font-medium text-dark-900">Order Updates</span>
-              <p className="text-sm text-dark-500">Receive updates about your orders</p>
+              <span className="font-medium text-dark-900 dark:text-white">Order Updates</span>
+              <p className="text-sm text-dark-500 dark:text-dark-400">Receive updates about your orders</p>
             </div>
             <input
               type="checkbox"
               defaultChecked
-              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
+              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
             />
           </label>
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <span className="font-medium text-dark-900">Promotional Emails</span>
-              <p className="text-sm text-dark-500">Receive special offers and discounts</p>
+              <span className="font-medium text-dark-900 dark:text-white">Promotional Emails</span>
+              <p className="text-sm text-dark-500 dark:text-dark-400">Receive special offers and discounts</p>
             </div>
             <input
               type="checkbox"
               defaultChecked
-              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
+              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
             />
           </label>
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <span className="font-medium text-dark-900">Newsletter</span>
-              <p className="text-sm text-dark-500">Get updates on new products and tips</p>
+              <span className="font-medium text-dark-900 dark:text-white">Newsletter</span>
+              <p className="text-sm text-dark-500 dark:text-dark-400">Get updates on new products and tips</p>
             </div>
             <input
               type="checkbox"
               defaultChecked
-              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500"
+              className="w-5 h-5 rounded text-primary-500 focus:ring-primary-500 bg-white dark:bg-dark-700 border-dark-300 dark:border-dark-600"
             />
           </label>
         </div>
       </div>
 
       {/* Delete Account */}
-      <div className="bg-white rounded-xl shadow-sm border border-red-200">
-        <div className="p-4 border-b border-red-200">
-          <h2 className="text-xl font-semibold text-red-600">Danger Zone</h2>
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800">
+        <div className="p-4 border-b border-red-200 dark:border-red-800">
+          <h2 className="text-xl font-semibold text-red-600 dark:text-red-400">Danger Zone</h2>
         </div>
         <div className="p-6">
-          <p className="text-dark-600 mb-4">
+          <p className="text-dark-600 dark:text-dark-400 mb-4">
             Once you delete your account, there is no going back. Please be certain.
           </p>
           <button className="btn bg-red-600 text-white hover:bg-red-700">

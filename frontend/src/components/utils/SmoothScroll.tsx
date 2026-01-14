@@ -1,10 +1,12 @@
 import { useEffect, createContext, useContext, ReactNode, useCallback, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import Lenis from 'lenis'
 
 // Context for smooth scroll utilities
 interface SmoothScrollContextValue {
-  scrollTo: (target: number | string | HTMLElement, options?: { offset?: number; behavior?: 'smooth' | 'instant' }) => void
-  scrollToTop: (behavior?: 'smooth' | 'instant') => void
+  scrollTo: (target: number | string | HTMLElement, options?: { offset?: number; duration?: number; immediate?: boolean }) => void
+  scrollToTop: (immediate?: boolean) => void
+  lenis: Lenis | null
 }
 
 const SmoothScrollContext = createContext<SmoothScrollContextValue | null>(null)
@@ -19,101 +21,85 @@ interface SmoothScrollProps {
 
 export default function SmoothScroll({ children }: SmoothScrollProps) {
   const location = useLocation()
-  const isScrolling = useRef(false)
+  const lenisRef = useRef<Lenis | null>(null)
+  const rafRef = useRef<number | null>(null)
 
-  // Apply smooth scroll CSS to html element
+  // Initialize Lenis smooth scrolling
   useEffect(() => {
-    // Enable CSS smooth scrolling
-    document.documentElement.style.scrollBehavior = 'smooth'
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease out
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      touchMultiplier: 2,
+      infinite: false,
+    })
 
-    // Additional performance optimizations
-    document.documentElement.style.overscrollBehavior = 'none'
+    lenisRef.current = lenis
+
+    // Animation frame loop
+    function raf(time: number) {
+      lenis.raf(time)
+      rafRef.current = requestAnimationFrame(raf)
+    }
+
+    rafRef.current = requestAnimationFrame(raf)
+
+    // Add Lenis CSS class to html
+    document.documentElement.classList.add('lenis', 'lenis-smooth')
 
     return () => {
-      document.documentElement.style.scrollBehavior = ''
-      document.documentElement.style.overscrollBehavior = ''
-    }
-  }, [])
-
-  // Smooth easing function for custom scroll animations
-  const easeOutExpo = (t: number): number => {
-    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
-  }
-
-  // Custom smooth scroll with easing for programmatic scrolls
-  const smoothScrollTo = useCallback((targetY: number, duration: number = 800) => {
-    if (isScrolling.current) return
-
-    isScrolling.current = true
-    const startY = window.scrollY
-    const difference = targetY - startY
-    const startTime = performance.now()
-
-    const animateScroll = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = easeOutExpo(progress)
-
-      window.scrollTo(0, startY + difference * eased)
-
-      if (progress < 1) {
-        requestAnimationFrame(animateScroll)
-      } else {
-        isScrolling.current = false
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
       }
+      lenis.destroy()
+      lenisRef.current = null
+      document.documentElement.classList.remove('lenis', 'lenis-smooth')
     }
-
-    requestAnimationFrame(animateScroll)
   }, [])
 
+  // Scroll to function using Lenis
   const scrollTo = useCallback((
     target: number | string | HTMLElement,
-    options?: { offset?: number; behavior?: 'smooth' | 'instant' }
+    options?: { offset?: number; duration?: number; immediate?: boolean }
   ) => {
-    const offset = options?.offset || 0
-    const behavior = options?.behavior || 'smooth'
+    const lenis = lenisRef.current
+    if (!lenis) return
 
-    let targetPosition = 0
+    const offset = options?.offset ?? 0
+    const duration = options?.duration ?? 1.2
+    const immediate = options?.immediate ?? false
 
-    if (typeof target === 'number') {
-      targetPosition = target
-    } else if (typeof target === 'string') {
-      const element = document.querySelector(target)
-      if (element) {
-        targetPosition = element.getBoundingClientRect().top + window.scrollY
-      }
-    } else if (target instanceof HTMLElement) {
-      targetPosition = target.getBoundingClientRect().top + window.scrollY
-    }
+    lenis.scrollTo(target, {
+      offset,
+      duration: immediate ? 0 : duration,
+      immediate,
+    })
+  }, [])
 
-    const finalPosition = Math.max(0, targetPosition + offset)
+  // Scroll to top function
+  const scrollToTop = useCallback((immediate: boolean = false) => {
+    const lenis = lenisRef.current
+    if (!lenis) return
 
-    if (behavior === 'instant') {
-      window.scrollTo(0, finalPosition)
-    } else {
-      smoothScrollTo(finalPosition)
-    }
-  }, [smoothScrollTo])
+    lenis.scrollTo(0, {
+      duration: immediate ? 0 : 0.8,
+      immediate,
+    })
+  }, [])
 
-  const scrollToTop = useCallback((behavior: 'smooth' | 'instant' = 'smooth') => {
-    if (behavior === 'instant') {
-      window.scrollTo(0, 0)
-    } else {
-      smoothScrollTo(0, 600)
-    }
-  }, [smoothScrollTo])
-
-  // Reset scroll on navigation (handled by ScrollToTop component)
+  // Reset scroll on navigation
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      window.scrollTo(0, 0)
-    }, 0)
-    return () => clearTimeout(timer)
+    const lenis = lenisRef.current
+    if (lenis) {
+      // Immediate scroll to top on route change
+      lenis.scrollTo(0, { immediate: true })
+    }
   }, [location.pathname])
 
   return (
-    <SmoothScrollContext.Provider value={{ scrollTo, scrollToTop }}>
+    <SmoothScrollContext.Provider value={{ scrollTo, scrollToTop, lenis: lenisRef.current }}>
       {children}
     </SmoothScrollContext.Provider>
   )
