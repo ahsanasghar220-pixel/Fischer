@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             BannerSeeder::class,
             PageSeeder::class,
+            HomepageSeeder::class,
         ]);
     }
 }
