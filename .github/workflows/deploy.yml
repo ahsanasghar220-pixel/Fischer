@@ -130,11 +130,14 @@ jobs:
             # Run migrations
             $PHP artisan migrate --force
 
-            # Seed database
-            echo "=== Running database seeder ==="
-            $PHP artisan db:seed --force --verbose 2>&1 || {
-              echo "Seeding failed, checking if tables exist..."
-              $PHP artisan migrate:status
+            # Seed homepage data specifically (idempotent - uses updateOrInsert)
+            echo "=== Running HomepageSeeder ==="
+            $PHP artisan db:seed --class=HomepageSeeder --force --verbose 2>&1 || {
+              echo "HomepageSeeder failed, trying full seeder..."
+              $PHP artisan db:seed --force --verbose 2>&1 || {
+                echo "Seeding failed, checking if tables exist..."
+                $PHP artisan migrate:status
+              }
             }
 
             # Clear all caches first
