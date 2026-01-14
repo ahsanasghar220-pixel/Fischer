@@ -1,203 +1,428 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline'
+import { useSearchParams } from 'react-router-dom'
+import {
+  PlusIcon,
+  TrashIcon,
+  PencilIcon,
+  Bars3Icon,
+  EyeIcon,
+  EyeSlashIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  PhotoIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 
-interface Banner {
+interface Section {
   id: number
+  key: string
   title: string
-  subtitle: string
-  image: string
-  link: string
-  position: string
-  is_active: boolean
-  order: number
+  subtitle: string | null
+  is_enabled: boolean
+  sort_order: number
+  settings: Record<string, any>
 }
 
 interface Stat {
-  id: number
+  id?: number
   label: string
   value: string
   icon: string
+  sort_order: number
+  is_visible: boolean
 }
 
 interface Feature {
-  id: number
+  id?: number
   title: string
   description: string
   icon: string
+  color: string
+  sort_order: number
+  is_visible: boolean
 }
 
 interface Testimonial {
-  id: number
+  id?: number
   name: string
   role: string
   content: string
   image: string
   rating: number
+  sort_order: number
+  is_visible: boolean
 }
+
+interface Banner {
+  id?: number
+  title: string
+  subtitle: string
+  image: string
+  mobile_image?: string
+  button_text: string
+  button_link: string
+  position: string
+  sort_order: number
+  is_active: boolean
+}
+
+interface TrustBadge {
+  id?: number
+  title: string
+  image?: string
+  sort_order: number
+  is_visible: boolean
+}
+
+interface HomepageCategory {
+  id: number
+  category_id: number
+  sort_order: number
+  is_visible: boolean
+  category: {
+    id: number
+    name: string
+    slug: string
+    image?: string
+  }
+}
+
+interface Category {
+  id: number
+  name: string
+  slug: string
+  image?: string
+  products_count: number
+}
+
+interface HomepageProduct {
+  id: number
+  product_id: number
+  section: string
+  sort_order: number
+  is_visible: boolean
+  product: {
+    id: number
+    name: string
+    slug: string
+    price: number
+    sku: string
+    primary_image?: string
+    images?: { id: number; image: string }[]
+  }
+}
+
+interface Product {
+  id: number
+  name: string
+  slug: string
+  price: number
+  sku: string
+  primary_image?: string
+  images?: { id: number; image: string }[]
+}
+
+interface HomepageData {
+  sections: Section[]
+  stats: Stat[]
+  features: Feature[]
+  testimonials: Testimonial[]
+  trust_badges: TrustBadge[]
+  homepage_categories: HomepageCategory[]
+  homepage_products: HomepageProduct[]
+  banners: Banner[]
+  all_categories: Category[]
+  all_products: Product[]
+}
+
+const iconOptions = [
+  { value: 'star', label: 'Star' },
+  { value: 'users', label: 'Users' },
+  { value: 'cube', label: 'Cube' },
+  { value: 'fire', label: 'Fire' },
+  { value: 'truck', label: 'Truck' },
+  { value: 'shield', label: 'Shield' },
+  { value: 'credit-card', label: 'Credit Card' },
+  { value: 'phone', label: 'Phone' },
+  { value: 'clock', label: 'Clock' },
+  { value: 'check-circle', label: 'Check Circle' },
+  { value: 'gift', label: 'Gift' },
+  { value: 'heart', label: 'Heart' },
+]
+
+const colorOptions = [
+  { value: 'blue', label: 'Blue' },
+  { value: 'green', label: 'Green' },
+  { value: 'purple', label: 'Purple' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'red', label: 'Red' },
+  { value: 'yellow', label: 'Yellow' },
+  { value: 'pink', label: 'Pink' },
+  { value: 'cyan', label: 'Cyan' },
+]
+
+const validTabs = ['sections', 'banners', 'categories', 'products', 'stats', 'features', 'testimonials', 'badges']
 
 export default function HomePageSettings() {
   const queryClient = useQueryClient()
-  const [activeSection, setActiveSection] = useState('banners')
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  // Fetch banners
-  const { data: banners, isLoading: bannersLoading } = useQuery<Banner[]>({
-    queryKey: ['admin-banners'],
+  // Get active tab from URL, default to 'sections'
+  const tabParam = searchParams.get('tab')
+  const activeTab = tabParam && validTabs.includes(tabParam) ? tabParam : 'sections'
+
+  // Update URL when tab changes
+  const setActiveTab = (tab: string) => {
+    setSearchParams({ tab })
+  }
+
+  // Fetch all homepage data
+  const { data, isLoading, error } = useQuery<HomepageData>({
+    queryKey: ['admin-homepage'],
     queryFn: async () => {
-      const response = await api.get('/admin/banners')
-      return response.data.data || []
+      const response = await api.get('/admin/homepage')
+      return response.data.data
     },
   })
 
-  // Fetch testimonials
-  const { data: testimonials, isLoading: testimonialsLoading } = useQuery<Testimonial[]>({
-    queryKey: ['admin-testimonials'],
-    queryFn: async () => {
-      const response = await api.get('/admin/testimonials')
-      return response.data.data || []
-    },
-  })
+  // Local state for editing
+  const [sections, setSections] = useState<Section[]>([])
+  const [stats, setStats] = useState<Stat[]>([])
+  const [features, setFeatures] = useState<Feature[]>([])
+  const [trustBadges, setTrustBadges] = useState<TrustBadge[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([])
+  const [featuredProducts, setFeaturedProducts] = useState<number[]>([])
+  const [newArrivalsProducts, setNewArrivalsProducts] = useState<number[]>([])
 
-  // Banner mutations
-  const createBannerMutation = useMutation({
-    mutationFn: async (data: Partial<Banner>) => {
-      await api.post('/admin/banners', data)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-banners'] })
-      toast.success('Banner created successfully')
-    },
-    onError: () => {
-      toast.error('Failed to create banner')
-    },
-  })
-
-  const updateBannerMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Banner> }) => {
-      await api.put(`/admin/banners/${id}`, data)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-banners'] })
-      toast.success('Banner updated successfully')
-    },
-    onError: () => {
-      toast.error('Failed to update banner')
-    },
-  })
-
-  const deleteBannerMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await api.delete(`/admin/banners/${id}`)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-banners'] })
-      toast.success('Banner deleted successfully')
-    },
-    onError: () => {
-      toast.error('Failed to delete banner')
-    },
-  })
-
-  // Testimonial mutations
-  const createTestimonialMutation = useMutation({
-    mutationFn: async (data: Partial<Testimonial>) => {
-      await api.post('/admin/testimonials', data)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] })
-      toast.success('Testimonial created successfully')
-    },
-    onError: () => {
-      toast.error('Failed to create testimonial')
-    },
-  })
-
-  const updateTestimonialMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<Testimonial> }) => {
-      await api.put(`/admin/testimonials/${id}`, data)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] })
-      toast.success('Testimonial updated successfully')
-    },
-    onError: () => {
-      toast.error('Failed to update testimonial')
-    },
-  })
-
-  const deleteTestimonialMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await api.delete(`/admin/testimonials/${id}`)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] })
-      toast.success('Testimonial deleted successfully')
-    },
-    onError: () => {
-      toast.error('Failed to delete testimonial')
-    },
-  })
-
-  // State for modals
+  // Modal states
   const [bannerModal, setBannerModal] = useState<{ open: boolean; banner: Banner | null }>({ open: false, banner: null })
   const [testimonialModal, setTestimonialModal] = useState<{ open: boolean; testimonial: Testimonial | null }>({ open: false, testimonial: null })
+  const [sectionModal, setSectionModal] = useState<{ open: boolean; section: Section | null }>({ open: false, section: null })
 
   // Form states
-  const [bannerForm, setBannerForm] = useState({
+  const [bannerForm, setBannerForm] = useState<Partial<Banner>>({
     title: '',
     subtitle: '',
     image: '',
-    link: '',
+    button_text: 'Shop Now',
+    button_link: '/shop',
     position: 'hero',
     is_active: true,
-    order: 0,
+    sort_order: 0,
   })
 
-  const [testimonialForm, setTestimonialForm] = useState({
+  const [testimonialForm, setTestimonialForm] = useState<Partial<Testimonial>>({
     name: '',
     role: '',
     content: '',
     image: '',
     rating: 5,
+    is_visible: true,
   })
 
+  // Initialize local state when data loads
+  useEffect(() => {
+    if (data) {
+      setSections(data.sections || [])
+      setStats(data.stats || [])
+      setFeatures(data.features || [])
+      setTrustBadges(data.trust_badges || [])
+      setSelectedCategories(data.homepage_categories?.map(hc => hc.category_id) || [])
+      // Initialize product selections
+      const featured = data.homepage_products?.filter(hp => hp.section === 'featured').map(hp => hp.product_id) || []
+      const newArrivals = data.homepage_products?.filter(hp => hp.section === 'new_arrivals').map(hp => hp.product_id) || []
+      setFeaturedProducts(featured)
+      setNewArrivalsProducts(newArrivals)
+    }
+  }, [data])
+
+  // Mutations
+  const updateSectionMutation = useMutation({
+    mutationFn: async ({ key, data }: { key: string; data: Partial<Section> }) => {
+      await api.put(`/admin/homepage/sections/${key}`, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Section updated')
+    },
+    onError: () => toast.error('Failed to update section'),
+  })
+
+  const updateStatsMutation = useMutation({
+    mutationFn: async (statsData: Stat[]) => {
+      await api.put('/admin/homepage/stats', { stats: statsData })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Stats saved')
+    },
+    onError: () => toast.error('Failed to save stats'),
+  })
+
+  const updateFeaturesMutation = useMutation({
+    mutationFn: async (featuresData: Feature[]) => {
+      await api.put('/admin/homepage/features', { features: featuresData })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Features saved')
+    },
+    onError: () => toast.error('Failed to save features'),
+  })
+
+  const updateTrustBadgesMutation = useMutation({
+    mutationFn: async (badgesData: TrustBadge[]) => {
+      await api.put('/admin/homepage/trust-badges', { badges: badgesData })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Trust badges saved')
+    },
+    onError: () => toast.error('Failed to save trust badges'),
+  })
+
+  const updateCategoriesMutation = useMutation({
+    mutationFn: async (categoryIds: number[]) => {
+      await api.put('/admin/homepage/categories', {
+        categories: categoryIds.map((id, index) => ({
+          category_id: id,
+          sort_order: index,
+          is_visible: true,
+        })),
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Categories saved')
+    },
+    onError: () => toast.error('Failed to save categories'),
+  })
+
+  const updateProductsMutation = useMutation({
+    mutationFn: async ({ section, productIds }: { section: string; productIds: number[] }) => {
+      await api.put(`/admin/homepage/products/${section}`, {
+        products: productIds.map((id, index) => ({
+          product_id: id,
+          sort_order: index,
+          is_visible: true,
+        })),
+      })
+    },
+    onSuccess: (_, { section }) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success(`${section === 'featured' ? 'Featured products' : 'New arrivals'} saved`)
+    },
+    onError: () => toast.error('Failed to save products'),
+  })
+
+  // Banner mutations
+  const createBannerMutation = useMutation({
+    mutationFn: async (bannerData: Partial<Banner>) => {
+      await api.post('/admin/homepage/banners', bannerData)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Banner created')
+      setBannerModal({ open: false, banner: null })
+    },
+    onError: () => toast.error('Failed to create banner'),
+  })
+
+  const updateBannerMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<Banner> }) => {
+      await api.put(`/admin/homepage/banners/${id}`, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Banner updated')
+      setBannerModal({ open: false, banner: null })
+    },
+    onError: () => toast.error('Failed to update banner'),
+  })
+
+  const deleteBannerMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/admin/homepage/banners/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Banner deleted')
+    },
+    onError: () => toast.error('Failed to delete banner'),
+  })
+
+  // Testimonial mutations
+  const createTestimonialMutation = useMutation({
+    mutationFn: async (testimonialData: Partial<Testimonial>) => {
+      await api.post('/admin/homepage/testimonials', testimonialData)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Testimonial created')
+      setTestimonialModal({ open: false, testimonial: null })
+    },
+    onError: () => toast.error('Failed to create testimonial'),
+  })
+
+  const updateTestimonialMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<Testimonial> }) => {
+      await api.put(`/admin/homepage/testimonials/${id}`, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Testimonial updated')
+      setTestimonialModal({ open: false, testimonial: null })
+    },
+    onError: () => toast.error('Failed to update testimonial'),
+  })
+
+  const deleteTestimonialMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/admin/homepage/testimonials/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Testimonial deleted')
+    },
+    onError: () => toast.error('Failed to delete testimonial'),
+  })
+
+  // Handle banner form
   const openBannerModal = (banner: Banner | null = null) => {
     if (banner) {
-      setBannerForm({
-        title: banner.title,
-        subtitle: banner.subtitle,
-        image: banner.image,
-        link: banner.link,
-        position: banner.position,
-        is_active: banner.is_active,
-        order: banner.order,
-      })
+      setBannerForm(banner)
     } else {
       setBannerForm({
         title: '',
         subtitle: '',
         image: '',
-        link: '',
+        button_text: 'Shop Now',
+        button_link: '/shop',
         position: 'hero',
         is_active: true,
-        order: (banners?.length || 0) + 1,
+        sort_order: (data?.banners?.length || 0) + 1,
       })
     }
     setBannerModal({ open: true, banner })
   }
 
+  const handleBannerSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (bannerModal.banner?.id) {
+      updateBannerMutation.mutate({ id: bannerModal.banner.id, data: bannerForm })
+    } else {
+      createBannerMutation.mutate(bannerForm)
+    }
+  }
+
+  // Handle testimonial form
   const openTestimonialModal = (testimonial: Testimonial | null = null) => {
     if (testimonial) {
-      setTestimonialForm({
-        name: testimonial.name,
-        role: testimonial.role,
-        content: testimonial.content,
-        image: testimonial.image,
-        rating: testimonial.rating,
-      })
+      setTestimonialForm(testimonial)
     } else {
       setTestimonialForm({
         name: '',
@@ -205,84 +430,204 @@ export default function HomePageSettings() {
         content: '',
         image: '',
         rating: 5,
+        is_visible: true,
       })
     }
     setTestimonialModal({ open: true, testimonial })
   }
 
-  const handleBannerSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (bannerModal.banner) {
-      updateBannerMutation.mutate({ id: bannerModal.banner.id, data: bannerForm })
-    } else {
-      createBannerMutation.mutate(bannerForm)
-    }
-    setBannerModal({ open: false, banner: null })
-  }
-
   const handleTestimonialSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (testimonialModal.testimonial) {
+    if (testimonialModal.testimonial?.id) {
       updateTestimonialMutation.mutate({ id: testimonialModal.testimonial.id, data: testimonialForm })
     } else {
       createTestimonialMutation.mutate(testimonialForm)
     }
-    setTestimonialModal({ open: false, testimonial: null })
   }
 
-  const sections = [
-    { id: 'banners', label: 'Hero Banners' },
-    { id: 'stats', label: 'Stats Section' },
+  // Toggle section visibility
+  const toggleSection = (key: string, enabled: boolean) => {
+    updateSectionMutation.mutate({ key, data: { is_enabled: enabled } })
+  }
+
+  // Toggle category selection
+  const toggleCategory = (categoryId: number) => {
+    setSelectedCategories(prev =>
+      prev.includes(categoryId)
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    )
+  }
+
+  // Move category up/down
+  const moveCategoryUp = (index: number) => {
+    if (index === 0) return
+    const newCategories = [...selectedCategories]
+    ;[newCategories[index - 1], newCategories[index]] = [newCategories[index], newCategories[index - 1]]
+    setSelectedCategories(newCategories)
+  }
+
+  const moveCategoryDown = (index: number) => {
+    if (index === selectedCategories.length - 1) return
+    const newCategories = [...selectedCategories]
+    ;[newCategories[index], newCategories[index + 1]] = [newCategories[index + 1], newCategories[index]]
+    setSelectedCategories(newCategories)
+  }
+
+  // Product selection helpers
+  const toggleProduct = (productId: number, section: 'featured' | 'new_arrivals') => {
+    if (section === 'featured') {
+      setFeaturedProducts(prev =>
+        prev.includes(productId)
+          ? prev.filter(id => id !== productId)
+          : [...prev, productId]
+      )
+    } else {
+      setNewArrivalsProducts(prev =>
+        prev.includes(productId)
+          ? prev.filter(id => id !== productId)
+          : [...prev, productId]
+      )
+    }
+  }
+
+  const moveProductUp = (index: number, section: 'featured' | 'new_arrivals') => {
+    if (index === 0) return
+    if (section === 'featured') {
+      const newProducts = [...featuredProducts]
+      ;[newProducts[index - 1], newProducts[index]] = [newProducts[index], newProducts[index - 1]]
+      setFeaturedProducts(newProducts)
+    } else {
+      const newProducts = [...newArrivalsProducts]
+      ;[newProducts[index - 1], newProducts[index]] = [newProducts[index], newProducts[index - 1]]
+      setNewArrivalsProducts(newProducts)
+    }
+  }
+
+  const moveProductDown = (index: number, section: 'featured' | 'new_arrivals') => {
+    const products = section === 'featured' ? featuredProducts : newArrivalsProducts
+    if (index === products.length - 1) return
+    if (section === 'featured') {
+      const newProducts = [...featuredProducts]
+      ;[newProducts[index], newProducts[index + 1]] = [newProducts[index + 1], newProducts[index]]
+      setFeaturedProducts(newProducts)
+    } else {
+      const newProducts = [...newArrivalsProducts]
+      ;[newProducts[index], newProducts[index + 1]] = [newProducts[index + 1], newProducts[index]]
+      setNewArrivalsProducts(newProducts)
+    }
+  }
+
+  const tabs = [
+    { id: 'sections', label: 'Sections' },
+    { id: 'banners', label: 'Banners' },
+    { id: 'categories', label: 'Categories' },
+    { id: 'products', label: 'Products' },
+    { id: 'stats', label: 'Stats' },
     { id: 'features', label: 'Features' },
     { id: 'testimonials', label: 'Testimonials' },
+    { id: 'badges', label: 'Trust Badges' },
   ]
 
-  // Default stats (editable)
-  const [stats, setStats] = useState<Stat[]>([
-    { id: 1, label: 'Years of Excellence', value: '35+', icon: 'calendar' },
-    { id: 2, label: 'Happy Customers', value: '500K+', icon: 'users' },
-    { id: 3, label: 'Products', value: '100+', icon: 'cube' },
-    { id: 4, label: 'Cities Served', value: '50+', icon: 'map' },
-  ])
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
 
-  // Default features (editable)
-  const [features, setFeatures] = useState<Feature[]>([
-    { id: 1, title: 'Free Shipping', description: 'On orders above Rs. 10,000', icon: 'truck' },
-    { id: 2, title: '2 Year Warranty', description: 'On all products', icon: 'shield' },
-    { id: 3, title: 'Easy Returns', description: '30-day return policy', icon: 'refresh' },
-    { id: 4, title: '24/7 Support', description: 'Customer support available', icon: 'chat' },
-  ])
+  if (error) {
+    return (
+      <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg">
+        Failed to load homepage settings. Please try again.
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Home Page Settings</h1>
-        <p className="text-dark-500 dark:text-dark-400">Manage your home page content and sections</p>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Homepage Settings</h1>
+        <p className="text-dark-500 dark:text-dark-400">Configure all sections of your homepage</p>
       </div>
 
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
-        {/* Section Tabs */}
+        {/* Tabs */}
         <div className="border-b border-dark-200 dark:border-dark-700">
           <div className="flex overflow-x-auto">
-            {sections.map((section) => (
+            {tabs.map(tab => (
               <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
-                  activeSection === section.id
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === tab.id
                     ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
                     : 'text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200'
                 }`}
               >
-                {section.label}
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
 
         <div className="p-6">
-          {/* Banners Section */}
-          {activeSection === 'banners' && (
+          {/* Sections Tab */}
+          {activeTab === 'sections' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Section Visibility & Order</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">Enable/disable sections and configure their settings</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {sections.map((section) => (
+                  <div
+                    key={section.key}
+                    className={`flex items-center justify-between p-4 rounded-lg border ${
+                      section.is_enabled
+                        ? 'border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800'
+                        : 'border-dark-200 dark:border-dark-700 bg-dark-50 dark:bg-dark-900 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <Bars3Icon className="w-5 h-5 text-dark-400 cursor-grab" />
+                      <div>
+                        <h4 className="font-medium text-dark-900 dark:text-white">{section.title || section.key}</h4>
+                        <p className="text-sm text-dark-500 dark:text-dark-400">{section.subtitle || `Configure ${section.key} section`}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setSectionModal({ open: true, section })}
+                        className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg"
+                        title="Edit settings"
+                      >
+                        <PencilIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => toggleSection(section.key, !section.is_enabled)}
+                        className={`p-2 rounded-lg ${
+                          section.is_enabled
+                            ? 'text-green-600 bg-green-50 dark:bg-green-900/20'
+                            : 'text-dark-400 hover:text-dark-600'
+                        }`}
+                        title={section.is_enabled ? 'Disable section' : 'Enable section'}
+                      >
+                        {section.is_enabled ? <EyeIcon className="w-5 h-5" /> : <EyeSlashIcon className="w-5 h-5" />}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Banners Tab */}
+          {activeTab === 'banners' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-dark-900 dark:text-white">Hero Banners</h3>
@@ -295,45 +640,45 @@ export default function HomePageSettings() {
                 </button>
               </div>
 
-              {bannersLoading ? (
-                <div className="flex justify-center py-8">
-                  <LoadingSpinner size="lg" />
-                </div>
-              ) : banners && banners.length > 0 ? (
+              {data?.banners && data.banners.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {banners.map((banner) => (
-                    <div key={banner.id} className="border border-dark-200 dark:border-dark-700 rounded-lg overflow-hidden">
+                  {data.banners.map((banner) => (
+                    <div key={banner.id} className="border border-dark-200 dark:border-dark-700 rounded-xl overflow-hidden bg-white dark:bg-dark-800">
                       <div className="aspect-video bg-dark-100 dark:bg-dark-700 relative">
                         {banner.image ? (
-                          <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                          <img src={banner.image} alt={banner.title || 'Banner'} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="flex items-center justify-center h-full text-dark-400">No Image</div>
+                          <div className="flex items-center justify-center h-full">
+                            <PhotoIcon className="w-12 h-12 text-dark-400" />
+                          </div>
                         )}
-                        <div className="absolute top-2 right-2 flex gap-1">
-                          <span className={`px-2 py-0.5 rounded text-xs ${banner.is_active ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                        <div className="absolute top-2 right-2">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            banner.is_active ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                          }`}>
                             {banner.is_active ? 'Active' : 'Inactive'}
                           </span>
                         </div>
                       </div>
-                      <div className="p-3">
+                      <div className="p-4">
                         <h4 className="font-medium text-dark-900 dark:text-white truncate">{banner.title || 'Untitled'}</h4>
-                        <p className="text-sm text-dark-500 dark:text-dark-400 truncate">{banner.subtitle}</p>
+                        <p className="text-sm text-dark-500 dark:text-dark-400 truncate">{banner.subtitle || 'No subtitle'}</p>
                         <div className="flex items-center justify-between mt-3">
-                          <span className="text-xs text-dark-400">Order: {banner.order}</span>
+                          <span className="text-xs text-dark-400">Order: {banner.sort_order}</span>
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => openBannerModal(banner)}
-                              className="p-1.5 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
+                              className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
                             >
                               <PencilIcon className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => {
                                 if (confirm('Delete this banner?')) {
-                                  deleteBannerMutation.mutate(banner.id)
+                                  deleteBannerMutation.mutate(banner.id!)
                                 }
                               }}
-                              className="p-1.5 text-dark-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                              className="p-2 text-dark-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                             >
                               <TrashIcon className="w-4 h-4" />
                             </button>
@@ -344,109 +689,527 @@ export default function HomePageSettings() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-dark-500 dark:text-dark-400">
-                  No banners yet. Add your first banner to get started.
+                <div className="text-center py-12 text-dark-500 dark:text-dark-400">
+                  <PhotoIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No banners yet. Add your first banner.</p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Stats Section */}
-          {activeSection === 'stats' && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-dark-900 dark:text-white">Stats Section</h3>
-              <p className="text-sm text-dark-500 dark:text-dark-400">
-                Edit the statistics shown on your home page (e.g., "35+ Years of Excellence")
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {stats.map((stat, index) => (
-                  <div key={stat.id} className="p-4 border border-dark-200 dark:border-dark-700 rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1 space-y-2">
+          {/* Categories Tab */}
+          {activeTab === 'categories' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-dark-900 dark:text-white mb-2">Homepage Categories</h3>
+                <p className="text-sm text-dark-500 dark:text-dark-400 mb-4">
+                  Select which categories to show on the homepage and arrange their order.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Available Categories */}
+                <div>
+                  <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Available Categories</h4>
+                  <div className="border border-dark-200 dark:border-dark-700 rounded-lg max-h-96 overflow-y-auto">
+                    {data?.all_categories?.map((category) => (
+                      <label
+                        key={category.id}
+                        className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-dark-50 dark:hover:bg-dark-700 border-b border-dark-100 dark:border-dark-700 last:border-b-0 ${
+                          selectedCategories.includes(category.id) ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                        }`}
+                      >
                         <input
-                          type="text"
-                          value={stat.value}
-                          onChange={(e) => {
-                            const newStats = [...stats]
-                            newStats[index].value = e.target.value
-                            setStats(newStats)
-                          }}
-                          className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-xl font-bold"
-                          placeholder="35+"
+                          type="checkbox"
+                          checked={selectedCategories.includes(category.id)}
+                          onChange={() => toggleCategory(category.id)}
+                          className="w-4 h-4 rounded text-primary-600"
                         />
-                        <input
-                          type="text"
-                          value={stat.label}
-                          onChange={(e) => {
-                            const newStats = [...stats]
-                            newStats[index].label = e.target.value
-                            setStats(newStats)
-                          }}
-                          className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                          placeholder="Years of Excellence"
-                        />
+                        <div className="flex-1">
+                          <span className="font-medium text-dark-900 dark:text-white">{category.name}</span>
+                          <span className="text-sm text-dark-500 dark:text-dark-400 ml-2">({category.products_count} products)</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Selected Categories (Ordered) */}
+                <div>
+                  <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Selected Categories (in order)</h4>
+                  <div className="border border-dark-200 dark:border-dark-700 rounded-lg">
+                    {selectedCategories.length > 0 ? (
+                      selectedCategories.map((categoryId, index) => {
+                        const category = data?.all_categories?.find(c => c.id === categoryId)
+                        return category ? (
+                          <div
+                            key={categoryId}
+                            className="flex items-center gap-3 p-3 border-b border-dark-100 dark:border-dark-700 last:border-b-0"
+                          >
+                            <span className="w-6 h-6 flex items-center justify-center bg-dark-100 dark:bg-dark-700 rounded text-sm font-medium text-dark-600 dark:text-dark-400">
+                              {index + 1}
+                            </span>
+                            <span className="flex-1 font-medium text-dark-900 dark:text-white">{category.name}</span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => moveCategoryUp(index)}
+                                disabled={index === 0}
+                                className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                              >
+                                <ChevronUpIcon className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => moveCategoryDown(index)}
+                                disabled={index === selectedCategories.length - 1}
+                                className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                              >
+                                <ChevronDownIcon className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => toggleCategory(categoryId)}
+                                className="p-1 text-dark-400 hover:text-red-600"
+                              >
+                                <XMarkIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ) : null
+                      })
+                    ) : (
+                      <div className="p-6 text-center text-dark-500 dark:text-dark-400">
+                        No categories selected
                       </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => updateCategoriesMutation.mutate(selectedCategories)}
+                    disabled={updateCategoriesMutation.isPending}
+                    className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {updateCategoriesMutation.isPending && <LoadingSpinner size="sm" />}
+                    Save Categories
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Products Tab */}
+          {activeTab === 'products' && (
+            <div className="space-y-8">
+              {/* Featured Products */}
+              <div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Featured Products</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">
+                    Select products to show in the Featured Products section on the homepage.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Available Products */}
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Available Products</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg max-h-80 overflow-y-auto">
+                      {data?.all_products?.map((product) => (
+                        <label
+                          key={product.id}
+                          className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-dark-50 dark:hover:bg-dark-700 border-b border-dark-100 dark:border-dark-700 last:border-b-0 ${
+                            featuredProducts.includes(product.id) ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={featuredProducts.includes(product.id)}
+                            onChange={() => toggleProduct(product.id, 'featured')}
+                            className="w-4 h-4 rounded text-primary-600"
+                          />
+                          <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                            {product.primary_image || product.images?.[0]?.image ? (
+                              <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <PhotoIcon className="w-5 h-5 text-dark-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-dark-900 dark:text-white block truncate">{product.name}</span>
+                            <span className="text-sm text-dark-500 dark:text-dark-400">PKR {product.price?.toLocaleString()}</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Selected Featured Products (Ordered) */}
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Selected ({featuredProducts.length})</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg">
+                      {featuredProducts.length > 0 ? (
+                        featuredProducts.map((productId, index) => {
+                          const product = data?.all_products?.find(p => p.id === productId)
+                          return product ? (
+                            <div
+                              key={productId}
+                              className="flex items-center gap-3 p-3 border-b border-dark-100 dark:border-dark-700 last:border-b-0"
+                            >
+                              <span className="w-6 h-6 flex items-center justify-center bg-dark-100 dark:bg-dark-700 rounded text-sm font-medium text-dark-600 dark:text-dark-400">
+                                {index + 1}
+                              </span>
+                              <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                                {product.primary_image || product.images?.[0]?.image ? (
+                                  <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <PhotoIcon className="w-5 h-5 text-dark-400" />
+                                  </div>
+                                )}
+                              </div>
+                              <span className="flex-1 font-medium text-dark-900 dark:text-white truncate">{product.name}</span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => moveProductUp(index, 'featured')}
+                                  disabled={index === 0}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronUpIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => moveProductDown(index, 'featured')}
+                                  disabled={index === featuredProducts.length - 1}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronDownIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => toggleProduct(productId, 'featured')}
+                                  className="p-1 text-dark-400 hover:text-red-600"
+                                >
+                                  <XMarkIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ) : null
+                        })
+                      ) : (
+                        <div className="p-6 text-center text-dark-500 dark:text-dark-400">
+                          No products selected
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => updateProductsMutation.mutate({ section: 'featured', productIds: featuredProducts })}
+                      disabled={updateProductsMutation.isPending}
+                      className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {updateProductsMutation.isPending && <LoadingSpinner size="sm" />}
+                      Save Featured Products
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="border-dark-200 dark:border-dark-700" />
+
+              {/* New Arrivals */}
+              <div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">New Arrivals</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">
+                    Select products to show in the New Arrivals section on the homepage.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Available Products */}
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Available Products</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg max-h-80 overflow-y-auto">
+                      {data?.all_products?.map((product) => (
+                        <label
+                          key={product.id}
+                          className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-dark-50 dark:hover:bg-dark-700 border-b border-dark-100 dark:border-dark-700 last:border-b-0 ${
+                            newArrivalsProducts.includes(product.id) ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={newArrivalsProducts.includes(product.id)}
+                            onChange={() => toggleProduct(product.id, 'new_arrivals')}
+                            className="w-4 h-4 rounded text-primary-600"
+                          />
+                          <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                            {product.primary_image || product.images?.[0]?.image ? (
+                              <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <PhotoIcon className="w-5 h-5 text-dark-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-dark-900 dark:text-white block truncate">{product.name}</span>
+                            <span className="text-sm text-dark-500 dark:text-dark-400">PKR {product.price?.toLocaleString()}</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Selected New Arrivals (Ordered) */}
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Selected ({newArrivalsProducts.length})</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg">
+                      {newArrivalsProducts.length > 0 ? (
+                        newArrivalsProducts.map((productId, index) => {
+                          const product = data?.all_products?.find(p => p.id === productId)
+                          return product ? (
+                            <div
+                              key={productId}
+                              className="flex items-center gap-3 p-3 border-b border-dark-100 dark:border-dark-700 last:border-b-0"
+                            >
+                              <span className="w-6 h-6 flex items-center justify-center bg-dark-100 dark:bg-dark-700 rounded text-sm font-medium text-dark-600 dark:text-dark-400">
+                                {index + 1}
+                              </span>
+                              <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                                {product.primary_image || product.images?.[0]?.image ? (
+                                  <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <PhotoIcon className="w-5 h-5 text-dark-400" />
+                                  </div>
+                                )}
+                              </div>
+                              <span className="flex-1 font-medium text-dark-900 dark:text-white truncate">{product.name}</span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => moveProductUp(index, 'new_arrivals')}
+                                  disabled={index === 0}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronUpIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => moveProductDown(index, 'new_arrivals')}
+                                  disabled={index === newArrivalsProducts.length - 1}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronDownIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => toggleProduct(productId, 'new_arrivals')}
+                                  className="p-1 text-dark-400 hover:text-red-600"
+                                >
+                                  <XMarkIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ) : null
+                        })
+                      ) : (
+                        <div className="p-6 text-center text-dark-500 dark:text-dark-400">
+                          No products selected
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => updateProductsMutation.mutate({ section: 'new_arrivals', productIds: newArrivalsProducts })}
+                      disabled={updateProductsMutation.isPending}
+                      className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {updateProductsMutation.isPending && <LoadingSpinner size="sm" />}
+                      Save New Arrivals
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Stats Tab */}
+          {activeTab === 'stats' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Statistics Section</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">Configure the stats shown below the hero banner</p>
+                </div>
+                <button
+                  onClick={() => setStats([...stats, { label: '', value: '', icon: 'star', sort_order: stats.length, is_visible: true }])}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Add Stat
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {stats.map((stat, index) => (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-dark-200 dark:border-dark-700 rounded-lg bg-white dark:bg-dark-800">
+                    <div>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Value</label>
+                      <input
+                        type="text"
+                        value={stat.value}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[index].value = e.target.value
+                          setStats(newStats)
+                        }}
+                        placeholder="35+"
+                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Label</label>
+                      <input
+                        type="text"
+                        value={stat.label}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[index].label = e.target.value
+                          setStats(newStats)
+                        }}
+                        placeholder="Years Experience"
+                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Icon</label>
+                      <select
+                        value={stat.icon}
+                        onChange={(e) => {
+                          const newStats = [...stats]
+                          newStats[index].icon = e.target.value
+                          setStats(newStats)
+                        }}
+                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      >
+                        {iconOptions.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <button
+                        onClick={() => setStats(stats.filter((_, i) => i !== index))}
+                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
+
               <button
-                onClick={() => toast.success('Stats saved (demo)')}
-                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                onClick={() => updateStatsMutation.mutate(stats)}
+                disabled={updateStatsMutation.isPending}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
               >
+                {updateStatsMutation.isPending && <LoadingSpinner size="sm" />}
                 Save Stats
               </button>
             </div>
           )}
 
-          {/* Features Section */}
-          {activeSection === 'features' && (
+          {/* Features Tab */}
+          {activeTab === 'features' && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-dark-900 dark:text-white">Feature Cards</h3>
-              <p className="text-sm text-dark-500 dark:text-dark-400">
-                Edit the feature cards shown below the hero (e.g., "Free Shipping", "Warranty")
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Features / USPs</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">Configure the feature cards (Free Shipping, Warranty, etc.)</p>
+                </div>
+                <button
+                  onClick={() => setFeatures([...features, { title: '', description: '', icon: 'star', color: 'blue', sort_order: features.length, is_visible: true }])}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Add Feature
+                </button>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {features.map((feature, index) => (
-                  <div key={feature.id} className="p-4 border border-dark-200 dark:border-dark-700 rounded-lg">
-                    <div className="space-y-2">
-                      <input
-                        type="text"
-                        value={feature.title}
+                  <div key={index} className="p-4 border border-dark-200 dark:border-dark-700 rounded-lg bg-white dark:bg-dark-800 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium text-dark-500 dark:text-dark-400">Feature {index + 1}</span>
+                      <button
+                        onClick={() => setFeatures(features.filter((_, i) => i !== index))}
+                        className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={feature.title}
+                      onChange={(e) => {
+                        const newFeatures = [...features]
+                        newFeatures[index].title = e.target.value
+                        setFeatures(newFeatures)
+                      }}
+                      placeholder="Feature Title"
+                      className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-medium"
+                    />
+                    <input
+                      type="text"
+                      value={feature.description}
+                      onChange={(e) => {
+                        const newFeatures = [...features]
+                        newFeatures[index].description = e.target.value
+                        setFeatures(newFeatures)
+                      }}
+                      placeholder="Description"
+                      className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <select
+                        value={feature.icon}
                         onChange={(e) => {
                           const newFeatures = [...features]
-                          newFeatures[index].title = e.target.value
+                          newFeatures[index].icon = e.target.value
                           setFeatures(newFeatures)
                         }}
-                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-medium"
-                        placeholder="Feature Title"
-                      />
-                      <input
-                        type="text"
-                        value={feature.description}
+                        className="px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      >
+                        {iconOptions.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                      <select
+                        value={feature.color}
                         onChange={(e) => {
                           const newFeatures = [...features]
-                          newFeatures[index].description = e.target.value
+                          newFeatures[index].color = e.target.value
                           setFeatures(newFeatures)
                         }}
-                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                        placeholder="Feature description"
-                      />
+                        className="px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      >
+                        {colorOptions.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 ))}
               </div>
+
               <button
-                onClick={() => toast.success('Features saved (demo)')}
-                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                onClick={() => updateFeaturesMutation.mutate(features)}
+                disabled={updateFeaturesMutation.isPending}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
               >
+                {updateFeaturesMutation.isPending && <LoadingSpinner size="sm" />}
                 Save Features
               </button>
             </div>
           )}
 
-          {/* Testimonials Section */}
-          {activeSection === 'testimonials' && (
+          {/* Testimonials Tab */}
+          {activeTab === 'testimonials' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-dark-900 dark:text-white">Testimonials</h3>
@@ -459,20 +1222,16 @@ export default function HomePageSettings() {
                 </button>
               </div>
 
-              {testimonialsLoading ? (
-                <div className="flex justify-center py-8">
-                  <LoadingSpinner size="lg" />
-                </div>
-              ) : testimonials && testimonials.length > 0 ? (
+              {data?.testimonials && data.testimonials.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {testimonials.map((testimonial) => (
-                    <div key={testimonial.id} className="border border-dark-200 dark:border-dark-700 rounded-lg p-4">
+                  {data.testimonials.map((testimonial) => (
+                    <div key={testimonial.id} className="border border-dark-200 dark:border-dark-700 rounded-xl p-4 bg-white dark:bg-dark-800">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-dark-100 dark:bg-dark-700 overflow-hidden">
+                        <div className="w-12 h-12 rounded-full bg-dark-100 dark:bg-dark-700 overflow-hidden flex-shrink-0">
                           {testimonial.image ? (
                             <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="flex items-center justify-center h-full text-dark-400 text-lg">
+                            <div className="flex items-center justify-center h-full text-dark-400 text-lg font-bold">
                               {testimonial.name.charAt(0)}
                             </div>
                           )}
@@ -482,27 +1241,27 @@ export default function HomePageSettings() {
                           <p className="text-sm text-dark-500 dark:text-dark-400">{testimonial.role}</p>
                         </div>
                       </div>
-                      <p className="text-dark-600 dark:text-dark-400 text-sm line-clamp-3">{testimonial.content}</p>
-                      <div className="flex items-center justify-between mt-3">
+                      <p className="text-dark-600 dark:text-dark-400 text-sm line-clamp-3 mb-3">"{testimonial.content}"</p>
+                      <div className="flex items-center justify-between">
                         <div className="flex text-yellow-400">
                           {[...Array(5)].map((_, i) => (
-                            <span key={i}>{i < testimonial.rating ? '★' : '☆'}</span>
+                            <span key={i} className="text-lg">{i < testimonial.rating ? '★' : '☆'}</span>
                           ))}
                         </div>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => openTestimonialModal(testimonial)}
-                            className="p-1.5 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
+                            className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => {
                               if (confirm('Delete this testimonial?')) {
-                                deleteTestimonialMutation.mutate(testimonial.id)
+                                deleteTestimonialMutation.mutate(testimonial.id!)
                               }
                             }}
-                            className="p-1.5 text-dark-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                            className="p-2 text-dark-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>
@@ -512,10 +1271,62 @@ export default function HomePageSettings() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-dark-500 dark:text-dark-400">
-                  No testimonials yet. Add your first testimonial to get started.
+                <div className="text-center py-12 text-dark-500 dark:text-dark-400">
+                  <p>No testimonials yet. Add your first testimonial.</p>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Trust Badges Tab */}
+          {activeTab === 'badges' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Trust Badges</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">Certifications and trust indicators shown on the hero</p>
+                </div>
+                <button
+                  onClick={() => setTrustBadges([...trustBadges, { title: '', sort_order: trustBadges.length, is_visible: true }])}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Add Badge
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {trustBadges.map((badge, index) => (
+                  <div key={index} className="flex items-center gap-3 p-4 border border-dark-200 dark:border-dark-700 rounded-lg bg-white dark:bg-dark-800">
+                    <input
+                      type="text"
+                      value={badge.title}
+                      onChange={(e) => {
+                        const newBadges = [...trustBadges]
+                        newBadges[index].title = e.target.value
+                        setTrustBadges(newBadges)
+                      }}
+                      placeholder="e.g., ISO 9001:2015"
+                      className="flex-1 px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    />
+                    <button
+                      onClick={() => setTrustBadges(trustBadges.filter((_, i) => i !== index))}
+                      className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => updateTrustBadgesMutation.mutate(trustBadges)}
+                disabled={updateTrustBadgesMutation.isPending}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+              >
+                {updateTrustBadgesMutation.isPending && <LoadingSpinner size="sm" />}
+                Save Trust Badges
+              </button>
             </div>
           )}
         </div>
@@ -526,94 +1337,105 @@ export default function HomePageSettings() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-dark-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-dark-900 dark:text-white mb-4">
-                {bannerModal.banner ? 'Edit Banner' : 'Add Banner'}
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-dark-900 dark:text-white">
+                  {bannerModal.banner ? 'Edit Banner' : 'Add Banner'}
+                </h2>
+                <button onClick={() => setBannerModal({ open: false, banner: null })} className="p-2 text-dark-400 hover:text-dark-600">
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
               <form onSubmit={handleBannerSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Title</label>
                   <input
                     type="text"
-                    value={bannerForm.title}
+                    value={bannerForm.title || ''}
                     onChange={(e) => setBannerForm({ ...bannerForm, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    placeholder="Banner Title"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Subtitle</label>
                   <input
                     type="text"
-                    value={bannerForm.subtitle}
+                    value={bannerForm.subtitle || ''}
                     onChange={(e) => setBannerForm({ ...bannerForm, subtitle: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    placeholder="Banner Subtitle"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Image URL</label>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Image URL *</label>
                   <input
                     type="text"
-                    value={bannerForm.image}
+                    value={bannerForm.image || ''}
                     onChange={(e) => setBannerForm({ ...bannerForm, image: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                     placeholder="/images/banner.jpg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Link URL</label>
-                  <input
-                    type="text"
-                    value={bannerForm.link}
-                    onChange={(e) => setBannerForm({ ...bannerForm, link: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    placeholder="/shop"
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Position</label>
-                    <select
-                      value={bannerForm.position}
-                      onChange={(e) => setBannerForm({ ...bannerForm, position: e.target.value })}
-                      className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    >
-                      <option value="hero">Hero</option>
-                      <option value="promo">Promo</option>
-                      <option value="sidebar">Sidebar</option>
-                    </select>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Button Text</label>
+                    <input
+                      type="text"
+                      value={bannerForm.button_text || ''}
+                      onChange={(e) => setBannerForm({ ...bannerForm, button_text: e.target.value })}
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      placeholder="Shop Now"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Order</label>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Button Link</label>
                     <input
-                      type="number"
-                      value={bannerForm.order}
-                      onChange={(e) => setBannerForm({ ...bannerForm, order: parseInt(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      type="text"
+                      value={bannerForm.button_link || ''}
+                      onChange={(e) => setBannerForm({ ...bannerForm, button_link: e.target.value })}
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                      placeholder="/shop"
                     />
                   </div>
                 </div>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={bannerForm.is_active}
-                    onChange={(e) => setBannerForm({ ...bannerForm, is_active: e.target.checked })}
-                    className="w-4 h-4 rounded text-primary-600"
-                  />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">Active</span>
-                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Sort Order</label>
+                    <input
+                      type="number"
+                      value={bannerForm.sort_order || 0}
+                      onChange={(e) => setBannerForm({ ...bannerForm, sort_order: parseInt(e.target.value) || 0 })}
+                      className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={bannerForm.is_active ?? true}
+                        onChange={(e) => setBannerForm({ ...bannerForm, is_active: e.target.checked })}
+                        className="w-4 h-4 rounded text-primary-600"
+                      />
+                      <span className="text-sm text-dark-700 dark:text-dark-300">Active</span>
+                    </label>
+                  </div>
+                </div>
                 <div className="flex justify-end gap-3 pt-4">
                   <button
                     type="button"
                     onClick={() => setBannerModal({ open: false, banner: null })}
-                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300"
+                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createBannerMutation.isPending || updateBannerMutation.isPending}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
                   >
-                    {createBannerMutation.isPending || updateBannerMutation.isPending ? 'Saving...' : 'Save'}
+                    {(createBannerMutation.isPending || updateBannerMutation.isPending) && <LoadingSpinner size="sm" />}
+                    Save
                   </button>
                 </div>
               </form>
@@ -627,37 +1449,42 @@ export default function HomePageSettings() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-dark-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-dark-900 dark:text-white mb-4">
-                {testimonialModal.testimonial ? 'Edit Testimonial' : 'Add Testimonial'}
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-dark-900 dark:text-white">
+                  {testimonialModal.testimonial ? 'Edit Testimonial' : 'Add Testimonial'}
+                </h2>
+                <button onClick={() => setTestimonialModal({ open: false, testimonial: null })} className="p-2 text-dark-400 hover:text-dark-600">
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
               <form onSubmit={handleTestimonialSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Name *</label>
                   <input
                     type="text"
-                    value={testimonialForm.name}
+                    value={testimonialForm.name || ''}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Role/Title</label>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Role / Title</label>
                   <input
                     type="text"
-                    value={testimonialForm.role}
+                    value={testimonialForm.role || ''}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, role: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    placeholder="Customer"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    placeholder="Homeowner, Lahore"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Content</label>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Content *</label>
                   <textarea
-                    value={testimonialForm.content}
+                    value={testimonialForm.content || ''}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, content: e.target.value })}
                     rows={4}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                     required
                   />
                 </div>
@@ -665,40 +1492,105 @@ export default function HomePageSettings() {
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Image URL</label>
                   <input
                     type="text"
-                    value={testimonialForm.image}
+                    value={testimonialForm.image || ''}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, image: e.target.value })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    placeholder="/images/avatar.jpg"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    placeholder="https://example.com/avatar.jpg"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Rating</label>
                   <select
-                    value={testimonialForm.rating}
+                    value={testimonialForm.rating || 5}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                   >
-                    <option value={5}>5 Stars</option>
-                    <option value={4}>4 Stars</option>
-                    <option value={3}>3 Stars</option>
-                    <option value={2}>2 Stars</option>
-                    <option value={1}>1 Star</option>
+                    {[5, 4, 3, 2, 1].map(n => (
+                      <option key={n} value={n}>{n} Stars</option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
                   <button
                     type="button"
                     onClick={() => setTestimonialModal({ open: false, testimonial: null })}
-                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300"
+                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={createTestimonialMutation.isPending || updateTestimonialMutation.isPending}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
                   >
-                    {createTestimonialMutation.isPending || updateTestimonialMutation.isPending ? 'Saving...' : 'Save'}
+                    {(createTestimonialMutation.isPending || updateTestimonialMutation.isPending) && <LoadingSpinner size="sm" />}
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Section Settings Modal */}
+      {sectionModal.open && sectionModal.section && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-dark-900 dark:text-white">
+                  Edit: {sectionModal.section.title || sectionModal.section.key}
+                </h2>
+                <button onClick={() => setSectionModal({ open: false, section: null })} className="p-2 text-dark-400 hover:text-dark-600">
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  const formData = new FormData(e.currentTarget)
+                  const title = formData.get('title') as string
+                  const subtitle = formData.get('subtitle') as string
+                  updateSectionMutation.mutate({
+                    key: sectionModal.section!.key,
+                    data: { title, subtitle },
+                  })
+                  setSectionModal({ open: false, section: null })
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    defaultValue={sectionModal.section.title || ''}
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Subtitle</label>
+                  <textarea
+                    name="subtitle"
+                    defaultValue={sectionModal.section.subtitle || ''}
+                    rows={2}
+                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+                  />
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setSectionModal({ open: false, section: null })}
+                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  >
+                    Save
                   </button>
                 </div>
               </form>

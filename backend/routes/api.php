@@ -289,4 +289,28 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
     Route::get('/newsletter-subscribers', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'index']);
     Route::delete('/newsletter-subscribers/{subscriber}', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'destroy']);
     Route::get('/newsletter-subscribers/export', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'export']);
+
+    // Homepage Settings
+    Route::prefix('homepage')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\HomepageController::class, 'index']);
+        Route::put('/sections/{key}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateSection']);
+        Route::post('/sections/reorder', [App\Http\Controllers\Api\Admin\HomepageController::class, 'reorderSections']);
+        Route::put('/stats', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateStats']);
+        Route::put('/features', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateFeatures']);
+        Route::put('/trust-badges', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateTrustBadges']);
+        Route::put('/categories', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateCategories']);
+        Route::put('/products/{section}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateProducts']);
+
+        // Testimonials
+        Route::get('/testimonials', [App\Http\Controllers\Api\Admin\HomepageController::class, 'getTestimonials']);
+        Route::post('/testimonials', [App\Http\Controllers\Api\Admin\HomepageController::class, 'storeTestimonial']);
+        Route::put('/testimonials/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateTestimonial']);
+        Route::delete('/testimonials/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'deleteTestimonial']);
+
+        // Banners
+        Route::get('/banners', [App\Http\Controllers\Api\Admin\HomepageController::class, 'getBanners']);
+        Route::post('/banners', [App\Http\Controllers\Api\Admin\HomepageController::class, 'storeBanner']);
+        Route::put('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateBanner']);
+        Route::delete('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'deleteBanner']);
+    });
 });

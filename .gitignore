@@ -42,3 +42,17 @@ yarn-error.log*
 *.cache
 .parcel-cache/
 u271928709_fischer.sql
+
+# Temp files
+tmpclaude-*
+nul
+*.tmp
+
+# Storage framework contents (regenerated)
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+!/backend/storage/framework/.gitkeep
+!/backend/storage/framework/cache/.gitkeep
+!/backend/storage/framework/sessions/.gitkeep
+!/backend/storage/framework/views/.gitkeep
