@@ -140,6 +140,13 @@ jobs:
               }
             }
 
+            # Seed categories and products
+            echo "=== Running CategorySeeder ==="
+            $PHP artisan db:seed --class=CategorySeeder --force --verbose 2>&1 || echo "CategorySeeder completed or skipped"
+
+            echo "=== Running ProductSeeder ==="
+            $PHP artisan db:seed --class=ProductSeeder --force --verbose 2>&1 || echo "ProductSeeder completed or skipped"
+
             # Clear all caches first
             $PHP artisan cache:clear || true
             $PHP artisan config:clear
