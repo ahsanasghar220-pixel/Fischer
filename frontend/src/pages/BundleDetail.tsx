@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useBundle, useRelatedBundles, useCalculateBundlePrice, useAddBundleToCart } from '@/api/bundles'
-import type { Bundle, BundleSlot, SlotSelection, PricingBreakdown } from '@/api/bundles'
+import type { BundleSlot, SlotSelection, PricingBreakdown } from '@/api/bundles'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import BundleCard from '@/components/bundles/BundleCard'
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
@@ -241,7 +241,7 @@ export default function BundleDetail() {
         <div className="container mx-auto px-4 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Left - Gallery */}
-            <ScrollReveal animation="fade">
+            <ScrollReveal animation="fadeUp">
               <div className="sticky top-24">
                 {/* Main Image */}
                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 mb-4">
@@ -333,7 +333,7 @@ export default function BundleDetail() {
             </ScrollReveal>
 
             {/* Right - Details */}
-            <ScrollReveal animation="fade" delay={0.2}>
+            <ScrollReveal animation="fadeUp" delay={0.2}>
               <div className="space-y-6">
                 {/* Bundle Type Badge */}
                 <div className="flex items-center gap-3">

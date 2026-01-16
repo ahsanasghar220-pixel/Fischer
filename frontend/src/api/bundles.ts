@@ -275,7 +275,7 @@ export function useCreateBundle() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (bundleData: Partial<Bundle> & {
+    mutationFn: async (bundleData: Omit<Partial<Bundle>, 'items' | 'slots'> & {
       items?: Array<{ product_id: number; quantity?: number; price_override?: number }>
       slots?: Array<{
         name: string
@@ -299,7 +299,17 @@ export function useUpdateBundle() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, ...bundleData }: Partial<Bundle> & { id: number }) => {
+    mutationFn: async ({ id, ...bundleData }: { id: number } & Omit<Partial<Bundle>, 'items' | 'slots'> & {
+      items?: Array<{ product_id: number; quantity?: number; price_override?: number }>
+      slots?: Array<{
+        name: string
+        description?: string
+        is_required?: boolean
+        min_selections?: number
+        max_selections?: number
+        products?: Array<{ product_id: number; price_override?: number }>
+      }>
+    }) => {
       const { data } = await api.put(`/admin/bundles/${id}`, bundleData)
       return data.data as Bundle
     },

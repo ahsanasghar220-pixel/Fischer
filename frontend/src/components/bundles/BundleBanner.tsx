@@ -179,7 +179,7 @@ const BundleBanner = memo(function BundleBanner({
         )}
 
         {/* Gradient Overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-r ${getThemeGradient(bundle.theme_color)}`} />
+        <div className={`absolute inset-0 bg-gradient-to-r ${getThemeGradient(bundle.theme_color || 'gold')}`} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
       </div>
 
@@ -381,9 +381,6 @@ const BundleBanner = memo(function BundleBanner({
                       <div className="p-2">
                         <p className="text-xs font-medium text-dark-800 dark:text-white truncate">
                           {product.name}
-                        </p>
-                        <p className="text-xs text-dark-500 dark:text-dark-400">
-                          {formatPrice(product.price)}
                         </p>
                       </div>
                     </motion.div>
