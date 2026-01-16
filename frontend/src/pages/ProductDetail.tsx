@@ -597,7 +597,7 @@ export default function ProductDetail() {
       </section>
 
       {/* Tabs Section */}
-      <ScrollReveal animation="fadeInUp">
+      <ScrollReveal animation="fadeUp">
         <section className="py-8 bg-dark-50 dark:bg-dark-800">
           <div className="container mx-auto px-4">
             <motion.div
@@ -777,7 +777,7 @@ export default function ProductDetail() {
 
       {/* Related Products */}
       {relatedProducts && relatedProducts.length > 0 && (
-        <ScrollReveal animation="fadeInUp">
+        <ScrollReveal animation="fadeUp">
           <section className="py-12">
             <div className="container mx-auto px-4">
               <motion.h2

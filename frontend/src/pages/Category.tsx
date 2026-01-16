@@ -5,7 +5,7 @@ import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import CategoryIcon from '@/components/ui/CategoryIcon'
-import ScrollReveal, { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
+import { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
 
 interface Category {
   id: number

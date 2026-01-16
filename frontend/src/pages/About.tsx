@@ -60,7 +60,7 @@ export default function About() {
       </section>
 
       {/* Our Story */}
-      <ScrollReveal animation="fadeInUp">
+      <ScrollReveal animation="fadeUp">
         <section className="py-16 bg-white dark:bg-dark-900">
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -157,7 +157,7 @@ export default function About() {
       </section>
 
       {/* Timeline */}
-      <ScrollReveal animation="fadeInUp">
+      <ScrollReveal animation="fadeUp">
         <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
           <div className="container mx-auto px-4">
             <motion.h2
@@ -256,7 +256,7 @@ export default function About() {
       </section>
 
       {/* Certifications */}
-      <ScrollReveal animation="fadeInUp">
+      <ScrollReveal animation="fadeUp">
         <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
           <div className="container mx-auto px-4">
             <motion.div

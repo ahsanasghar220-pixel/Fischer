@@ -7,7 +7,7 @@ import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
+import { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
 
 interface Product {
   id: number

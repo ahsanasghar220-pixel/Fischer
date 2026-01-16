@@ -326,7 +326,7 @@ export default function Contact() {
         </div>
 
         {/* Map */}
-        <ScrollReveal animation="fadeInUp">
+        <ScrollReveal animation="fadeUp">
           <motion.div
             className="mt-12"
             initial={{ opacity: 0, y: 30 }}
