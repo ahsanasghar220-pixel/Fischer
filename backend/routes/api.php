@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\BundleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -106,6 +107,16 @@ Route::get('/testimonials', [HomeController::class, 'testimonials']);
 // Contact
 Route::post('/contact', [ContactController::class, 'submit']);
 Route::post('/newsletter/subscribe', [ContactController::class, 'subscribeNewsletter']);
+
+// Bundles
+Route::prefix('bundles')->group(function () {
+    Route::get('/', [BundleController::class, 'index']);
+    Route::get('/homepage', [BundleController::class, 'homepage']);
+    Route::get('/{slug}', [BundleController::class, 'show']);
+    Route::post('/{slug}/calculate', [BundleController::class, 'calculate']);
+    Route::get('/{slug}/related', [BundleController::class, 'related']);
+});
+Route::post('/cart/bundle', [BundleController::class, 'addToCart']);
 
 // Authentication
 Route::prefix('auth')->group(function () {
@@ -289,6 +300,32 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
     Route::get('/newsletter-subscribers', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'index']);
     Route::delete('/newsletter-subscribers/{subscriber}', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'destroy']);
     Route::get('/newsletter-subscribers/export', [App\Http\Controllers\Api\Admin\NewsletterController::class, 'export']);
+
+    // Bundles
+    Route::prefix('bundles')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\BundleController::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\BundleController::class, 'store']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\BundleController::class, 'show']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\BundleController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\BundleController::class, 'destroy']);
+        Route::post('/{id}/duplicate', [App\Http\Controllers\Api\Admin\BundleController::class, 'duplicate']);
+        Route::put('/{id}/toggle', [App\Http\Controllers\Api\Admin\BundleController::class, 'toggle']);
+        Route::get('/{id}/analytics', [App\Http\Controllers\Api\Admin\BundleController::class, 'analytics']);
+        // Slots (configurable bundles)
+        Route::post('/{id}/slots', [App\Http\Controllers\Api\Admin\BundleController::class, 'addSlot']);
+        Route::put('/{id}/slots/{slotId}', [App\Http\Controllers\Api\Admin\BundleController::class, 'updateSlot']);
+        Route::delete('/{id}/slots/{slotId}', [App\Http\Controllers\Api\Admin\BundleController::class, 'removeSlot']);
+        // Items (fixed bundles)
+        Route::post('/{id}/items', [App\Http\Controllers\Api\Admin\BundleController::class, 'addItem']);
+        Route::put('/{id}/items/{itemId}', [App\Http\Controllers\Api\Admin\BundleController::class, 'updateItem']);
+        Route::delete('/{id}/items/{itemId}', [App\Http\Controllers\Api\Admin\BundleController::class, 'removeItem']);
+        // Images
+        Route::post('/{id}/images', [App\Http\Controllers\Api\Admin\BundleController::class, 'uploadImages']);
+        Route::delete('/{id}/images/{imageId}', [App\Http\Controllers\Api\Admin\BundleController::class, 'deleteImage']);
+        Route::put('/{id}/images/{imageId}/primary', [App\Http\Controllers\Api\Admin\BundleController::class, 'setPrimaryImage']);
+        // Bulk actions
+        Route::post('/bulk', [App\Http\Controllers\Api\Admin\BundleController::class, 'bulkAction']);
+    });
 
     // Homepage Settings
     Route::prefix('homepage')->group(function () {

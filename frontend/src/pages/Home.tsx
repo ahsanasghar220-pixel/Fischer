@@ -16,6 +16,7 @@ import {
   FireIcon,
   BoltIcon,
   CubeIcon,
+  GiftIcon,
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
@@ -30,6 +31,10 @@ import ScrollReveal, {
   Magnetic,
   ScrollProgress
 } from '@/components/effects/ScrollReveal'
+import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
+import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles'
+import toast from 'react-hot-toast'
 
 interface Category {
   id: number
@@ -68,62 +73,96 @@ interface Banner {
   button_link?: string
 }
 
+interface Testimonial {
+  name: string
+  role: string
+  content: string
+  image?: string
+  rating: number
+}
+
+interface Stat {
+  label: string
+  value: string
+  icon?: string
+}
+
+interface Feature {
+  title: string
+  description: string
+  icon?: string
+  color?: string
+}
+
+interface TrustBadge {
+  title: string
+  image?: string
+}
+
+interface SectionSettings {
+  title?: string
+  subtitle?: string
+  is_enabled: boolean
+  settings?: Record<string, any>
+}
+
 interface HomeData {
   banners: Banner[]
   categories: Category[]
   featured_products: Product[]
   new_arrivals: Product[]
   bestsellers: Product[]
+  testimonials: Testimonial[]
+  stats: Stat[]
+  features: Feature[]
+  trust_badges: TrustBadge[]
+  sections: Record<string, SectionSettings>
+  settings: Record<string, string>
 }
 
-// Statistics for the hero section
-const stats = [
-  { label: 'Years Experience', value: '35+', icon: StarIcon },
-  { label: 'Happy Customers', value: '500K+', icon: CheckCircleIcon },
-  { label: 'Dealers Nationwide', value: '500+', icon: CubeIcon },
-  { label: 'Products Sold', value: '1M+', icon: FireIcon },
+// Fallback Statistics for the hero section
+const defaultStats = [
+  { label: 'Years Experience', value: '35+', icon: 'StarIcon' },
+  { label: 'Happy Customers', value: '500K+', icon: 'CheckCircleIcon' },
+  { label: 'Dealers Nationwide', value: '500+', icon: 'CubeIcon' },
+  { label: 'Products Sold', value: '1M+', icon: 'FireIcon' },
 ]
 
-// Features for the USP section
-const features = [
+// Fallback Features for the USP section
+const defaultFeatures = [
   {
-    icon: TruckIcon,
     title: 'Free Nationwide Delivery',
     description: 'Free shipping on orders above PKR 10,000 across Pakistan',
-    color: 'from-blue-500 to-cyan-400',
-    bgColor: 'bg-blue-500/10',
+    icon: 'TruckIcon',
+    color: 'blue',
   },
   {
-    icon: ShieldCheckIcon,
     title: '1 Year Warranty',
     description: 'Official warranty on all products with dedicated support',
-    color: 'from-emerald-500 to-teal-400',
-    bgColor: 'bg-emerald-500/10',
+    icon: 'ShieldCheckIcon',
+    color: 'emerald',
   },
   {
-    icon: CreditCardIcon,
     title: 'Flexible Payment',
     description: 'Multiple payment options including COD & Easy Installments',
-    color: 'from-purple-500 to-pink-400',
-    bgColor: 'bg-purple-500/10',
+    icon: 'CreditCardIcon',
+    color: 'purple',
   },
   {
-    icon: PhoneIcon,
     title: '24/7 Support',
     description: 'Round-the-clock customer service and technical support',
-    color: 'from-orange-500 to-amber-400',
-    bgColor: 'bg-orange-500/10',
+    icon: 'PhoneIcon',
+    color: 'orange',
   },
 ]
 
-// Testimonials
-const testimonials = [
+// Fallback Testimonials
+const defaultTestimonials: Testimonial[] = [
   {
     name: 'Ahmed Khan',
     role: 'Homeowner, Lahore',
     content: 'Fischer water cooler has been serving our office for 3 years without any issues. Excellent build quality and after-sales service.',
     rating: 5,
-    avatar: 'AK',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
   },
   {
@@ -131,7 +170,6 @@ const testimonials = [
     role: 'Restaurant Owner',
     content: 'We installed Fischer cooking ranges in our restaurant. The performance is outstanding and very fuel efficient.',
     rating: 5,
-    avatar: 'SM',
     image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
   },
   {
@@ -139,15 +177,44 @@ const testimonials = [
     role: 'Dealer, Karachi',
     content: 'Being a Fischer dealer for 10 years, I can vouch for their product quality and excellent dealer support program.',
     rating: 5,
-    avatar: 'UA',
     image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
   },
 ]
 
-// Brands we work with
-const trustedBrands = [
-  'ISO 9001:2015', 'PSQCA Certified', 'Made in Pakistan', 'CE Approved', 'Eco Friendly'
+// Fallback Trust badges
+const defaultTrustBadges = [
+  { title: 'ISO 9001:2015' },
+  { title: 'PSQCA Certified' },
+  { title: 'Made in Pakistan' },
+  { title: 'CE Approved' },
+  { title: 'Eco Friendly' },
 ]
+
+// Icon mapping for dynamic icons from backend
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  StarIcon,
+  CheckCircleIcon,
+  CubeIcon,
+  FireIcon,
+  TruckIcon,
+  ShieldCheckIcon,
+  CreditCardIcon,
+  PhoneIcon,
+  BoltIcon,
+  SparklesIcon,
+}
+
+// Color mapping for features
+const colorMap: Record<string, { gradient: string; bg: string; text: string }> = {
+  blue: { gradient: 'from-blue-500 to-cyan-400', bg: 'bg-blue-500/10', text: '#3b82f6' },
+  emerald: { gradient: 'from-emerald-500 to-teal-400', bg: 'bg-emerald-500/10', text: '#10b981' },
+  purple: { gradient: 'from-purple-500 to-pink-400', bg: 'bg-purple-500/10', text: '#a855f7' },
+  orange: { gradient: 'from-orange-500 to-amber-400', bg: 'bg-orange-500/10', text: '#f97316' },
+  primary: { gradient: 'from-primary-500 to-amber-400', bg: 'bg-primary-500/10', text: '#f4b42c' },
+  red: { gradient: 'from-red-500 to-rose-400', bg: 'bg-red-500/10', text: '#ef4444' },
+  green: { gradient: 'from-green-500 to-emerald-400', bg: 'bg-green-500/10', text: '#22c55e' },
+  cyan: { gradient: 'from-cyan-500 to-blue-400', bg: 'bg-cyan-500/10', text: '#06b6d4' },
+}
 
 // Fallback categories
 const fallbackCategories: Category[] = [
@@ -162,6 +229,7 @@ const fallbackCategories: Category[] = [
 export default function Home() {
   const [currentBanner, setCurrentBanner] = useState(0)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -170,6 +238,26 @@ export default function Home() {
       return response.data.data
     },
   })
+
+  // Fetch homepage bundles
+  const { data: homepageBundles } = useHomepageBundles()
+  const addBundleToCart = useAddBundleToCart()
+
+  // Handle adding fixed bundle to cart
+  const handleAddBundleToCart = async (bundle: Bundle) => {
+    if (bundle.bundle_type !== 'fixed') {
+      // For configurable bundles, open quick view
+      setQuickViewBundle(bundle)
+      return
+    }
+
+    try {
+      await addBundleToCart.mutateAsync({ bundleSlug: bundle.slug })
+      toast.success(`${bundle.name} added to cart!`)
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to add bundle to cart')
+    }
+  }
 
   // Auto-slide banners
   useEffect(() => {
@@ -180,13 +268,26 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [data?.banners?.length])
 
+  // Extract dynamic data with fallbacks
+  const stats = data?.stats?.length ? data.stats : defaultStats
+  const features = data?.features?.length ? data.features : defaultFeatures
+  const testimonials = data?.testimonials?.length ? data.testimonials : defaultTestimonials
+  const trustBadges = data?.trust_badges?.length ? data.trust_badges : defaultTrustBadges
+  const sections = data?.sections || {}
+
+  // Check if sections are enabled
+  const isSectionEnabled = (key: string) => {
+    return sections[key]?.is_enabled !== false
+  }
+
   // Auto-slide testimonials
   useEffect(() => {
+    if (!testimonials.length) return
     const timer = setInterval(() => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [])
+  }, [testimonials.length])
 
   // Don't block rendering - show content immediately with fallback data
 
@@ -202,6 +303,17 @@ export default function Home() {
   ]
 
   const categories = data?.categories?.length ? data.categories : fallbackCategories
+
+  // Helper to get icon component from string
+  const getIcon = (iconName?: string) => {
+    if (!iconName) return StarIcon
+    return iconMap[iconName] || StarIcon
+  }
+
+  // Helper to get color classes
+  const getColorClasses = (colorName?: string) => {
+    return colorMap[colorName || 'primary'] || colorMap.primary
+  }
 
   return (
     <div className="overflow-hidden bg-white dark:bg-dark-950 transition-colors">
@@ -305,12 +417,12 @@ export default function Home() {
 
               {/* Trust Badges */}
               <StaggerContainer className="flex flex-wrap gap-3 pt-6" delay={0.25} staggerDelay={0.08}>
-                {trustedBrands.map((brand) => (
-                  <StaggerItem key={brand}>
+                {trustBadges.map((badge) => (
+                  <StaggerItem key={badge.title}>
                     <span className="px-4 py-2 rounded-full text-sm font-medium
                                    bg-white/5 border border-white/10 text-dark-300
                                    hover:bg-white/10 hover:border-primary-500/30 transition-colors">
-                      {brand}
+                      {badge.title}
                     </span>
                   </StaggerItem>
                 ))}
@@ -435,13 +547,14 @@ export default function Home() {
       {/* ==========================================
           STATS BAR - Animated Counters
           ========================================== */}
+      {isSectionEnabled('stats') && (
       <section className="relative -mt-20 z-20">
         <div className="container-xl">
           <ScrollReveal animation="slideUp" duration={1.4}>
             <HoverCard intensity={3} className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12">
               <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.1}>
                 {stats.map((stat) => {
-                  const Icon = stat.icon
+                  const Icon = getIcon(stat.icon)
                   return (
                     <StaggerItem key={stat.label}>
                       <Magnetic strength={0.2}>
@@ -465,15 +578,18 @@ export default function Home() {
           </ScrollReveal>
         </div>
       </section>
+      )}
 
       {/* ==========================================
           FEATURES - Bento Grid Style with 3D Hover
           ========================================== */}
+      {isSectionEnabled('features') && (
       <section className="section bg-dark-50 dark:bg-dark-950">
         <div className="container-xl">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.08}>
             {features.map((feature) => {
-              const Icon = feature.icon
+              const Icon = getIcon(feature.icon)
+              const colors = getColorClasses(feature.color)
               return (
                 <StaggerItem key={feature.title}>
                   <HoverCard intensity={12}>
@@ -484,12 +600,12 @@ export default function Home() {
                                 transition-all duration-500"
                     >
                       {/* Gradient overlay on hover */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                      <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
 
                       {/* Icon */}
                       <Magnetic strength={0.3}>
-                        <div className={`relative w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                          <Icon className={`w-8 h-8 bg-gradient-to-r ${feature.color}`} style={{ color: feature.color.includes('blue') ? '#3b82f6' : feature.color.includes('emerald') ? '#10b981' : feature.color.includes('purple') ? '#a855f7' : '#f97316' }} />
+                        <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                          <Icon className="w-8 h-8" style={{ color: colors.text }} />
                         </div>
                       </Magnetic>
 
@@ -512,10 +628,70 @@ export default function Home() {
           </StaggerContainer>
         </div>
       </section>
+      )}
+
+      {/* ==========================================
+          BUNDLE BANNER - Featured Bundle Hero
+          ========================================== */}
+      {homepageBundles?.banner && homepageBundles.banner.length > 0 && (
+        <section className="bg-dark-950">
+          <BundleBanner
+            bundle={homepageBundles.banner[0]}
+            onAddToCart={handleAddBundleToCart}
+            variant="hero"
+          />
+        </section>
+      )}
+
+      {/* ==========================================
+          BUNDLE CAROUSEL - Featured Bundles Slider
+          ========================================== */}
+      {homepageBundles?.carousel && homepageBundles.carousel.length > 0 && (
+        <section className="section bg-white dark:bg-dark-900">
+          <div className="container-xl">
+            <ScrollReveal animation="glide">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                  <ScrollReveal animation="elastic" delay={0.1}>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
+                      <GiftIcon className="w-4 h-4" />
+                      Special Bundles
+                    </span>
+                  </ScrollReveal>
+                  <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                    Save More with{' '}
+                    <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
+                  </h2>
+                  <ScrollReveal animation="blur" delay={0.3}>
+                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                      Get the best value with our curated product bundles
+                    </p>
+                  </ScrollReveal>
+                </div>
+                <Magnetic strength={0.2}>
+                  <Link
+                    to="/bundles"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+                  >
+                    View All Bundles
+                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Magnetic>
+              </div>
+            </ScrollReveal>
+            <BundleCarousel
+              bundles={homepageBundles.carousel}
+              onQuickView={setQuickViewBundle}
+              onAddToCart={handleAddBundleToCart}
+            />
+          </div>
+        </section>
+      )}
 
       {/* ==========================================
           CATEGORIES - Modern Cards with Hover Effects
           ========================================== */}
+      {isSectionEnabled('categories') && (
       <section className="section bg-white dark:bg-dark-900">
         <div className="container-xl">
           {/* Section Header */}
@@ -598,11 +774,12 @@ export default function Home() {
             </StaggerContainer>
           </div>
         </section>
+      )}
 
       {/* ==========================================
           FEATURED PRODUCTS - Premium Showcase
           ========================================== */}
-      {data?.featured_products && data.featured_products.length > 0 && (
+      {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
         <section className="section bg-dark-950 relative overflow-hidden">
           {/* CSS-only Background Gradients with Parallax */}
           <Parallax speed={0.3} direction="up" className="absolute inset-0 pointer-events-none">
@@ -660,6 +837,7 @@ export default function Home() {
       {/* ==========================================
           CTA BANNER - Become a Dealer
           ========================================== */}
+      {isSectionEnabled('dealer_cta') && (
       <section className="relative py-24 overflow-hidden">
         {/* CSS-only Gradient Background with Parallax */}
         <Parallax speed={0.2} direction="down" className="absolute inset-0 pointer-events-none">
@@ -740,11 +918,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ==========================================
           NEW ARRIVALS - Horizontal Scroll
           ========================================== */}
-      {data?.new_arrivals && data.new_arrivals.length > 0 && (
+      {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
         <section className="section bg-white dark:bg-dark-900">
           <div className="container-xl">
             <ScrollReveal animation="rotate">
@@ -794,6 +973,7 @@ export default function Home() {
       {/* ==========================================
           TESTIMONIALS - Modern Slider
           ========================================== */}
+      {isSectionEnabled('testimonials') && testimonials.length > 0 && (
       <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
         {/* Background decoration with Parallax */}
         <Parallax speed={0.15} direction="down" className="absolute top-0 left-0 w-full h-1/2 pointer-events-none">
@@ -806,7 +986,7 @@ export default function Home() {
               <ScrollReveal animation="elastic" delay={0.1}>
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
                   <StarIcon className="w-4 h-4" />
-                  Customer Reviews
+                  {sections.testimonials?.title || 'Customer Reviews'}
                 </span>
               </ScrollReveal>
               <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
@@ -816,7 +996,7 @@ export default function Home() {
               </h2>
               <ScrollReveal animation="blur" delay={0.3}>
                 <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
-                  Trusted by thousands of Pakistani households and businesses
+                  {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
                 </p>
               </ScrollReveal>
             </div>
@@ -826,7 +1006,9 @@ export default function Home() {
           <ScrollReveal animation="scaleUp">
             <HoverCard intensity={5} className="max-w-4xl mx-auto">
               <div className="relative">
-              {testimonials.map((testimonial, index) => (
+              {testimonials.map((testimonial, index) => {
+                const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                return (
                 <div
                   key={testimonial.name}
                   className={`transition-all duration-700 ${
@@ -846,19 +1028,22 @@ export default function Home() {
 
                     {/* Author */}
                     <div className="flex items-center gap-6">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        width={64}
-                        height={64}
-                        className="w-16 h-16 rounded-2xl object-cover ring-4 ring-primary-100 dark:ring-primary-900/30"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          e.currentTarget.nextElementSibling?.classList.remove('hidden')
-                        }}
-                      />
-                      <div className="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 hidden items-center justify-center">
-                        <span className="text-xl font-bold text-primary-600 dark:text-primary-400">{testimonial.avatar}</span>
+                      {testimonial.image ? (
+                        <img
+                          src={testimonial.image}
+                          alt={testimonial.name}
+                          width={64}
+                          height={64}
+                          className="w-16 h-16 rounded-2xl object-cover ring-4 ring-primary-100 dark:ring-primary-900/30"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                            const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                            if (fallback) fallback.classList.remove('hidden')
+                          }}
+                        />
+                      ) : null}
+                      <div className={`w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 ${testimonial.image ? 'hidden' : 'flex'} items-center justify-center`}>
+                        <span className="text-xl font-bold text-primary-600 dark:text-primary-400">{initials}</span>
                       </div>
                       <div>
                         <p className="text-xl font-bold text-dark-900 dark:text-white">{testimonial.name}</p>
@@ -875,7 +1060,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
 
               {/* Navigation dots */}
@@ -895,10 +1080,12 @@ export default function Home() {
           </ScrollReveal>
         </div>
       </section>
+      )}
 
       {/* ==========================================
           WHY FISCHER - Premium Section
           ========================================== */}
+      {isSectionEnabled('about') && (
       <section className="section bg-white dark:bg-dark-900 overflow-hidden">
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -1003,10 +1190,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ==========================================
           NEWSLETTER - Clean Design
           ========================================== */}
+      {isSectionEnabled('newsletter') && (
       <section className="relative py-24 overflow-hidden">
         {/* CSS-only gradient background */}
         <div className="absolute inset-0 pointer-events-none">
@@ -1058,6 +1247,28 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
+
+      {/* ==========================================
+          BUNDLE GRID - More Bundles Section
+          ========================================== */}
+      {homepageBundles?.grid && homepageBundles.grid.length > 0 && (
+        <BundleGrid
+          bundles={homepageBundles.grid}
+          title="More Bundle Deals"
+          subtitle="Discover more ways to save with our bundle offers"
+          columns={3}
+          onQuickView={setQuickViewBundle}
+          onAddToCart={handleAddBundleToCart}
+        />
+      )}
+
+      {/* Bundle Quick View Modal */}
+      <BundleQuickView
+        bundle={quickViewBundle}
+        isOpen={!!quickViewBundle}
+        onClose={() => setQuickViewBundle(null)}
+      />
     </div>
   )
 }

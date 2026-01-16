@@ -1,8 +1,28 @@
 import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
+import { motion } from 'framer-motion'
 import Layout from './components/layout/Layout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import ScrollToTop from './components/utils/ScrollToTop'
+
+// Animated page loader for better UX during lazy loading
+const PageLoader = () => (
+  <motion.div
+    className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2 }}
+  >
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+    >
+      <LoadingSpinner size="lg" />
+    </motion.div>
+  </motion.div>
+)
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'))
@@ -30,6 +50,7 @@ const FindDealer = lazy(() => import('./pages/FindDealer'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Page = lazy(() => import('./pages/Page'))
+const BundleDetail = lazy(() => import('./pages/BundleDetail'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Admin pages
@@ -48,10 +69,12 @@ const AdminPages = lazy(() => import('./pages/admin/Pages'))
 const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'))
 const AdminReports = lazy(() => import('./pages/admin/Reports'))
 const AdminHomePageSettings = lazy(() => import('./pages/admin/HomePageSettings'))
+const AdminBundles = lazy(() => import('./pages/admin/Bundles'))
+const AdminBundleForm = lazy(() => import('./pages/admin/BundleForm'))
 
 function App() {
   return (
-    <Suspense fallback={<LoadingSpinner fullScreen />}>
+    <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
       <Routes>
         {/* Public routes */}
@@ -60,6 +83,7 @@ function App() {
           <Route path="shop" element={<Shop />} />
           <Route path="product/:slug" element={<ProductDetail />} />
           <Route path="category/:slug" element={<Category />} />
+          <Route path="bundle/:slug" element={<BundleDetail />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="order-success/:orderNumber" element={<OrderSuccess />} />
@@ -113,6 +137,9 @@ function App() {
           <Route path="analytics" element={<AdminAnalytics />} />
           <Route path="reports" element={<AdminReports />} />
           <Route path="homepage" element={<AdminHomePageSettings />} />
+          <Route path="bundles" element={<AdminBundles />} />
+          <Route path="bundles/new" element={<AdminBundleForm />} />
+          <Route path="bundles/:id" element={<AdminBundleForm />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>

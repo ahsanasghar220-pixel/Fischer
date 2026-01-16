@@ -15,6 +15,7 @@ import {
   WrenchScrewdriverIcon,
   DocumentTextIcon,
   PaintBrushIcon,
+  GiftIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -22,6 +23,7 @@ const menuItems = [
   { path: '/admin', label: 'Dashboard', icon: HomeIcon, exact: true },
   { path: '/admin/orders', label: 'Orders', icon: ShoppingCartIcon },
   { path: '/admin/products', label: 'Products', icon: CubeIcon },
+  { path: '/admin/bundles', label: 'Bundles', icon: GiftIcon },
   { path: '/admin/categories', label: 'Categories', icon: TagIcon },
   { path: '/admin/customers', label: 'Customers', icon: UsersIcon },
   { path: '/admin/dealers', label: 'Dealers', icon: TruckIcon },

@@ -16,6 +16,8 @@ class Banner extends Model
         'mobile_image',
         'link_url',
         'link_text',
+        'button_text',
+        'button_link',
         'position',
         'sort_order',
         'is_active',

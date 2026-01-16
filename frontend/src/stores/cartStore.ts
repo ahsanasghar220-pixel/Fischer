@@ -4,8 +4,11 @@ import toast from 'react-hot-toast'
 
 interface CartItem {
   id: number
-  product_id: number
+  product_id: number | null
   variant_id: number | null
+  bundle_id: number | null
+  is_bundle_item: boolean
+  parent_cart_item_id: number | null
   product: {
     id: number
     name: string
@@ -16,7 +19,27 @@ interface CartItem {
     price: number
     stock_quantity: number
     track_inventory: boolean
-  }
+  } | null
+  bundle: {
+    id: number
+    name: string
+    slug: string
+    featured_image: string | null
+    cart_display: 'single_item' | 'grouped' | 'individual'
+    discount_type: 'fixed_price' | 'percentage'
+    discount_value: number
+    original_price: number
+    discounted_price: number
+    savings: number
+    items_count: number
+  } | null
+  bundle_slot_selections: Array<{
+    slot_id: number
+    slot_name: string
+    product_id: number
+    product_name: string
+    product_image: string | null
+  }> | null
   variant: {
     id: number
     sku: string
@@ -27,6 +50,7 @@ interface CartItem {
   quantity: number
   unit_price: number
   total_price: number
+  bundle_discount: number
   is_available: boolean
 }
 
