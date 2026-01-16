@@ -248,7 +248,7 @@ class Bundle extends Model
 
     public function getConversionRate(): float
     {
-        if ($this->view_count === 0) {
+        if (!$this->view_count || $this->view_count == 0) {
             return 0;
         }
 
@@ -257,7 +257,7 @@ class Bundle extends Model
 
     public function getAddToCartRate(): float
     {
-        if ($this->view_count === 0) {
+        if (!$this->view_count || $this->view_count == 0) {
             return 0;
         }
 

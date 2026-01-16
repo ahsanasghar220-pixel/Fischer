@@ -189,7 +189,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
       }
     })
 
-    return images.length > 0 ? images : ['/placeholder-bundle.jpg']
+    return images.length > 0 ? images : ['//images/all-products.png']
   }, [bundle])
 
   if (!bundle) return null

@@ -43,7 +43,20 @@
       "Bash(Faq \")",
       "Bash(tasklist:*)",
       "Bash(php -l:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(git reset:*)",
+      "Bash(ping:*)",
+      "Bash(more:*)",
+      "Bash(chmod:*)",
+      "Bash(/c/xampp/mysql/bin/mysql:*)",
+      "Bash(set ROLLUP_NATIVE=false)",
+      "Bash(node -e:*)",
+      "Bash(npx --yes esbuild:*)",
+      "Bash(netstat:*)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(file:*)",
+      "Bash(timeout:*)"
     ]
   }
 }

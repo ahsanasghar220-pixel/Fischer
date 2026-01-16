@@ -54,7 +54,7 @@ const BundleCard = memo(function BundleCard({
         <div className="relative aspect-[4/3] overflow-hidden">
           {/* Main Image */}
           <img
-            src={bundle.featured_image || '/placeholder-bundle.jpg'}
+            src={bundle.featured_image || '//images/all-products.png'}
             alt={bundle.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />

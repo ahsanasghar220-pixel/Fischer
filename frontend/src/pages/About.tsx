@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
+import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
 
 export default function About() {
   const milestones = [
@@ -21,191 +23,319 @@ export default function About() {
   ]
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-900 transition-colors">
+    <motion.div
+      className="min-h-screen bg-white dark:bg-dark-900 transition-colors"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Hero */}
-      <section className="bg-dark-900 dark:bg-dark-800 text-white py-20">
+      <section className="bg-dark-900 dark:bg-dark-800 text-white py-20 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <motion.div
+            className="max-w-3xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
+            <motion.h1
+              className="text-4xl md:text-5xl font-bold mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
               About Fischer Pakistan
-            </h1>
-            <p className="text-xl text-dark-300 dark:text-dark-400 leading-relaxed">
+            </motion.h1>
+            <motion.p
+              className="text-xl text-dark-300 dark:text-dark-400 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               For over 25 years, Fischer has been a trusted name in Pakistani households,
               providing quality home appliances that make everyday life easier and more comfortable.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
       {/* Our Story */}
-      <section className="py-16 bg-white dark:bg-dark-900">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-6">Our Story</h2>
-              <div className="space-y-4 text-dark-600 dark:text-dark-400">
-                <p>
-                  Founded in 1995, Fischer Pakistan started with a simple mission: to provide
-                  high-quality, affordable home appliances to Pakistani families. What began
-                  as a small operation has grown into one of the country's most trusted
-                  appliance brands.
-                </p>
-                <p>
-                  Our journey has been marked by continuous innovation, unwavering commitment
-                  to quality, and deep understanding of Pakistani households' needs. Today,
-                  Fischer products can be found in millions of homes across the country.
-                </p>
-                <p>
-                  We take pride in our ISO 9001:2015 certification, which reflects our
-                  dedication to maintaining the highest quality standards in every product
-                  we manufacture.
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <img
-                src="/images/about-factory.jpg"
-                alt="Fischer Factory"
-                width={600}
-                height={400}
-                className="rounded-xl shadow-2xl w-full h-auto"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://placehold.co/600x400/313131/f4b42c?text=Fischer+Factory'
-                }}
-              />
-              <div className="absolute -bottom-6 -left-6 bg-primary-500 text-dark-900 p-6 rounded-xl shadow-lg">
-                <span className="text-4xl font-bold">25+</span>
-                <span className="block text-sm">Years of Excellence</span>
-              </div>
+      <ScrollReveal animation="fadeInUp">
+        <section className="py-16 bg-white dark:bg-dark-900">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-6">Our Story</h2>
+                <div className="space-y-4 text-dark-600 dark:text-dark-400">
+                  <p>
+                    Founded in 1995, Fischer Pakistan started with a simple mission: to provide
+                    high-quality, affordable home appliances to Pakistani families. What began
+                    as a small operation has grown into one of the country's most trusted
+                    appliance brands.
+                  </p>
+                  <p>
+                    Our journey has been marked by continuous innovation, unwavering commitment
+                    to quality, and deep understanding of Pakistani households' needs. Today,
+                    Fischer products can be found in millions of homes across the country.
+                  </p>
+                  <p>
+                    We take pride in our ISO 9001:2015 certification, which reflects our
+                    dedication to maintaining the highest quality standards in every product
+                    we manufacture.
+                  </p>
+                </div>
+              </motion.div>
+              <motion.div
+                className="relative"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <motion.img
+                  src="/images/about-factory.jpg"
+                  alt="Fischer Factory"
+                  width={600}
+                  height={400}
+                  className="rounded-xl shadow-2xl w-full h-auto"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://placehold.co/600x400/313131/f4b42c?text=Fischer+Factory'
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                />
+                <motion.div
+                  className="absolute -bottom-6 -left-6 bg-primary-500 text-dark-900 p-6 rounded-xl shadow-lg"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
+                >
+                  <span className="text-4xl font-bold">25+</span>
+                  <span className="block text-sm">Years of Excellence</span>
+                </motion.div>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* Stats */}
-      <section className="bg-dark-50 dark:bg-dark-800 py-16 transition-colors">
+      <section className="bg-dark-50 dark:bg-dark-800 py-16 transition-colors overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <span className="text-4xl md:text-5xl font-bold text-primary-500">500+</span>
-              <span className="block text-dark-600 dark:text-dark-400 mt-2">Dealers Nationwide</span>
-            </div>
-            <div className="text-center">
-              <span className="text-4xl md:text-5xl font-bold text-primary-500">1M+</span>
-              <span className="block text-dark-600 dark:text-dark-400 mt-2">Happy Customers</span>
-            </div>
-            <div className="text-center">
-              <span className="text-4xl md:text-5xl font-bold text-primary-500">50+</span>
-              <span className="block text-dark-600 dark:text-dark-400 mt-2">Products</span>
-            </div>
-            <div className="text-center">
-              <span className="text-4xl md:text-5xl font-bold text-primary-500">100+</span>
-              <span className="block text-dark-600 dark:text-dark-400 mt-2">Service Centers</span>
-            </div>
-          </div>
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8" staggerDelay={0.1}>
+            {[
+              { value: '500+', label: 'Dealers Nationwide' },
+              { value: '1M+', label: 'Happy Customers' },
+              { value: '50+', label: 'Products' },
+              { value: '100+', label: 'Service Centers' },
+            ].map((stat) => (
+              <StaggerItem key={stat.label}>
+                <motion.div
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <motion.span
+                    className="text-4xl md:text-5xl font-bold text-primary-500 block"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    {stat.value}
+                  </motion.span>
+                  <span className="block text-dark-600 dark:text-dark-400 mt-2">{stat.label}</span>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Timeline */}
-      <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-dark-900 dark:text-white text-center mb-12">Our Journey</h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="relative">
-              {/* Line */}
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-dark-200 dark:bg-dark-700" />
+      <ScrollReveal animation="fadeInUp">
+        <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
+          <div className="container mx-auto px-4">
+            <motion.h2
+              className="text-3xl font-bold text-dark-900 dark:text-white text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Our Journey
+            </motion.h2>
+            <div className="max-w-4xl mx-auto">
+              <div className="relative">
+                {/* Line */}
+                <motion.div
+                  className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-dark-200 dark:bg-dark-700"
+                  initial={{ scaleY: 0 }}
+                  whileInView={{ scaleY: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1 }}
+                  style={{ originY: 0 }}
+                />
 
-              {milestones.map((milestone, index) => (
-                <div
-                  key={milestone.year}
-                  className={`relative flex items-center mb-8 ${
-                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
-                >
-                  <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'} pl-12 md:pl-0`}>
-                    <div className="bg-white dark:bg-dark-800 p-6 rounded-xl shadow-sm border border-dark-100 dark:border-dark-700">
-                      <span className="text-primary-500 font-bold">{milestone.year}</span>
-                      <h3 className="text-lg font-semibold text-dark-900 dark:text-white mt-1">{milestone.title}</h3>
-                      <p className="text-dark-500 dark:text-dark-400 text-sm mt-2">{milestone.description}</p>
+                {milestones.map((milestone, index) => (
+                  <motion.div
+                    key={milestone.year}
+                    className={`relative flex items-center mb-8 ${
+                      index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                    }`}
+                    initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'} pl-12 md:pl-0`}>
+                      <motion.div
+                        className="bg-white dark:bg-dark-800 p-6 rounded-xl shadow-sm border border-dark-100 dark:border-dark-700"
+                        whileHover={{ scale: 1.02, y: -4 }}
+                        transition={{ type: 'spring', stiffness: 300 }}
+                      >
+                        <span className="text-primary-500 font-bold">{milestone.year}</span>
+                        <h3 className="text-lg font-semibold text-dark-900 dark:text-white mt-1">{milestone.title}</h3>
+                        <p className="text-dark-500 dark:text-dark-400 text-sm mt-2">{milestone.description}</p>
+                      </motion.div>
                     </div>
-                  </div>
-                  <div className="absolute left-4 md:left-1/2 w-8 h-8 -translate-x-1/2 bg-primary-500 rounded-full flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full" />
-                  </div>
-                </div>
-              ))}
+                    <motion.div
+                      className="absolute left-4 md:left-1/2 w-8 h-8 -translate-x-1/2 bg-primary-500 rounded-full flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 + 0.2, type: 'spring', stiffness: 300 }}
+                    >
+                      <div className="w-3 h-3 bg-white rounded-full" />
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* Values */}
-      <section className="bg-dark-900 dark:bg-dark-800 text-white py-16">
+      <section className="bg-dark-900 dark:bg-dark-800 text-white py-16 overflow-hidden">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.h2
+            className="text-3xl font-bold text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Our Values
+          </motion.h2>
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.08}>
             {values.map((value) => (
-              <div key={value.title} className="bg-dark-800 dark:bg-dark-700 p-6 rounded-xl">
-                <CheckCircleIcon className="w-10 h-10 text-primary-500 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                <p className="text-dark-300 dark:text-dark-400">{value.description}</p>
-              </div>
+              <StaggerItem key={value.title}>
+                <motion.div
+                  className="bg-dark-800 dark:bg-dark-700 p-6 rounded-xl h-full"
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ type: 'spring', stiffness: 300 }}
+                  >
+                    <CheckCircleIcon className="w-10 h-10 text-primary-500 mb-4" />
+                  </motion.div>
+                  <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
+                  <p className="text-dark-300 dark:text-dark-400">{value.description}</p>
+                </motion.div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Certifications */}
-      <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-4">Quality Certifications</h2>
-            <p className="text-dark-500 dark:text-dark-400 max-w-2xl mx-auto">
-              Our commitment to quality is backed by international certifications and standards
-            </p>
+      <ScrollReveal animation="fadeInUp">
+        <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
+          <div className="container mx-auto px-4">
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-4">Quality Certifications</h2>
+              <p className="text-dark-500 dark:text-dark-400 max-w-2xl mx-auto">
+                Our commitment to quality is backed by international certifications and standards
+              </p>
+            </motion.div>
+            <div className="flex flex-wrap items-center justify-center gap-8">
+              {[
+                { name: 'ISO', sub: '9001:2015' },
+                { name: 'CE', sub: 'Certified' },
+                { name: 'PSQCA', sub: 'Approved' },
+              ].map((cert, index) => (
+                <motion.div
+                  key={cert.name}
+                  className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center"
+                  initial={{ opacity: 0, scale: 0.8, rotateY: 90 }}
+                  whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.15, type: 'spring', stiffness: 200 }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <div className="text-center">
+                    <span className="text-2xl font-bold text-dark-900 dark:text-white">{cert.name}</span>
+                    <span className="block text-sm text-dark-500 dark:text-dark-400">{cert.sub}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900 dark:text-white">ISO</span>
-                <span className="block text-sm text-dark-500 dark:text-dark-400">9001:2015</span>
-              </div>
-            </div>
-            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900 dark:text-white">CE</span>
-                <span className="block text-sm text-dark-500 dark:text-dark-400">Certified</span>
-              </div>
-            </div>
-            <div className="w-32 h-32 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <span className="text-2xl font-bold text-dark-900 dark:text-white">PSQCA</span>
-                <span className="block text-sm text-dark-500 dark:text-dark-400">Approved</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* CTA */}
-      <section className="bg-primary-500 py-16">
+      <section className="bg-primary-500 py-16 overflow-hidden">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-dark-900 mb-4">
+          <motion.h2
+            className="text-3xl font-bold text-dark-900 mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
             Ready to Experience Fischer Quality?
-          </h2>
-          <p className="text-dark-700 mb-8 max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-dark-700 mb-8 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+          >
             Browse our collection of home appliances and discover why millions trust Fischer
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/shop" className="btn bg-dark-900 text-white hover:bg-dark-800 px-8">
-              Shop Now
-            </Link>
-            <Link to="/contact" className="btn bg-white text-dark-900 hover:bg-dark-50 px-8">
-              Contact Us
-            </Link>
-          </div>
+          </motion.p>
+          <motion.div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/shop" className="btn bg-dark-900 text-white hover:bg-dark-800 px-8">
+                Shop Now
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/contact" className="btn bg-white text-dark-900 hover:bg-dark-50 px-8">
+                Contact Us
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
-    </div>
+    </motion.div>
   )
 }

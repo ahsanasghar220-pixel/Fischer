@@ -24,11 +24,6 @@ import ProductCard from '@/components/products/ProductCard'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import GrainOverlay from '@/components/effects/GrainOverlay'
 import ScrollReveal, {
-  StaggerContainer,
-  StaggerItem,
-  Parallax,
-  HoverCard,
-  Magnetic,
   ScrollProgress
 } from '@/components/effects/ScrollReveal'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
@@ -344,113 +339,121 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              {/* Animated Badge */}
-              <ScrollReveal animation="elastic" delay={0.1}>
-                <Magnetic strength={0.2}>
-                  <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
+              {/* Badge - Simple fade in */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
                             bg-gradient-to-r from-primary-500/20 to-primary-400/10
                             border border-primary-500/30 backdrop-blur-sm">
-                    <div className="relative">
-                      <SparklesIcon className="w-5 h-5 text-primary-400" />
-                      <motion.div
-                        className="absolute inset-0"
-                        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <SparklesIcon className="w-5 h-5 text-primary-400" />
-                      </motion.div>
-                    </div>
-                    <span className="text-sm font-semibold text-primary-300 tracking-wide">
-                      35+ Years of Excellence
-                    </span>
-                  </div>
-                </Magnetic>
-              </ScrollReveal>
+                  <SparklesIcon className="w-5 h-5 text-primary-400" />
+                  <span className="text-sm font-semibold text-primary-300 tracking-wide">
+                    35+ Years of Excellence
+                  </span>
+                </div>
+              </motion.div>
 
-              {/* Main Title with Gradient */}
-              <ScrollReveal animation="fadeUp" delay={0.2}>
+              {/* Main Title - Simple fade up */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
                 <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-display leading-[0.9] tracking-tight">
                   <span className="block text-white">
                     {banners[currentBanner]?.title?.split(' ')[0] || 'Premium'}
                   </span>
-                  <span className="block mt-2 bg-gradient-to-r from-primary-400 via-primary-500 to-amber-400 bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+                  <span className="block mt-2 bg-gradient-to-r from-primary-400 via-primary-500 to-amber-400 bg-clip-text text-transparent">
                     {banners[currentBanner]?.title?.split(' ').slice(1).join(' ') || 'Home Appliances'}
                   </span>
                 </h1>
-              </ScrollReveal>
+              </motion.div>
 
-              {/* Animated Subtitle */}
-              <ScrollReveal animation="blur" delay={0.3}>
-                <p className="text-xl md:text-2xl text-dark-300 max-w-xl leading-relaxed font-light">
-                  {banners[currentBanner]?.subtitle ||
-                   'ISO 9001:2015 certified products designed for Pakistani homes'}
-                </p>
-              </ScrollReveal>
+              {/* Subtitle */}
+              <motion.p
+                className="text-xl md:text-2xl text-dark-300 max-w-xl leading-relaxed font-light"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                {banners[currentBanner]?.subtitle ||
+                 'ISO 9001:2015 certified products designed for Pakistani homes'}
+              </motion.p>
 
               {/* CTA Buttons */}
-              <ScrollReveal animation="fadeUp" delay={0.2}>
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <Magnetic strength={0.15}>
-                    <Link
-                      to={banners[currentBanner]?.button_link || '/shop'}
-                      className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg
-                               transition-all duration-300 hover:scale-105 hover:shadow-glow-lg hover:from-amber-400 hover:to-primary-400"
-                    >
-                      {banners[currentBanner]?.button_text || 'Explore Products'}
-                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </Magnetic>
-                  <Magnetic strength={0.15}>
-                    <Link
-                      to="/about"
-                      className="group px-8 py-4 rounded-2xl font-semibold text-white text-lg
-                               border-2 border-white/20 backdrop-blur-sm
-                               hover:bg-white/10 hover:border-white/40 transition-all duration-300
-                               flex items-center gap-2"
-                    >
-                      <PlayIcon className="w-5 h-5" />
-                      Our Story
-                    </Link>
-                  </Magnetic>
-                </div>
-              </ScrollReveal>
+              <motion.div
+                className="flex flex-wrap gap-4 pt-4"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Link
+                  to={banners[currentBanner]?.button_link || '/shop'}
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg
+                           transition-all duration-300 hover:scale-105 hover:shadow-glow-lg hover:from-amber-400 hover:to-primary-400"
+                >
+                  {banners[currentBanner]?.button_text || 'Explore Products'}
+                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/about"
+                  className="group px-8 py-4 rounded-2xl font-semibold text-white text-lg
+                           border-2 border-white/20 backdrop-blur-sm
+                           hover:bg-white/10 hover:border-white/40 transition-all duration-300
+                           flex items-center gap-2"
+                >
+                  <PlayIcon className="w-5 h-5" />
+                  Our Story
+                </Link>
+              </motion.div>
 
-              {/* Trust Badges */}
-              <StaggerContainer className="flex flex-wrap gap-3 pt-6" delay={0.25} staggerDelay={0.08}>
+              {/* Trust Badges - Simple fade in */}
+              <motion.div
+                className="flex flex-wrap gap-3 pt-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
                 {trustBadges.map((badge) => (
-                  <StaggerItem key={badge.title}>
-                    <span className="px-4 py-2 rounded-full text-sm font-medium
-                                   bg-white/5 border border-white/10 text-dark-300
-                                   hover:bg-white/10 hover:border-primary-500/30 transition-colors">
-                      {badge.title}
-                    </span>
-                  </StaggerItem>
+                  <span
+                    key={badge.title}
+                    className="px-4 py-2 rounded-full text-sm font-medium
+                             bg-white/5 border border-white/10 text-dark-300
+                             hover:bg-white/10 hover:border-primary-500/30 transition-colors"
+                  >
+                    {badge.title}
+                  </span>
                 ))}
-              </StaggerContainer>
+              </motion.div>
             </div>
 
-            {/* Right - 3D Product Showcase */}
-            <ScrollReveal animation="scale" delay={0.25} className="relative">
-              {/* Rotating Ring */}
-              <Parallax speed={0.2} direction="up">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full border border-primary-500/20 animate-spin-slow" />
-                  <div className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-primary-500/10 animate-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '20s' }} />
-                </div>
-              </Parallax>
-
-              {/* Glow effect */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-80 h-80 bg-primary-500/20 rounded-full blur-[100px] animate-pulse-slow" />
+            {/* Right - Product Showcase */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              {/* Static decorative rings - no animation for performance */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full border border-primary-500/20" />
+                <div className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-primary-500/10" />
               </div>
 
-              {/* Product Card with 3D Hover */}
-              <HoverCard className="relative mx-auto max-w-md" intensity={8}>
+              {/* Glow effect - static for performance */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-80 h-80 bg-primary-500/20 rounded-full blur-[100px]" />
+              </div>
+
+              {/* Product Card - Simplified hover */}
+              <div className="relative mx-auto max-w-md">
                 <div className="relative bg-gradient-to-br from-dark-800/80 to-dark-900/80 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl
-                              hover:border-primary-500/30 transition-all duration-500 group">
+                              hover:border-primary-500/30 transition-colors duration-300">
                   {/* Best Seller Badge */}
                   <div className="absolute -top-4 -right-4 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl shadow-lg shadow-primary-500/30
-                                flex items-center gap-2 animate-bounce-slow">
+                                flex items-center gap-2">
                     <FireIcon className="w-5 h-5 text-dark-900" />
                     <span className="font-bold text-dark-900">BEST SELLER</span>
                   </div>
@@ -464,7 +467,7 @@ export default function Home() {
                       height={280}
                       loading="eager"
                       {...{ fetchpriority: "high" } as any}
-                      className="max-h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-700"
+                      className="max-h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         e.currentTarget.src = 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png'
                       }}
@@ -497,20 +500,23 @@ export default function Home() {
                     </Link>
                   </div>
                 </div>
-              </HoverCard>
-            </ScrollReveal>
+              </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Scroll Indicator */}
-        <ScrollReveal animation="bounce" delay={0.6}>
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <span className="text-dark-400 text-sm font-medium">Scroll to explore</span>
-            <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1">
-              <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-slide-up" />
-            </div>
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <span className="text-dark-400 text-sm font-medium">Scroll to explore</span>
+          <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1">
+            <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-slide-up" />
           </div>
-        </ScrollReveal>
+        </motion.div>
 
         {/* Banner Navigation */}
         {banners.length > 1 && (
@@ -545,87 +551,70 @@ export default function Home() {
       </section>
 
       {/* ==========================================
-          STATS BAR - Animated Counters
+          STATS BAR - Simple Counters
           ========================================== */}
       {isSectionEnabled('stats') && (
       <section className="relative -mt-20 z-20">
         <div className="container-xl">
-          <ScrollReveal animation="slideUp" duration={1.4}>
-            <HoverCard intensity={3} className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12">
-              <StaggerContainer className="grid grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.1}>
+          <ScrollReveal animation="fadeUp" duration={0.6}>
+            <div className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                 {stats.map((stat) => {
                   const Icon = getIcon(stat.icon)
                   return (
-                    <StaggerItem key={stat.label}>
-                      <Magnetic strength={0.2}>
-                        <div className="text-center group cursor-pointer">
-                          <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500">
-                            <Icon className="w-7 h-7" />
-                          </div>
-                          <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
-                            {stat.value}
-                          </div>
-                          <div className="text-dark-500 dark:text-dark-400 font-medium">
-                            {stat.label}
-                          </div>
-                        </div>
-                      </Magnetic>
-                    </StaggerItem>
+                    <div key={stat.label} className="text-center group cursor-pointer">
+                      <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-7 h-7" />
+                      </div>
+                      <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
+                        {stat.value}
+                      </div>
+                      <div className="text-dark-500 dark:text-dark-400 font-medium">
+                        {stat.label}
+                      </div>
+                    </div>
                   )
                 })}
-              </StaggerContainer>
-            </HoverCard>
+              </div>
+            </div>
           </ScrollReveal>
         </div>
       </section>
       )}
 
       {/* ==========================================
-          FEATURES - Bento Grid Style with 3D Hover
+          FEATURES - Clean Grid (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('features') && (
       <section className="section bg-dark-50 dark:bg-dark-950">
         <div className="container-xl">
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.08}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => {
               const Icon = getIcon(feature.icon)
               const colors = getColorClasses(feature.color)
               return (
-                <StaggerItem key={feature.title}>
-                  <HoverCard intensity={12}>
-                    <div
-                      className="group relative p-8 rounded-3xl overflow-hidden h-full
-                                bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
-                                hover:border-transparent hover:shadow-2xl hover:shadow-primary-500/10
-                                transition-all duration-500"
-                    >
-                      {/* Gradient overlay on hover */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                <div
+                  key={feature.title}
+                  className="group relative p-8 rounded-3xl overflow-hidden h-full
+                            bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
+                            hover:border-primary-500/30 hover:shadow-xl
+                            transition-all duration-300"
+                >
+                  {/* Icon */}
+                  <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300`}>
+                    <Icon className="w-8 h-8" style={{ color: colors.text }} />
+                  </div>
 
-                      {/* Icon */}
-                      <Magnetic strength={0.3}>
-                        <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                          <Icon className="w-8 h-8" style={{ color: colors.text }} />
-                        </div>
-                      </Magnetic>
-
-                      <h3 className="text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-dark-500 dark:text-dark-400 leading-relaxed">
-                        {feature.description}
-                      </p>
-
-                      {/* Shine effect on hover */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                      </div>
-                    </div>
-                  </HoverCard>
-                </StaggerItem>
+                  <h3 className="text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-dark-500 dark:text-dark-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               )
             })}
-          </StaggerContainer>
+          </div>
         </div>
       </section>
       )}
@@ -649,36 +638,28 @@ export default function Home() {
       {homepageBundles?.carousel && homepageBundles.carousel.length > 0 && (
         <section className="section bg-white dark:bg-dark-900">
           <div className="container-xl">
-            <ScrollReveal animation="glide">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                <div>
-                  <ScrollReveal animation="elastic" delay={0.1}>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
-                      <GiftIcon className="w-4 h-4" />
-                      Special Bundles
-                    </span>
-                  </ScrollReveal>
-                  <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                    Save More with{' '}
-                    <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
-                  </h2>
-                  <ScrollReveal animation="blur" delay={0.3}>
-                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
-                      Get the best value with our curated product bundles
-                    </p>
-                  </ScrollReveal>
-                </div>
-                <Magnetic strength={0.2}>
-                  <Link
-                    to="/bundles"
-                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
-                  >
-                    View All Bundles
-                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Magnetic>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
+                  <GiftIcon className="w-4 h-4" />
+                  Special Bundles
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                  Save More with{' '}
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
+                </h2>
+                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                  Get the best value with our curated product bundles
+                </p>
               </div>
-            </ScrollReveal>
+              <Link
+                to="/bundles"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+              >
+                View All Bundles
+                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
             <BundleCarousel
               bundles={homepageBundles.carousel}
               onQuickView={setQuickViewBundle}
@@ -689,456 +670,377 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          CATEGORIES - Modern Cards with Hover Effects
+          CATEGORIES - Clean Cards (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('categories') && (
       <section className="section bg-white dark:bg-dark-900">
         <div className="container-xl">
           {/* Section Header */}
-          <ScrollReveal animation="glide">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-              <div>
-                <ScrollReveal animation="elastic" delay={0.1}>
-                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
-                    <CubeIcon className="w-4 h-4" />
-                    Browse Products
-                  </span>
-                </ScrollReveal>
-                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                  Shop by{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Category</span>
-                </h2>
-                <ScrollReveal animation="blur" delay={0.3}>
-                  <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
-                    Explore our complete range of home and commercial appliances
-                  </p>
-                </ScrollReveal>
-              </div>
-              <Magnetic strength={0.2}>
-                <Link
-                  to="/categories"
-                  className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
-                >
-                  View All
-                  <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Magnetic>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
+                <CubeIcon className="w-4 h-4" />
+                Browse Products
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                Shop by{' '}
+                <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Category</span>
+              </h2>
+              <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                Explore our complete range of home and commercial appliances
+              </p>
             </div>
-          </ScrollReveal>
+            <Link
+              to="/categories"
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+            >
+              View All
+              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
 
           {/* Categories Grid */}
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6" staggerDelay={0.08}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {categories.slice(0, 6).map((category) => (
-                <StaggerItem key={category.id}>
-                  <HoverCard intensity={15}>
-                    <Link
-                      to={`/category/${category.slug}`}
-                      className="group relative block"
-                    >
-                      <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-dark-100 to-dark-50 dark:from-dark-800 dark:to-dark-900 p-6
-                                    border-2 border-transparent hover:border-primary-500
-                                    transition-all duration-500 hover:shadow-2xl hover:shadow-primary-500/20">
-                        {/* Background Glow */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-500/0 group-hover:from-primary-500/10 group-hover:to-amber-500/10 transition-all duration-500" />
+              <Link
+                key={category.id}
+                to={`/category/${category.slug}`}
+                className="group relative block"
+              >
+                <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-dark-100 to-dark-50 dark:from-dark-800 dark:to-dark-900 p-6
+                              border-2 border-transparent hover:border-primary-500
+                              transition-all duration-300 hover:shadow-xl">
+                  {/* Icon/Image */}
+                  <div className="relative h-full flex flex-col items-center justify-center">
+                    <div className="group-hover:scale-110 transition-transform duration-300">
+                      <CategoryIcon slug={category.slug} className="w-20 h-20" />
+                    </div>
+                  </div>
 
-                        {/* Icon/Image */}
-                        <Magnetic strength={0.25}>
-                          <div className="relative h-full flex flex-col items-center justify-center">
-                            <div className="group-hover:scale-125 group-hover:rotate-3 transition-all duration-500">
-                              <CategoryIcon slug={category.slug} className="w-20 h-20" />
-                            </div>
-                          </div>
-                        </Magnetic>
+                  {/* Overlay with info */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                    <h3 className="font-bold text-white text-center truncate">{category.name}</h3>
+                    <p className="text-sm text-dark-300 text-center">{category.products_count} Products</p>
+                  </div>
+                </div>
 
-                        {/* Overlay with info */}
-                        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                          <h3 className="font-bold text-white text-center truncate">{category.name}</h3>
-                          <p className="text-sm text-dark-300 text-center">{category.products_count} Products</p>
-                        </div>
-
-                        {/* Shine effect */}
-                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                        </div>
-                      </div>
-
-                      {/* Category Name (visible by default) */}
-                      <div className="mt-4 text-center group-hover:opacity-0 transition-opacity duration-300">
-                        <h3 className="font-bold text-dark-900 dark:text-white truncate">{category.name}</h3>
-                        <p className="text-sm text-dark-500 dark:text-dark-400">{category.products_count} Products</p>
-                      </div>
-                    </Link>
-                  </HoverCard>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
+                {/* Category Name (visible by default) */}
+                <div className="mt-4 text-center group-hover:opacity-0 transition-opacity duration-300">
+                  <h3 className="font-bold text-dark-900 dark:text-white truncate">{category.name}</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">{category.products_count} Products</p>
+                </div>
+              </Link>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
       )}
 
       {/* ==========================================
-          FEATURED PRODUCTS - Premium Showcase
+          FEATURED PRODUCTS - Clean Showcase
           ========================================== */}
       {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
         <section className="section bg-dark-950 relative overflow-hidden">
-          {/* CSS-only Background Gradients with Parallax */}
-          <Parallax speed={0.3} direction="up" className="absolute inset-0 pointer-events-none">
+          {/* Static Background Gradients */}
+          <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
             <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
-          </Parallax>
+          </div>
 
           <div className="container-xl relative">
             {/* Section Header */}
-            <ScrollReveal animation="zoom">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-                <div>
-                  <ScrollReveal animation="bounce" delay={0.1}>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
-                      <FireIcon className="w-4 h-4" />
-                      Hand-picked for you
-                    </span>
-                  </ScrollReveal>
-                  <h2 className="text-4xl md:text-5xl font-black text-white">
-                    Featured{' '}
-                    <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
-                  </h2>
-                  <ScrollReveal animation="fadeUp" delay={0.25}>
-                    <p className="text-xl text-dark-400 mt-4 max-w-xl">
-                      Our most popular appliances loved by customers across Pakistan
-                    </p>
-                  </ScrollReveal>
-                </div>
-                <Magnetic strength={0.2}>
-                  <Link
-                    to="/shop?featured=1"
-                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 transition-all duration-300"
-                  >
-                    View All Products
-                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Magnetic>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+              <div>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
+                  <FireIcon className="w-4 h-4" />
+                  Hand-picked for you
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-white">
+                  Featured{' '}
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
+                </h2>
+                <p className="text-xl text-dark-400 mt-4 max-w-xl">
+                  Our most popular appliances loved by customers across Pakistan
+                </p>
               </div>
-            </ScrollReveal>
+              <Link
+                to="/shop?featured=1"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 transition-all duration-300"
+              >
+                View All Products
+                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
 
-            {/* Products Grid */}
-            <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" staggerDelay={0.1}>
+            {/* Products Grid - No animation wrappers */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {data.featured_products.slice(0, 10).map((product) => (
-                <StaggerItem key={product.id}>
-                  <HoverCard intensity={10}>
-                    <ProductCard product={product} />
-                  </HoverCard>
-                </StaggerItem>
+                <ProductCard key={product.id} product={product} />
               ))}
-            </StaggerContainer>
+            </div>
           </div>
         </section>
       )}
 
       {/* ==========================================
-          CTA BANNER - Become a Dealer
+          CTA BANNER - Become a Dealer (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('dealer_cta') && (
       <section className="relative py-24 overflow-hidden">
-        {/* CSS-only Gradient Background with Parallax */}
-        <Parallax speed={0.2} direction="down" className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
-            {/* CSS-only animated orbs */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
-
-            {/* Grid overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-          </div>
-        </Parallax>
+        {/* Static Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
+          {/* Static decorative orbs */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl" />
+          {/* Grid overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        </div>
 
         <div className="relative container-xl">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Content */}
-            <ScrollReveal animation="glide">
-              <div className="text-center lg:text-left">
-                <ScrollReveal animation="elastic" delay={0.1}>
-                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-                                bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
-                    <SparklesIcon className="w-5 h-5" />
-                    Partnership Opportunity
-                  </span>
-                </ScrollReveal>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
-                  Become a Fischer
-                  <span className="block text-white drop-shadow-lg">
-                    Authorized Dealer
-                  </span>
-                </h2>
-                <ScrollReveal animation="blur" delay={0.2}>
-                  <p className="text-xl text-dark-800 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                    Join our nationwide network of 500+ dealers and grow your business with
-                    Pakistan's most trusted home appliance brand.
-                  </p>
-                </ScrollReveal>
-                <ScrollReveal animation="fadeUp" delay={0.25}>
-                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <Magnetic strength={0.15}>
-                      <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 rounded-2xl font-bold text-white text-lg transition-all hover:scale-105 hover:shadow-2xl flex items-center gap-2">
-                        Apply Now
-                        <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    </Magnetic>
-                    <Magnetic strength={0.15}>
-                      <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-all">
-                        Contact Sales
-                      </Link>
-                    </Magnetic>
-                  </div>
-                </ScrollReveal>
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
+                            bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
+                <SparklesIcon className="w-5 h-5" />
+                Partnership Opportunity
+              </span>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
+                Become a Fischer
+                <span className="block text-white drop-shadow-lg">
+                  Authorized Dealer
+                </span>
+              </h2>
+              <p className="text-xl text-dark-800 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Join our nationwide network of 500+ dealers and grow your business with
+                Pakistan's most trusted home appliance brand.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 rounded-2xl font-bold text-white text-lg transition-colors flex items-center gap-2">
+                  Apply Now
+                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-colors">
+                  Contact Sales
+                </Link>
               </div>
-            </ScrollReveal>
+            </div>
 
-            {/* Benefits Cards */}
-            <StaggerContainer className="grid sm:grid-cols-2 gap-5" staggerDelay={0.08}>
+            {/* Benefits Cards - Simple grid */}
+            <div className="grid sm:grid-cols-2 gap-5">
               {[
                 { title: 'Exclusive Margins', desc: 'Competitive dealer margins & incentives', icon: '💰' },
                 { title: 'Marketing Support', desc: 'Co-branded marketing materials', icon: '📢' },
                 { title: 'Training Programs', desc: 'Product & sales training', icon: '🎓' },
                 { title: 'Priority Support', desc: 'Dedicated dealer support line', icon: '🎯' },
               ].map((benefit) => (
-                <StaggerItem key={benefit.title}>
-                  <HoverCard intensity={12}>
-                    <div
-                      className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
-                               hover:bg-dark-900/20 transition-all duration-300"
-                    >
-                      <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                      <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
-                      <p className="text-dark-800">{benefit.desc}</p>
-                    </div>
-                  </HoverCard>
-                </StaggerItem>
+                <div
+                  key={benefit.title}
+                  className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
+                           hover:bg-dark-900/20 transition-colors duration-300"
+                >
+                  <span className="text-4xl mb-4 block">{benefit.icon}</span>
+                  <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
+                  <p className="text-dark-800">{benefit.desc}</p>
+                </div>
               ))}
-            </StaggerContainer>
+            </div>
           </div>
         </div>
       </section>
       )}
 
       {/* ==========================================
-          NEW ARRIVALS - Horizontal Scroll
+          NEW ARRIVALS - Simple Grid (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
         <section className="section bg-white dark:bg-dark-900">
           <div className="container-xl">
-            <ScrollReveal animation="rotate">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                <div>
-                  <ScrollReveal animation="bounce" delay={0.1}>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4">
-                      <BoltIcon className="w-4 h-4" />
-                      Just Arrived
-                    </span>
-                  </ScrollReveal>
-                  <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                    New{' '}
-                    <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
-                  </h2>
-                  <ScrollReveal animation="blur" delay={0.25}>
-                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
-                      Check out our latest additions to the catalog
-                    </p>
-                  </ScrollReveal>
-                </div>
-                <Magnetic strength={0.2}>
-                  <Link
-                    to="/shop?new=1"
-                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
-                  >
-                    View All New
-                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Magnetic>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4">
+                  <BoltIcon className="w-4 h-4" />
+                  Just Arrived
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                  New{' '}
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
+                </h2>
+                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
+                  Check out our latest additions to the catalog
+                </p>
               </div>
-            </ScrollReveal>
+              <Link
+                to="/shop?new=1"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+              >
+                View All New
+                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
 
-            <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" staggerDelay={0.08}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {data.new_arrivals.slice(0, 5).map((product) => (
-                <StaggerItem key={product.id}>
-                  <HoverCard intensity={10}>
-                    <ProductCard product={product} showNew />
-                  </HoverCard>
-                </StaggerItem>
+                <ProductCard key={product.id} product={product} showNew />
               ))}
-            </StaggerContainer>
+            </div>
           </div>
         </section>
       )}
 
       {/* ==========================================
-          TESTIMONIALS - Modern Slider
+          TESTIMONIALS - Simple Slider (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('testimonials') && testimonials.length > 0 && (
       <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
-        {/* Background decoration with Parallax */}
-        <Parallax speed={0.15} direction="down" className="absolute top-0 left-0 w-full h-1/2 pointer-events-none">
-          <div className="w-full h-full bg-gradient-to-b from-white dark:from-dark-900 to-transparent" />
-        </Parallax>
+        {/* Static Background */}
+        <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white dark:from-dark-900 to-transparent pointer-events-none" />
 
         <div className="container-xl relative">
-          <ScrollReveal animation="flip">
-            <div className="text-center mb-16">
-              <ScrollReveal animation="elastic" delay={0.1}>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
-                  <StarIcon className="w-4 h-4" />
-                  {sections.testimonials?.title || 'Customer Reviews'}
-                </span>
-              </ScrollReveal>
-              <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                What Our{' '}
-                <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Customers</span>{' '}
-                Say
-              </h2>
-              <ScrollReveal animation="blur" delay={0.3}>
-                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
-                  {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
-                </p>
-              </ScrollReveal>
-            </div>
-          </ScrollReveal>
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
+              <StarIcon className="w-4 h-4" />
+              {sections.testimonials?.title || 'Customer Reviews'}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+              What Our{' '}
+              <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Customers</span>{' '}
+              Say
+            </h2>
+            <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
+              {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
+            </p>
+          </div>
 
-          {/* Testimonials Slider */}
-          <ScrollReveal animation="scaleUp">
-            <HoverCard intensity={5} className="max-w-4xl mx-auto">
-              <div className="relative">
+          {/* Testimonials Slider - Simple CSS transitions */}
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
               {testimonials.map((testimonial, index) => {
                 const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                 return (
-                <div
-                  key={testimonial.name}
-                  className={`transition-all duration-700 ${
-                    index === activeTestimonial
-                      ? 'opacity-100 translate-y-0 scale-100'
-                      : 'opacity-0 translate-y-8 scale-95 absolute inset-0 pointer-events-none'
-                  }`}
-                >
-                  <div className="bg-white dark:bg-dark-800 rounded-[2.5rem] p-10 md:p-14 shadow-2xl border border-dark-100 dark:border-dark-700 hover:shadow-primary-500/10 transition-shadow">
-                    {/* Quote icon */}
-                    <div className="text-6xl text-primary-500/20 mb-6">"</div>
+                  <div
+                    key={testimonial.name}
+                    className={`transition-opacity duration-500 ${
+                      index === activeTestimonial
+                        ? 'opacity-100'
+                        : 'opacity-0 absolute inset-0 pointer-events-none'
+                    }`}
+                  >
+                    <div className="bg-white dark:bg-dark-800 rounded-[2.5rem] p-10 md:p-14 shadow-2xl border border-dark-100 dark:border-dark-700">
+                      {/* Quote icon */}
+                      <div className="text-6xl text-primary-500/20 mb-6">"</div>
 
-                    {/* Content */}
-                    <p className="text-2xl md:text-3xl text-dark-700 dark:text-dark-200 leading-relaxed mb-10 font-light">
-                      {testimonial.content}
-                    </p>
+                      {/* Content */}
+                      <p className="text-2xl md:text-3xl text-dark-700 dark:text-dark-200 leading-relaxed mb-10 font-light">
+                        {testimonial.content}
+                      </p>
 
-                    {/* Author */}
-                    <div className="flex items-center gap-6">
-                      {testimonial.image ? (
-                        <img
-                          src={testimonial.image}
-                          alt={testimonial.name}
-                          width={64}
-                          height={64}
-                          className="w-16 h-16 rounded-2xl object-cover ring-4 ring-primary-100 dark:ring-primary-900/30"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none'
-                            const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                            if (fallback) fallback.classList.remove('hidden')
-                          }}
-                        />
-                      ) : null}
-                      <div className={`w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 ${testimonial.image ? 'hidden' : 'flex'} items-center justify-center`}>
-                        <span className="text-xl font-bold text-primary-600 dark:text-primary-400">{initials}</span>
-                      </div>
-                      <div>
-                        <p className="text-xl font-bold text-dark-900 dark:text-white">{testimonial.name}</p>
-                        <p className="text-dark-500 dark:text-dark-400">{testimonial.role}</p>
-                      </div>
-                      <div className="ml-auto flex gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <StarSolidIcon
-                            key={i}
-                            className={`w-6 h-6 ${i < testimonial.rating ? 'text-primary-500' : 'text-dark-200 dark:text-dark-700'}`}
+                      {/* Author */}
+                      <div className="flex items-center gap-6">
+                        {testimonial.image ? (
+                          <img
+                            src={testimonial.image}
+                            alt={testimonial.name}
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 rounded-2xl object-cover ring-4 ring-primary-100 dark:ring-primary-900/30"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                              if (fallback) fallback.classList.remove('hidden')
+                            }}
                           />
-                        ))}
+                        ) : null}
+                        <div className={`w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 ${testimonial.image ? 'hidden' : 'flex'} items-center justify-center`}>
+                          <span className="text-xl font-bold text-primary-600 dark:text-primary-400">{initials}</span>
+                        </div>
+                        <div>
+                          <p className="text-xl font-bold text-dark-900 dark:text-white">{testimonial.name}</p>
+                          <p className="text-dark-500 dark:text-dark-400">{testimonial.role}</p>
+                        </div>
+                        <div className="ml-auto flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <StarSolidIcon
+                              key={i}
+                              className={`w-6 h-6 ${i < testimonial.rating ? 'text-primary-500' : 'text-dark-200 dark:text-dark-700'}`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )})}
+                )
+              })}
             </div>
 
-              {/* Navigation dots */}
-              <div className="flex justify-center gap-3 mt-8">
-                {testimonials.map((_, index) => (
-                  <Magnetic key={index} strength={0.5}>
-                    <button
-                      onClick={() => setActiveTestimonial(index)}
-                      className={`h-3 rounded-full transition-all duration-300 hover:scale-125
-                                ${index === activeTestimonial ? 'w-10 bg-primary-500' : 'w-3 bg-dark-300 dark:bg-dark-600 hover:bg-primary-300'}`}
-                      aria-label={`Go to testimonial ${index + 1}`}
-                    />
-                  </Magnetic>
-                ))}
-              </div>
-            </HoverCard>
-          </ScrollReveal>
+            {/* Navigation dots - Simple buttons */}
+            <div className="flex justify-center gap-3 mt-8">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`h-3 rounded-full transition-all duration-300
+                            ${index === activeTestimonial ? 'w-10 bg-primary-500' : 'w-3 bg-dark-300 dark:bg-dark-600 hover:bg-primary-300'}`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
       )}
 
       {/* ==========================================
-          WHY FISCHER - Premium Section
+          WHY FISCHER - Clean Section (Performance Optimized)
           ========================================== */}
       {isSectionEnabled('about') && (
       <section className="section bg-white dark:bg-dark-900 overflow-hidden">
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
-            {/* Left - Image with effects */}
+            {/* Left - Image */}
             <div className="relative">
-              <HoverCard intensity={8}>
+              <div className="relative">
+                {/* Background decoration - static */}
+                <div className="absolute -inset-10 pointer-events-none">
+                  <div className="w-full h-full bg-gradient-to-r from-primary-500/20 to-amber-500/20 rounded-[4rem] blur-3xl opacity-50" />
+                </div>
+
                 <div className="relative">
-                  {/* Background decoration */}
-                  <div className="absolute -inset-10 pointer-events-none">
-                    <div className="w-full h-full bg-gradient-to-r from-primary-500/20 to-amber-500/20 rounded-[4rem] blur-3xl opacity-50" />
+                  <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
+                    <img
+                      src="/images/about-factory.jpg"
+                      alt="Fischer Factory - Manufacturing Facility"
+                      width={600}
+                      height={450}
+                      className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.currentTarget
+                        if (!target.dataset.fallback) {
+                          target.dataset.fallback = 'true'
+                          target.src = '/images/about-fischer.jpg'
+                        }
+                      }}
+                    />
                   </div>
 
-                  <div className="relative">
-                    <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
-                      <img
-                        src="/images/about-factory.jpg"
-                        alt="Fischer Factory - Manufacturing Facility"
-                        width={600}
-                        height={450}
-                        className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-700"
-                        onError={(e) => {
-                          const target = e.currentTarget
-                          if (!target.dataset.fallback) {
-                            target.dataset.fallback = 'true'
-                            target.src = '/images/about-fischer.jpg'
-                          }
-                        }}
-                      />
+                  {/* ISO Badge - static */}
+                  <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl bg-white dark:bg-dark-800 shadow-2xl border border-dark-100 dark:border-dark-700">
+                    <div className="text-center">
+                      <div className="text-5xl font-black bg-gradient-to-r from-primary-500 to-amber-500 bg-clip-text text-transparent">
+                        ISO
+                      </div>
+                      <div className="text-lg font-bold text-dark-500 dark:text-dark-400">9001:2015</div>
+                      <div className="text-sm text-dark-400 dark:text-dark-500">Certified</div>
                     </div>
+                  </div>
 
-                    {/* ISO Badge */}
-                    <Magnetic strength={0.3}>
-                      <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl bg-white dark:bg-dark-800 shadow-2xl border border-dark-100 dark:border-dark-700 animate-float">
-                        <div className="text-center">
-                          <div className="text-5xl font-black bg-gradient-to-r from-primary-500 to-amber-500 bg-clip-text text-transparent">
-                            ISO
-                          </div>
-                          <div className="text-lg font-bold text-dark-500 dark:text-dark-400">9001:2015</div>
-                          <div className="text-sm text-dark-400 dark:text-dark-500">Certified</div>
-                        </div>
-                      </div>
-                    </Magnetic>
-
-                    {/* Years badge */}
-                    <Magnetic strength={0.3}>
-                      <div className="absolute -top-6 -left-6 px-6 py-4 rounded-2xl bg-dark-900 text-white shadow-xl animate-float" style={{ animationDelay: '0.5s' }}>
-                        <span className="text-3xl font-black">35+</span>
-                        <span className="block text-sm text-dark-300">Years</span>
-                      </div>
-                    </Magnetic>
+                  {/* Years badge - static */}
+                  <div className="absolute -top-6 -left-6 px-6 py-4 rounded-2xl bg-dark-900 text-white shadow-xl">
+                    <span className="text-3xl font-black">35+</span>
+                    <span className="block text-sm text-dark-300">Years</span>
                   </div>
                 </div>
-              </HoverCard>
+              </div>
             </div>
 
             {/* Right - Content */}
@@ -1159,7 +1061,7 @@ export default function Home() {
                 trusted by millions across Pakistan.
               </p>
 
-              {/* Feature list */}
+              {/* Feature list - Simple */}
               <div className="grid sm:grid-cols-2 gap-6 mb-10">
                 {[
                   'ISO 9001:2015 & PSQCA Certified',
@@ -1167,25 +1069,21 @@ export default function Home() {
                   'Nationwide service & support network',
                   'Dedicated R&D for continuous innovation',
                 ].map((item, index) => (
-                  <Magnetic key={index} strength={0.15}>
-                    <div className="flex items-center gap-4 group cursor-pointer">
-                      <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30
-                                    flex items-center justify-center flex-shrink-0
-                                    group-hover:bg-primary-500 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        <CheckCircleIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors" />
-                      </div>
-                      <span className="text-dark-700 dark:text-dark-200 font-medium group-hover:text-primary-500 transition-colors">{item}</span>
+                  <div key={index} className="flex items-center gap-4 group">
+                    <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30
+                                  flex items-center justify-center flex-shrink-0
+                                  group-hover:bg-primary-500 transition-colors duration-300">
+                      <CheckCircleIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors" />
                     </div>
-                  </Magnetic>
+                    <span className="text-dark-700 dark:text-dark-200 font-medium">{item}</span>
+                  </div>
                 ))}
               </div>
 
-              <Magnetic strength={0.15}>
-                <Link to="/about" className="group inline-flex items-center gap-2 px-8 py-4 bg-dark-900 dark:bg-white hover:bg-dark-800 dark:hover:bg-dark-100 rounded-2xl font-bold text-white dark:text-dark-900 text-lg transition-all hover:scale-105 hover:shadow-xl">
-                  Learn More About Us
-                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Magnetic>
+              <Link to="/about" className="group inline-flex items-center gap-2 px-8 py-4 bg-dark-900 dark:bg-white hover:bg-dark-800 dark:hover:bg-dark-100 rounded-2xl font-bold text-white dark:text-dark-900 text-lg transition-colors">
+                Learn More About Us
+                <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
         </div>
@@ -1193,16 +1091,13 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          NEWSLETTER - Clean Design
+          NEWSLETTER - Simple Design
           ========================================== */}
       {isSectionEnabled('newsletter') && (
       <section className="relative py-24 overflow-hidden">
-        {/* CSS-only gradient background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-dark-900 via-dark-800 to-dark-900">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(244,180,44,0.12)_0%,transparent_70%)]" />
-            <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(244,180,44,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(244,180,44,0.02)_1px,transparent_1px)] bg-[size:100px_100px]" />
-          </div>
+        {/* Static gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-dark-900 via-dark-800 to-dark-900 pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(244,180,44,0.12)_0%,transparent_70%)]" />
         </div>
 
         <div className="relative container-xl">
@@ -1227,18 +1122,15 @@ export default function Home() {
                 className="flex-1 px-8 py-5 rounded-2xl bg-white/10 border-2 border-white/10
                          text-white placeholder:text-dark-400
                          focus:outline-none focus:border-primary-500 focus:bg-white/20
-                         transition-all duration-300 hover:border-white/20"
+                         transition-colors duration-300 hover:border-white/20"
               />
-              <Magnetic strength={0.2}>
-                <button
-                  type="submit"
-                  className="px-8 py-5 bg-gradient-to-r from-primary-500 to-amber-500 hover:from-primary-400 hover:to-amber-400
-                           rounded-2xl font-bold text-dark-900 text-lg
-                           transition-all duration-300 hover:scale-105 hover:shadow-glow"
-                >
-                  Subscribe
-                </button>
-              </Magnetic>
+              <button
+                type="submit"
+                className="px-8 py-5 bg-gradient-to-r from-primary-500 to-amber-500 hover:from-primary-400 hover:to-amber-400
+                         rounded-2xl font-bold text-dark-900 text-lg transition-colors"
+              >
+                Subscribe
+              </button>
             </form>
 
             <p className="text-sm text-dark-400 mt-6">

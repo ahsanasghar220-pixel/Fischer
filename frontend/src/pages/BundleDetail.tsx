@@ -186,7 +186,7 @@ export default function BundleDetail() {
       }
     })
 
-    return images.length > 0 ? images : [{ src: '/placeholder-bundle.jpg', alt: 'Bundle placeholder' }]
+    return images.length > 0 ? images : [{ src: '//images/all-products.png', alt: 'Bundle placeholder' }]
   }, [bundle])
 
   if (isLoading) {

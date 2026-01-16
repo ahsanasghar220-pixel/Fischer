@@ -1,11 +1,13 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
 import { FunnelIcon, XMarkIcon, ChevronDownIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
 
 interface Product {
   id: number
@@ -211,22 +213,42 @@ export default function Shop() {
   }, [queryClient, productsData, page, sort, category, brand, minPrice, maxPrice, search, inStock, onSale, isNew, isBestseller, isFeatured])
 
   return (
-    <div className="bg-dark-50 dark:bg-dark-900 min-h-screen transition-colors duration-300">
+    <motion.div
+      className="bg-dark-50 dark:bg-dark-900 min-h-screen transition-colors duration-300"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
-            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
+          <motion.div
+            className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</Link>
             <span>/</span>
             <span className="text-dark-900 dark:text-white">Shop</span>
-          </div>
-          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">
+          </motion.div>
+          <motion.h1
+            className="text-3xl font-bold text-dark-900 dark:text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
             {search ? `Search: "${search}"` : 'All Products'}
-          </h1>
+          </motion.h1>
           {productsData && (
-            <p className="text-dark-500 dark:text-dark-400 mt-2">
+            <motion.p
+              className="text-dark-500 dark:text-dark-400 mt-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               {productsData.meta.total} products found
-            </p>
+            </motion.p>
           )}
         </div>
       </div>
@@ -234,10 +256,19 @@ export default function Shop() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex gap-8">
           {/* Sidebar Filters - Desktop */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
+          <motion.aside
+            className="hidden lg:block w-64 flex-shrink-0"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
             <div className="sticky top-4 space-y-6">
               {/* Categories */}
-              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+              <motion.div
+                className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm"
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
                 <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Categories</h3>
                 <div className="space-y-2">
                   <button
@@ -264,11 +295,15 @@ export default function Shop() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Brands */}
               {brands && brands.length > 0 && (
-                <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+                <motion.div
+                  className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
                   <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Brands</h3>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {brands.map((b) => (
@@ -285,11 +320,15 @@ export default function Shop() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Price Range */}
-              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+              <motion.div
+                className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm"
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
                 <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Price Range</h3>
                 <div className="flex items-center gap-2">
                   <input
@@ -308,10 +347,14 @@ export default function Shop() {
                     className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-sm bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Quick Filters */}
-              <div className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm">
+              <motion.div
+                className="bg-white dark:bg-dark-800 rounded-xl p-4 shadow-sm"
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
                 <h3 className="font-semibold text-dark-900 dark:text-white mb-3">Quick Filters</h3>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -351,18 +394,20 @@ export default function Shop() {
                     <span className="text-dark-600 dark:text-dark-300">Bestsellers</span>
                   </label>
                 </div>
-              </div>
+              </motion.div>
 
               {hasActiveFilters && (
-                <button
+                <motion.button
                   onClick={clearFilters}
                   className="w-full py-2 text-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   Clear All Filters
-                </button>
+                </motion.button>
               )}
             </div>
-          </aside>
+          </motion.aside>
 
           {/* Main Content */}
           <div className="flex-1">
@@ -514,33 +559,49 @@ export default function Shop() {
 
             {/* Products Grid */}
             {isLoading ? (
-              <div className="flex items-center justify-center py-20">
+              <motion.div
+                className="flex items-center justify-center py-20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
                 <LoadingSpinner size="lg" />
-              </div>
+              </motion.div>
             ) : productsData?.data && productsData.data.length > 0 ? (
               <>
-                <div className={`grid gap-4 md:gap-6 ${
-                  viewMode === 'grid'
-                    ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
-                    : 'grid-cols-1'
-                }`}>
+                <StaggerContainer
+                  className={`grid gap-4 md:gap-6 ${
+                    viewMode === 'grid'
+                      ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+                      : 'grid-cols-1'
+                  }`}
+                  staggerDelay={0.05}
+                >
                   {productsData.data.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      onQuickView={setQuickViewProduct}
-                    />
+                    <StaggerItem key={product.id}>
+                      <motion.div
+                        whileHover={{ y: -8 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      >
+                        <ProductCard
+                          product={product}
+                          onQuickView={setQuickViewProduct}
+                        />
+                      </motion.div>
+                    </StaggerItem>
                   ))}
-                </div>
+                </StaggerContainer>
 
                 {/* Pagination */}
                 {productsData.meta.last_page > 1 && (
-                  <div
+                  <motion.div
                     className="mt-8 flex items-center justify-center gap-2"
                     onMouseEnter={prefetchNextPage}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
                   >
                     {Array.from({ length: productsData.meta.last_page }, (_, i) => i + 1).map((p) => (
-                      <button
+                      <motion.button
                         key={p}
                         onClick={() => updateFilter('page', p.toString())}
                         className={`w-10 h-10 rounded-lg font-medium transition-colors ${
@@ -548,35 +609,57 @@ export default function Shop() {
                             ? 'bg-primary-500 text-white'
                             : 'bg-white dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                         }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
                       >
                         {p}
-                      </button>
+                      </motion.button>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </>
             ) : (
-              <div className="bg-white dark:bg-dark-800 rounded-xl p-12 text-center">
-                <div className="text-6xl mb-4">🔍</div>
+              <motion.div
+                className="bg-white dark:bg-dark-800 rounded-xl p-12 text-center"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                <motion.div
+                  className="text-6xl mb-4"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  🔍
+                </motion.div>
                 <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">No products found</h3>
                 <p className="text-dark-500 dark:text-dark-400 mb-6">
                   Try adjusting your filters or search terms
                 </p>
-                <button onClick={clearFilters} className="btn btn-primary">
+                <motion.button
+                  onClick={clearFilters}
+                  className="btn btn-primary"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   Clear Filters
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
 
       {/* Quick View Modal */}
-      <QuickViewModal
-        isOpen={!!quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-        product={quickViewProduct}
-      />
-    </div>
+      <AnimatePresence>
+        {quickViewProduct && (
+          <QuickViewModal
+            isOpen={!!quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            product={quickViewProduct}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
