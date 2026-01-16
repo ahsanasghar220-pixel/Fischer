@@ -106,14 +106,14 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                               <div className="flex gap-4">
                                 {/* Product Image */}
                                 <Link
-                                  to={`/product/${item.product.slug}`}
+                                  to={`/product/${item.product?.slug || ''}`}
                                   onClick={onClose}
                                   className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-dark-100 dark:bg-dark-700 group"
                                 >
-                                  {(item.product.primary_image || item.product.image) ? (
+                                  {(item.product?.primary_image || item.product?.image) ? (
                                     <img
-                                      src={item.product.primary_image || item.product.image || ''}
-                                      alt={item.product.name}
+                                      src={item.product?.primary_image || item.product?.image || ''}
+                                      alt={item.product?.name || 'Product'}
                                       width={80}
                                       height={80}
                                       loading="lazy"
@@ -134,11 +134,11 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                 {/* Product Info */}
                                 <div className="flex-1 min-w-0">
                                   <Link
-                                    to={`/product/${item.product.slug}`}
+                                    to={`/product/${item.product?.slug || ''}`}
                                     onClick={onClose}
                                     className="font-semibold text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors line-clamp-2"
                                   >
-                                    {item.product.name}
+                                    {item.product?.name || 'Product'}
                                   </Link>
                                   {item.variant && (
                                     <p className="text-sm text-dark-500 dark:text-dark-400 mt-0.5">

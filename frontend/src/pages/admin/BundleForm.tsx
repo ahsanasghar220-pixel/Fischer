@@ -15,14 +15,8 @@ import {
   useAdminBundle,
   useCreateBundle,
   useUpdateBundle,
-  useAddBundleItem,
-  useRemoveBundleItem,
-  useAddBundleSlot,
-  useUpdateBundleSlot,
-  useRemoveBundleSlot,
   useUploadBundleImages,
   useDeleteBundleImage,
-  type Bundle,
 } from '@/api/bundles'
 import toast from 'react-hot-toast'
 
@@ -98,11 +92,6 @@ export default function BundleForm() {
   const { data: bundle, isLoading: loadingBundle } = useAdminBundle(Number(id))
   const createBundle = useCreateBundle()
   const updateBundle = useUpdateBundle()
-  const addItem = useAddBundleItem()
-  const removeItem = useRemoveBundleItem()
-  const addSlot = useAddBundleSlot()
-  const updateSlot = useUpdateBundleSlot()
-  const removeSlot = useRemoveBundleSlot()
   const uploadImages = useUploadBundleImages()
   const deleteImage = useDeleteBundleImage()
 
@@ -153,7 +142,14 @@ export default function BundleForm() {
       if (bundle.bundle_type === 'fixed' && bundle.items) {
         setItems(bundle.items.map(item => ({
           product_id: item.product_id,
-          product: item.product as Product,
+          product: {
+            id: item.product.id,
+            name: item.product.name,
+            slug: item.product.slug,
+            sku: '',
+            price: item.product.price,
+            primary_image: item.product.image || undefined,
+          },
           quantity: item.quantity,
           price_override: item.price_override || undefined,
         })))
@@ -169,7 +165,14 @@ export default function BundleForm() {
           max_selections: slot.max_selections,
           products: slot.products?.map(p => ({
             product_id: p.product_id,
-            product: p.product as Product,
+            product: {
+              id: p.product.id,
+              name: p.product.name,
+              slug: p.product.slug,
+              sku: '',
+              price: p.product.price,
+              primary_image: p.product.image || undefined,
+            },
             price_override: p.price_override || undefined,
           })) || [],
         })))

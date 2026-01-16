@@ -241,7 +241,7 @@ export default function BundleDetail() {
         <div className="container mx-auto px-4 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Left - Gallery */}
-            <ScrollReveal animation="fade-right">
+            <ScrollReveal animation="fade">
               <div className="sticky top-24">
                 {/* Main Image */}
                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 mb-4">
@@ -333,7 +333,7 @@ export default function BundleDetail() {
             </ScrollReveal>
 
             {/* Right - Details */}
-            <ScrollReveal animation="fade-left">
+            <ScrollReveal animation="fade" delay={0.2}>
               <div className="space-y-6">
                 {/* Bundle Type Badge */}
                 <div className="flex items-center gap-3">

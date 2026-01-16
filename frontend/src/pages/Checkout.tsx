@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDownIcon, CheckCircleIcon, TruckIcon, CreditCardIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import { useCartStore } from '@/stores/cartStore'
@@ -124,8 +125,8 @@ export default function Checkout() {
       const response = await api.post('/checkout/place-order', {
         ...data,
         shipping_email: data.email,
-        items: items.map(item => ({
-          product_id: item.product.id,
+        items: items.filter(item => item.product).map(item => ({
+          product_id: item.product!.id,
           variant_id: item.variant?.id,
           quantity: item.quantity,
         })),
@@ -242,36 +243,88 @@ export default function Checkout() {
 
   if (!items || items.length === 0) {
     return (
-      <div className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center transition-colors">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-2">Your cart is empty</h1>
-          <p className="text-dark-500 dark:text-dark-400 mb-4">Add some products before checkout</p>
-          <Link to="/shop" className="btn btn-primary">Go Shopping</Link>
-        </div>
-      </div>
+      <motion.div
+        className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center transition-colors"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <motion.h1
+            className="text-2xl font-bold text-dark-900 dark:text-white mb-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            Your cart is empty
+          </motion.h1>
+          <motion.p
+            className="text-dark-500 dark:text-dark-400 mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            Add some products before checkout
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Link to="/shop" className="btn btn-primary">Go Shopping</Link>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-dark-50 dark:bg-dark-900 transition-colors">
+    <motion.div
+      className="min-h-screen bg-dark-50 dark:bg-dark-900 transition-colors"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">Checkout</h1>
+          <motion.h1
+            className="text-3xl font-bold text-dark-900 dark:text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            Checkout
+          </motion.h1>
         </div>
       </div>
 
       {/* Progress Steps */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center gap-4">
+          <motion.div
+            className="flex items-center justify-center gap-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
             {[
               { num: 1, label: 'Shipping' },
               { num: 2, label: 'Delivery' },
               { num: 3, label: 'Payment' },
             ].map((s, i) => (
-              <div key={s.num} className="flex items-center">
-                <div
+              <motion.div
+                key={s.num}
+                className="flex items-center"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + i * 0.1 }}
+              >
+                <motion.div
                   className={`flex items-center justify-center w-8 h-8 rounded-full font-medium ${
                     step > s.num
                       ? 'bg-green-500 text-white'
@@ -279,16 +332,30 @@ export default function Checkout() {
                       ? 'bg-primary-500 text-white'
                       : 'bg-dark-200 dark:bg-dark-600 text-dark-500 dark:text-dark-400'
                   }`}
+                  animate={{
+                    scale: step === s.num ? [1, 1.1, 1] : 1,
+                  }}
+                  transition={{ duration: 0.3 }}
                 >
                   {step > s.num ? <CheckCircleIcon className="w-5 h-5" /> : s.num}
-                </div>
+                </motion.div>
                 <span className={`ml-2 ${step >= s.num ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
                   {s.label}
                 </span>
-                {i < 2 && <div className="w-16 h-0.5 mx-4 bg-dark-200 dark:bg-dark-600" />}
-              </div>
+                {i < 2 && (
+                  <motion.div
+                    className="w-16 h-0.5 mx-4"
+                    initial={{ scaleX: 0 }}
+                    animate={{
+                      scaleX: 1,
+                      backgroundColor: step > s.num ? '#22c55e' : '#e5e7eb',
+                    }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                  />
+                )}
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -296,10 +363,23 @@ export default function Checkout() {
         <form onSubmit={handleSubmit}>
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
-            <div className="lg:col-span-2">
+            <motion.div
+              className="lg:col-span-2"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
               {/* Step 1: Shipping Address */}
+              <AnimatePresence mode="wait">
               {step === 1 && (
-                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                <motion.div
+                  key="step1"
+                  className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">Shipping Address</h2>
 
                   {/* Saved Addresses */}
@@ -467,16 +547,29 @@ export default function Checkout() {
                   </div>
 
                   <div className="mt-6 flex justify-end">
-                    <button type="button" onClick={nextStep} className="btn btn-primary px-8">
+                    <motion.button
+                      type="button"
+                      onClick={nextStep}
+                      className="btn btn-primary px-8"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Continue to Delivery
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Step 2: Delivery Method */}
               {step === 2 && (
-                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                <motion.div
+                  key="step2"
+                  className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">
                     <TruckIcon className="w-6 h-6 inline-block mr-2" />
                     Delivery Method
@@ -518,19 +611,38 @@ export default function Checkout() {
                   )}
 
                   <div className="mt-6 flex justify-between">
-                    <button type="button" onClick={() => setStep(1)} className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8">
+                    <motion.button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Back
-                    </button>
-                    <button type="button" onClick={nextStep} className="btn btn-primary px-8">
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      onClick={nextStep}
+                      className="btn btn-primary px-8"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Continue to Payment
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Step 3: Payment */}
               {step === 3 && (
-                <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+                <motion.div
+                  key="step3"
+                  className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <h2 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">
                     <CreditCardIcon className="w-6 h-6 inline-block mr-2" />
                     Payment Method
@@ -574,13 +686,21 @@ export default function Checkout() {
                   </div>
 
                   <div className="mt-6 flex justify-between">
-                    <button type="button" onClick={() => setStep(2)} className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8">
+                    <motion.button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       Back
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       type="submit"
                       disabled={placeOrderMutation.isPending}
                       className="btn btn-primary px-8"
+                      whileHover={{ scale: placeOrderMutation.isPending ? 1 : 1.02 }}
+                      whileTap={{ scale: placeOrderMutation.isPending ? 1 : 0.98 }}
                     >
                       {placeOrderMutation.isPending ? (
                         <>
@@ -590,26 +710,39 @@ export default function Checkout() {
                       ) : (
                         `Place Order - ${formatPrice(grandTotal)}`
                       )}
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               )}
-            </div>
+              </AnimatePresence>
+            </motion.div>
 
             {/* Order Summary Sidebar */}
-            <div className="lg:col-span-1">
+            <motion.div
+              className="lg:col-span-1"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
               <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6 sticky top-4">
-                <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Order Summary</h2>
+                <motion.h2
+                  className="text-lg font-semibold text-dark-900 dark:text-white mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.35 }}
+                >
+                  Order Summary
+                </motion.h2>
 
                 {/* Items */}
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-3">
                       <div className="w-16 h-16 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0">
-                        {item.product.primary_image ? (
+                        {item.product?.primary_image ? (
                           <img
                             src={item.product.primary_image}
-                            alt={item.product.name}
+                            alt={item.product?.name || 'Product'}
                             width={64}
                             height={64}
                             className="w-full h-full object-cover"
@@ -621,14 +754,14 @@ export default function Checkout() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{item.product.name}</p>
+                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{item.product?.name || 'Product'}</p>
                         {item.variant && (
                           <p className="text-xs text-dark-500 dark:text-dark-400">{item.variant.name}</p>
                         )}
                         <p className="text-sm text-dark-500 dark:text-dark-400">Qty: {item.quantity}</p>
                       </div>
                       <span className="text-sm font-medium text-dark-900 dark:text-white">
-                        {formatPrice((item.variant?.price || item.product.price) * item.quantity)}
+                        {formatPrice((item.variant?.price || item.product?.price || 0) * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -662,16 +795,23 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                {couponCode && (
-                  <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 rounded text-sm text-green-700 dark:text-green-400">
-                    Coupon applied: {couponCode}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {couponCode && (
+                    <motion.div
+                      className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 rounded text-sm text-green-700 dark:text-green-400"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                    >
+                      Coupon applied: {couponCode}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   )
 }
