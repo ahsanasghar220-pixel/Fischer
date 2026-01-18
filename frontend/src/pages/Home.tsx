@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
 import {
   ArrowRightIcon,
   TruckIcon,
@@ -23,9 +22,6 @@ import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import GrainOverlay from '@/components/effects/GrainOverlay'
-import ScrollReveal, {
-  ScrollProgress
-} from '@/components/effects/ScrollReveal'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
 import type { Bundle } from '@/api/bundles'
@@ -311,10 +307,7 @@ export default function Home() {
   }
 
   return (
-    <div className="overflow-hidden bg-white dark:bg-dark-950 transition-colors">
-      {/* Scroll Progress Indicator */}
-      <ScrollProgress />
-
+    <div className="overflow-hidden bg-white dark:bg-dark-950">
       {/* Global Grain Overlay for premium texture */}
       <GrainOverlay opacity={0.03} />
 
@@ -322,13 +315,13 @@ export default function Home() {
           HERO SECTION - Clean, Performant Design
           ========================================== */}
       <section className="relative min-h-[100vh] flex items-center overflow-hidden">
-        {/* CSS-only Gradient Background - No JavaScript animations */}
+        {/* Static Gradient Background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950" />
 
-          {/* Static gradient orbs using CSS only */}
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] animate-pulse-slow" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          {/* Static gradient orbs - no animation */}
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px]" />
 
           {/* Subtle grid overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(244,180,44,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(244,180,44,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
@@ -339,12 +332,8 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              {/* Badge - Simple fade in */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
+              {/* Badge */}
+              <div>
                 <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
                             bg-gradient-to-r from-primary-500/20 to-primary-400/10
                             border border-primary-500/30 backdrop-blur-sm">
@@ -353,14 +342,10 @@ export default function Home() {
                     35+ Years of Excellence
                   </span>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Main Title - Simple fade up */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
+              {/* Main Title */}
+              <div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-display leading-[0.9] tracking-tight">
                   <span className="block text-white">
                     {banners[currentBanner]?.title?.split(' ')[0] || 'Premium'}
@@ -369,30 +354,20 @@ export default function Home() {
                     {banners[currentBanner]?.title?.split(' ').slice(1).join(' ') || 'Home Appliances'}
                   </span>
                 </h1>
-              </motion.div>
+              </div>
 
               {/* Subtitle */}
-              <motion.p
-                className="text-xl md:text-2xl text-dark-300 max-w-xl leading-relaxed font-light"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
+              <p className="text-xl md:text-2xl text-dark-300 max-w-xl leading-relaxed font-light">
                 {banners[currentBanner]?.subtitle ||
                  'ISO 9001:2015 certified products designed for Pakistani homes'}
-              </motion.p>
+              </p>
 
               {/* CTA Buttons */}
-              <motion.div
-                className="flex flex-wrap gap-4 pt-4"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
+              <div className="flex flex-wrap gap-4 pt-4">
                 <Link
                   to={banners[currentBanner]?.button_link || '/shop'}
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg
-                           transition-all duration-300 hover:scale-105 hover:shadow-glow-lg hover:from-amber-400 hover:to-primary-400"
+                           hover:from-amber-400 hover:to-primary-400 transition-colors"
                 >
                   {banners[currentBanner]?.button_text || 'Explore Products'}
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -401,21 +376,16 @@ export default function Home() {
                   to="/about"
                   className="group px-8 py-4 rounded-2xl font-semibold text-white text-lg
                            border-2 border-white/20 backdrop-blur-sm
-                           hover:bg-white/10 hover:border-white/40 transition-all duration-300
+                           hover:bg-white/10 hover:border-white/40 transition-colors
                            flex items-center gap-2"
                 >
                   <PlayIcon className="w-5 h-5" />
                   Our Story
                 </Link>
-              </motion.div>
+              </div>
 
-              {/* Trust Badges - Simple fade in */}
-              <motion.div
-                className="flex flex-wrap gap-3 pt-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-              >
+              {/* Trust Badges */}
+              <div className="flex flex-wrap gap-3 pt-6">
                 {trustBadges.map((badge) => (
                   <span
                     key={badge.title}
@@ -426,16 +396,11 @@ export default function Home() {
                     {badge.title}
                   </span>
                 ))}
-              </motion.div>
+              </div>
             </div>
 
             {/* Right - Product Showcase */}
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
+            <div className="relative">
               {/* Static decorative rings - no animation for performance */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full border border-primary-500/20" />
@@ -501,22 +466,17 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-        >
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
           <span className="text-dark-400 text-sm font-medium">Scroll to explore</span>
           <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1">
-            <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-slide-up" />
+            <div className="w-1.5 h-3 bg-primary-500 rounded-full" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Banner Navigation */}
         {banners.length > 1 && (
@@ -556,28 +516,26 @@ export default function Home() {
       {isSectionEnabled('stats') && (
       <section className="relative -mt-20 z-20">
         <div className="container-xl">
-          <ScrollReveal animation="fadeUp" duration={0.6}>
-            <div className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                {stats.map((stat) => {
-                  const Icon = getIcon(stat.icon)
-                  return (
-                    <div key={stat.label} className="text-center group cursor-pointer">
-                      <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300">
-                        <Icon className="w-7 h-7" />
-                      </div>
-                      <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
-                        {stat.value}
-                      </div>
-                      <div className="text-dark-500 dark:text-dark-400 font-medium">
-                        {stat.label}
-                      </div>
+          <div className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat) => {
+                const Icon = getIcon(stat.icon)
+                return (
+                  <div key={stat.label} className="text-center group cursor-pointer">
+                    <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-7 h-7" />
                     </div>
-                  )
-                })}
-              </div>
+                    <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
+                      {stat.value}
+                    </div>
+                    <div className="text-dark-500 dark:text-dark-400 font-medium">
+                      {stat.label}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-          </ScrollReveal>
+          </div>
         </div>
       </section>
       )}
