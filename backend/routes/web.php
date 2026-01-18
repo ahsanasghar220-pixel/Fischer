@@ -38,6 +38,37 @@ Route::get('/clear-cache', function () {
     ]);
 });
 
+// Reset admin password route (temporary - remove after use)
+Route::get('/reset-admin-password', function () {
+    try {
+        $user = \App\Models\User::where('email', 'admin@fischer.pk')->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Admin user not found'], 404);
+        }
+
+        // Set password directly without going through the cast
+        \DB::table('users')
+            ->where('email', 'admin@fischer.pk')
+            ->update(['password' => \Hash::make('admin123')]);
+
+        // Clear caches
+        \Artisan::call('cache:clear');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Admin password reset to: admin123',
+            'user_id' => $user->id,
+            'email' => $user->email,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
 // Catch-all route for SPA - serves the React app
 Route::get('/{any}', function () {
     return file_get_contents(public_path('index.html'));
