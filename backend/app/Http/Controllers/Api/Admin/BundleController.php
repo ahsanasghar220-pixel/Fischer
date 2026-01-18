@@ -32,53 +32,58 @@ class BundleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Bundle::with(['items.product.images', 'slots', 'images']);
+        try {
+            $query = Bundle::with(['items.product.images', 'slots', 'images']);
 
-        // Search
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('sku', 'like', "%{$request->search}%");
-            });
+            // Search
+            if ($request->search) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('name', 'like', "%{$request->search}%")
+                        ->orWhere('sku', 'like', "%{$request->search}%");
+                });
+            }
+
+            // Filter by status
+            if ($request->has('is_active')) {
+                $query->where('is_active', filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN));
+            }
+
+            // Filter by type
+            if ($request->type) {
+                $query->where('bundle_type', $request->type);
+            }
+
+            // Filter by homepage position
+            if ($request->homepage_position) {
+                $query->where('homepage_position', $request->homepage_position);
+            }
+
+            // Filter by date range
+            if ($request->starts_after) {
+                $query->where('starts_at', '>=', $request->starts_after);
+            }
+            if ($request->ends_before) {
+                $query->where('ends_at', '<=', $request->ends_before);
+            }
+
+            // Only available
+            if ($request->available_only) {
+                $query->available();
+            }
+
+            // Sorting
+            $sortBy = $request->sort_by ?? 'created_at';
+            $sortOrder = $request->sort_order ?? 'desc';
+            $query->orderBy($sortBy, $sortOrder);
+
+            $perPage = min($request->per_page ?? 15, 50);
+            $bundles = $query->paginate($perPage);
+
+            return $this->paginated($bundles, BundleResource::class);
+        } catch (\Exception $e) {
+            \Log::error('Bundle index error: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
+            return $this->error('Failed to load bundles: ' . $e->getMessage(), 500);
         }
-
-        // Filter by status
-        if ($request->has('is_active')) {
-            $query->where('is_active', filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN));
-        }
-
-        // Filter by type
-        if ($request->type) {
-            $query->where('bundle_type', $request->type);
-        }
-
-        // Filter by homepage position
-        if ($request->homepage_position) {
-            $query->where('homepage_position', $request->homepage_position);
-        }
-
-        // Filter by date range
-        if ($request->starts_after) {
-            $query->where('starts_at', '>=', $request->starts_after);
-        }
-        if ($request->ends_before) {
-            $query->where('ends_at', '<=', $request->ends_before);
-        }
-
-        // Only available
-        if ($request->available_only) {
-            $query->available();
-        }
-
-        // Sorting
-        $sortBy = $request->sort_by ?? 'created_at';
-        $sortOrder = $request->sort_order ?? 'desc';
-        $query->orderBy($sortBy, $sortOrder);
-
-        $perPage = min($request->per_page ?? 15, 50);
-        $bundles = $query->paginate($perPage);
-
-        return $this->paginated($bundles, BundleResource::class);
     }
 
     /**

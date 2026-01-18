@@ -38,6 +38,52 @@ Route::get('/clear-cache', function () {
     ]);
 });
 
+// Debug bundles route (temporary)
+Route::get('/debug-bundles', function () {
+    try {
+        $bundles = \App\Models\Bundle::with(['items.product.images', 'slots', 'images'])->limit(1)->get();
+
+        if ($bundles->isEmpty()) {
+            return response()->json(['message' => 'No bundles found', 'count' => 0]);
+        }
+
+        $bundle = $bundles->first();
+
+        // Test each part
+        $result = [
+            'bundle_id' => $bundle->id,
+            'bundle_name' => $bundle->name,
+            'items_count' => $bundle->items->count(),
+            'slots_count' => $bundle->slots->count(),
+        ];
+
+        // Test pricing service
+        try {
+            $pricingService = app(\App\Services\BundlePricingService::class);
+            $pricing = $pricingService->getPricingBreakdown($bundle);
+            $result['pricing'] = $pricing;
+        } catch (\Exception $e) {
+            $result['pricing_error'] = $e->getMessage();
+        }
+
+        // Test conversion methods
+        try {
+            $result['conversion_rate'] = $bundle->getConversionRate();
+            $result['add_to_cart_rate'] = $bundle->getAddToCartRate();
+        } catch (\Exception $e) {
+            $result['conversion_error'] = $e->getMessage();
+        }
+
+        return response()->json($result);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+});
+
 // Reset admin password route (temporary - remove after use)
 Route::get('/reset-admin-password', function () {
     try {
@@ -70,6 +116,7 @@ Route::get('/reset-admin-password', function () {
 });
 
 // Catch-all route for SPA - serves the React app
+// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password
 Route::get('/{any}', function () {
     return file_get_contents(public_path('index.html'));
-})->where('any', '^(?!api|storage|sanctum).*$');
+})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password).*$');

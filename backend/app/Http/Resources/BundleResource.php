@@ -24,6 +24,15 @@ class BundleResource extends JsonResource
             ];
         }
 
+        // Check if user is admin safely
+        $isAdmin = false;
+        try {
+            $user = $request->user();
+            $isAdmin = $user && method_exists($user, 'isAdmin') && $user->isAdmin();
+        } catch (\Exception $e) {
+            // Ignore
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -90,12 +99,12 @@ class BundleResource extends JsonResource
             ),
 
             // Analytics (admin only) - use closures to defer method evaluation
-            'view_count' => $this->when($request->user()?->isAdmin(), fn() => $this->view_count ?? 0),
-            'add_to_cart_count' => $this->when($request->user()?->isAdmin(), fn() => $this->add_to_cart_count ?? 0),
-            'purchase_count' => $this->when($request->user()?->isAdmin(), fn() => $this->purchase_count ?? 0),
-            'revenue' => $this->when($request->user()?->isAdmin(), fn() => (float) ($this->revenue ?? 0)),
-            'conversion_rate' => $this->when($request->user()?->isAdmin(), fn() => $this->getConversionRate()),
-            'add_to_cart_rate' => $this->when($request->user()?->isAdmin(), fn() => $this->getAddToCartRate()),
+            'view_count' => $this->when($isAdmin, fn() => $this->view_count ?? 0),
+            'add_to_cart_count' => $this->when($isAdmin, fn() => $this->add_to_cart_count ?? 0),
+            'purchase_count' => $this->when($isAdmin, fn() => $this->purchase_count ?? 0),
+            'revenue' => $this->when($isAdmin, fn() => (float) ($this->revenue ?? 0)),
+            'conversion_rate' => $this->when($isAdmin, fn() => $this->getConversionRate()),
+            'add_to_cart_rate' => $this->when($isAdmin, fn() => $this->getAddToCartRate()),
 
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
