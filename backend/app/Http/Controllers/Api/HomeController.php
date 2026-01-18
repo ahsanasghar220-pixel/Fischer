@@ -170,12 +170,15 @@ class HomeController extends Controller
             });
 
         // Get stats with dynamic products sold calculation
+        // Only override if we have real data, otherwise keep admin-set values
         $productsSold = $this->getProductsSoldCount();
         $stats = HomepageStat::visible()->ordered()->get()->map(function ($stat) use ($productsSold) {
             $value = $stat->value;
 
-            // Override "Products Sold" with actual count
-            if (stripos($stat->label, 'Products Sold') !== false || stripos($stat->label, 'Sold') !== false) {
+            // Only override "Products Sold" if we have real order/sales data
+            // (i.e., not the fallback value)
+            if ((stripos($stat->label, 'Products Sold') !== false || stripos($stat->label, 'Sold') !== false)
+                && $productsSold !== '1M+') {
                 $value = $productsSold;
             }
 
@@ -356,26 +359,29 @@ class HomeController extends Controller
                 $query->whereIn('status', ['completed', 'delivered', 'processing', 'shipped']);
             })->sum('quantity');
 
-            // Format the number nicely
-            if ($totalSold >= 1000000) {
-                return round($totalSold / 1000000, 1) . 'M+';
-            } elseif ($totalSold >= 1000) {
-                return round($totalSold / 1000, 1) . 'K+';
-            } elseif ($totalSold > 0) {
+            // If we have order data, format it
+            if ($totalSold > 0) {
+                if ($totalSold >= 1000000) {
+                    return round($totalSold / 1000000, 1) . 'M+';
+                } elseif ($totalSold >= 1000) {
+                    return round($totalSold / 1000, 1) . 'K+';
+                }
                 return $totalSold . '+';
             }
 
             // Fallback to products' sales_count if no order items
             $salesCount = Product::sum('sales_count');
-            if ($salesCount >= 1000000) {
-                return round($salesCount / 1000000, 1) . 'M+';
-            } elseif ($salesCount >= 1000) {
-                return round($salesCount / 1000, 1) . 'K+';
-            } elseif ($salesCount > 0) {
+            if ($salesCount > 0) {
+                if ($salesCount >= 1000000) {
+                    return round($salesCount / 1000000, 1) . 'M+';
+                } elseif ($salesCount >= 1000) {
+                    return round($salesCount / 1000, 1) . 'K+';
+                }
                 return $salesCount . '+';
             }
 
-            // Default fallback
+            // Default fallback - use the value from homepage_stats if available
+            // This ensures admin-set values are respected when no real order data exists
             return '1M+';
         } catch (\Exception $e) {
             return '1M+';

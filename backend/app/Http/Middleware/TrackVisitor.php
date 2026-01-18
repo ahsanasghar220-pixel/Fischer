@@ -5,11 +5,13 @@ namespace App\Http\Middleware;
 use App\Services\AnalyticsTrackingService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackVisitor
 {
     protected AnalyticsTrackingService $trackingService;
+    protected static ?bool $tablesExist = null;
 
     public function __construct(AnalyticsTrackingService $trackingService)
     {
@@ -17,12 +19,23 @@ class TrackVisitor
     }
 
     /**
+     * Check if analytics tables exist (cached per request)
+     */
+    protected function tablesExist(): bool
+    {
+        if (self::$tablesExist === null) {
+            self::$tablesExist = Schema::hasTable('visitor_sessions') && Schema::hasTable('visitor_events');
+        }
+        return self::$tablesExist;
+    }
+
+    /**
      * Handle an incoming request.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Skip tracking for certain paths
-        if ($this->shouldSkip($request)) {
+        // Skip tracking for certain paths or if tables don't exist
+        if ($this->shouldSkip($request) || !$this->tablesExist()) {
             return $next($request);
         }
 

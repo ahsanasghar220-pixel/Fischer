@@ -7,16 +7,56 @@ use App\Models\VisitorSession;
 use App\Models\VisitorEvent;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class RealTimeAnalyticsController extends Controller
 {
+    /**
+     * Check if analytics tables exist
+     */
+    protected function tablesExist(): bool
+    {
+        return Schema::hasTable('visitor_sessions') && Schema::hasTable('visitor_events');
+    }
+
+    /**
+     * Get empty response when tables don't exist
+     */
+    protected function emptyOverview()
+    {
+        return $this->success([
+            'active_visitors' => 0,
+            'cart_summary' => [
+                'empty' => 0,
+                'has_items' => 0,
+                'checkout_started' => 0,
+                'converted' => 0,
+                'total_cart_value' => 0,
+                'avg_cart_value' => 0,
+            ],
+            'today' => [
+                'page_views' => 0,
+                'product_views' => 0,
+                'add_to_cart' => 0,
+                'conversions' => Order::whereDate('created_at', Carbon::today())->count(),
+                'revenue' => Order::whereDate('created_at', Carbon::today())->sum('total'),
+            ],
+            'message' => 'Analytics tables not yet created. Run migrations to enable full tracking.',
+        ]);
+    }
+
     /**
      * Get real-time overview stats
      */
     public function overview()
     {
         try {
+            // Check if tables exist
+            if (!$this->tablesExist()) {
+                return $this->emptyOverview();
+            }
+
             $activeVisitors = VisitorSession::getActiveCount();
             $cartSummary = VisitorSession::getCartSummary();
             $todayStats = VisitorEvent::getTodayStats();
@@ -38,7 +78,7 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Real-time analytics error: ' . $e->getMessage());
-            return $this->error('Failed to load analytics', 500);
+            return $this->emptyOverview();
         }
     }
 
@@ -48,6 +88,14 @@ class RealTimeAnalyticsController extends Controller
     public function activityFeed(Request $request)
     {
         try {
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'activities' => [],
+                    'updated_at' => Carbon::now()->toISOString(),
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $limit = min($request->input('limit', 20), 50);
             $activities = VisitorEvent::getActivityFeed($limit);
 
@@ -57,7 +105,10 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Activity feed error: ' . $e->getMessage());
-            return $this->error('Failed to load activity feed', 500);
+            return $this->success([
+                'activities' => [],
+                'updated_at' => Carbon::now()->toISOString(),
+            ]);
         }
     }
 
@@ -67,6 +118,14 @@ class RealTimeAnalyticsController extends Controller
     public function geographic()
     {
         try {
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'by_country' => [],
+                    'locations' => [],
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $byCountry = VisitorSession::getByCountry();
 
             // Get visitor locations for map
@@ -85,7 +144,10 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Geographic analytics error: ' . $e->getMessage());
-            return $this->error('Failed to load geographic data', 500);
+            return $this->success([
+                'by_country' => [],
+                'locations' => [],
+            ]);
         }
     }
 
@@ -95,6 +157,21 @@ class RealTimeAnalyticsController extends Controller
     public function trafficSources()
     {
         try {
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'sources' => [
+                        ['source' => 'direct', 'count' => 0, 'percentage' => 0],
+                        ['source' => 'organic', 'count' => 0, 'percentage' => 0],
+                        ['source' => 'social', 'count' => 0, 'percentage' => 0],
+                        ['source' => 'paid', 'count' => 0, 'percentage' => 0],
+                        ['source' => 'referral', 'count' => 0, 'percentage' => 0],
+                        ['source' => 'email', 'count' => 0, 'percentage' => 0],
+                    ],
+                    'total' => 0,
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $sources = VisitorSession::getByTrafficSource();
 
             // Calculate percentages
@@ -118,7 +195,10 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Traffic sources error: ' . $e->getMessage());
-            return $this->error('Failed to load traffic sources', 500);
+            return $this->success([
+                'sources' => [],
+                'total' => 0,
+            ]);
         }
     }
 
@@ -128,6 +208,20 @@ class RealTimeAnalyticsController extends Controller
     public function conversionFunnel()
     {
         try {
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'funnel' => [
+                        ['step' => 'Visitors', 'count' => 0, 'rate' => 100],
+                        ['step' => 'Product Views', 'count' => 0, 'rate' => 0],
+                        ['step' => 'Add to Cart', 'count' => 0, 'rate' => 0],
+                        ['step' => 'Checkout Started', 'count' => 0, 'rate' => 0],
+                        ['step' => 'Purchases', 'count' => 0, 'rate' => 0],
+                    ],
+                    'conversion_rate' => 0,
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $funnel = VisitorEvent::getConversionFunnel();
 
             // Calculate conversion rates between steps
@@ -178,7 +272,10 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Conversion funnel error: ' . $e->getMessage());
-            return $this->error('Failed to load conversion funnel', 500);
+            return $this->success([
+                'funnel' => [],
+                'conversion_rate' => 0,
+            ]);
         }
     }
 
@@ -188,7 +285,19 @@ class RealTimeAnalyticsController extends Controller
     public function activeSessions(Request $request)
     {
         try {
-            $page = $request->input('page', 1);
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'data' => [],
+                    'meta' => [
+                        'current_page' => 1,
+                        'last_page' => 1,
+                        'per_page' => 20,
+                        'total' => 0,
+                    ],
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $perPage = min($request->input('per_page', 20), 50);
 
             $sessions = VisitorSession::active()
@@ -231,7 +340,15 @@ class RealTimeAnalyticsController extends Controller
             return $this->paginated($sessions);
         } catch (\Exception $e) {
             \Log::error('Active sessions error: ' . $e->getMessage());
-            return $this->error('Failed to load active sessions', 500);
+            return $this->success([
+                'data' => [],
+                'meta' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'per_page' => 20,
+                    'total' => 0,
+                ],
+            ]);
         }
     }
 
@@ -241,6 +358,22 @@ class RealTimeAnalyticsController extends Controller
     public function cartAnalytics()
     {
         try {
+            if (!$this->tablesExist()) {
+                return $this->success([
+                    'summary' => [
+                        'empty' => 0,
+                        'has_items' => 0,
+                        'checkout_started' => 0,
+                        'converted' => 0,
+                        'total_cart_value' => 0,
+                        'avg_cart_value' => 0,
+                    ],
+                    'abandoned_carts' => 0,
+                    'abandonment_rate' => 0,
+                    'message' => 'Analytics tables not yet created.',
+                ]);
+            }
+
             $cartSummary = VisitorSession::getCartSummary();
 
             // Get abandoned carts (has items but last activity > 1 hour ago)
@@ -271,7 +404,18 @@ class RealTimeAnalyticsController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('Cart analytics error: ' . $e->getMessage());
-            return $this->error('Failed to load cart analytics', 500);
+            return $this->success([
+                'summary' => [
+                    'empty' => 0,
+                    'has_items' => 0,
+                    'checkout_started' => 0,
+                    'converted' => 0,
+                    'total_cart_value' => 0,
+                    'avg_cart_value' => 0,
+                ],
+                'abandoned_carts' => 0,
+                'abandonment_rate' => 0,
+            ]);
         }
     }
 }
