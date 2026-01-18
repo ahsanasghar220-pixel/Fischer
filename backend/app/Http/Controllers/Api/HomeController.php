@@ -14,6 +14,7 @@ use App\Models\HomepageStat;
 use App\Models\HomepageFeature;
 use App\Models\HomepageTrustBadge;
 use App\Models\Testimonial;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -168,11 +169,19 @@ class HomeController extends Controller
                 ];
             });
 
-        // Get stats
-        $stats = HomepageStat::visible()->ordered()->get()->map(function ($stat) {
+        // Get stats with dynamic products sold calculation
+        $productsSold = $this->getProductsSoldCount();
+        $stats = HomepageStat::visible()->ordered()->get()->map(function ($stat) use ($productsSold) {
+            $value = $stat->value;
+
+            // Override "Products Sold" with actual count
+            if (stripos($stat->label, 'Products Sold') !== false || stripos($stat->label, 'Sold') !== false) {
+                $value = $productsSold;
+            }
+
             return [
                 'label' => $stat->label,
-                'value' => $stat->value,
+                'value' => $value,
                 'icon' => $stat->icon,
             ];
         });
@@ -334,5 +343,42 @@ class HomeController extends Controller
     {
         $testimonials = Testimonial::visible()->ordered()->get();
         return $this->success($testimonials);
+    }
+
+    /**
+     * Get formatted products sold count
+     */
+    protected function getProductsSoldCount(): string
+    {
+        try {
+            // Get total quantity of products sold from order items
+            $totalSold = OrderItem::whereHas('order', function ($query) {
+                $query->whereIn('status', ['completed', 'delivered', 'processing', 'shipped']);
+            })->sum('quantity');
+
+            // Format the number nicely
+            if ($totalSold >= 1000000) {
+                return round($totalSold / 1000000, 1) . 'M+';
+            } elseif ($totalSold >= 1000) {
+                return round($totalSold / 1000, 1) . 'K+';
+            } elseif ($totalSold > 0) {
+                return $totalSold . '+';
+            }
+
+            // Fallback to products' sales_count if no order items
+            $salesCount = Product::sum('sales_count');
+            if ($salesCount >= 1000000) {
+                return round($salesCount / 1000000, 1) . 'M+';
+            } elseif ($salesCount >= 1000) {
+                return round($salesCount / 1000, 1) . 'K+';
+            } elseif ($salesCount > 0) {
+                return $salesCount . '+';
+            }
+
+            // Default fallback
+            return '1M+';
+        } catch (\Exception $e) {
+            return '1M+';
+        }
     }
 }

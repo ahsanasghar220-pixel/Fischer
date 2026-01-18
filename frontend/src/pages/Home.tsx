@@ -556,13 +556,18 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        {/* Scroll Indicator - Animated */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
           <span className="text-dark-400 text-sm font-medium">Scroll to explore</span>
-          <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1">
-            <div className="w-1.5 h-3 bg-primary-500 rounded-full" />
+          <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1.5">
+            <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-scroll-bounce" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Banner Navigation */}
         {banners.length > 1 && (
@@ -640,38 +645,47 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          FEATURES - Clean Grid (Performance Optimized)
+          FEATURES - Animated Grid with Stagger
           ========================================== */}
       {isSectionEnabled('features') && (
-      <section className="section bg-dark-50 dark:bg-dark-950">
+      <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
         <div className="container-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
             {features.map((feature) => {
               const Icon = getIcon(feature.icon)
               const colors = getColorClasses(feature.color)
               return (
-                <div
-                  key={feature.title}
-                  className="group relative p-8 rounded-3xl overflow-hidden h-full
-                            bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
-                            hover:border-primary-500/30 hover:shadow-xl
-                            transition-all duration-300"
-                >
-                  {/* Icon */}
-                  <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300`}>
-                    <Icon className="w-8 h-8" style={{ color: colors.text }} />
-                  </div>
+                <StaggerItem key={feature.title}>
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="group relative p-8 rounded-3xl overflow-hidden h-full
+                              bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
+                              hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/10
+                              transition-colors duration-300"
+                  >
+                    {/* Animated gradient background on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-amber-500/0 group-hover:from-primary-500/5 group-hover:to-amber-500/5 transition-all duration-500" />
 
-                  <h3 className="text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-dark-500 dark:text-dark-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
+                    {/* Icon with rotation animation */}
+                    <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                      <Icon className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" style={{ color: colors.text }} />
+                    </div>
+
+                    <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                      {feature.title}
+                    </h3>
+                    <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
+                      {feature.description}
+                    </p>
+
+                    {/* Animated border glow */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  </motion.div>
+                </StaggerItem>
               )
             })}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
       )}
@@ -803,27 +817,39 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          FEATURED PRODUCTS - Clean Showcase
+          FEATURED PRODUCTS - Animated Showcase
           ========================================== */}
       {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
         <section className="section bg-dark-950 relative overflow-hidden">
-          {/* Static Background Gradients */}
+          {/* Animated Background Gradients */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px] animate-float-slow" />
+            <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px] animate-float-slow" style={{ animationDelay: '-4s' }} />
           </div>
 
           <div className="container-xl relative">
-            {/* Section Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+            {/* Section Header with animation */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16"
+            >
               <div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
-                  <FireIcon className="w-4 h-4" />
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4"
+                >
+                  <FireIcon className="w-4 h-4 animate-pulse" />
                   Hand-picked for you
-                </span>
+                </motion.span>
                 <h2 className="text-4xl md:text-5xl font-black text-white">
                   Featured{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift">Products</span>
                 </h2>
                 <p className="text-xl text-dark-400 mt-4 max-w-xl">
                   Our most popular appliances loved by customers across Pakistan
@@ -831,46 +857,60 @@ export default function Home() {
               </div>
               <Link
                 to="/shop?featured=1"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 transition-all duration-300"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 hover:scale-105 active:scale-[0.98] transition-all duration-300"
               >
                 View All Products
                 <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-            </div>
+            </motion.div>
 
-            {/* Products Grid - No animation wrappers */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {/* Products Grid with staggered entrance */}
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" staggerDelay={0.08}>
               {data.featured_products.slice(0, 10).map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <StaggerItem key={product.id}>
+                  <ProductCard product={product} />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </section>
       )}
 
       {/* ==========================================
-          CTA BANNER - Become a Dealer (Performance Optimized)
+          CTA BANNER - Become a Dealer (Animated)
           ========================================== */}
       {isSectionEnabled('dealer_cta') && (
       <section className="relative py-24 overflow-hidden">
-        {/* Static Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
-          {/* Static decorative orbs */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl" />
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500 bg-[length:200%_200%] animate-gradient-shift">
+          {/* Animated decorative orbs */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float-slow" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl animate-float-slow" style={{ animationDelay: '-4s' }} />
           {/* Grid overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
         <div className="relative container-xl">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Content */}
-            <div className="text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-                            bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
-                <SparklesIcon className="w-5 h-5" />
+            {/* Content with entrance animation */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+              className="text-center lg:text-left"
+            >
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
+                          bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8"
+              >
+                <SparklesIcon className="w-5 h-5 animate-pulse" />
                 Partnership Opportunity
-              </span>
+              </motion.span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
                 Become a Fischer
                 <span className="block text-white drop-shadow-lg">
@@ -882,55 +922,70 @@ export default function Home() {
                 Pakistan's most trusted home appliance brand.
               </p>
               <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 rounded-2xl font-bold text-white text-lg transition-colors flex items-center gap-2">
+                <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 hover:scale-105 active:scale-[0.98] rounded-2xl font-bold text-white text-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl">
                   Apply Now
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-colors">
+                <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 hover:scale-105 active:scale-[0.98] backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-all duration-300">
                   Contact Sales
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Benefits Cards - Simple grid */}
-            <div className="grid sm:grid-cols-2 gap-5">
+            {/* Benefits Cards - Staggered grid */}
+            <StaggerContainer className="grid sm:grid-cols-2 gap-5" staggerDelay={0.12}>
               {[
                 { title: 'Exclusive Margins', desc: 'Competitive dealer margins & incentives', icon: '💰' },
                 { title: 'Marketing Support', desc: 'Co-branded marketing materials', icon: '📢' },
                 { title: 'Training Programs', desc: 'Product & sales training', icon: '🎓' },
                 { title: 'Priority Support', desc: 'Dedicated dealer support line', icon: '🎯' },
               ].map((benefit) => (
-                <div
-                  key={benefit.title}
-                  className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
-                           hover:bg-dark-900/20 transition-colors duration-300"
-                >
-                  <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                  <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
-                  <p className="text-dark-800">{benefit.desc}</p>
-                </div>
+                <StaggerItem key={benefit.title}>
+                  <motion.div
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
+                             hover:bg-dark-900/20 hover:border-dark-900/20 transition-colors duration-300"
+                  >
+                    <span className="text-4xl mb-4 block">{benefit.icon}</span>
+                    <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
+                    <p className="text-dark-800">{benefit.desc}</p>
+                  </motion.div>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </div>
       </section>
       )}
 
       {/* ==========================================
-          NEW ARRIVALS - Simple Grid (Performance Optimized)
+          NEW ARRIVALS - Animated Grid
           ========================================== */}
       {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
-        <section className="section bg-white dark:bg-dark-900">
+        <section className="section bg-white dark:bg-dark-900 overflow-hidden">
           <div className="container-xl">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12"
+            >
               <div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4">
-                  <BoltIcon className="w-4 h-4" />
+                <motion.span
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4"
+                >
+                  <BoltIcon className="w-4 h-4 animate-pulse" />
                   Just Arrived
-                </span>
+                </motion.span>
                 <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                   New{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift">Arrivals</span>
                 </h2>
                 <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
                   Check out our latest additions to the catalog
@@ -938,18 +993,20 @@ export default function Home() {
               </div>
               <Link
                 to="/shop?new=1"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 hover:scale-105 active:scale-[0.98] transition-all duration-300 hover:shadow-lg"
               >
                 View All New
                 <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-            </div>
+            </motion.div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" staggerDelay={0.1}>
               {data.new_arrivals.slice(0, 5).map((product) => (
-                <ProductCard key={product.id} product={product} showNew />
+                <StaggerItem key={product.id}>
+                  <ProductCard product={product} showNew />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </section>
       )}
