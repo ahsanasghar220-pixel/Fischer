@@ -350,4 +350,15 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
         Route::put('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateBanner']);
         Route::delete('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'deleteBanner']);
     });
+
+    // Real-time Analytics
+    Route::prefix('analytics/realtime')->group(function () {
+        Route::get('/overview', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'overview']);
+        Route::get('/activity-feed', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'activityFeed']);
+        Route::get('/geographic', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'geographic']);
+        Route::get('/traffic-sources', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'trafficSources']);
+        Route::get('/conversion-funnel', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'conversionFunnel']);
+        Route::get('/active-sessions', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'activeSessions']);
+        Route::get('/cart-analytics', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'cartAnalytics']);
+    });
 });

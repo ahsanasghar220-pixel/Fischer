@@ -248,20 +248,26 @@ class Bundle extends Model
 
     public function getConversionRate(): float
     {
-        if (!$this->view_count || $this->view_count == 0) {
-            return 0;
+        $viewCount = (int) ($this->view_count ?? 0);
+        $purchaseCount = (int) ($this->purchase_count ?? 0);
+
+        if ($viewCount === 0) {
+            return 0.0;
         }
 
-        return round(($this->purchase_count / $this->view_count) * 100, 2);
+        return round(($purchaseCount / $viewCount) * 100, 2);
     }
 
     public function getAddToCartRate(): float
     {
-        if (!$this->view_count || $this->view_count == 0) {
-            return 0;
+        $viewCount = (int) ($this->view_count ?? 0);
+        $addToCartCount = (int) ($this->add_to_cart_count ?? 0);
+
+        if ($viewCount === 0) {
+            return 0.0;
         }
 
-        return round(($this->add_to_cart_count / $this->view_count) * 100, 2);
+        return round(($addToCartCount / $viewCount) * 100, 2);
     }
 
     public function duplicate(): self

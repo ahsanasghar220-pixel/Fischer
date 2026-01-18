@@ -16,6 +16,7 @@ import {
   DocumentTextIcon,
   PaintBrushIcon,
   GiftIcon,
+  SignalIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -31,6 +32,7 @@ const menuItems = [
   { path: '/admin/pages', label: 'Pages', icon: DocumentTextIcon },
   { path: '/admin/homepage', label: 'Homepage', icon: PaintBrushIcon },
   { path: '/admin/analytics', label: 'Analytics', icon: ChartBarIcon },
+  { path: '/admin/analytics/realtime', label: 'Real-Time', icon: SignalIcon },
   { path: '/admin/settings', label: 'Settings', icon: Cog6ToothIcon },
 ]
 

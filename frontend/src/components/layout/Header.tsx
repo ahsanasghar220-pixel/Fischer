@@ -38,6 +38,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const [searchOpen, setSearchOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const navigate = useNavigate()
@@ -46,20 +47,37 @@ export default function Header() {
   const { isAuthenticated, user, logout } = useAuthStore()
   const cartItemsCount = useCartStore((state) => state.items_count)
 
-  // Handle scroll effect with hysteresis to prevent flickering
+  // Handle scroll effect with smart hide/show behavior
   useEffect(() => {
     let ticking = false
+    let lastScrollY = 0
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY
-          // Use hysteresis: scroll down triggers at 50px, scroll up resets at 10px
+
+          // Determine scroll direction with threshold to avoid jitter
+          if (Math.abs(currentScrollY - lastScrollY) > 5) {
+            const isScrollingDown = currentScrollY > lastScrollY
+
+            // Hide header when scrolling down past 200px, show when scrolling up
+            if (currentScrollY > 200) {
+              setIsHeaderVisible(!isScrollingDown)
+            } else {
+              setIsHeaderVisible(true)
+            }
+
+            lastScrollY = currentScrollY
+          }
+
+          // Handle background change with hysteresis
           if (currentScrollY > 50) {
             setIsScrolled(true)
           } else if (currentScrollY < 10) {
             setIsScrolled(false)
           }
+
           ticking = false
         })
         ticking = true
@@ -92,9 +110,11 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-500 ${
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+        } ${
           isScrolled || !isHomePage
-            ? 'bg-white/70 dark:bg-dark-900/70 backdrop-blur-xl backdrop-saturate-150 shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
+            ? 'bg-white/90 dark:bg-dark-900/90 backdrop-blur-xl backdrop-saturate-150 shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
             : 'bg-transparent'
         }`}
       >

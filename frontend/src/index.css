@@ -962,3 +962,177 @@ html.lenis, html.lenis body {
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
 }
+
+/* ========================================
+   MICRO-INTERACTION UTILITIES
+   ======================================== */
+
+/* Sweep underline on hover */
+.btn-hover-underline {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #f4b42c, #fbbf24);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover-underline:hover::after {
+  transform: translateX(0);
+}
+
+/* Magnetic button effect - slight scale on hover, shrink on active */
+.btn-magnetic {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.btn-magnetic:hover {
+  transform: scale(1.02);
+}
+
+.btn-magnetic:active {
+  transform: scale(0.98);
+}
+
+/* Link underline grows from center */
+.link-underline-grow {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline-grow::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.link-underline-grow:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Scale bounce on tap/click - good for mobile */
+.tap-bounce {
+  transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.tap-bounce:active {
+  transform: scale(0.95);
+}
+
+/* Rotate on hover - subtle rotation for icons */
+.hover-rotate {
+  transition: transform 0.3s ease;
+}
+
+.hover-rotate:hover {
+  transform: rotate(10deg);
+}
+
+/* Lift effect - combines translate and shadow */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* Glow on hover for buttons/cards */
+.hover-glow-primary {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow-primary:hover {
+  box-shadow: 0 0 20px rgba(244, 180, 44, 0.4);
+}
+
+/* Icon slide - icon moves on hover */
+.icon-slide-right {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.group:hover .icon-slide-right,
+.icon-slide-right:hover {
+  transform: translateX(4px);
+}
+
+/* Staggered entrance animation helper */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Ripple effect on click */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+}
+
+.ripple:active::before {
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+}
+
+/* Subtle shake animation for attention */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Heartbeat animation for liked items */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1s ease-in-out;
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.animate-checkmark {
+  stroke-dasharray: 100;
+  animation: checkmark 0.5s ease-in-out forwards;
+}

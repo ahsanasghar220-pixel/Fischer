@@ -67,6 +67,7 @@ const AdminDealers = lazy(() => import('./pages/admin/Dealers'))
 const AdminServiceRequests = lazy(() => import('./pages/admin/ServiceRequests'))
 const AdminPages = lazy(() => import('./pages/admin/Pages'))
 const AdminAnalytics = lazy(() => import('./pages/admin/Analytics'))
+const AdminRealTimeAnalytics = lazy(() => import('./pages/admin/RealTimeAnalytics'))
 const AdminReports = lazy(() => import('./pages/admin/Reports'))
 const AdminHomePageSettings = lazy(() => import('./pages/admin/HomePageSettings'))
 const AdminBundles = lazy(() => import('./pages/admin/Bundles'))
@@ -135,6 +136,7 @@ function App() {
           <Route path="service-requests" element={<AdminServiceRequests />} />
           <Route path="pages" element={<AdminPages />} />
           <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="analytics/realtime" element={<AdminRealTimeAnalytics />} />
           <Route path="reports" element={<AdminReports />} />
           <Route path="homepage" element={<AdminHomePageSettings />} />
           <Route path="bundles" element={<AdminBundles />} />
