@@ -11,7 +11,16 @@ class CartItem extends Model
         'cart_id',
         'product_id',
         'product_variant_id',
+        'bundle_id',
+        'bundle_slot_selections',
+        'is_bundle_item',
+        'parent_cart_item_id',
         'quantity',
+    ];
+
+    protected $casts = [
+        'bundle_slot_selections' => 'array',
+        'is_bundle_item' => 'boolean',
     ];
 
     protected $appends = ['unit_price', 'total_price', 'is_available'];
@@ -29,6 +38,16 @@ class CartItem extends Model
     public function productVariant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class);
+    }
+
+    public function bundle(): BelongsTo
+    {
+        return $this->belongsTo(Bundle::class);
+    }
+
+    public function parentCartItem(): BelongsTo
+    {
+        return $this->belongsTo(CartItem::class, 'parent_cart_item_id');
     }
 
     // Accessors

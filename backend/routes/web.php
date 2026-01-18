@@ -181,6 +181,68 @@ Route::get('/run-migrations', function () {
     }
 });
 
+// Add bundle columns to cart_items table
+Route::get('/fix-cart-bundle', function () {
+    try {
+        $results = [];
+
+        // Check if cart_items table exists
+        if (!\Schema::hasTable('cart_items')) {
+            return response()->json(['error' => 'cart_items table does not exist'], 400);
+        }
+
+        // Add bundle_id column if missing
+        if (!\Schema::hasColumn('cart_items', 'bundle_id')) {
+            \Schema::table('cart_items', function ($table) {
+                $table->unsignedBigInteger('bundle_id')->nullable()->after('product_variant_id');
+            });
+            $results['added'][] = 'bundle_id';
+        }
+
+        // Add bundle_slot_selections column if missing
+        if (!\Schema::hasColumn('cart_items', 'bundle_slot_selections')) {
+            \Schema::table('cart_items', function ($table) {
+                $table->json('bundle_slot_selections')->nullable()->after('bundle_id');
+            });
+            $results['added'][] = 'bundle_slot_selections';
+        }
+
+        // Add is_bundle_item column if missing
+        if (!\Schema::hasColumn('cart_items', 'is_bundle_item')) {
+            \Schema::table('cart_items', function ($table) {
+                $table->boolean('is_bundle_item')->default(false)->after('bundle_slot_selections');
+            });
+            $results['added'][] = 'is_bundle_item';
+        }
+
+        // Add parent_cart_item_id column if missing
+        if (!\Schema::hasColumn('cart_items', 'parent_cart_item_id')) {
+            \Schema::table('cart_items', function ($table) {
+                $table->unsignedBigInteger('parent_cart_item_id')->nullable()->after('is_bundle_item');
+            });
+            $results['added'][] = 'parent_cart_item_id';
+        }
+
+        if (empty($results['added'])) {
+            return response()->json([
+                'status' => 'unchanged',
+                'message' => 'All bundle columns already exist in cart_items table',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cart bundle columns added',
+            'results' => $results,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
 // Fix homepage stats (temporary - updates Products Sold to 1M+)
 Route::get('/fix-stats', function () {
     try {
@@ -303,7 +365,7 @@ Route::get('/reset-admin-password', function () {
 });
 
 // Catch-all route for SPA - serves the React app
-// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations, fix-stats
+// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations, fix-stats, fix-cart-bundle
 Route::get('/{any}', function () {
     return file_get_contents(public_path('index.html'));
-})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations|fix-stats).*$');
+})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations|fix-stats|fix-cart-bundle).*$');
