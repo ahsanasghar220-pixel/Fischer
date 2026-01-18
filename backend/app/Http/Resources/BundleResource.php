@@ -10,8 +10,19 @@ class BundleResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $pricingService = app(BundlePricingService::class);
-        $pricing = $pricingService->getPricingBreakdown($this->resource);
+        // Safely get pricing with fallback
+        try {
+            $pricingService = app(BundlePricingService::class);
+            $pricing = $pricingService->getPricingBreakdown($this->resource);
+        } catch (\Exception $e) {
+            \Log::error('Bundle pricing error for bundle ' . $this->id . ': ' . $e->getMessage());
+            $pricing = [
+                'original_price' => 0,
+                'discounted_price' => 0,
+                'savings' => 0,
+                'savings_percentage' => 0,
+            ];
+        }
 
         return [
             'id' => $this->id,

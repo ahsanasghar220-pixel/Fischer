@@ -76,17 +76,31 @@ class BundleController extends Controller
      */
     public function homepage(Request $request)
     {
-        $bundles = Bundle::with(['items.product.images', 'slots.availableProducts.images', 'images'])
-            ->homepage()
-            ->get();
+        try {
+            $bundles = Bundle::with(['items.product.images', 'slots.availableProducts.images', 'images'])
+                ->homepage()
+                ->get();
 
-        $grouped = [
-            'carousel' => BundleResource::collection($bundles->where('homepage_position', 'carousel')->values()),
-            'grid' => BundleResource::collection($bundles->where('homepage_position', 'grid')->values()),
-            'banner' => BundleResource::collection($bundles->where('homepage_position', 'banner')->values()),
-        ];
+            $grouped = [
+                'carousel' => BundleResource::collection($bundles->where('homepage_position', 'carousel')->values()),
+                'grid' => BundleResource::collection($bundles->where('homepage_position', 'grid')->values()),
+                'banner' => BundleResource::collection($bundles->where('homepage_position', 'banner')->values()),
+            ];
 
-        return $this->success($grouped);
+            return $this->success($grouped);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Bundle homepage error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Return empty data instead of 500 error
+            return $this->success([
+                'carousel' => [],
+                'grid' => [],
+                'banner' => [],
+            ]);
+        }
     }
 
     /**
