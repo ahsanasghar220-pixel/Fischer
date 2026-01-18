@@ -181,6 +181,50 @@ Route::get('/run-migrations', function () {
     }
 });
 
+// Fix homepage stats (temporary - updates Products Sold to 1M+)
+Route::get('/fix-stats', function () {
+    try {
+        // Update Products Sold stat to a proper value if it's 0M+
+        $stat = \App\Models\HomepageStat::where('label', 'LIKE', '%Sold%')
+            ->orWhere('label', 'LIKE', '%Products Sold%')
+            ->first();
+
+        if ($stat) {
+            // If the value starts with 0, update it
+            if (str_starts_with($stat->value, '0')) {
+                $stat->value = '1M+';
+                $stat->save();
+
+                // Clear homepage cache
+                \Cache::forget('homepage_data');
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Stats updated and cache cleared',
+                    'stat' => [
+                        'label' => $stat->label,
+                        'old_value' => '0M+',
+                        'new_value' => $stat->value,
+                    ],
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'unchanged',
+                'message' => 'Stat value is already correct',
+                'stat' => [
+                    'label' => $stat->label,
+                    'value' => $stat->value,
+                ],
+            ]);
+        }
+
+        return response()->json(['status' => 'not_found', 'message' => 'Products Sold stat not found']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+});
+
 // Debug bundles route (temporary)
 Route::get('/debug-bundles', function () {
     try {
@@ -259,7 +303,7 @@ Route::get('/reset-admin-password', function () {
 });
 
 // Catch-all route for SPA - serves the React app
-// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations
+// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations, fix-stats
 Route::get('/{any}', function () {
     return file_get_contents(public_path('index.html'));
-})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations).*$');
+})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations|fix-stats).*$');

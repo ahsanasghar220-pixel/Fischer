@@ -175,10 +175,9 @@ class HomeController extends Controller
         $stats = HomepageStat::visible()->ordered()->get()->map(function ($stat) use ($productsSold) {
             $value = $stat->value;
 
-            // Only override "Products Sold" if we have real order/sales data
-            // (i.e., not the fallback value)
-            if ((stripos($stat->label, 'Products Sold') !== false || stripos($stat->label, 'Sold') !== false)
-                && $productsSold !== '1M+') {
+            // Only override "Products Sold" if we have real order/sales data (non-null)
+            if ($productsSold !== null &&
+                (stripos($stat->label, 'Products Sold') !== false || stripos($stat->label, 'Sold') !== false)) {
                 $value = $productsSold;
             }
 
@@ -350,8 +349,9 @@ class HomeController extends Controller
 
     /**
      * Get formatted products sold count
+     * Returns null if no real sales data (so admin-set values are kept)
      */
-    protected function getProductsSoldCount(): string
+    protected function getProductsSoldCount(): ?string
     {
         try {
             // Get total quantity of products sold from order items
@@ -380,11 +380,10 @@ class HomeController extends Controller
                 return $salesCount . '+';
             }
 
-            // Default fallback - use the value from homepage_stats if available
-            // This ensures admin-set values are respected when no real order data exists
-            return '1M+';
+            // Return null to indicate no real data - admin-set value should be kept
+            return null;
         } catch (\Exception $e) {
-            return '1M+';
+            return null;
         }
     }
 }
