@@ -50,6 +50,7 @@ const FindDealer = lazy(() => import('./pages/FindDealer'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Page = lazy(() => import('./pages/Page'))
+const Bundles = lazy(() => import('./pages/Bundles'))
 const BundleDetail = lazy(() => import('./pages/BundleDetail'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
@@ -84,6 +85,7 @@ function App() {
           <Route path="shop" element={<Shop />} />
           <Route path="product/:slug" element={<ProductDetail />} />
           <Route path="category/:slug" element={<Category />} />
+          <Route path="bundles" element={<Bundles />} />
           <Route path="bundle/:slug" element={<BundleDetail />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />

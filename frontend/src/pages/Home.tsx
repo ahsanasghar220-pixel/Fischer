@@ -38,11 +38,18 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
   useEffect(() => {
     if (!isInView) return
 
-    // Extract numeric value
-    const numericValue = parseInt(value.replace(/\D/g, '')) || 0
+    // Extract numeric value - handle formats like "35+", "500K+", "1M+"
+    const numericValue = parseInt(value.replace(/[^\d]/g, '')) || 0
     const hasPlus = value.includes('+')
-    const hasK = value.includes('K')
-    const hasM = value.includes('M')
+    const hasK = value.toUpperCase().includes('K')
+    const hasM = value.toUpperCase().includes('M')
+
+    // If numeric value is 0 but we have a suffix, just show the original value
+    // This handles cases like "0M+" which should display as the original string
+    if (numericValue === 0) {
+      setDisplayValue(value)
+      return
+    }
 
     let duration = 2000
     let startTime: number
