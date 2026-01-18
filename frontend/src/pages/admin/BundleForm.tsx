@@ -95,17 +95,20 @@ export default function BundleForm() {
   const uploadImages = useUploadBundleImages()
   const deleteImage = useDeleteBundleImage()
 
-  // Search products
-  const { data: searchResults } = useQuery({
-    queryKey: ['admin-products-search', productSearch],
+  // Fetch all products when modal opens (with optional search filter)
+  const { data: searchResults, isLoading: loadingProducts } = useQuery({
+    queryKey: ['admin-products-for-bundle', productSearch],
     queryFn: async () => {
-      if (!productSearch || productSearch.length < 2) return []
       const { data } = await api.get('/admin/products', {
-        params: { search: productSearch, per_page: 10 },
+        params: {
+          search: productSearch || undefined,
+          per_page: 100, // Get more products
+          is_active: true,
+        },
       })
-      return data.data?.data || []
+      return data.data?.data || data.data || []
     },
-    enabled: productSearch.length >= 2,
+    enabled: showProductSearch, // Fetch when modal is open
   })
 
   // Load bundle data when editing
@@ -698,26 +701,31 @@ export default function BundleForm() {
                       className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white mb-4"
                       autoFocus
                     />
-                    <div className="space-y-2">
-                      {(searchResults as Product[] || []).map((product: Product) => (
-                        <button
-                          key={product.id}
-                          type="button"
-                          onClick={() => handleAddProduct(product)}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-dark-50 dark:hover:bg-dark-700 rounded-lg text-left"
-                        >
-                          <div className="w-10 h-10 bg-dark-100 dark:bg-dark-600 rounded overflow-hidden">
-                            {product.primary_image && (
-                              <img src={product.primary_image} alt="" className="w-full h-full object-cover" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-medium text-dark-900 dark:text-white">{product.name}</p>
-                            <p className="text-sm text-dark-500">{formatPrice(product.price)}</p>
-                          </div>
-                        </button>
-                      ))}
-                      {productSearch.length >= 2 && (!searchResults || (searchResults as Product[]).length === 0) && (
+                    <div className="space-y-2 max-h-80 overflow-y-auto">
+                      {loadingProducts ? (
+                        <div className="flex justify-center py-8">
+                          <LoadingSpinner size="md" />
+                        </div>
+                      ) : (searchResults as Product[] || []).length > 0 ? (
+                        (searchResults as Product[]).map((product: Product) => (
+                          <button
+                            key={product.id}
+                            type="button"
+                            onClick={() => handleAddProduct(product)}
+                            className="w-full flex items-center gap-3 p-3 hover:bg-dark-50 dark:hover:bg-dark-700 rounded-lg text-left"
+                          >
+                            <div className="w-10 h-10 bg-dark-100 dark:bg-dark-600 rounded overflow-hidden">
+                              {product.primary_image && (
+                                <img src={product.primary_image} alt="" className="w-full h-full object-cover" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-dark-900 dark:text-white">{product.name}</p>
+                              <p className="text-sm text-dark-500">{formatPrice(product.price)}</p>
+                            </div>
+                          </button>
+                        ))
+                      ) : (
                         <p className="text-center text-dark-500 py-4">No products found</p>
                       )}
                     </div>

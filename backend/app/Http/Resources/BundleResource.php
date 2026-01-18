@@ -89,13 +89,13 @@ class BundleResource extends JsonResource
                 fn() => $this->getProductsPreview()
             ),
 
-            // Analytics (admin only)
-            'view_count' => $this->when($request->user()?->is_admin, $this->view_count),
-            'add_to_cart_count' => $this->when($request->user()?->is_admin, $this->add_to_cart_count),
-            'purchase_count' => $this->when($request->user()?->is_admin, $this->purchase_count),
-            'revenue' => $this->when($request->user()?->is_admin, (float) $this->revenue),
-            'conversion_rate' => $this->when($request->user()?->is_admin, $this->getConversionRate()),
-            'add_to_cart_rate' => $this->when($request->user()?->is_admin, $this->getAddToCartRate()),
+            // Analytics (admin only) - use closures to defer method evaluation
+            'view_count' => $this->when($request->user()?->is_admin, fn() => $this->view_count ?? 0),
+            'add_to_cart_count' => $this->when($request->user()?->is_admin, fn() => $this->add_to_cart_count ?? 0),
+            'purchase_count' => $this->when($request->user()?->is_admin, fn() => $this->purchase_count ?? 0),
+            'revenue' => $this->when($request->user()?->is_admin, fn() => (float) ($this->revenue ?? 0)),
+            'conversion_rate' => $this->when($request->user()?->is_admin, fn() => $this->getConversionRate()),
+            'add_to_cart_rate' => $this->when($request->user()?->is_admin, fn() => $this->getAddToCartRate()),
 
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
