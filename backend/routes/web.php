@@ -38,6 +38,25 @@ Route::get('/clear-cache', function () {
     ]);
 });
 
+// Run migrations route (temporary - remove after use)
+Route::get('/run-migrations', function () {
+    try {
+        \Artisan::call('migrate', ['--force' => true]);
+        $output = \Artisan::output();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Migrations completed',
+            'output' => $output,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
 // Debug bundles route (temporary)
 Route::get('/debug-bundles', function () {
     try {
@@ -116,7 +135,7 @@ Route::get('/reset-admin-password', function () {
 });
 
 // Catch-all route for SPA - serves the React app
-// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password
+// Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations
 Route::get('/{any}', function () {
     return file_get_contents(public_path('index.html'));
-})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password).*$');
+})->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations).*$');
