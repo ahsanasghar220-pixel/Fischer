@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Dialog, Popover, Transition } from '@headlessui/react'
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 import {
   Bars3Icon,
   XMarkIcon,
@@ -17,15 +17,78 @@ import { useCartStore } from '@/stores/cartStore'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
+import { useQuery } from '@tanstack/react-query'
+import api from '@/lib/api'
 
 const navigation = {
   categories: [
-    { name: 'Water Coolers', href: '/category/water-coolers', icon: '❄️', desc: 'Industrial & commercial coolers' },
-    { name: 'Geysers & Heaters', href: '/category/geysers-heaters', icon: '🔥', desc: 'Electric, gas & hybrid' },
-    { name: 'Cooking Ranges', href: '/category/cooking-ranges', icon: '🍳', desc: 'Ranges & oven toasters' },
-    { name: 'Built-in Hobs & Hoods', href: '/category/hobs-hoods', icon: '💨', desc: 'Kitchen ventilation' },
-    { name: 'Water Dispensers', href: '/category/water-dispensers', icon: '💧', desc: 'Hot & cold dispensers' },
-    { name: 'Kitchen Appliances', href: '/category/kitchen-appliances', icon: '🏠', desc: 'Home essentials' },
+    {
+      name: 'Water Coolers',
+      href: '/category/water-coolers',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      ),
+      desc: 'Industrial & commercial coolers',
+      gradient: 'from-blue-500 to-cyan-500'
+    },
+    {
+      name: 'Geysers & Heaters',
+      href: '/category/geysers-heaters',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+        </svg>
+      ),
+      desc: 'Electric, gas & hybrid',
+      gradient: 'from-orange-500 to-red-500'
+    },
+    {
+      name: 'Cooking Ranges',
+      href: '/category/cooking-ranges',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      ),
+      desc: 'Ranges & oven toasters',
+      gradient: 'from-purple-500 to-pink-500'
+    },
+    {
+      name: 'Built-in Hobs & Hoods',
+      href: '/category/hobs-hoods',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      ),
+      desc: 'Kitchen ventilation',
+      gradient: 'from-emerald-500 to-teal-500'
+    },
+    {
+      name: 'Water Dispensers',
+      href: '/category/water-dispensers',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+      ),
+      desc: 'Hot & cold dispensers',
+      gradient: 'from-amber-500 to-yellow-500'
+    },
+    {
+      name: 'Kitchen Appliances',
+      href: '/category/kitchen-appliances',
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+      ),
+      desc: 'Home essentials',
+      gradient: 'from-indigo-500 to-purple-500'
+    },
   ],
   pages: [
     { name: 'About', href: '/about' },
@@ -46,6 +109,16 @@ export default function Header() {
 
   const { isAuthenticated, user, logout } = useAuthStore()
   const cartItemsCount = useCartStore((state) => state.items_count)
+
+  // Fetch featured products for mega menu
+  const { data: featuredProducts = [] } = useQuery({
+    queryKey: ['header-featured-products'],
+    queryFn: async () => {
+      const { data } = await api.get('/products/bestsellers?per_page=6')
+      return data.data || []
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
 
   // Lock body scroll when mobile menu or cart drawer is open
   useBodyScrollLock(mobileMenuOpen || cartDrawerOpen)
@@ -190,38 +263,135 @@ export default function Header() {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-2"
                     >
-                      <Popover.Panel className="absolute left-0 top-full mt-3 w-80 bg-white dark:bg-dark-800 rounded-2xl shadow-xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
-                        <div className="p-4">
-                          <p className="text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-3">
-                            Product Categories
-                          </p>
-                          <div className="space-y-1">
-                            {navigation.categories.map((item) => (
-                              <Link
-                                key={item.name}
-                                to={item.href}
-                                onClick={() => close()}
-                                className="flex items-center gap-4 px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700/50 transition-colors group"
-                              >
-                                <span className="text-2xl group-hover:scale-110 transition-transform">{item.icon}</span>
-                                <div>
-                                  <p className="font-medium group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                                    {item.name}
-                                  </p>
-                                  <p className="text-xs text-dark-500 dark:text-dark-400">{item.desc}</p>
-                                </div>
-                              </Link>
-                            ))}
+                      <Popover.Panel className="absolute left-0 top-full mt-3 w-[900px] bg-white dark:bg-dark-800 rounded-2xl shadow-2xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
+                        <div className="grid grid-cols-3 divide-x divide-dark-100 dark:divide-dark-700">
+                          {/* Categories Column */}
+                          <div className="col-span-1 p-6">
+                            <p className="text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-4">
+                              Categories
+                            </p>
+                            <div className="space-y-1">
+                              {navigation.categories.map((item) => (
+                                <Link
+                                  key={item.name}
+                                  to={item.href}
+                                  onClick={() => close()}
+                                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700/50 transition-colors group"
+                                >
+                                  <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-10 text-white group-hover:scale-110 transition-transform`}>
+                                    {item.icon}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-medium text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate">
+                                      {item.name}
+                                    </p>
+                                    <p className="text-xs text-dark-500 dark:text-dark-400 truncate">{item.desc}</p>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                            <Link
+                              to="/shop"
+                              onClick={() => close()}
+                              className="mt-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-500 text-dark-900 font-semibold hover:bg-primary-400 transition-colors text-sm"
+                            >
+                              View All
+                            </Link>
                           </div>
-                        </div>
-                        <div className="border-t border-dark-100 dark:border-dark-700 p-4 bg-dark-50 dark:bg-dark-900/50">
-                          <Link
-                            to="/shop"
-                            onClick={() => close()}
-                            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-500 text-dark-900 font-semibold hover:bg-primary-400 transition-colors"
-                          >
-                            View All Products
-                          </Link>
+
+                          {/* Featured Products Column */}
+                          <div className="col-span-2 p-6 bg-dark-50/50 dark:bg-dark-900/30">
+                            <p className="text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-4">
+                              Featured Products
+                            </p>
+                            <div className="grid grid-cols-3 gap-4">
+                              {featuredProducts.length > 0 ? (
+                                featuredProducts.map((product: any, index: number) => {
+                                  // Get secondary image for hover effect
+                                  const secondaryImage = product.images && product.images.length > 1
+                                    ? (product.images.find((img: any) => !img.is_primary)?.image || product.images[1]?.image)
+                                    : null
+
+                                  return (
+                                    <motion.div
+                                      key={product.id}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: index * 0.05, duration: 0.3 }}
+                                    >
+                                      <Link
+                                        to={`/product/${product.slug}`}
+                                        onClick={() => close()}
+                                        className="group block"
+                                      >
+                                        <div className="aspect-square bg-white dark:bg-dark-800 rounded-xl overflow-hidden mb-2 ring-2 ring-dark-100 dark:ring-dark-700 group-hover:ring-primary-500 transition-all relative shadow-md group-hover:shadow-xl group-hover:shadow-primary-500/20 duration-500">
+                                          {product.primary_image ? (
+                                            <>
+                                              {/* Primary Image */}
+                                              <img
+                                                src={product.primary_image}
+                                                alt={product.name}
+                                                className={`w-full h-full object-cover transition-all duration-500 ease-out ${
+                                                  secondaryImage
+                                                    ? 'group-hover:opacity-0'
+                                                    : 'group-hover:scale-110'
+                                                }`}
+                                              />
+
+                                              {/* Secondary Image (shown on hover) */}
+                                              {secondaryImage && (
+                                                <img
+                                                  src={secondaryImage}
+                                                  alt={`${product.name} - alternate view`}
+                                                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+                                                />
+                                              )}
+
+                                              {/* Enhanced Overlay with Badge */}
+                                              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                                <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                  <div className="flex items-center justify-center gap-1 text-white">
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    <span className="text-xs font-bold tracking-wide">QUICK VIEW</span>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                              {/* Shine Sweep Effect */}
+                                              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
+                                              </div>
+                                            </>
+                                          ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-primary-500/10 to-primary-600/10 flex items-center justify-center">
+                                              <span className="text-4xl">📦</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <h3 className="font-medium text-sm text-dark-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                                          {product.name}
+                                        </h3>
+                                        <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mt-1">
+                                          Rs {product.price?.toLocaleString()}
+                                        </p>
+                                      </Link>
+                                    </motion.div>
+                                  )
+                                })
+                              ) : (
+                                // Skeleton loader while fetching
+                                Array.from({ length: 6 }).map((_, i) => (
+                                  <div key={i} className="animate-pulse">
+                                    <div className="aspect-square bg-dark-200 dark:bg-dark-700 rounded-xl mb-2" />
+                                    <div className="h-4 bg-dark-200 dark:bg-dark-700 rounded w-3/4" />
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </Popover.Panel>
                     </Transition>
@@ -518,8 +688,10 @@ export default function Header() {
                         className="flex items-center gap-4 px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <span className="text-xl">{item.icon}</span>
-                        <span>{item.name}</span>
+                        <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} text-white`}>
+                          {item.icon}
+                        </div>
+                        <span className="font-medium">{item.name}</span>
                       </Link>
                     ))}
                   </div>

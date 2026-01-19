@@ -16,6 +16,7 @@ interface Product {
   price: number
   compare_price?: number | null
   primary_image?: string | null
+  images?: Array<{ id: number; image: string; is_primary: boolean }>
   stock_status: string
   is_new?: boolean
   is_bestseller?: boolean
@@ -51,6 +52,12 @@ const ProductCard = memo(function ProductCard({
   const [pendingWishlistAction, setPendingWishlistAction] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+
+  // Get secondary image for hover effect
+  const secondaryImage = useMemo(() => {
+    if (!product.images || product.images.length < 2) return null
+    return product.images.find(img => !img.is_primary)?.image || product.images[1]?.image || null
+  }, [product.images])
 
   // Memoize discount calculation
   const discountPercentage = useMemo(() => {
@@ -132,17 +139,34 @@ const ProductCard = memo(function ProductCard({
           )}
 
           {product.primary_image && !imageError ? (
-            <img
-              src={product.primary_image}
-              alt={product.name}
-              width={300}
-              height={300}
-              className={`w-full h-full object-cover transition-all duration-700 ease-out
-                        group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              loading="lazy"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-            />
+            <>
+              {/* Primary Image */}
+              <img
+                src={product.primary_image}
+                alt={product.name}
+                width={300}
+                height={300}
+                className={`w-full h-full object-cover transition-all duration-500 ease-out
+                          ${imageLoaded ? 'opacity-100' : 'opacity-0'}
+                          ${secondaryImage ? 'group-hover:opacity-0' : 'group-hover:scale-110'}`}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+              />
+
+              {/* Secondary Image (shown on hover) */}
+              {secondaryImage && (
+                <img
+                  src={secondaryImage}
+                  alt={`${product.name} - alternate view`}
+                  width={300}
+                  height={300}
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out
+                           opacity-0 group-hover:opacity-100"
+                  loading="lazy"
+                />
+              )}
+            </>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-dark-100 to-dark-200
                           dark:from-dark-800 dark:to-dark-900 flex items-center justify-center">

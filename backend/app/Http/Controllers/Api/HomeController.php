@@ -323,6 +323,11 @@ class HomeController extends Controller
             'price' => $product->price,
             'compare_price' => $product->compare_price,
             'primary_image' => $product->primary_image,
+            'images' => $product->images ? $product->images->map(fn($img) => [
+                'id' => $img->id,
+                'image' => $img->image,
+                'is_primary' => $img->is_primary,
+            ])->toArray() : [],
             'stock_status' => $product->stock_status,
             'is_new' => $product->is_new,
             'is_bestseller' => $product->is_bestseller,

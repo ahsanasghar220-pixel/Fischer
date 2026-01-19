@@ -22,6 +22,8 @@ import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import CategoryIcon from '@/components/ui/CategoryIcon'
+import FullWidthBanner from '@/components/ui/FullWidthBanner'
+import CategoryShowcase from '@/components/ui/CategoryShowcase'
 import { HoverCard } from '@/components/effects/ScrollReveal'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
@@ -106,6 +108,7 @@ interface Product {
   price: number
   compare_price?: number | null
   primary_image?: string | null
+  images?: Array<{ id: number; image: string; is_primary: boolean }>
   stock_status: string
   is_new?: boolean
   is_bestseller?: boolean
@@ -708,67 +711,35 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          CATEGORIES - Simple Grid
+          FULL WIDTH BANNER - Premium Series
+          ========================================== */}
+      <FullWidthBanner
+        title="Discover Fischer Premium Series"
+        subtitle="New Collection"
+        description="Experience the perfect blend of innovation and elegance in modern kitchen appliances"
+        image="/images/all-products.png"
+        imageAlt="Fischer Premium Kitchen Appliances"
+        ctaText="Explore Collection"
+        ctaLink="/shop"
+        textPosition="center"
+        height="lg"
+      />
+
+      {/* ==========================================
+          CATEGORIES - Showcase Grid
           ========================================== */}
       {isSectionEnabled('categories') && (
-      <section className="section bg-white dark:bg-dark-900">
-        <div className="container-xl">
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-            <div>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
-                <CubeIcon className="w-4 h-4" />
-                Browse Products
-              </span>
-              <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                Shop by{' '}
-                <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Category</span>
-              </h2>
-              <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
-                Explore our complete range of home and commercial appliances
-              </p>
-            </div>
-            <Link
-              to="/categories"
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 hover:scale-105 active:scale-[0.98] transition-all duration-300 hover:shadow-lg"
-            >
-              View All
-              <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          {/* Categories Grid - Simple hover effects */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.slice(0, 6).map((category) => (
-              <Link
-                key={category.id}
-                to={`/category/${category.slug}`}
-                className="group relative block"
-              >
-                <HoverCard intensity={12}>
-                  <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-dark-100 to-dark-50 dark:from-dark-800 dark:to-dark-900 p-6
-                                border-2 border-transparent hover:border-primary-500
-                                transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10">
-                    <div className="relative h-full flex flex-col items-center justify-center">
-                      <div className="group-hover:scale-110 transition-transform duration-300">
-                        <CategoryIcon slug={category.slug} className="w-20 h-20" />
-                      </div>
-                    </div>
-                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                      <h3 className="font-bold text-white text-center truncate">{category.name}</h3>
-                      <p className="text-sm text-dark-300 text-center">{category.products_count} Products</p>
-                    </div>
-                  </div>
-                </HoverCard>
-                <div className="mt-4 text-center group-hover:opacity-0 transition-opacity duration-300">
-                  <h3 className="font-bold text-dark-900 dark:text-white truncate">{category.name}</h3>
-                  <p className="text-sm text-dark-500 dark:text-dark-400">{category.products_count} Products</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        <CategoryShowcase
+          categories={categories.slice(0, 6).map(cat => ({
+            name: cat.name,
+            slug: cat.slug,
+            image: cat.image,
+            description: cat.description,
+            productCount: cat.products_count,
+          }))}
+          title="Shop by Category"
+          subtitle="Browse Products"
+        />
       )}
 
       {/* ==========================================
