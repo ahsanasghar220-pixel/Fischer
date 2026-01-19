@@ -101,10 +101,11 @@ export function shouldReduceAnimations() {
 }
 
 // Optimize images on-the-fly
-export function getOptimizedImageSrc(src: string, width?: number, quality: number = 80) {
+export function getOptimizedImageSrc(src: string, _width?: number, _quality: number = 80) {
   // If using a CDN that supports image optimization, append query params
   // Example: Cloudinary, imgix, etc.
   // For now, return the original src
+  // _width and _quality are reserved for future CDN integration
   return src
 }
 
