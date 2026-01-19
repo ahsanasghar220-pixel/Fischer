@@ -1,27 +1,17 @@
 import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import { motion } from 'framer-motion'
 import Layout from './components/layout/Layout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import ScrollToTop from './components/utils/ScrollToTop'
 
-// Animated page loader for better UX during lazy loading
+// Fast page loader - shows immediately without animation delay
 const PageLoader = () => (
-  <motion.div
-    className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.2 }}
-  >
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-    >
+  <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900">
+    <div className="flex flex-col items-center gap-4">
       <LoadingSpinner size="lg" />
-    </motion.div>
-  </motion.div>
+      <p className="text-dark-500 dark:text-dark-400 text-sm animate-pulse">Loading...</p>
+    </div>
+  </div>
 )
 
 // Lazy load pages for better performance
