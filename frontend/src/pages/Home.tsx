@@ -720,7 +720,7 @@ export default function Home() {
       <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
         <div className="container-xl">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.12}>
-            {features.map((feature, index) => {
+            {features.map((feature) => {
               const Icon = getIcon(feature.icon)
               const colors = getColorClasses(feature.color)
               return (
