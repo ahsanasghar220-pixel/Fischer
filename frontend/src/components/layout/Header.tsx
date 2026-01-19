@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Dialog, Popover, Transition } from '@headlessui/react'
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import {
   Bars3Icon,
   XMarkIcon,

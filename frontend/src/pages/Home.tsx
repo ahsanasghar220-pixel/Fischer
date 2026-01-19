@@ -21,7 +21,6 @@ import {
 import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
-import CategoryIcon from '@/components/ui/CategoryIcon'
 import FullWidthBanner from '@/components/ui/FullWidthBanner'
 import CategoryShowcase from '@/components/ui/CategoryShowcase'
 import { HoverCard } from '@/components/effects/ScrollReveal'
