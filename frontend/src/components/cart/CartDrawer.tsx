@@ -41,12 +41,12 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-dark-900/60 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-dark-900/60 backdrop-blur-sm" onClick={onClose} />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-out duration-300"
@@ -79,7 +79,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                     </div>
 
                     {/* Cart Items */}
-                    <div className="flex-1 overflow-y-auto py-4">
+                    <div className="flex-1 overflow-y-auto overscroll-contain py-4">
                       {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full px-6 text-center">
                           <div className="w-24 h-24 rounded-full bg-dark-100 dark:bg-dark-700 flex items-center justify-center mb-6">

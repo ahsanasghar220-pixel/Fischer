@@ -8,7 +8,16 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import SmoothScroll from './components/utils/SmoothScroll'
 import CustomCursor from './components/ui/CustomCursor'
 import App from './App'
+import { trackPageLoad, preloadCriticalResources } from './lib/performance'
 import './index.css'
+
+// Preload critical resources for faster initial render
+preloadCriticalResources()
+
+// Track page load performance (only in production)
+if (import.meta.env.PROD) {
+  trackPageLoad()
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {

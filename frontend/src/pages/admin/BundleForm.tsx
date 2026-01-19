@@ -281,9 +281,15 @@ export default function BundleForm() {
         bundleId: Number(id),
         images: Array.from(files),
       })
-      toast.success('Images uploaded successfully')
-    } catch {
-      toast.error('Failed to upload images')
+      toast.success(`${files.length} image(s) uploaded successfully`)
+      // Reset file input
+      e.target.value = ''
+    } catch (error: any) {
+      console.error('Image upload failed:', error)
+      const message = error.response?.data?.message || 'Failed to upload images'
+      toast.error(message)
+      // Reset file input even on error
+      e.target.value = ''
     }
   }
 
@@ -1003,15 +1009,25 @@ export default function BundleForm() {
                     ))}
                   </div>
 
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-dark-300 dark:border-dark-600 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
-                    <PhotoIcon className="w-8 h-8 text-dark-400" />
-                    <span className="mt-2 text-sm text-dark-500">Click to upload images</span>
+                  <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-dark-300 dark:border-dark-600 rounded-lg cursor-pointer hover:border-primary-500 transition-colors ${uploadImages.isPending ? 'opacity-50 cursor-wait' : ''}`}>
+                    {uploadImages.isPending ? (
+                      <>
+                        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="mt-2 text-sm text-dark-500">Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <PhotoIcon className="w-8 h-8 text-dark-400" />
+                        <span className="mt-2 text-sm text-dark-500">Click to upload images</span>
+                      </>
+                    )}
                     <input
                       type="file"
                       multiple
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="hidden"
+                      disabled={uploadImages.isPending}
                     />
                   </label>
                 </div>

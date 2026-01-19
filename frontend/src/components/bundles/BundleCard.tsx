@@ -21,6 +21,29 @@ const BundleCard = memo(function BundleCard({
 }: BundleCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
+  // Helper to get proper image URL with fallback chain
+  const getImageUrl = () => {
+    let imageUrl = bundle.featured_image
+
+    // Fallback 1: First bundle image
+    if (!imageUrl && bundle.images && bundle.images.length > 0) {
+      imageUrl = bundle.images[0].image
+    }
+
+    // Fallback 2: First product preview image
+    if (!imageUrl && bundle.products_preview && bundle.products_preview.length > 0) {
+      imageUrl = bundle.products_preview[0].image
+    }
+
+    // Fallback 3: Default placeholder
+    if (!imageUrl) {
+      return '/images/all-products.png'
+    }
+
+    // Ensure absolute path - already has leading slash from backend
+    return imageUrl
+  }
+
   const getBadgeColor = (color: string) => {
     const colors: Record<string, string> = {
       gold: 'bg-gradient-to-r from-amber-500 to-yellow-400 text-white',
@@ -51,12 +74,20 @@ const BundleCard = memo(function BundleCard({
         transition={{ duration: 0.5 }}
       >
         {/* Image Container */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-dark-100 to-dark-50 dark:from-dark-800 dark:to-dark-900">
           {/* Main Image */}
           <img
-            src={bundle.featured_image || '/images/all-products.png'}
+            src={getImageUrl()}
             alt={bundle.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            onError={(e) => {
+              const target = e.currentTarget
+              const fallbackUrl = '/images/all-products.png'
+              // Prevent infinite loop - only set fallback once
+              if (!target.src.includes('all-products.png')) {
+                target.src = fallbackUrl
+              }
+            }}
           />
 
           {/* Gradient Overlay */}
@@ -126,6 +157,7 @@ const BundleCard = memo(function BundleCard({
                     e.preventDefault()
                     onQuickView(bundle)
                   }}
+                  aria-label="Quick view"
                   className="p-3 bg-white/90 backdrop-blur-sm rounded-full text-dark-800 hover:bg-white hover:scale-110 transition-all shadow-lg"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -139,6 +171,7 @@ const BundleCard = memo(function BundleCard({
                     e.preventDefault()
                     onAddToCart(bundle)
                   }}
+                  aria-label="Add to cart"
                   className="p-3 bg-primary-500 rounded-full text-white hover:bg-primary-600 hover:scale-110 transition-all shadow-lg"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -162,7 +195,7 @@ const BundleCard = memo(function BundleCard({
               {bundle.bundle_type === 'fixed' ? 'Fixed Bundle' : 'Build Your Own'}
             </span>
             {bundle.stock_remaining !== null && bundle.stock_remaining < 10 && (
-              <span className="text-[10px] font-semibold text-red-500">
+              <span className="text-[10px] font-bold text-red-700 dark:text-red-400">
                 Only {bundle.stock_remaining} left!
               </span>
             )}

@@ -203,7 +203,7 @@ class BundleController extends Controller
     protected function getOrCreateCart(Request $request): Cart
     {
         $userId = auth()->id();
-        $sessionId = $request->session_id ?? session()->getId();
+        $sessionId = $request->header('X-Session-ID') ?? $request->session_id ?? session()->getId();
 
         if ($userId) {
             $cart = Cart::firstOrCreate(['user_id' => $userId]);

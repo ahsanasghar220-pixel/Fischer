@@ -43,14 +43,13 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
     const hasK = value.toUpperCase().includes('K')
     const hasM = value.toUpperCase().includes('M')
 
-    // If numeric value is 0 but we have a suffix, just show the original value
-    // This handles cases like "0M+" which should display as the original string
+    // If numeric value is 0, just show the original value immediately
     if (numericValue === 0) {
       setDisplayValue(value)
       return
     }
 
-    let duration = 2000
+    const duration = 2000
     let startTime: number
     let animationFrame: number
 
@@ -60,7 +59,9 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
 
       // Easing function for smooth deceleration
       const easeOutExpo = 1 - Math.pow(2, -10 * progress)
-      const currentValue = Math.floor(easeOutExpo * numericValue)
+
+      // Use Math.round and ensure we hit the final value
+      const currentValue = progress >= 1 ? numericValue : Math.round(easeOutExpo * numericValue)
 
       let formatted = currentValue.toString()
       if (hasK) formatted = currentValue + 'K'
@@ -71,6 +72,13 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate)
+      } else {
+        // Ensure final value is set correctly
+        let finalFormatted = numericValue.toString()
+        if (hasK) finalFormatted = numericValue + 'K'
+        if (hasM) finalFormatted = numericValue + 'M'
+        if (hasPlus) finalFormatted += '+'
+        setDisplayValue(finalFormatted)
       }
     }
 
@@ -297,10 +305,14 @@ export default function Home() {
     }
 
     try {
-      await addBundleToCart.mutateAsync({ bundleSlug: bundle.slug })
+      console.log('Adding bundle to cart:', bundle.slug)
+      const result = await addBundleToCart.mutateAsync({ bundleSlug: bundle.slug })
+      console.log('Bundle added successfully:', result)
       toast.success(`${bundle.name} added to cart!`)
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to add bundle to cart')
+      console.error('Failed to add bundle to cart:', err)
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to add bundle to cart'
+      toast.error(errorMessage)
     }
   }
 
@@ -361,7 +373,7 @@ export default function Home() {
   }
 
   return (
-    <div className="overflow-hidden bg-white dark:bg-dark-950">
+    <div className="bg-white dark:bg-dark-950">
       {/* ==========================================
           HERO SECTION - Performance Optimized
           ========================================== */}
@@ -500,7 +512,7 @@ export default function Home() {
                       ))}
                       <span className="ml-2 text-dark-400 text-sm">(128 reviews)</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">Electric Water Cooler FE-100</h3>
+                    <h2 className="text-2xl font-bold text-white">Electric Water Cooler FE-100</h2>
                     <p className="text-dark-400">100 Ltr/Hr Cooling Capacity</p>
                     <div className="flex items-center justify-center gap-4">
                       <span className="text-4xl font-black bg-gradient-to-r from-primary-400 to-amber-400 bg-clip-text text-transparent">
@@ -626,17 +638,17 @@ export default function Home() {
                     className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
                   >
                     <Icon className="w-8 h-8" style={{ color: colors.text }} />
-
-                    <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
-                      {feature.description}
-                    </p>
-
-                    {/* Border glow on hover */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
                   </div>
+
+                  <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+
+                  {/* Border glow on hover */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
                 </div>
               )
             })}

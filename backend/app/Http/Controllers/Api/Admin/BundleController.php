@@ -255,6 +255,21 @@ class BundleController extends Controller
             'cta_text' => 'nullable|string|max:100',
             'show_countdown' => 'boolean',
             'show_savings' => 'boolean',
+            // Items for fixed bundles
+            'items' => 'nullable|array',
+            'items.*.product_id' => 'required_with:items|exists:products,id',
+            'items.*.quantity' => 'nullable|integer|min:1',
+            'items.*.price_override' => 'nullable|numeric|min:0',
+            // Slots for configurable bundles
+            'slots' => 'nullable|array',
+            'slots.*.name' => 'required_with:slots|string|max:100',
+            'slots.*.description' => 'nullable|string',
+            'slots.*.is_required' => 'boolean',
+            'slots.*.min_selections' => 'nullable|integer|min:0',
+            'slots.*.max_selections' => 'nullable|integer|min:1',
+            'slots.*.products' => 'nullable|array',
+            'slots.*.products.*.product_id' => 'required|exists:products,id',
+            'slots.*.products.*.price_override' => 'nullable|numeric|min:0',
         ]);
 
         // Update slug if name changed
@@ -266,7 +281,57 @@ class BundleController extends Controller
             }
         }
 
-        $bundle->update($validated);
+        DB::transaction(function () use ($bundle, $validated) {
+            $items = $validated['items'] ?? null;
+            $slots = $validated['slots'] ?? null;
+            unset($validated['items'], $validated['slots']);
+
+            $bundle->update($validated);
+
+            // Update items for fixed bundles
+            if ($items !== null && $bundle->isFixed()) {
+                // Delete existing items
+                $bundle->items()->delete();
+
+                // Create new items
+                foreach ($items as $index => $item) {
+                    $bundle->items()->create([
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'] ?? 1,
+                        'price_override' => $item['price_override'] ?? null,
+                        'sort_order' => $index,
+                    ]);
+                }
+            }
+
+            // Update slots for configurable bundles
+            if ($slots !== null && $bundle->isConfigurable()) {
+                // Delete existing slots (cascade will handle slot products)
+                $bundle->slots()->delete();
+
+                // Create new slots
+                foreach ($slots as $index => $slotData) {
+                    $slot = $bundle->slots()->create([
+                        'name' => $slotData['name'],
+                        'description' => $slotData['description'] ?? null,
+                        'slot_order' => $index,
+                        'is_required' => $slotData['is_required'] ?? true,
+                        'min_selections' => $slotData['min_selections'] ?? 1,
+                        'max_selections' => $slotData['max_selections'] ?? 1,
+                    ]);
+
+                    // Add products to slot
+                    if (!empty($slotData['products'])) {
+                        foreach ($slotData['products'] as $productData) {
+                            $slot->products()->create([
+                                'product_id' => $productData['product_id'],
+                                'price_override' => $productData['price_override'] ?? null,
+                            ]);
+                        }
+                    }
+                }
+            }
+        });
 
         // Clear cache
         Cache::forget('homepage_bundles');

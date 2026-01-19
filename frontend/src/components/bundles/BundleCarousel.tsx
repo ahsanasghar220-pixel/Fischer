@@ -76,11 +76,13 @@ const BundleCarousel = memo(function BundleCarousel({
 
   if (bundles.length === 0) return null
 
-  const visibleBundles = bundles.slice(currentIndex, currentIndex + visibleCount)
+  // Adjust visible count based on actual bundle count to prevent duplication
+  const actualVisibleCount = Math.min(visibleCount, bundles.length)
+  const visibleBundles = bundles.slice(currentIndex, currentIndex + actualVisibleCount)
 
-  // If we need more items to fill the view (when near the end)
-  if (visibleBundles.length < visibleCount) {
-    const remaining = visibleCount - visibleBundles.length
+  // Only loop bundles if we have more than what's visible and we're at the end
+  if (visibleBundles.length < actualVisibleCount && bundles.length > actualVisibleCount) {
+    const remaining = actualVisibleCount - visibleBundles.length
     visibleBundles.push(...bundles.slice(0, remaining))
   }
 

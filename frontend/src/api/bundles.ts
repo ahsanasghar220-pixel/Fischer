@@ -316,6 +316,7 @@ export function useUpdateBundle() {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundles'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundle', id] })
+      queryClient.invalidateQueries({ queryKey: ['bundles', 'homepage'] })
     },
   })
 }
