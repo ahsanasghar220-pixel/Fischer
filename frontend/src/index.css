@@ -1221,3 +1221,146 @@ html.lenis, html.lenis body {
 .animate-bounce-in {
   animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
+
+/* ========================================
+   ADVANCED SMOOTH ANIMATIONS
+   ======================================== */
+
+/* Ultra-smooth transition utility */
+.transition-smooth {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.transition-smooth-fast {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Spring-like hover effect */
+.hover-spring {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hover-spring:hover {
+  transform: scale(1.05);
+}
+
+.hover-spring:active {
+  transform: scale(0.98);
+}
+
+/* Premium shine sweep effect */
+.shine-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-sweep::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.shine-sweep:hover::before {
+  left: 100%;
+}
+
+/* Text gradient shimmer */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f4b42c 0%,
+    #fbbf24 25%,
+    #fff 50%,
+    #fbbf24 75%,
+    #f4b42c 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer-anim 3s linear infinite;
+}
+
+@keyframes text-shimmer-anim {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Smooth parallax float */
+.float-smooth {
+  animation: float-smooth 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes float-smooth {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(0.5deg); }
+  50% { transform: translateY(-6px) rotate(0deg); }
+  75% { transform: translateY(-15px) rotate(-0.5deg); }
+}
+
+/* Smooth underline animation */
+.underline-smooth {
+  position: relative;
+}
+
+.underline-smooth::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #f4b42c, #fbbf24);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.underline-smooth:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Elastic button press */
+.btn-elastic {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-elastic:active {
+  transform: scale(0.95);
+}
+
+/* Breathing glow effect */
+.glow-breathe {
+  animation: glow-breathe 3s ease-in-out infinite;
+}
+
+@keyframes glow-breathe {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(244, 180, 44, 0.3), 0 0 30px rgba(244, 180, 44, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(244, 180, 44, 0.5), 0 0 50px rgba(244, 180, 44, 0.25);
+  }
+}
+
+/* Icon bounce on hover */
+.icon-bounce:hover svg,
+.icon-bounce:hover .icon {
+  animation: icon-bounce-anim 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes icon-bounce-anim {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}

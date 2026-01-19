@@ -374,13 +374,18 @@ export default function Home() {
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950" />
 
-          {/* Animated gradient orbs - GPU accelerated CSS animations */}
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] animate-float-slow" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] animate-float-slow [animation-delay:2s]" />
-          <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-amber-500/8 rounded-full blur-[80px] animate-float-slow [animation-delay:4s]" />
+          {/* Animated gradient orbs - GPU accelerated with morphing */}
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] animate-levitate" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[100px] animate-levitate [animation-delay:-2s]" />
+          <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-amber-500/8 rounded-full blur-[80px] animate-levitate [animation-delay:-4s]" />
 
-          {/* Subtle grid overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(244,180,44,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(244,180,44,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+          {/* Additional floating particles */}
+          <div className="absolute top-1/4 right-1/4 w-4 h-4 bg-primary-400/40 rounded-full blur-sm animate-float" />
+          <div className="absolute bottom-1/3 left-1/3 w-3 h-3 bg-amber-400/30 rounded-full blur-sm animate-float [animation-delay:-3s]" />
+          <div className="absolute top-2/3 right-1/2 w-2 h-2 bg-primary-300/50 rounded-full blur-sm animate-float [animation-delay:-1s]" />
+
+          {/* Subtle grid overlay with animation */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(244,180,44,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(244,180,44,0.02)_1px,transparent_1px)] bg-[size:60px_60px] opacity-60" />
         </div>
 
         {/* Hero Content */}
@@ -388,36 +393,47 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content - Staggered Animations */}
             <div className="space-y-8">
-              {/* Badge - First to appear */}
+              {/* Badge - First to appear with glow effect */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
                             bg-gradient-to-r from-primary-500/20 to-primary-400/10
                             border border-primary-500/30 backdrop-blur-sm
-                            hover:scale-105 transition-transform cursor-default">
-                  <SparklesIcon className="w-5 h-5 text-primary-400" />
+                            hover:scale-105 hover:border-primary-400/50 hover:shadow-lg hover:shadow-primary-500/20
+                            active:scale-[0.98] transition-all duration-300 cursor-default group">
+                  <SparklesIcon className="w-5 h-5 text-primary-400 group-hover:animate-pulse" />
                   <span className="text-sm font-semibold text-primary-300 tracking-wide">
                     35+ Years of Excellence
                   </span>
                 </div>
               </motion.div>
 
-              {/* Main Title - Second to appear */}
+              {/* Main Title - Second to appear with text reveal */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
                 <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-display leading-[0.9] tracking-tight">
-                  <span className="block text-white">
+                  <motion.span
+                    className="block text-white"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  >
                     {banners[currentBanner]?.title?.split(' ')[0] || 'Premium'}
-                  </span>
-                  <span className="block mt-2 bg-gradient-to-r from-primary-400 via-primary-500 to-amber-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift">
+                  </motion.span>
+                  <motion.span
+                    className="block mt-2 bg-gradient-to-r from-primary-400 via-amber-400 to-primary-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-shift"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  >
                     {banners[currentBanner]?.title?.split(' ').slice(1).join(' ') || 'Home Appliances'}
-                  </span>
+                  </motion.span>
                 </h1>
               </motion.div>
 
@@ -432,52 +448,55 @@ export default function Home() {
                  'ISO 9001:2015 certified products designed for Pakistani homes'}
               </motion.p>
 
-              {/* CTA Buttons - Fourth to appear */}
+              {/* CTA Buttons - Fourth to appear with enhanced hover */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.6, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-wrap gap-4 pt-4"
               >
                 <Link
                   to={banners[currentBanner]?.button_link || '/shop'}
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg
-                           hover:from-amber-400 hover:to-primary-400 hover:scale-105 hover:shadow-lg hover:shadow-primary-500/25
-                           active:scale-[0.98] transition-all duration-300"
+                  className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg overflow-hidden
+                           hover:shadow-xl hover:shadow-primary-500/30 hover:-translate-y-1
+                           active:scale-[0.98] transition-all duration-500"
                 >
-                  {banners[currentBanner]?.button_text || 'Explore Products'}
-                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  {/* Shine effect on hover */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  <span className="relative">{banners[currentBanner]?.button_text || 'Explore Products'}</span>
+                  <ArrowRightIcon className="relative w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
                 </Link>
                 <Link
                   to="/about"
                   className="group px-8 py-4 rounded-2xl font-semibold text-white text-lg
-                           border-2 border-white/20 backdrop-blur-sm
-                           hover:bg-white/10 hover:border-white/40 hover:scale-105
-                           active:scale-[0.98] transition-all duration-300
+                           border-2 border-white/20 backdrop-blur-sm relative overflow-hidden
+                           hover:bg-white/10 hover:border-white/40 hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10
+                           active:scale-[0.98] transition-all duration-500
                            flex items-center gap-2"
                 >
-                  <PlayIcon className="w-5 h-5" />
+                  <PlayIcon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   Our Story
                 </Link>
               </motion.div>
 
-              {/* Trust Badges - Last to appear with stagger */}
+              {/* Trust Badges - Last to appear with smooth stagger */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.6, delay: 1, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-wrap gap-3 pt-6"
               >
                 {trustBadges.map((badge, index) => (
                   <motion.span
                     key={badge.title}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: 1.1 + index * 0.1 }}
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 1.1 + index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     className="px-4 py-2 rounded-full text-sm font-medium
                              bg-white/5 border border-white/10 text-dark-300
-                             hover:bg-white/10 hover:border-primary-500/30 hover:scale-105
-                             transition-all duration-300 cursor-default"
+                             hover:bg-white/10 hover:border-primary-500/40 hover:text-primary-300
+                             transition-colors duration-300 cursor-default"
                   >
                     {badge.title}
                   </motion.span>
@@ -487,50 +506,72 @@ export default function Home() {
 
             {/* Right - Product Showcase */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, x: 30 }}
+              initial={{ opacity: 0, scale: 0.9, x: 40 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="relative"
             >
-              {/* Animated decorative rings */}
+              {/* Animated decorative rings with glow */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full border border-primary-500/20 animate-pulse-glow" />
-                <div className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-primary-500/10" />
+                <motion.div
+                  className="w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] rounded-full border border-primary-500/20"
+                  animate={{ scale: [1, 1.02, 1], opacity: [0.3, 0.5, 0.3] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                  className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-primary-500/10"
+                  animate={{ scale: [1, 0.98, 1], opacity: [0.2, 0.4, 0.2] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                />
               </div>
 
-              {/* Glow effect - animated */}
+              {/* Glow effect - breathing animation */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-80 h-80 bg-primary-500/20 rounded-full blur-[100px] animate-pulse-glow" />
+                <motion.div
+                  className="w-80 h-80 bg-primary-500/20 rounded-full blur-[100px]"
+                  animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                />
               </div>
 
               {/* Product Card with hover effects */}
               <div className="relative mx-auto max-w-md">
                 <HoverCard intensity={8} className="relative">
                 <div className="relative bg-gradient-to-br from-dark-800/80 to-dark-900/80 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl
-                              hover:border-primary-500/30 hover:shadow-primary-500/10 transition-all duration-500">
-                  {/* Best Seller Badge */}
-                  <div className="absolute -top-4 -right-4 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl shadow-lg shadow-primary-500/30
-                                flex items-center gap-2">
+                              hover:border-primary-500/30 hover:shadow-primary-500/20 hover:shadow-2xl transition-all duration-500 group/card">
+                  {/* Best Seller Badge with animation */}
+                  <motion.div
+                    className="absolute -top-4 -right-4 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl shadow-lg shadow-primary-500/30
+                                flex items-center gap-2"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
                     <FireIcon className="w-5 h-5 text-dark-900" />
                     <span className="font-bold text-dark-900">BEST SELLER</span>
-                  </div>
+                  </motion.div>
 
-                  {/* Product Image */}
+                  {/* Product Image with levitate animation */}
                   <div className="relative h-72 flex items-center justify-center mb-6">
-                    <img
+                    <motion.img
                       src="/images/products/water-cooler-100ltr.png"
                       alt="Featured Product - Electric Water Cooler FE-100"
                       width={280}
                       height={280}
                       loading="eager"
                       {...{ fetchpriority: "high" } as any}
-                      className="max-h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+                      className="max-h-full object-contain drop-shadow-2xl group-hover/card:drop-shadow-[0_25px_35px_rgba(244,180,44,0.25)] transition-all duration-500"
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                       onError={(e) => {
                         e.currentTarget.src = 'https://fischerpk.com/wp-content/uploads/2022/06/electric-water-cooler-cooling-capacity-100-ltr-hr-800x800.png'
                       }}
                     />
-                    {/* Reflection */}
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-gradient-to-t from-primary-500/10 to-transparent blur-xl" />
+                    {/* Reflection with animation */}
+                    <motion.div
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-gradient-to-t from-primary-500/10 to-transparent blur-xl"
+                      animate={{ opacity: [0.5, 0.8, 0.5], scaleX: [0.9, 1, 0.9] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    />
                   </div>
 
                   {/* Product Info */}
@@ -563,17 +604,30 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll Indicator - Animated */}
+        {/* Scroll Indicator - Enhanced Animation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          <span className="text-dark-400 text-sm font-medium">Scroll to explore</span>
-          <div className="w-6 h-10 rounded-full border-2 border-dark-400 flex items-start justify-center p-1.5">
-            <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-scroll-bounce" />
-          </div>
+          <motion.span
+            className="text-dark-400 text-sm font-medium"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            Scroll to explore
+          </motion.span>
+          <motion.div
+            className="w-6 h-10 rounded-full border-2 border-dark-400/50 flex items-start justify-center p-1.5 backdrop-blur-sm"
+            whileHover={{ borderColor: 'rgba(244, 180, 44, 0.5)' }}
+          >
+            <motion.div
+              className="w-1.5 h-3 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full"
+              animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
         </motion.div>
 
         {/* Banner Navigation */}
@@ -609,37 +663,45 @@ export default function Home() {
       </section>
 
       {/* ==========================================
-          STATS BAR - Animated Counters
+          STATS BAR - Animated Counters with Enhanced Effects
           ========================================== */}
       {isSectionEnabled('stats') && (
       <section className="relative -mt-20 z-20">
         <div className="container-xl">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 50, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-            className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12 relative overflow-hidden"
           >
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Subtle background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-amber-500/5 pointer-events-none" />
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative">
               {stats.map((stat, index) => {
                 const Icon = getIcon(stat.icon)
                 return (
                   <motion.div
                     key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -5 }}
                     className="text-center group cursor-pointer"
                   >
-                    <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                    <motion.div
+                      className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400"
+                      whileHover={{ scale: 1.15, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
                       <Icon className="w-7 h-7" />
-                    </div>
-                    <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
+                    </motion.div>
+                    <div className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors duration-300">
                       <AnimatedCounter value={stat.value} />
                     </div>
-                    <div className="text-dark-500 dark:text-dark-400 font-medium">
+                    <div className="text-dark-500 dark:text-dark-400 font-medium group-hover:text-dark-700 dark:group-hover:text-dark-300 transition-colors">
                       {stat.label}
                     </div>
                   </motion.div>
@@ -652,42 +714,51 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          FEATURES - Animated Grid with Stagger
+          FEATURES - Animated Grid with Enhanced Effects
           ========================================== */}
       {isSectionEnabled('features') && (
       <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
         <div className="container-xl">
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
-            {features.map((feature) => {
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.12}>
+            {features.map((feature, index) => {
               const Icon = getIcon(feature.icon)
               const colors = getColorClasses(feature.color)
               return (
                 <StaggerItem key={feature.title}>
                   <motion.div
-                    whileHover={{ y: -8, scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    whileHover={{ y: -10, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     className="group relative p-8 rounded-3xl overflow-hidden h-full
                               bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
-                              hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/10
-                              transition-colors duration-300"
+                              hover:border-primary-500/40 hover:shadow-2xl hover:shadow-primary-500/15
+                              transition-all duration-500"
                   >
                     {/* Animated gradient background on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-amber-500/0 group-hover:from-primary-500/5 group-hover:to-amber-500/5 transition-all duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-amber-500/0 group-hover:from-primary-500/5 group-hover:to-amber-500/5 transition-all duration-700" />
 
-                    {/* Icon with rotation animation */}
-                    <div className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      <Icon className="w-8 h-8 group-hover:scale-110 transition-transform duration-300" style={{ color: colors.text }} />
+                    {/* Spotlight effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl" />
                     </div>
 
-                    <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {/* Icon with enhanced animation */}
+                    <motion.div
+                      className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6`}
+                      whileHover={{ scale: 1.15, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Icon className="w-8 h-8" style={{ color: colors.text }} />
+                    </motion.div>
+
+                    <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
                       {feature.title}
                     </h3>
                     <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
                       {feature.description}
                     </p>
 
-                    {/* Animated border glow */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 to-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                    {/* Animated border glow - smoother */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out origin-left" />
                   </motion.div>
                 </StaggerItem>
               )
