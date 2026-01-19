@@ -23,8 +23,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Cache home page data for 30 minutes for better performance
-        $homeData = Cache::remember('homepage_data', 1800, function () {
+        // Cache home page data for 5 minutes for balance between performance and freshness
+        $homeData = Cache::remember('homepage_data', 300, function () {
             return $this->getHomePageData();
         });
 
