@@ -359,28 +359,20 @@ class HomeController extends Controller
                 $query->whereIn('status', ['completed', 'delivered', 'processing', 'shipped']);
             })->sum('quantity');
 
-            // If we have order data, format it
-            if ($totalSold > 0) {
-                if ($totalSold >= 1000000) {
-                    return round($totalSold / 1000000, 1) . 'M+';
-                } elseif ($totalSold >= 1000) {
-                    return round($totalSold / 1000, 1) . 'K+';
-                }
-                return $totalSold . '+';
-            }
-
             // Fallback to products' sales_count if no order items
-            $salesCount = Product::sum('sales_count');
-            if ($salesCount > 0) {
-                if ($salesCount >= 1000000) {
-                    return round($salesCount / 1000000, 1) . 'M+';
-                } elseif ($salesCount >= 1000) {
-                    return round($salesCount / 1000, 1) . 'K+';
-                }
-                return $salesCount . '+';
+            if ($totalSold <= 0) {
+                $totalSold = Product::sum('sales_count');
             }
 
-            // Return null to indicate no real data - admin-set value should be kept
+            // Only override admin value if we have significant real sales data (>= 1000)
+            // Below that, the admin-set value is more meaningful for display
+            if ($totalSold >= 1000000) {
+                return round($totalSold / 1000000, 1) . 'M+';
+            } elseif ($totalSold >= 1000) {
+                return round($totalSold / 1000, 1) . 'K+';
+            }
+
+            // Return null for small numbers - admin-set value should be kept
             return null;
         } catch (\Exception $e) {
             return null;
