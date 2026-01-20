@@ -922,12 +922,12 @@ export default function Home() {
                 ].map((benefit) => (
                   <div
                     key={benefit.title}
-                    className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
-                             hover:bg-dark-900/20 hover:border-dark-900/20 hover:-translate-y-1 transition-all duration-300"
+                    className="p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
+                             hover:bg-white/15 hover:border-white/20 hover:-translate-y-1 transition-all duration-300"
                   >
                     <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                    <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
-                    <p className="text-dark-800">{benefit.desc}</p>
+                    <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
+                    <p className="text-dark-300">{benefit.desc}</p>
                   </div>
                 ))}
               </StaggeredChildren>
