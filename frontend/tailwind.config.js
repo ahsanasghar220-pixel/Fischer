@@ -8,19 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Fischer brand colors - Premium palette
+        // Fischer brand colors - Refined, sophisticated palette
         primary: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f4b42c', // Main Fischer yellow
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
-          950: '#451a03',
+          50: '#fdfaf5',
+          100: '#faf3e6',
+          200: '#f5e6c8',
+          300: '#e8d4a8',
+          400: '#d4b87a', // Muted gold
+          500: '#c9a227', // Main Fischer gold - more refined
+          600: '#a88620',
+          700: '#8a6d1a',
+          800: '#6d5615',
+          900: '#5a4712',
+          950: '#3d2f0c',
         },
         dark: {
           50: '#fafafa',
@@ -46,7 +46,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
         display: ['Poppins', 'system-ui', 'sans-serif'],
       },
       container: {
@@ -143,8 +143,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 5px #f4b42c, 0 0 10px #f4b42c, 0 0 15px #f4b42c' },
-          '100%': { boxShadow: '0 0 10px #f4b42c, 0 0 20px #f4b42c, 0 0 30px #f4b42c' },
+          '0%': { boxShadow: '0 0 5px #c9a227, 0 0 10px #c9a227, 0 0 15px #c9a227' },
+          '100%': { boxShadow: '0 0 10px #c9a227, 0 0 20px #c9a227, 0 0 30px #c9a227' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
@@ -176,11 +176,11 @@ export default {
         pulseGlow: {
           '0%, 100%': {
             opacity: '0.6',
-            boxShadow: '0 0 20px rgba(244, 180, 44, 0.3)',
+            boxShadow: '0 0 20px rgba(201, 162, 39, 0.3)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 40px rgba(244, 180, 44, 0.6)',
+            boxShadow: '0 0 40px rgba(201, 162, 39, 0.6)',
           },
         },
         gradientShift: {
@@ -203,11 +203,11 @@ export default {
         },
         glowPulse: {
           '0%, 100%': {
-            boxShadow: '0 0 20px rgba(244, 180, 44, 0.4), 0 0 40px rgba(244, 180, 44, 0.2)',
+            boxShadow: '0 0 20px rgba(201, 162, 39, 0.4), 0 0 40px rgba(201, 162, 39, 0.2)',
             opacity: '1'
           },
           '50%': {
-            boxShadow: '0 0 40px rgba(244, 180, 44, 0.6), 0 0 60px rgba(244, 180, 44, 0.3)',
+            boxShadow: '0 0 40px rgba(201, 162, 39, 0.6), 0 0 60px rgba(201, 162, 39, 0.3)',
             opacity: '0.9'
           },
         },
@@ -248,8 +248,8 @@ export default {
       },
       boxShadow: {
         'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.1)',
-        'glow': '0 0 15px rgba(244, 180, 44, 0.5)',
-        'glow-lg': '0 0 30px rgba(244, 180, 44, 0.6)',
+        'glow': '0 0 15px rgba(201, 162, 39, 0.5)',
+        'glow-lg': '0 0 30px rgba(201, 162, 39, 0.6)',
         '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',

@@ -453,7 +453,7 @@ export default function Home() {
                 <span className="block text-white">
                   {banners[currentBanner]?.title?.split(' ')[0] || 'Premium'}
                 </span>
-                <span className="block mt-2 bg-gradient-to-r from-primary-400 via-amber-400 to-primary-500 bg-clip-text text-transparent">
+                <span className="block mt-2 text-primary-300">
                   {banners[currentBanner]?.title?.split(' ').slice(1).join(' ') || 'Home Appliances'}
                 </span>
               </h1>
@@ -468,7 +468,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-4 pt-4">
                 <Link
                   to={banners[currentBanner]?.button_link || '/shop'}
-                  className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl font-bold text-dark-900 text-lg overflow-hidden
+                  className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-400 rounded-2xl font-bold text-dark-900 text-lg overflow-hidden
                            hover:shadow-xl hover:shadow-primary-500/30 hover:-translate-y-1
                            active:scale-[0.98] transition-all duration-300"
                 >
@@ -524,7 +524,7 @@ export default function Home() {
                 <div className="relative bg-gradient-to-br from-dark-800/80 to-dark-900/80 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 shadow-2xl
                               hover:border-primary-500/30 hover:shadow-primary-500/20 transition-all duration-300 group/card">
                   {/* Best Seller Badge - Static */}
-                  <div className="absolute -top-4 -right-4 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-amber-500 rounded-2xl shadow-lg shadow-primary-500/30 flex items-center gap-2">
+                  <div className="absolute -top-4 -right-4 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-2xl shadow-lg shadow-primary-500/30 flex items-center gap-2">
                     <FireIcon className="w-5 h-5 text-dark-900" />
                     <span className="font-bold text-dark-900">BEST SELLER</span>
                   </div>
@@ -555,7 +555,7 @@ export default function Home() {
                     <h2 className="text-2xl font-bold text-white">Electric Water Cooler FE-100</h2>
                     <p className="text-dark-400">100 Ltr/Hr Cooling Capacity</p>
                     <div className="flex items-center justify-center gap-4">
-                      <span className="text-4xl font-black bg-gradient-to-r from-primary-400 to-amber-400 bg-clip-text text-transparent">
+                      <span className="text-4xl font-black text-primary-600 dark:text-primary-400">
                         PKR 112,500
                       </span>
                     </div>
@@ -719,7 +719,7 @@ export default function Home() {
           BUNDLE BANNER - Featured Bundle Hero
           ========================================== */}
       {homepageBundles?.banner && homepageBundles.banner.length > 0 && (
-        <section className="bg-dark-950">
+        <section className="bg-dark-100 dark:bg-dark-950">
           <BundleBanner
             bundle={homepageBundles.banner[0]}
             onAddToCart={handleAddBundleToCart}
@@ -738,13 +738,13 @@ export default function Home() {
               <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                   <div>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-800/30 text-primary-700 dark:text-primary-400 text-sm font-semibold mb-4">
                       <GiftIcon className="w-4 h-4" />
                       Special Bundles
                     </span>
                     <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                       Save More with{' '}
-                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
+                      <span className="text-primary-600 dark:text-primary-400">Bundles</span>
                     </h2>
                     <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
                       Get the best value with our curated product bundles
@@ -808,7 +808,7 @@ export default function Home() {
           ========================================== */}
       {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
         <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
-          <section className="section bg-dark-950 relative overflow-hidden">
+          <section className="section bg-dark-100 dark:bg-dark-950 relative overflow-hidden">
             {/* Static Background Gradients */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
@@ -820,21 +820,21 @@ export default function Home() {
               <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
                   <div>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
                       <FireIcon className="w-4 h-4" />
                       Hand-picked for you
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-white">
+                    <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                       Featured{' '}
-                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
+                      <span className="text-primary-600 dark:text-primary-400">Products</span>
                     </h2>
-                    <p className="text-xl text-dark-400 mt-4 max-w-xl">
+                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
                       Our most popular appliances loved by customers across Pakistan
                     </p>
                   </div>
                   <Link
                     to="/shop?featured=1"
-                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 hover:scale-105 active:scale-[0.98] transition-all duration-300"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-dark-200 dark:border-white/20 text-dark-900 dark:text-white font-semibold hover:bg-dark-100 dark:hover:bg-white/10 hover:border-primary-500/50 hover:scale-105 active:scale-[0.98] transition-all duration-300"
                   >
                     View All Products
                     <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -866,12 +866,12 @@ export default function Home() {
       {isSectionEnabled('dealer_cta') && (
       <AnimatedSection animation="fade" duration={1200} threshold={0.1} easing="gentle">
         <section className="relative py-24 overflow-hidden">
-          {/* Static Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
-            {/* Static decorative orbs */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl" />
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+          {/* Muted, sophisticated background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
+            {/* Subtle gold accent orbs */}
+            <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary-600/8 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
           </div>
 
           <div className="relative container-xl">
@@ -879,26 +879,26 @@ export default function Home() {
               {/* Content */}
               <AnimatedSection animation="fade-right" delay={200} distance={60} duration={1100} easing="gentle">
                 <div className="text-center lg:text-left">
-                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-500/20 backdrop-blur-sm text-primary-400 text-sm font-bold mb-8">
                     <SparklesIcon className="w-5 h-5" />
                     Partnership Opportunity
                   </span>
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-8">
                     Become a Fischer
-                    <span className="block text-white drop-shadow-lg">
+                    <span className="block text-primary-400">
                       Authorized Dealer
                     </span>
                   </h2>
-                  <p className="text-xl text-dark-800 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                  <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                     Join our nationwide network of 500+ dealers and grow your business with
                     Pakistan's most trusted home appliance brand.
                   </p>
                   <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 hover:scale-105 active:scale-[0.98] rounded-2xl font-bold text-white text-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl">
+                    <Link to="/become-dealer" className="group px-8 py-4 bg-primary-500 hover:bg-primary-400 hover:scale-105 active:scale-[0.98] rounded-2xl font-bold text-dark-900 text-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl hover:shadow-primary-500/20">
                       Apply Now
                       <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
-                    <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 hover:scale-105 active:scale-[0.98] backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-all duration-300">
+                    <Link to="/contact" className="px-8 py-4 bg-white/10 hover:bg-white/20 hover:scale-105 active:scale-[0.98] backdrop-blur-sm rounded-2xl font-bold text-white text-lg transition-all duration-300 border border-white/10">
                       Contact Sales
                     </Link>
                   </div>
@@ -953,7 +953,7 @@ export default function Home() {
                     </span>
                     <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                       New{' '}
-                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
+                      <span className="text-primary-600 dark:text-primary-400">Arrivals</span>
                     </h2>
                     <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
                       Check out our latest additions to the catalog
@@ -1004,7 +1004,7 @@ export default function Home() {
                 </span>
                 <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                   What Our{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Customers</span>{' '}
+                  <span className="text-primary-600 dark:text-primary-400">Customers</span>{' '}
                   Say
                 </h2>
                 <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
@@ -1129,7 +1129,7 @@ export default function Home() {
                   {/* ISO Badge - static */}
                   <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl bg-white dark:bg-dark-800 shadow-2xl border border-dark-100 dark:border-dark-700">
                     <div className="text-center">
-                      <div className="text-5xl font-black bg-gradient-to-r from-primary-500 to-amber-500 bg-clip-text text-transparent">
+                      <div className="text-5xl font-black text-primary-600 dark:text-primary-400">
                         ISO
                       </div>
                       <div className="text-lg font-bold text-dark-500 dark:text-dark-400">9001:2015</div>
@@ -1154,7 +1154,7 @@ export default function Home() {
               </span>
               <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-8 leading-tight">
                 Pakistan's Most{' '}
-                <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Trusted</span>{' '}
+                <span className="text-primary-600 dark:text-primary-400">Trusted</span>{' '}
                 Appliance Brand
               </h2>
               <p className="text-xl text-dark-500 dark:text-dark-400 mb-10 leading-relaxed">
@@ -1221,7 +1221,7 @@ export default function Home() {
             </span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
               Get Exclusive{' '}
-              <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Offers</span>
+              <span className="text-primary-400">Offers</span>
             </h2>
             <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto">
               Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.
@@ -1238,7 +1238,7 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="px-8 py-5 bg-gradient-to-r from-primary-500 to-amber-500 hover:from-primary-400 hover:to-amber-400
+                className="px-8 py-5 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-400 hover:to-primary-300
                          rounded-2xl font-bold text-dark-900 text-lg transition-colors"
               >
                 Subscribe
