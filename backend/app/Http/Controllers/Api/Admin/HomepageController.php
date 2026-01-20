@@ -9,6 +9,7 @@ use App\Models\HomepageProduct;
 use App\Models\HomepageStat;
 use App\Models\HomepageFeature;
 use App\Models\HomepageTrustBadge;
+use App\Models\NotableClient;
 use App\Models\Testimonial;
 use App\Models\Banner;
 use App\Models\Category;
@@ -41,6 +42,7 @@ class HomepageController extends Controller
                 ->ordered()
                 ->get(),
             'banners' => Banner::orderBy('sort_order')->get(),
+            'notable_clients' => NotableClient::ordered()->get(),
             // For selection dropdowns
             'all_categories' => Category::select('id', 'name', 'slug', 'image', 'icon')
                 ->where('is_active', true)
@@ -492,6 +494,70 @@ class HomepageController extends Controller
         $this->clearCache();
 
         return $this->success(null, 'Banner deleted successfully');
+    }
+
+    /**
+     * Update notable clients
+     */
+    public function updateNotableClients(Request $request)
+    {
+        $validated = $request->validate([
+            'clients' => 'required|array',
+            'clients.*.id' => 'nullable|integer',
+            'clients.*.name' => 'required|string|max:100',
+            'clients.*.logo' => 'nullable|string',
+            'clients.*.website' => 'nullable|string|max:255',
+            'clients.*.sort_order' => 'integer',
+            'clients.*.is_visible' => 'boolean',
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            $existingIds = collect($validated['clients'])
+                ->pluck('id')
+                ->filter()
+                ->toArray();
+
+            // Delete removed clients
+            NotableClient::whereNotIn('id', $existingIds)->delete();
+
+            // Update or create clients
+            foreach ($validated['clients'] as $index => $client) {
+                NotableClient::updateOrCreate(
+                    ['id' => $client['id'] ?? null],
+                    [
+                        'name' => $client['name'],
+                        'logo' => $client['logo'] ?? null,
+                        'website' => $client['website'] ?? null,
+                        'sort_order' => $client['sort_order'] ?? $index,
+                        'is_visible' => $client['is_visible'] ?? true,
+                    ]
+                );
+            }
+        });
+
+        $this->clearCache();
+
+        return $this->success(
+            NotableClient::ordered()->get(),
+            'Notable clients updated successfully'
+        );
+    }
+
+    /**
+     * Upload client logo
+     */
+    public function uploadClientLogo(Request $request)
+    {
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
+
+        $path = $request->file('logo')->store('clients', 'public');
+
+        return $this->success([
+            'path' => '/storage/' . $path,
+            'url' => asset('storage/' . $path),
+        ], 'Logo uploaded successfully');
     }
 
     /**

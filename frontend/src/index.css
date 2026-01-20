@@ -278,7 +278,7 @@ html.lenis, html.lenis body {
      PRODUCT CARDS - E-commerce specific
      ======================================== */
   .product-card {
-    @apply relative bg-white dark:bg-dark-800/50 rounded-2xl overflow-hidden
+    @apply relative bg-white dark:bg-dark-800/50 rounded-2xl overflow-visible
            border border-dark-100 dark:border-dark-700/50
            shadow-card hover:shadow-card-hover
            transition-all duration-500 ease-out;
@@ -289,7 +289,7 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-image {
-    @apply relative aspect-square overflow-hidden bg-gradient-to-br from-dark-50 to-dark-100 dark:from-dark-800 dark:to-dark-900;
+    @apply relative aspect-square overflow-hidden bg-gradient-to-br from-dark-50 to-dark-100 dark:from-dark-800 dark:to-dark-900 rounded-t-2xl;
   }
 
   .product-card .product-image img {
@@ -1439,4 +1439,62 @@ html.lenis, html.lenis body {
 @keyframes icon-bounce-anim {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.2); }
+}
+
+/* ========================================
+   3D PERSPECTIVE UTILITIES FOR ANIMATIONS
+   ======================================== */
+
+/* 3D perspective container */
+.perspective-1000 {
+  perspective: 1000px;
+  perspective-origin: center;
+}
+
+.perspective-500 {
+  perspective: 500px;
+  perspective-origin: center;
+}
+
+/* Preserve 3D transformations */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Backface visibility for card flips */
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.backface-visible {
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+/* 3D rotation utilities */
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.rotate-x-180 {
+  transform: rotateX(180deg);
+}
+
+/* Hardware acceleration for smooth animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
 }

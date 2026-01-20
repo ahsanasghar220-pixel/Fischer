@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { useInView } from 'framer-motion'
 import {
   ArrowRightIcon,
   TruckIcon,
@@ -23,17 +22,40 @@ import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import FullWidthBanner from '@/components/ui/FullWidthBanner'
 import CategoryShowcase from '@/components/ui/CategoryShowcase'
+import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
 import { HoverCard } from '@/components/effects/ScrollReveal'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
 import type { Bundle } from '@/api/bundles'
 import toast from 'react-hot-toast'
+import LogoSplitIntro from '@/components/home/LogoSplitIntro'
+import KitchenLineArt from '@/components/home/KitchenLineArt'
+import NotableClients from '@/components/home/NotableClients'
 
 // Animated Counter component for stats
 function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.5 })
+  const [isInView, setIsInView] = useState(false)
   const [displayValue, setDisplayValue] = useState('0')
+
+  // Use Intersection Observer instead of framer-motion
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!isInView) return
@@ -154,6 +176,13 @@ interface TrustBadge {
   image?: string
 }
 
+interface NotableClient {
+  id: number
+  name: string
+  logo: string | null
+  website: string | null
+}
+
 interface SectionSettings {
   title?: string
   subtitle?: string
@@ -171,6 +200,7 @@ interface HomeData {
   stats: Stat[]
   features: Feature[]
   trust_badges: TrustBadge[]
+  notable_clients: NotableClient[]
   sections: Record<string, SectionSettings>
   settings: Record<string, string>
 }
@@ -285,6 +315,7 @@ export default function Home() {
   const [currentBanner, setCurrentBanner] = useState(0)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
+  const [introComplete, setIntroComplete] = useState(false)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -332,6 +363,7 @@ export default function Home() {
   const features = data?.features?.length ? data.features : defaultFeatures
   const testimonials = data?.testimonials?.length ? data.testimonials : defaultTestimonials
   const trustBadges = data?.trust_badges?.length ? data.trust_badges : defaultTrustBadges
+  const notableClients = data?.notable_clients || []
   const sections = data?.sections || {}
 
   // Check if sections are enabled
@@ -375,7 +407,13 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-white dark:bg-dark-950">
+    <>
+      {/* Logo Split Intro Animation */}
+      {!introComplete && (
+        <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
+      )}
+
+      <div className="bg-white dark:bg-dark-950">
       {/* ==========================================
           HERO SECTION - Performance Optimized
           ========================================== */}
@@ -579,12 +617,13 @@ export default function Home() {
       </section>
 
       {/* ==========================================
-          STATS BAR - Simple CSS animations
+          STATS BAR - Animated Section
           ========================================== */}
       {isSectionEnabled('stats') && (
-      <section className="relative -mt-20 z-20">
-        <div className="container-xl">
-          <div className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12 relative overflow-hidden animate-fade-in-up">
+      <AnimatedSection animation="fade-up" duration={1000} distance={60} threshold={0.15} easing="gentle">
+        <section className="relative -mt-20 z-20">
+          <div className="container-xl">
+            <div className="bg-white dark:bg-dark-800 rounded-3xl shadow-2xl border border-dark-100 dark:border-dark-700 p-8 md:p-12 relative overflow-hidden">
             {/* Subtle background gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-amber-500/5 pointer-events-none" />
 
@@ -609,54 +648,71 @@ export default function Home() {
                 )
               })}
             </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
-          FEATURES - Simple Grid
+          KITCHEN LINE ART - Interactive Product Showcase
+          ========================================== */}
+      <AnimatedSection animation="fade-up" duration={1200} threshold={0.05} easing="gentle">
+        <KitchenLineArt />
+      </AnimatedSection>
+
+      {/* ==========================================
+          FEATURES - Elegant Scroll Animation
           ========================================== */}
       {isSectionEnabled('features') && (
-      <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
-        <div className="container-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => {
-              const Icon = getIcon(feature.icon)
-              const colors = getColorClasses(feature.color)
-              return (
-                <div
-                  key={feature.title}
-                  className="group relative p-8 rounded-3xl overflow-hidden h-full
-                            bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
-                            hover:border-primary-500/40 hover:shadow-2xl hover:shadow-primary-500/15
-                            hover:-translate-y-2 transition-all duration-300"
-                >
-                  {/* Gradient background on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-amber-500/0 group-hover:from-primary-500/5 group-hover:to-amber-500/5 transition-all duration-300" />
-
-                  {/* Icon */}
+      <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
+        <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
+          <div className="container-xl">
+            <StaggeredChildren
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              staggerDelay={150}
+              duration={900}
+              animation="fade-up"
+              easing="gentle"
+              once
+            >
+              {features.map((feature) => {
+                const Icon = getIcon(feature.icon)
+                const colors = getColorClasses(feature.color)
+                return (
                   <div
-                    className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    key={feature.title}
+                    className="group relative p-8 rounded-3xl overflow-hidden h-full
+                              bg-white dark:bg-dark-800/50 border border-dark-100 dark:border-dark-700/50
+                              hover:border-primary-500/40 hover:shadow-2xl hover:shadow-primary-500/15
+                              hover:-translate-y-2 transition-all duration-300"
                   >
-                    <Icon className="w-8 h-8" style={{ color: colors.text }} />
+                    {/* Gradient background on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-amber-500/0 group-hover:from-primary-500/5 group-hover:to-amber-500/5 transition-all duration-300" />
+
+                    {/* Icon */}
+                    <div
+                      className={`relative w-16 h-16 ${colors.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <Icon className="w-8 h-8" style={{ color: colors.text }} />
+                    </div>
+
+                    <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
+                      {feature.title}
+                    </h3>
+                    <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
+                      {feature.description}
+                    </p>
+
+                    {/* Border glow on hover */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
                   </div>
-
-                  <h3 className="relative text-xl font-bold text-dark-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
-                    {feature.title}
-                  </h3>
-                  <p className="relative text-dark-500 dark:text-dark-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-
-                  {/* Border glow on hover */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left" />
-                </div>
-              )
-            })}
+                )
+              })}
+            </StaggeredChildren>
           </div>
-        </div>
-      </section>
+        </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
@@ -676,37 +732,43 @@ export default function Home() {
           BUNDLE CAROUSEL - Featured Bundles Slider
           ========================================== */}
       {homepageBundles?.carousel && homepageBundles.carousel.length > 0 && (
-        <section className="section bg-white dark:bg-dark-900">
-          <div className="container-xl">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-              <div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
-                  <GiftIcon className="w-4 h-4" />
-                  Special Bundles
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                  Save More with{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
-                </h2>
-                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
-                  Get the best value with our curated product bundles
-                </p>
-              </div>
-              <Link
-                to="/bundles"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
-              >
-                View All Bundles
-                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+        <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
+          <section className="section bg-white dark:bg-dark-900">
+            <div className="container-xl">
+              <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                  <div>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-600 dark:text-amber-400 text-sm font-semibold mb-4">
+                      <GiftIcon className="w-4 h-4" />
+                      Special Bundles
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                      Save More with{' '}
+                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Bundles</span>
+                    </h2>
+                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                      Get the best value with our curated product bundles
+                    </p>
+                  </div>
+                  <Link
+                    to="/bundles"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 transition-colors hover:shadow-lg"
+                  >
+                    View All Bundles
+                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </AnimatedSection>
+              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                <BundleCarousel
+                  bundles={homepageBundles.carousel}
+                  onQuickView={setQuickViewBundle}
+                  onAddToCart={handleAddBundleToCart}
+                />
+              </AnimatedSection>
             </div>
-            <BundleCarousel
-              bundles={homepageBundles.carousel}
-              onQuickView={setQuickViewBundle}
-              onAddToCart={handleAddBundleToCart}
-            />
-          </div>
-        </section>
+          </section>
+        </AnimatedSection>
       )}
 
       {/* ==========================================
@@ -742,178 +804,214 @@ export default function Home() {
       )}
 
       {/* ==========================================
-          FEATURED PRODUCTS - Simple Grid
+          FEATURED PRODUCTS - Elegant Animated Grid
           ========================================== */}
       {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
-        <section className="section bg-dark-950 relative overflow-hidden">
-          {/* Static Background Gradients */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
-          </div>
+        <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+          <section className="section bg-dark-950 relative overflow-hidden">
+            {/* Static Background Gradients */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
+              <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
+            </div>
 
-          <div className="container-xl relative">
-            {/* Section Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-              <div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
-                  <FireIcon className="w-4 h-4" />
-                  Hand-picked for you
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black text-white">
-                  Featured{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
-                </h2>
-                <p className="text-xl text-dark-400 mt-4 max-w-xl">
-                  Our most popular appliances loved by customers across Pakistan
-                </p>
-              </div>
-              <Link
-                to="/shop?featured=1"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 hover:scale-105 active:scale-[0.98] transition-all duration-300"
+            <div className="container-xl relative">
+              {/* Section Header */}
+              <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+                  <div>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-4">
+                      <FireIcon className="w-4 h-4" />
+                      Hand-picked for you
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-black text-white">
+                      Featured{' '}
+                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Products</span>
+                    </h2>
+                    <p className="text-xl text-dark-400 mt-4 max-w-xl">
+                      Our most popular appliances loved by customers across Pakistan
+                    </p>
+                  </div>
+                  <Link
+                    to="/shop?featured=1"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-white/20 text-white font-semibold hover:bg-white/10 hover:border-primary-500/50 hover:scale-105 active:scale-[0.98] transition-all duration-300"
+                  >
+                    View All Products
+                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </AnimatedSection>
+
+              {/* Products Grid - Staggered Animation */}
+              <StaggeredChildren
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                staggerDelay={80}
+                duration={800}
+                animation="fade-up"
+                easing="gentle"
+                once
               >
-                View All Products
-                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+                {data.featured_products.slice(0, 10).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </StaggeredChildren>
             </div>
-
-            {/* Products Grid - Simple */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {data.featured_products.slice(0, 10).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        </AnimatedSection>
       )}
 
       {/* ==========================================
           CTA BANNER - Become a Dealer
           ========================================== */}
       {isSectionEnabled('dealer_cta') && (
-      <section className="relative py-24 overflow-hidden">
-        {/* Static Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
-          {/* Static decorative orbs */}
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-        </div>
-
-        <div className="relative container-xl">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Content */}
-            <div className="text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
-                <SparklesIcon className="w-5 h-5" />
-                Partnership Opportunity
-              </span>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
-                Become a Fischer
-                <span className="block text-white drop-shadow-lg">
-                  Authorized Dealer
-                </span>
-              </h2>
-              <p className="text-xl text-dark-800 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Join our nationwide network of 500+ dealers and grow your business with
-                Pakistan's most trusted home appliance brand.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 hover:scale-105 active:scale-[0.98] rounded-2xl font-bold text-white text-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl">
-                  Apply Now
-                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 hover:scale-105 active:scale-[0.98] backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-all duration-300">
-                  Contact Sales
-                </Link>
-              </div>
-            </div>
-
-            {/* Benefits Cards - Simple grid */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              {[
-                { title: 'Exclusive Margins', desc: 'Competitive dealer margins & incentives', icon: '💰' },
-                { title: 'Marketing Support', desc: 'Co-branded marketing materials', icon: '📢' },
-                { title: 'Training Programs', desc: 'Product & sales training', icon: '🎓' },
-                { title: 'Priority Support', desc: 'Dedicated dealer support line', icon: '🎯' },
-              ].map((benefit) => (
-                <div
-                  key={benefit.title}
-                  className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
-                           hover:bg-dark-900/20 hover:border-dark-900/20 hover:-translate-y-1 transition-all duration-300"
-                >
-                  <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                  <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
-                  <p className="text-dark-800">{benefit.desc}</p>
-                </div>
-              ))}
-            </div>
+      <AnimatedSection animation="fade" duration={1200} threshold={0.1} easing="gentle">
+        <section className="relative py-24 overflow-hidden">
+          {/* Static Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-500 to-amber-500">
+            {/* Static decorative orbs */}
+            <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-dark-900/15 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
           </div>
-        </div>
-      </section>
-      )}
 
-      {/* ==========================================
-          NEW ARRIVALS - Simple Grid
-          ========================================== */}
-      {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
-        <section className="section bg-white dark:bg-dark-900 overflow-hidden">
-          <div className="container-xl">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-              <div>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4">
-                  <BoltIcon className="w-4 h-4" />
-                  Just Arrived
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                  New{' '}
-                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
-                </h2>
-                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
-                  Check out our latest additions to the catalog
-                </p>
-              </div>
-              <Link
-                to="/shop?new=1"
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 hover:scale-105 active:scale-[0.98] transition-all duration-300 hover:shadow-lg"
+          <div className="relative container-xl">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Content */}
+              <AnimatedSection animation="fade-right" delay={200} distance={60} duration={1100} easing="gentle">
+                <div className="text-center lg:text-left">
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-dark-900/20 backdrop-blur-sm text-dark-900 text-sm font-bold mb-8">
+                    <SparklesIcon className="w-5 h-5" />
+                    Partnership Opportunity
+                  </span>
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-dark-900 leading-tight mb-8">
+                    Become a Fischer
+                    <span className="block text-white drop-shadow-lg">
+                      Authorized Dealer
+                    </span>
+                  </h2>
+                  <p className="text-xl text-dark-800 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    Join our nationwide network of 500+ dealers and grow your business with
+                    Pakistan's most trusted home appliance brand.
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <Link to="/become-dealer" className="group px-8 py-4 bg-dark-900 hover:bg-dark-800 hover:scale-105 active:scale-[0.98] rounded-2xl font-bold text-white text-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl">
+                      Apply Now
+                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                    <Link to="/contact" className="px-8 py-4 bg-white/20 hover:bg-white/30 hover:scale-105 active:scale-[0.98] backdrop-blur-sm rounded-2xl font-bold text-dark-900 text-lg transition-all duration-300">
+                      Contact Sales
+                    </Link>
+                  </div>
+                </div>
+              </AnimatedSection>
+
+              {/* Benefits Cards - Staggered grid */}
+              <StaggeredChildren
+                className="grid sm:grid-cols-2 gap-5"
+                staggerDelay={150}
+                duration={900}
+                animation="fade-up"
+                easing="gentle"
+                once
               >
-                View All New
-                <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {data.new_arrivals.slice(0, 5).map((product) => (
-                <ProductCard key={product.id} product={product} showNew />
-              ))}
+                {[
+                  { title: 'Exclusive Margins', desc: 'Competitive dealer margins & incentives', icon: '💰' },
+                  { title: 'Marketing Support', desc: 'Co-branded marketing materials', icon: '📢' },
+                  { title: 'Training Programs', desc: 'Product & sales training', icon: '🎓' },
+                  { title: 'Priority Support', desc: 'Dedicated dealer support line', icon: '🎯' },
+                ].map((benefit) => (
+                  <div
+                    key={benefit.title}
+                    className="p-6 rounded-3xl bg-dark-900/10 backdrop-blur-sm border border-dark-900/10
+                             hover:bg-dark-900/20 hover:border-dark-900/20 hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <span className="text-4xl mb-4 block">{benefit.icon}</span>
+                    <h3 className="text-xl font-bold text-dark-900 mb-2">{benefit.title}</h3>
+                    <p className="text-dark-800">{benefit.desc}</p>
+                  </div>
+                ))}
+              </StaggeredChildren>
             </div>
           </div>
         </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
-          TESTIMONIALS - Simple Slider (Performance Optimized)
+          NEW ARRIVALS - Elegant Animated Grid
+          ========================================== */}
+      {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
+        <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
+          <section className="section bg-white dark:bg-dark-900 overflow-hidden">
+            <div className="container-xl">
+              <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                  <div>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm font-semibold mb-4">
+                      <BoltIcon className="w-4 h-4" />
+                      Just Arrived
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                      New{' '}
+                      <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Arrivals</span>
+                    </h2>
+                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
+                      Check out our latest additions to the catalog
+                    </p>
+                  </div>
+                  <Link
+                    to="/shop?new=1"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-dark-900 dark:bg-white text-white dark:text-dark-900 font-semibold hover:bg-dark-800 dark:hover:bg-dark-100 hover:scale-105 active:scale-[0.98] transition-all duration-300 hover:shadow-lg"
+                  >
+                    View All New
+                    <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </AnimatedSection>
+
+              <StaggeredChildren
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                staggerDelay={100}
+                duration={800}
+                animation="fade-up"
+                easing="gentle"
+                once
+              >
+                {data.new_arrivals.slice(0, 5).map((product) => (
+                  <ProductCard key={product.id} product={product} showNew />
+                ))}
+              </StaggeredChildren>
+            </div>
+          </section>
+        </AnimatedSection>
+      )}
+
+      {/* ==========================================
+          TESTIMONIALS - Elegant Animated Slider
           ========================================== */}
       {isSectionEnabled('testimonials') && testimonials.length > 0 && (
-      <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
-        {/* Static Background */}
-        <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white dark:from-dark-900 to-transparent pointer-events-none" />
+      <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
+        <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
+          {/* Static Background */}
+          <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white dark:from-dark-900 to-transparent pointer-events-none" />
 
-        <div className="container-xl relative">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
-              <StarIcon className="w-4 h-4" />
-              {sections.testimonials?.title || 'Customer Reviews'}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-              What Our{' '}
-              <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Customers</span>{' '}
-              Say
-            </h2>
-            <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
-              {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
-            </p>
-          </div>
+          <div className="container-xl relative">
+            <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+              <div className="text-center mb-16">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm font-semibold mb-4">
+                  <StarIcon className="w-4 h-4" />
+                  {sections.testimonials?.title || 'Customer Reviews'}
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                  What Our{' '}
+                  <span className="bg-gradient-to-r from-primary-500 via-amber-500 to-primary-400 bg-clip-text text-transparent">Customers</span>{' '}
+                  Say
+                </h2>
+                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
+                  {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
+                </p>
+              </div>
+            </AnimatedSection>
 
           {/* Testimonials Slider - Simple CSS transitions */}
           <div className="max-w-4xl mx-auto">
@@ -990,16 +1088,18 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
-          WHY FISCHER - Clean Section (Performance Optimized)
+          WHY FISCHER - Elegant Animated Section
           ========================================== */}
       {isSectionEnabled('about') && (
-      <section className="section bg-white dark:bg-dark-900 overflow-hidden">
-        <div className="container-xl">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+      <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
+        <section className="section bg-white dark:bg-dark-900 overflow-hidden">
+          <div className="container-xl">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
             {/* Left - Image */}
             <div className="relative">
               <div className="relative">
@@ -1090,14 +1190,23 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
-          NEWSLETTER - Simple Design
+          NOTABLE CLIENTS - Trust Section
+          ========================================== */}
+      {notableClients.length > 0 && (
+        <NotableClients clients={notableClients} speed="medium" />
+      )}
+
+      {/* ==========================================
+          NEWSLETTER - Elegant Animated Section
           ========================================== */}
       {isSectionEnabled('newsletter') && (
-      <section className="relative py-24 overflow-hidden">
+      <AnimatedSection animation="fade-up" duration={1100} threshold={0.1} easing="gentle">
+        <section className="relative py-24 overflow-hidden">
         {/* Static gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-dark-900 via-dark-800 to-dark-900 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(244,180,44,0.12)_0%,transparent_70%)]" />
@@ -1141,7 +1250,8 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </section>
+        </section>
+      </AnimatedSection>
       )}
 
       {/* ==========================================
@@ -1165,5 +1275,6 @@ export default function Home() {
         onClose={() => setQuickViewBundle(null)}
       />
     </div>
+    </>
   )
 }

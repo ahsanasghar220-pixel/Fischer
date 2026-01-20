@@ -13,6 +13,7 @@ use App\Models\HomepageProduct;
 use App\Models\HomepageStat;
 use App\Models\HomepageFeature;
 use App\Models\HomepageTrustBadge;
+use App\Models\NotableClient;
 use App\Models\Testimonial;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -217,6 +218,16 @@ class HomeController extends Controller
             ];
         });
 
+        // Get notable clients (only those with logos)
+        $notableClients = NotableClient::visible()->withLogo()->ordered()->get()->map(function ($client) {
+            return [
+                'id' => $client->id,
+                'name' => $client->name,
+                'logo' => $client->logo,
+                'website' => $client->website,
+            ];
+        });
+
         // Get general settings
         $settings = [
             'phone' => Setting::get('phone', '+92 321 1146642'),
@@ -238,6 +249,7 @@ class HomeController extends Controller
             'features' => $features,
             'testimonials' => $testimonials,
             'trust_badges' => $trustBadges,
+            'notable_clients' => $notableClients,
             'settings' => $settings,
         ];
     }
@@ -310,6 +322,7 @@ class HomeController extends Controller
             'new_arrivals' => $newArrivals,
             'bestsellers' => $bestsellers,
             'testimonials' => [],
+            'notable_clients' => [],
             'settings' => $settings,
         ];
     }

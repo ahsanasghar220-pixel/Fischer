@@ -349,6 +349,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
         Route::post('/banners', [App\Http\Controllers\Api\Admin\HomepageController::class, 'storeBanner']);
         Route::put('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateBanner']);
         Route::delete('/banners/{id}', [App\Http\Controllers\Api\Admin\HomepageController::class, 'deleteBanner']);
+
+        // Notable Clients
+        Route::put('/notable-clients', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateNotableClients']);
+        Route::post('/notable-clients/upload', [App\Http\Controllers\Api\Admin\HomepageController::class, 'uploadClientLogo']);
     });
 
     // Real-time Analytics

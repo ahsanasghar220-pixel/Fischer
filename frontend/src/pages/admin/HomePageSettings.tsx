@@ -78,6 +78,15 @@ interface TrustBadge {
   is_visible: boolean
 }
 
+interface NotableClient {
+  id?: number
+  name: string
+  logo?: string
+  website?: string
+  sort_order: number
+  is_visible: boolean
+}
+
 interface HomepageCategory {
   id: number
   category_id: number
@@ -132,6 +141,7 @@ interface HomepageData {
   features: Feature[]
   testimonials: Testimonial[]
   trust_badges: TrustBadge[]
+  notable_clients: NotableClient[]
   homepage_categories: HomepageCategory[]
   homepage_products: HomepageProduct[]
   banners: Banner[]
@@ -165,7 +175,7 @@ const colorOptions = [
   { value: 'cyan', label: 'Cyan' },
 ]
 
-const validTabs = ['sections', 'banners', 'categories', 'products', 'stats', 'features', 'testimonials', 'badges']
+const validTabs = ['sections', 'banners', 'categories', 'products', 'stats', 'features', 'testimonials', 'badges', 'clients']
 
 export default function HomePageSettings() {
   const queryClient = useQueryClient()
@@ -197,6 +207,7 @@ export default function HomePageSettings() {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<number[]>([])
   const [newArrivalsProducts, setNewArrivalsProducts] = useState<number[]>([])
+  const [notableClients, setNotableClients] = useState<NotableClient[]>([])
 
   // Modal states
   const [bannerModal, setBannerModal] = useState<{ open: boolean; banner: Banner | null }>({ open: false, banner: null })
@@ -231,6 +242,7 @@ export default function HomePageSettings() {
       setStats(data.stats || [])
       setFeatures(data.features || [])
       setTrustBadges(data.trust_badges || [])
+      setNotableClients(data.notable_clients || [])
       setSelectedCategories(data.homepage_categories?.map(hc => hc.category_id) || [])
       // Initialize product selections
       const featured = data.homepage_products?.filter(hp => hp.section === 'featured').map(hp => hp.product_id) || []
@@ -283,6 +295,29 @@ export default function HomePageSettings() {
       toast.success('Trust badges saved')
     },
     onError: () => toast.error('Failed to save trust badges'),
+  })
+
+  const updateNotableClientsMutation = useMutation({
+    mutationFn: async (clientsData: NotableClient[]) => {
+      await api.put('/admin/homepage/notable-clients', { clients: clientsData })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
+      toast.success('Notable clients saved')
+    },
+    onError: () => toast.error('Failed to save notable clients'),
+  })
+
+  const uploadClientLogoMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData()
+      formData.append('logo', file)
+      const response = await api.post('/admin/homepage/notable-clients/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data.data
+    },
+    onError: () => toast.error('Failed to upload logo'),
   })
 
   const updateCategoriesMutation = useMutation({
@@ -527,7 +562,44 @@ export default function HomePageSettings() {
     { id: 'features', label: 'Features' },
     { id: 'testimonials', label: 'Testimonials' },
     { id: 'badges', label: 'Trust Badges' },
+    { id: 'clients', label: 'Notable Clients' },
   ]
+
+  // Notable clients helper functions
+  const updateClient = (index: number, field: keyof NotableClient, value: any) => {
+    const newClients = [...notableClients]
+    newClients[index] = { ...newClients[index], [field]: value }
+    setNotableClients(newClients)
+  }
+
+  const moveClient = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= notableClients.length) return
+    const newClients = [...notableClients]
+    ;[newClients[index], newClients[newIndex]] = [newClients[newIndex], newClients[index]]
+    // Update sort_order
+    newClients.forEach((client, i) => {
+      client.sort_order = i
+    })
+    setNotableClients(newClients)
+  }
+
+  const removeClient = (index: number) => {
+    setNotableClients(notableClients.filter((_, i) => i !== index))
+  }
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const result = await uploadClientLogoMutation.mutateAsync(file)
+      updateClient(index, 'logo', result.path)
+      toast.success('Logo uploaded')
+    } catch {
+      // Error handled by mutation
+    }
+  }
 
   if (isLoading) {
     return (
@@ -1326,6 +1398,137 @@ export default function HomePageSettings() {
               >
                 {updateTrustBadgesMutation.isPending && <LoadingSpinner size="sm" />}
                 Save Trust Badges
+              </button>
+            </div>
+          )}
+
+          {/* Notable Clients Tab */}
+          {activeTab === 'clients' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Notable Clients</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">
+                    Manage client logos displayed in the trust section. Only clients with logos will be shown on the homepage.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setNotableClients([...notableClients, {
+                    name: '',
+                    logo: '',
+                    website: '',
+                    sort_order: notableClients.length,
+                    is_visible: true
+                  }])}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Add Client
+                </button>
+              </div>
+
+              {/* Client Cards Grid */}
+              {notableClients.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {notableClients.map((client, index) => (
+                    <div key={index} className="border border-dark-200 dark:border-dark-700 rounded-xl p-4 bg-white dark:bg-dark-800">
+                      {/* Logo Preview/Upload */}
+                      <div className="aspect-[3/2] bg-dark-100 dark:bg-dark-700 rounded-lg mb-4 flex items-center justify-center overflow-hidden relative group">
+                        {client.logo ? (
+                          <img
+                            src={client.logo}
+                            alt={client.name || 'Client logo'}
+                            className="max-w-full max-h-full object-contain p-4"
+                          />
+                        ) : (
+                          <PhotoIcon className="w-12 h-12 text-dark-400" />
+                        )}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <label className="px-3 py-2 bg-white rounded-lg cursor-pointer text-sm font-medium hover:bg-dark-100 transition-colors">
+                            {client.logo ? 'Change Logo' : 'Upload Logo'}
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) => handleLogoUpload(e, index)}
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Client Name */}
+                      <input
+                        type="text"
+                        value={client.name}
+                        onChange={(e) => updateClient(index, 'name', e.target.value)}
+                        placeholder="Client Name"
+                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white mb-3"
+                      />
+
+                      {/* Website URL */}
+                      <input
+                        type="text"
+                        value={client.website || ''}
+                        onChange={(e) => updateClient(index, 'website', e.target.value)}
+                        placeholder="Website URL (optional)"
+                        className="w-full px-3 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white mb-3 text-sm"
+                      />
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={client.is_visible}
+                            onChange={(e) => updateClient(index, 'is_visible', e.target.checked)}
+                            className="w-4 h-4 rounded text-primary-600"
+                          />
+                          <span className="text-sm text-dark-600 dark:text-dark-400">Visible</span>
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => moveClient(index, 'up')}
+                            disabled={index === 0}
+                            className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                            title="Move up"
+                          >
+                            <ChevronUpIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => moveClient(index, 'down')}
+                            disabled={index === notableClients.length - 1}
+                            className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                            title="Move down"
+                          >
+                            <ChevronDownIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => removeClient(index)}
+                            className="p-1 text-red-500 hover:text-red-600"
+                            title="Remove"
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-dark-500 dark:text-dark-400 border border-dashed border-dark-300 dark:border-dark-600 rounded-xl">
+                  <PhotoIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No notable clients added yet.</p>
+                  <p className="text-sm mt-1">Add clients and upload their logos to display them on the homepage.</p>
+                </div>
+              )}
+
+              <button
+                onClick={() => updateNotableClientsMutation.mutate(notableClients)}
+                disabled={updateNotableClientsMutation.isPending}
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+              >
+                {updateNotableClientsMutation.isPending && <LoadingSpinner size="sm" />}
+                Save Notable Clients
               </button>
             </div>
           )}
