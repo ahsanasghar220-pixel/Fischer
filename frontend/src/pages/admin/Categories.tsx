@@ -182,7 +182,7 @@ export default function AdminCategories() {
       {/* Icon area */}
       <div className="h-36 flex items-center justify-center relative overflow-hidden">
         {/* Background gradient effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-500/0 group-hover:from-primary-500/10 group-hover:to-amber-500/10 transition-all duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-500/0 group-hover:from-primary-500/10 group-hover:to-primary-500/10 transition-all duration-500" />
 
         {/* Icon with hover scale */}
         <div className="group-hover:scale-110 transition-transform duration-500">

@@ -47,7 +47,7 @@ export default function Bundles() {
         {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="container mx-auto px-4 relative">
@@ -62,7 +62,7 @@ export default function Bundles() {
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
               Bundle{' '}
-              <span className="bg-gradient-to-r from-primary-400 to-amber-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent">
                 Deals
               </span>
             </h1>

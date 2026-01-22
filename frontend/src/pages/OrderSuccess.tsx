@@ -49,7 +49,7 @@ function Confetti() {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    const colors = ['#f4b42c', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316']
+    const colors = ['#722F37', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#f97316']
     const particles: {
       x: number
       y: number
@@ -270,7 +270,7 @@ export default function OrderSuccess() {
               style={{ animationDelay: '1s', animationFillMode: 'forwards' }}
             >
               <p className="text-sm text-dark-500 dark:text-dark-400 mb-1">Order Number</p>
-              <p className="text-3xl font-black bg-gradient-to-r from-primary-500 to-amber-500 bg-clip-text text-transparent">
+              <p className="text-3xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
                 {order.order_number}
               </p>
             </div>
@@ -364,7 +364,7 @@ export default function OrderSuccess() {
                 </div>
                 <div className="flex justify-between pt-3 border-t border-dark-200/50 dark:border-dark-600/50">
                   <span className="font-bold text-dark-900 dark:text-white">Total</span>
-                  <span className="text-2xl font-black bg-gradient-to-r from-primary-500 to-amber-500 bg-clip-text text-transparent">
+                  <span className="text-2xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
                     {formatPrice(order.total)}
                   </span>
                 </div>
@@ -416,7 +416,7 @@ export default function OrderSuccess() {
 
           {/* What's Next */}
           <div
-            className="bg-gradient-to-r from-primary-500/10 via-amber-500/10 to-primary-500/10 dark:from-primary-900/30 dark:via-amber-900/30 dark:to-primary-900/30 rounded-2xl p-6 mb-8 border border-primary-500/20 dark:border-primary-500/30 animate-fade-in-up opacity-0"
+            className="bg-gradient-to-r from-primary-500/10 via-primary-500/10 to-primary-500/10 dark:from-primary-900/30 dark:via-primary-900/30 dark:to-primary-900/30 rounded-2xl p-6 mb-8 border border-primary-500/20 dark:border-primary-500/30 animate-fade-in-up opacity-0"
             style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}
           >
             <h3 className="font-bold text-dark-900 dark:text-white mb-4 flex items-center gap-2">
@@ -446,7 +446,7 @@ export default function OrderSuccess() {
           >
             <Link
               to="/account/orders"
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-amber-500 hover:from-primary-400 hover:to-amber-400 text-dark-900 font-bold rounded-2xl text-center transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary-500/30"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-400 hover:to-primary-400 text-dark-900 font-bold rounded-2xl text-center transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary-500/30"
             >
               Track Order
             </Link>

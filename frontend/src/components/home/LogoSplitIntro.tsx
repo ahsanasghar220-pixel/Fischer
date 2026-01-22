@@ -9,7 +9,7 @@ interface LogoSplitIntroProps {
 const letters = ['F', 'I', 'S', 'C', 'H', 'E', 'R']
 
 export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }: LogoSplitIntroProps) {
-  const [phase, setPhase] = useState<'initial' | 'split' | 'reassemble' | 'complete'>('initial')
+  const [phase, setPhase] = useState<'initial' | 'reveal' | 'complete'>('initial')
   const [shouldShow, setShouldShow] = useState(true)
 
   useEffect(() => {
@@ -31,25 +31,22 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
       return
     }
 
-    // Animation sequence
+    // Elegant, measured animation sequence
     const timers: NodeJS.Timeout[] = []
 
-    // Start split animation
-    timers.push(setTimeout(() => setPhase('split'), 300))
+    // Start reveal animation with slight pause
+    timers.push(setTimeout(() => setPhase('reveal'), 300))
 
-    // Start reassemble
-    timers.push(setTimeout(() => setPhase('reassemble'), 1200))
-
-    // Complete and fade out
+    // Hold the reveal, then complete
     timers.push(setTimeout(() => {
       setPhase('complete')
       sessionStorage.setItem('fischer-intro-seen', 'true')
-    }, 2200))
+    }, 2400))
 
     // Call onComplete after fade out
     timers.push(setTimeout(() => {
       onComplete()
-    }, 2800))
+    }, 2900))
 
     return () => timers.forEach(t => clearTimeout(t))
   }, [onComplete, skipOnRepeatVisit])
@@ -58,7 +55,7 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
   const handleSkip = () => {
     sessionStorage.setItem('fischer-intro-seen', 'true')
     setPhase('complete')
-    setTimeout(onComplete, 300)
+    setTimeout(onComplete, 200)
   }
 
   // Listen for keypress or click to skip
@@ -76,244 +73,144 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
     <AnimatePresence>
       {phase !== 'complete' && (
         <motion.div
-          className="fixed inset-0 z-[9999] bg-dark-950 flex items-center justify-center cursor-pointer"
+          className="fixed inset-0 z-[9999] bg-dark-950 flex items-center justify-center cursor-pointer overflow-hidden"
           onClick={handleSkip}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
-          {/* Letter Animation with 3D effects */}
-          <div className="flex items-center justify-center gap-1 md:gap-2 perspective-1000">
+          {/* Sleek gradient background */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%)',
+            }}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Horizontal line reveal */}
+          <motion.div
+            className="absolute left-1/2 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"
+            initial={{ width: 0, x: '-50%' }}
+            animate={{
+              width: phase === 'reveal' ? '80vw' : 0,
+              x: '-50%'
+            }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Letter Animation - Clean reveal */}
+          <div className="flex items-center justify-center gap-0.5 md:gap-1">
             {letters.map((letter, i) => (
-              <motion.div key={i} className="relative">
-                {/* 3D Shadow layers */}
+              <motion.div
+                key={i}
+                className="relative overflow-hidden"
+              >
+                {/* Main letter - sleek white */}
                 <motion.span
-                  className="absolute text-5xl md:text-7xl lg:text-8xl font-bold text-primary-600/20 select-none"
+                  className="relative text-5xl md:text-7xl lg:text-8xl font-bold text-white select-none block"
                   style={{
                     fontFamily: 'Poppins, sans-serif',
-                    transform: 'translateZ(-10px)',
-                    filter: 'blur(2px)'
+                    letterSpacing: '-0.02em',
                   }}
                   initial={{
                     opacity: 0,
-                    scale: 0.5,
+                    y: 60,
+                    filter: 'blur(10px)',
                   }}
                   animate={{
-                    opacity: phase === 'split' ? 0.3 : 0,
-                    scale: 1,
-                    x: phase === 'split' ? (i - 3) * (window.innerWidth > 768 ? 60 : 30) + 5 : 5,
-                    y: phase === 'split' ? Math.sin(i * 0.8) * 40 + 5 : 5,
-                    rotate: phase === 'split' ? (i - 3) * 12 : 0,
+                    opacity: phase === 'reveal' ? 1 : 0,
+                    y: phase === 'reveal' ? 0 : 60,
+                    filter: phase === 'reveal' ? 'blur(0px)' : 'blur(10px)',
                   }}
                   transition={{
-                    duration: phase === 'initial' ? 0.4 : 0.6,
-                    delay: phase === 'initial' ? i * 0.08 : 0,
-                    ease: [0.25, 0.1, 0.25, 1],
+                    duration: 0.7,
+                    delay: i * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                 >
                   {letter}
                 </motion.span>
 
-                {/* Main letter with glow */}
-                <motion.span
-                  className="relative text-5xl md:text-7xl lg:text-8xl font-bold text-primary-500 select-none"
-                  style={{
-                    fontFamily: 'Poppins, sans-serif',
-                    textShadow: '0 0 20px rgba(244,180,44,0.5), 0 0 40px rgba(244,180,44,0.3)',
-                  }}
-                  initial={{
-                    opacity: 0,
-                    scale: 0.5,
-                    rotateY: -180,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    scale: phase === 'split' ? [1, 1.2, 1] : 1,
-                    x: phase === 'split' ? (i - 3) * (window.innerWidth > 768 ? 60 : 30) : 0,
-                    y: phase === 'split' ? Math.sin(i * 0.8) * 40 : 0,
-                    rotate: phase === 'split' ? (i - 3) * 12 : 0,
-                    rotateY: 0,
-                    textShadow: phase === 'split'
-                      ? '0 0 30px rgba(244,180,44,0.8), 0 0 60px rgba(244,180,44,0.5), 0 0 90px rgba(244,180,44,0.3)'
-                      : '0 0 20px rgba(244,180,44,0.5), 0 0 40px rgba(244,180,44,0.3)',
-                  }}
+                {/* Subtle shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: '-100%' }}
+                  animate={{ x: phase === 'reveal' ? '200%' : '-100%' }}
                   transition={{
-                    duration: phase === 'initial' ? 0.4 : 0.6,
-                    delay: phase === 'initial' ? i * 0.08 : 0,
-                    ease: [0.25, 0.1, 0.25, 1],
+                    duration: 1.2,
+                    delay: 0.5 + i * 0.06,
+                    ease: [0.4, 0, 0.2, 1],
                   }}
-                >
-                  {letter}
-                </motion.span>
-
-                {/* Particle burst on split */}
-                {phase === 'split' && (
-                  <>
-                    {[...Array(8)].map((_, j) => (
-                      <motion.div
-                        key={j}
-                        className="absolute w-1 h-1 bg-primary-400 rounded-full"
-                        style={{
-                          left: '50%',
-                          top: '50%',
-                        }}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{
-                          opacity: [0, 1, 0],
-                          scale: [0, 1, 0],
-                          x: Math.cos((j / 8) * Math.PI * 2) * 50,
-                          y: Math.sin((j / 8) * Math.PI * 2) * 50,
-                        }}
-                        transition={{
-                          duration: 0.8,
-                          delay: i * 0.05,
-                          ease: 'easeOut'
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
+                />
               </motion.div>
             ))}
           </div>
 
-          {/* Subtitle */}
+          {/* Subtitle - elegant fade */}
           <motion.p
-            className="absolute bottom-1/3 text-dark-400 text-sm md:text-base tracking-[0.3em] uppercase"
-            initial={{ opacity: 0, y: 20 }}
+            className="absolute bottom-1/3 text-white/50 text-xs md:text-sm tracking-[0.4em] uppercase font-light"
+            initial={{ opacity: 0, y: 10 }}
             animate={{
-              opacity: phase === 'reassemble' ? 1 : 0,
-              y: phase === 'reassemble' ? 0 : 20,
+              opacity: phase === 'reveal' ? 1 : 0,
+              y: phase === 'reveal' ? 0 : 10,
             }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.8, ease: [0.4, 0, 0.2, 1] }}
           >
             Electronics
           </motion.p>
 
-          {/* Skip hint */}
+          {/* Minimal decorative elements - subtle corner accents */}
+          <motion.div
+            className="absolute top-8 left-8 w-16 h-px bg-gradient-to-r from-white/30 to-transparent"
+            initial={{ scaleX: 0, originX: 0 }}
+            animate={{ scaleX: phase === 'reveal' ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          />
+          <motion.div
+            className="absolute top-8 left-8 w-px h-16 bg-gradient-to-b from-white/30 to-transparent"
+            initial={{ scaleY: 0, originY: 0 }}
+            animate={{ scaleY: phase === 'reveal' ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.25, ease: [0.4, 0, 0.2, 1] }}
+          />
+          <motion.div
+            className="absolute bottom-8 right-8 w-16 h-px bg-gradient-to-l from-white/30 to-transparent"
+            initial={{ scaleX: 0, originX: 1 }}
+            animate={{ scaleX: phase === 'reveal' ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          />
+          <motion.div
+            className="absolute bottom-8 right-8 w-px h-16 bg-gradient-to-t from-white/30 to-transparent"
+            initial={{ scaleY: 0, originY: 1 }}
+            animate={{ scaleY: phase === 'reveal' ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.25, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Soft ambient glow */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 60%)',
+            }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{
+              opacity: phase === 'reveal' ? 1 : 0,
+              scale: phase === 'reveal' ? 1 : 0.5,
+            }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          />
+
+          {/* Skip hint - minimal */}
           <motion.p
-            className="absolute bottom-8 text-dark-600 text-xs"
+            className="absolute bottom-6 text-white/30 text-xs tracking-wide"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ delay: 1 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ delay: 0.8 }}
           >
-            Click or press any key to skip
+            Press any key to skip
           </motion.p>
-
-          {/* Enhanced Decorative elements */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: phase === 'split' ? 0.2 : 0 }}
-          >
-            {/* Radial lines with glow */}
-            {[...Array(24)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute top-1/2 left-1/2 w-px h-[200vh] origin-center"
-                style={{
-                  rotate: `${i * 15}deg`,
-                  background: `linear-gradient(to bottom, transparent, rgba(244,180,44,${0.3 - i * 0.01}), transparent)`,
-                  boxShadow: '0 0 10px rgba(244,180,44,0.5)'
-                }}
-                initial={{ scaleY: 0, opacity: 0 }}
-                animate={{
-                  scaleY: phase === 'split' ? 1 : 0,
-                  opacity: phase === 'split' ? 1 : 0
-                }}
-                transition={{ duration: 0.5, delay: i * 0.01 }}
-              />
-            ))}
-
-            {/* Light rays */}
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={`ray-${i}`}
-                className="absolute top-1/2 left-1/2 w-2 h-[150vh] origin-center"
-                style={{
-                  rotate: `${i * 45}deg`,
-                  background: 'linear-gradient(to bottom, transparent, rgba(244,180,44,0.2), transparent)',
-                  filter: 'blur(10px)'
-                }}
-                initial={{ scaleY: 0, opacity: 0 }}
-                animate={{
-                  scaleY: phase === 'split' ? [0, 1, 0] : 0,
-                  opacity: phase === 'split' ? [0, 0.5, 0] : 0,
-                }}
-                transition={{
-                  duration: 1.5,
-                  delay: 0.3 + i * 0.05,
-                  repeat: phase === 'split' ? Infinity : 0,
-                  repeatDelay: 1
-                }}
-              />
-            ))}
-          </motion.div>
-
-          {/* Multiple glow layers for depth */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, rgba(244,180,44,0.4) 0%, rgba(244,180,44,0.2) 40%, transparent 70%)',
-            }}
-            animate={{
-              scale: phase === 'split' ? [1, 1.8, 1] : 1,
-              opacity: phase === 'split' ? [0.4, 0.7, 0.4] : 0.2,
-            }}
-            transition={{ duration: 1.5, repeat: phase === 'split' ? Infinity : 0 }}
-          />
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 60%)',
-            }}
-            animate={{
-              scale: phase === 'split' ? [1, 1.5, 1] : 1,
-              opacity: phase === 'split' ? [0.3, 0.5, 0.3] : 0.1,
-              rotate: [0, 180, 360]
-            }}
-            transition={{ duration: 2, repeat: phase === 'split' ? Infinity : 0 }}
-          />
-
-          {/* Screen shake effect */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            animate={phase === 'split' ? {
-              x: [0, -2, 2, -2, 2, 0],
-              y: [0, 2, -2, 2, -2, 0],
-            } : {}}
-            transition={{
-              duration: 0.4,
-              times: [0, 0.2, 0.4, 0.6, 0.8, 1],
-              repeat: phase === 'split' ? 2 : 0
-            }}
-          />
-
-          {/* Floating particles */}
-          {phase === 'split' && [...Array(30)].map((_, i) => (
-            <motion.div
-              key={`particle-${i}`}
-              className="absolute w-1 h-1 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                background: i % 3 === 0 ? '#f4b42c' : i % 3 === 1 ? '#3b82f6' : '#10b981'
-              }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1.5, 0],
-                y: [0, -100],
-                x: [0, (Math.random() - 0.5) * 100]
-              }}
-              transition={{
-                duration: 2 + Math.random(),
-                delay: Math.random() * 0.5,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 2
-              }}
-            />
-          ))}
         </motion.div>
       )}
     </AnimatePresence>

@@ -21,7 +21,7 @@ export default function NotableClients({ clients, speed = 'medium' }: NotableCli
 
   if (clientsWithLogos.length === 0) return null
 
-  const durations = { slow: 50, medium: 35, fast: 20 }
+  const durations = { slow: 25, medium: 15, fast: 10 }
   const duration = durations[speed]
 
   // Duplicate for seamless loop

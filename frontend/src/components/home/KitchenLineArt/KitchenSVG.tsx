@@ -982,7 +982,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           </motion.g>
           <motion.circle
             cx="220" cy="330" r="5"
-            animate={{ fill: ['rgba(244,180,44,0.2)', 'rgba(244,180,44,0.5)', 'rgba(244,180,44,0.2)'] }}
+            animate={{ fill: ['rgba(114,47,55,0.2)', 'rgba(114,47,55,0.5)', 'rgba(114,47,55,0.2)'] }}
             transition={{ duration: 2, repeat: Infinity }}
             style={{ filter: 'url(#glow)' }}
           />

@@ -98,7 +98,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
           <linearGradient id={`${uid}FL`} x1="0%" y1="100%" x2="0%" y2="0%">
             <stop offset="0%" stopColor="#dc2626" />
             <stop offset="50%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#8B4049" />
           </linearGradient>
         </defs>
         {/* Wall mount bracket */}
@@ -132,7 +132,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
           </linearGradient>
           <linearGradient id={`${uid}BF`} x1="0%" y1="100%" x2="0%" y2="0%">
             <stop offset="0%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#fbbf24" />
+            <stop offset="100%" stopColor="#8B4049" />
           </linearGradient>
         </defs>
         {/* Cooktop surface */}
@@ -177,8 +177,8 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
         <rect x="18" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
         <rect x="44" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
         {/* Hood lights */}
-        <circle cx="30" cy="24" r="2" fill="#fbbf24" opacity="0.9" />
-        <circle cx="50" cy="24" r="2" fill="#fbbf24" opacity="0.9" />
+        <circle cx="30" cy="24" r="2" fill="#8B4049" opacity="0.9" />
+        <circle cx="50" cy="24" r="2" fill="#8B4049" opacity="0.9" />
         {/* Steam rising */}
         <path d="M32 40 Q30 44 32 48" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
         <path d="M40 42 Q38 46 40 50" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
@@ -233,8 +233,8 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       <svg viewBox="0 0 80 80" fill="none" className={className}>
         <defs>
           <linearGradient id={`${uid}AC`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f4b42c" />
-            <stop offset="100%" stopColor="#fbbf24" />
+            <stop offset="0%" stopColor="#722F37" />
+            <stop offset="100%" stopColor="#8B4049" />
           </linearGradient>
         </defs>
         {/* Wrench */}
@@ -289,8 +289,8 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
     <svg viewBox="0 0 80 80" fill="none" className={className}>
       <defs>
         <linearGradient id={`${uid}DF`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#f4b42c" />
-          <stop offset="100%" stopColor="#fbbf24" />
+          <stop offset="0%" stopColor="#722F37" />
+          <stop offset="100%" stopColor="#8B4049" />
         </linearGradient>
       </defs>
       <rect x="15" y="15" width="50" height="50" rx="8" stroke={`url(#${uid}DF)`} strokeWidth="2.5" fill={`url(#${uid}DF)`} opacity="0.15" />

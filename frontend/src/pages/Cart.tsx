@@ -538,10 +538,10 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: BundleCartI
       layout
     >
       {/* Bundle Header with different background */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 -mx-4 -mt-4 px-4 py-3 mb-4 border-b border-amber-200 dark:border-amber-800/30">
+      <div className="bg-gradient-to-r from-primary-50 to-red-50 dark:from-primary-900/20 dark:to-red-900/20 -mx-4 -mt-4 px-4 py-3 mb-4 border-b border-primary-200 dark:border-primary-800/30">
         <div className="flex items-center gap-2">
-          <GiftIcon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">Bundle Offer</span>
+          <GiftIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+          <span className="text-sm font-semibold text-primary-700 dark:text-primary-300">Bundle Offer</span>
           {bundle.savings > 0 && (
             <span className="ml-auto text-xs font-medium text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
               Save {formatPrice(bundle.savings)}
@@ -567,13 +567,13 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: BundleCartI
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30">
-                  <GiftIcon className="w-8 h-8 text-amber-500" />
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-red-100 dark:from-primary-900/30 dark:to-red-900/30">
+                  <GiftIcon className="w-8 h-8 text-primary-500" />
                 </div>
               )}
             </motion.div>
             {/* Bundle badge */}
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center">
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center">
               <span className="text-[10px] font-bold text-white">{bundle.items_count}</span>
             </div>
           </Link>
@@ -606,7 +606,7 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: BundleCartI
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="mt-2 space-y-1.5 pl-2 border-l-2 border-amber-200 dark:border-amber-800/50">
+                      <div className="mt-2 space-y-1.5 pl-2 border-l-2 border-primary-200 dark:border-primary-800/50">
                         {item.bundle_slot_selections.map((selection) => (
                           <div key={`${selection.slot_id}-${selection.product_id}`} className="flex items-center gap-2 text-xs">
                             {selection.product_image && (

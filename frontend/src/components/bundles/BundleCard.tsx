@@ -46,7 +46,7 @@ const BundleCard = memo(function BundleCard({
 
   const getBadgeColor = (color: string) => {
     const colors: Record<string, string> = {
-      gold: 'bg-gradient-to-r from-amber-500 to-yellow-400 text-white',
+      gold: 'bg-gradient-to-r from-primary-500 to-primary-400 text-white',
       red: 'bg-gradient-to-r from-red-500 to-rose-400 text-white',
       blue: 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white',
       green: 'bg-gradient-to-r from-green-500 to-emerald-400 text-white',

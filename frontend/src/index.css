@@ -35,9 +35,10 @@ html.lenis, html.lenis body {
     --color-text-secondary: 55 55 62; /* Improved contrast: was 63 63 70 */
     --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
     --color-border: 228 228 231;
-    --color-accent: 201 162 39;
-    --glass-bg: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --color-accent: 114 47 55; /* Burgundy Wine #722F37 */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(228, 228, 231, 0.5);
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
   }
 
   .dark {
@@ -49,7 +50,7 @@ html.lenis, html.lenis body {
     --color-text-secondary: 220 220 224; /* Improved contrast: was 212 212 216 */
     --color-text-muted: 180 180 188; /* Improved contrast: was 161 161 170 (now 4.5:1 ratio) */
     --color-border: 63 63 70;
-    --color-accent: 201 162 39;
+    --color-accent: 180 80 95; /* Lighter burgundy for dark mode visibility */
     --glass-bg: rgba(24, 24, 27, 0.8);
     --glass-border: rgba(255, 255, 255, 0.1);
   }
@@ -197,26 +198,26 @@ html.lenis, html.lenis body {
      ======================================== */
   .card {
     @apply bg-white dark:bg-dark-800/50 rounded-2xl
-           border border-dark-100 dark:border-dark-700/50
+           border border-dark-200 dark:border-dark-700/50
            shadow-card backdrop-blur-sm
            transition-all duration-300;
   }
 
   .card-hover {
-    @apply card hover:shadow-card-hover hover:border-dark-200 dark:hover:border-dark-600
+    @apply card hover:shadow-card-hover hover:border-dark-300 dark:hover:border-dark-600
            hover:-translate-y-1 cursor-pointer;
   }
 
   .card-glass {
-    @apply bg-white/80 dark:bg-dark-800/60 backdrop-blur-xl
-           border border-white/20 dark:border-dark-700/30
-           rounded-2xl shadow-xl;
+    @apply bg-white/90 dark:bg-dark-800/60 backdrop-blur-xl
+           border border-dark-200/60 dark:border-dark-700/30
+           rounded-2xl shadow-lg dark:shadow-xl;
   }
 
   .card-premium {
     @apply bg-gradient-to-br from-white to-dark-50 dark:from-dark-800 dark:to-dark-900
-           rounded-3xl border border-dark-100 dark:border-dark-700
-           shadow-premium;
+           rounded-3xl border border-dark-200 dark:border-dark-700
+           shadow-lg dark:shadow-premium;
   }
 
   /* ========================================
@@ -359,12 +360,13 @@ html.lenis, html.lenis body {
      GLASS EFFECTS
      ======================================== */
   .glass {
-    @apply bg-white/70 dark:bg-dark-900/70 backdrop-blur-xl
-           border border-white/20 dark:border-dark-700/30;
+    @apply bg-white/85 dark:bg-dark-900/70 backdrop-blur-xl
+           border border-dark-200/50 dark:border-dark-700/30
+           shadow-sm dark:shadow-none;
   }
 
   .glass-card {
-    @apply glass rounded-2xl shadow-xl;
+    @apply glass rounded-2xl shadow-lg dark:shadow-xl;
   }
 
   /* ========================================
@@ -389,7 +391,7 @@ html.lenis, html.lenis body {
      ANIMATED GRADIENT BACKGROUND
      ======================================== */
   .gradient-animated {
-    background: linear-gradient(-45deg, #f4b42c, #fbbf24, #f59e0b, #d97706);
+    background: linear-gradient(-45deg, #722F37, #8B3D47, #A64D5A, #5E2730);
     background-size: 400% 400%;
     animation: gradient 8s ease infinite;
   }
@@ -519,15 +521,15 @@ html.lenis, html.lenis body {
 
   /* Glow effects */
   .glow-sm {
-    box-shadow: 0 0 10px rgba(244, 180, 44, 0.3);
+    box-shadow: 0 0 10px rgba(114, 47, 55, 0.3);
   }
 
   .glow {
-    box-shadow: 0 0 20px rgba(244, 180, 44, 0.4);
+    box-shadow: 0 0 20px rgba(114, 47, 55, 0.4);
   }
 
   .glow-lg {
-    box-shadow: 0 0 30px rgba(244, 180, 44, 0.5);
+    box-shadow: 0 0 30px rgba(114, 47, 55, 0.5);
   }
 
   /* Animation delays */
@@ -539,7 +541,7 @@ html.lenis, html.lenis body {
 
   /* Enhanced shadow for dark mode glow */
   .shadow-glow-lg {
-    box-shadow: 0 0 40px rgba(244, 180, 44, 0.4), 0 0 80px rgba(244, 180, 44, 0.2);
+    box-shadow: 0 0 40px rgba(114, 47, 55, 0.4), 0 0 80px rgba(114, 47, 55, 0.2);
   }
 
   /* Hero section background pattern */
@@ -558,13 +560,13 @@ html.lenis, html.lenis body {
   /* Border gradient */
   .border-gradient {
     border: double 2px transparent;
-    background-image: linear-gradient(white, white), linear-gradient(to right, #f4b42c, #fbbf24);
+    background-image: linear-gradient(white, white), linear-gradient(to right, #722F37, #8B3D47);
     background-origin: border-box;
     background-clip: padding-box, border-box;
   }
 
   .dark .border-gradient {
-    background-image: linear-gradient(#18181b, #18181b), linear-gradient(to right, #f4b42c, #fbbf24);
+    background-image: linear-gradient(#18181b, #18181b), linear-gradient(to right, #B4505F, #C76A78);
   }
 }
 
@@ -697,7 +699,7 @@ html.lenis, html.lenis body {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #f4b42c, #fbbf24, #f59e0b);
+  background: linear-gradient(135deg, #722F37, #8B3D47, #A64D5A);
   opacity: 0;
   z-index: -1;
   filter: blur(12px);
@@ -711,8 +713,8 @@ html.lenis, html.lenis body {
 /* Ambient glow for featured elements */
 .ambient-glow {
   box-shadow:
-    0 0 60px -15px rgba(244, 180, 44, 0.4),
-    0 0 120px -30px rgba(244, 180, 44, 0.2);
+    0 0 60px -15px rgba(114, 47, 55, 0.4),
+    0 0 120px -30px rgba(114, 47, 55, 0.2);
 }
 
 /* Shimmer animation for premium elements */
@@ -725,7 +727,7 @@ html.lenis, html.lenis body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(244, 180, 44, 0.15) 50%,
+    rgba(114, 47, 55, 0.15) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -792,9 +794,9 @@ html.lenis, html.lenis body {
   padding: 1px;
   background: linear-gradient(
     90deg,
-    rgba(244, 180, 44, 0),
-    rgba(244, 180, 44, 0.5),
-    rgba(244, 180, 44, 0)
+    rgba(114, 47, 55, 0),
+    rgba(114, 47, 55, 0.5),
+    rgba(114, 47, 55, 0)
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -854,7 +856,7 @@ html.lenis, html.lenis body {
   height: 150%;
   background: radial-gradient(
     circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(244, 180, 44, 0.15) 0%,
+    rgba(114, 47, 55, 0.15) 0%,
     transparent 50%
   );
   opacity: 0;
@@ -869,10 +871,10 @@ html.lenis, html.lenis body {
 /* Slow pulse animation for CTAs */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(244, 180, 44, 0.4);
+    box-shadow: 0 0 20px rgba(114, 47, 55, 0.4);
   }
   50% {
-    box-shadow: 0 0 40px rgba(244, 180, 44, 0.6);
+    box-shadow: 0 0 40px rgba(114, 47, 55, 0.6);
   }
 }
 
@@ -980,7 +982,7 @@ html.lenis, html.lenis body {
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #f4b42c, #fbbf24);
+  background: linear-gradient(90deg, #722F37, #8B3D47);
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1058,7 +1060,7 @@ html.lenis, html.lenis body {
 }
 
 .hover-glow-primary:hover {
-  box-shadow: 0 0 20px rgba(244, 180, 44, 0.4);
+  box-shadow: 0 0 20px rgba(114, 47, 55, 0.4);
 }
 
 /* Icon slide - icon moves on hover */
@@ -1192,8 +1194,8 @@ html.lenis, html.lenis body {
 
 /* Glow pulse for attention-grabbing elements */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 5px rgba(244, 180, 44, 0.3), 0 0 10px rgba(244, 180, 44, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(244, 180, 44, 0.5), 0 0 30px rgba(244, 180, 44, 0.3); }
+  0%, 100% { box-shadow: 0 0 5px rgba(114, 47, 55, 0.3), 0 0 10px rgba(114, 47, 55, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(114, 47, 55, 0.5), 0 0 30px rgba(114, 47, 55, 0.3); }
 }
 
 .animate-glow-pulse {
@@ -1354,11 +1356,11 @@ html.lenis, html.lenis body {
 .text-shimmer {
   background: linear-gradient(
     90deg,
-    #f4b42c 0%,
-    #fbbf24 25%,
+    #722F37 0%,
+    #8B3D47 25%,
     #fff 50%,
-    #fbbf24 75%,
-    #f4b42c 100%
+    #8B3D47 75%,
+    #722F37 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -1396,7 +1398,7 @@ html.lenis, html.lenis body {
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #f4b42c, #fbbf24);
+  background: linear-gradient(90deg, #722F37, #8B3D47);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1423,10 +1425,10 @@ html.lenis, html.lenis body {
 
 @keyframes glow-breathe {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(244, 180, 44, 0.3), 0 0 30px rgba(244, 180, 44, 0.15);
+    box-shadow: 0 0 15px rgba(114, 47, 55, 0.3), 0 0 30px rgba(114, 47, 55, 0.15);
   }
   50% {
-    box-shadow: 0 0 25px rgba(244, 180, 44, 0.5), 0 0 50px rgba(244, 180, 44, 0.25);
+    box-shadow: 0 0 25px rgba(114, 47, 55, 0.5), 0 0 50px rgba(114, 47, 55, 0.25);
   }
 }
 

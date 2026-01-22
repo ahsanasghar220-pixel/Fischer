@@ -37,7 +37,7 @@ function PageLoader() {
           {/* Logo/Icon in center */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-amber-500"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-400"
               animate={{
                 scale: [1, 1.1, 1],
               }}
@@ -215,7 +215,7 @@ export function ProgressBarTransition({ children }: { children: React.ReactNode 
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            className="fixed top-0 left-0 right-0 z-[9999] h-1 bg-gradient-to-r from-primary-500 via-amber-500 to-primary-500"
+            className="fixed top-0 left-0 right-0 z-[9999] h-1 bg-gradient-to-r from-primary-500 via-primary-500 to-primary-500"
             initial={{ scaleX: 0, transformOrigin: 'left' }}
             animate={{ scaleX: progress / 100 }}
             exit={{ scaleX: 1, opacity: 0 }}

@@ -252,7 +252,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                       {/* Badge */}
                       {bundle.badge_label && (
                         <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide text-white bg-gradient-to-r ${
-                          bundle.badge_color === 'gold' ? 'from-amber-500 to-yellow-400' :
+                          bundle.badge_color === 'gold' ? 'from-primary-500 to-primary-400' :
                           bundle.badge_color === 'red' ? 'from-red-500 to-rose-400' :
                           bundle.badge_color === 'blue' ? 'from-blue-500 to-cyan-400' :
                           'from-green-500 to-emerald-400'
@@ -456,7 +456,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                     </div>
 
                     {bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled && (
-                      <p className="mt-3 text-sm text-center text-amber-600 dark:text-amber-400">
+                      <p className="mt-3 text-sm text-center text-orange-600 dark:text-orange-400">
                         Complete all required selections to add to cart
                       </p>
                     )}
@@ -487,7 +487,7 @@ function QuickSlotSelector({ slot, selectedProductIds, onSelect }: QuickSlotSele
       isComplete
         ? 'border-green-500/50'
         : slot.is_required
-        ? 'border-amber-500/50'
+        ? 'border-orange-500/50'
         : 'border-gray-200 dark:border-dark-600'
     }`}>
       <div className={`px-3 py-2 text-sm font-medium flex items-center justify-between ${

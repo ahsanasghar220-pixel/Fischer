@@ -97,15 +97,18 @@ interface CategoryShowcaseProps {
   subtitle?: string
 }
 
-// Optimized Category Card Component - CSS-based animations for performance
+// Optimized Category Card Component - Prioritizes product images with enhanced animations
 const CategoryCard = memo(function CategoryCard({ category, iconGradient, index }: { category: Category; iconGradient: string; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
   // Simple 3D transform state
   const [transform3D, setTransform3D] = useState({ rotateX: 0, rotateY: 0 })
 
-  // Handle mouse move for subtle 3D effect - optimized
+  const hasImage = category.image && !imageError
+
+  // Handle mouse move for subtle 3D effect - reduced intensity for image cards
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
@@ -113,12 +116,13 @@ const CategoryCard = memo(function CategoryCard({ category, iconGradient, index 
     const centerY = rect.top + rect.height / 2
     const mouseXPos = (e.clientX - centerX) / (rect.width / 2)
     const mouseYPos = (e.clientY - centerY) / (rect.height / 2)
-    // Subtle rotation - max 5 degrees
+    // Reduced rotation - max 3 degrees for image cards
+    const maxRotation = hasImage ? 3 : 5
     setTransform3D({
-      rotateX: mouseYPos * -5,
-      rotateY: mouseXPos * 5,
+      rotateX: mouseYPos * -maxRotation,
+      rotateY: mouseXPos * maxRotation,
     })
-  }, [])
+  }, [hasImage])
 
   const handleMouseLeave = useCallback(() => {
     setTransform3D({ rotateX: 0, rotateY: 0 })
@@ -136,10 +140,11 @@ const CategoryCard = memo(function CategoryCard({ category, iconGradient, index 
     >
       <div
         ref={cardRef}
-        className={`relative bg-white dark:bg-dark-800 rounded-3xl overflow-hidden
-                   border-2 border-dark-100 dark:border-dark-700
+        className={`relative rounded-3xl overflow-hidden
+                   border border-dark-200 dark:border-dark-700
+                   shadow-md dark:shadow-none
                    transition-all duration-300 ease-out
-                   ${isHovered ? 'scale-[1.03]' : 'scale-100'}`}
+                   ${isHovered ? 'scale-[1.02] shadow-xl' : 'scale-100'}`}
         style={{
           transform: `rotateX(${transform3D.rotateX}deg) rotateY(${transform3D.rotateY}deg)`,
           transformStyle: 'preserve-3d',
@@ -147,88 +152,104 @@ const CategoryCard = memo(function CategoryCard({ category, iconGradient, index 
           willChange: 'transform',
         }}
       >
-        {/* Content */}
-        <div className="relative p-8 md:p-10">
-          {/* Icon Badge with CSS animation */}
-          <div
-            className="mb-6"
-            style={{
-              animation: isHovered ? 'icon-rotate 1s ease-in-out' : 'none',
-            }}
-          >
-            <div
-              className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${iconGradient} p-4 shadow-lg flex items-center justify-center text-white relative overflow-hidden
-                        transition-transform duration-300 ${isHovered ? 'scale-110' : 'scale-100'}`}
-            >
-              {getCategoryIcon(category.name)}
-              {/* Pulse effect on hover - CSS only */}
-              <div
-                className={`absolute inset-0 bg-white/30 rounded-2xl transition-all duration-500
-                           ${isHovered ? 'scale-150 opacity-0' : 'scale-100 opacity-0'}`}
+        {/* Image-first layout */}
+        {hasImage ? (
+          <>
+            {/* Category Image with overlay */}
+            <div className="relative aspect-[4/3] overflow-hidden">
+              <img
+                src={category.image}
+                alt={category.name}
+                className={`w-full h-full object-cover transition-transform duration-700 ease-out
+                          ${isHovered ? 'scale-110' : 'scale-100'}`}
+                onError={() => setImageError(true)}
               />
+              {/* Gradient overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+              {/* Content overlaid on image */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                  {category.name}
+                </h3>
+                <div className="flex items-center justify-between">
+                  {category.productCount !== undefined && (
+                    <p className="text-white/80 text-sm font-medium">
+                      {category.productCount} Products
+                    </p>
+                  )}
+                  <div className={`flex items-center gap-2 text-white font-bold text-sm
+                                transition-transform duration-300 ${isHovered ? 'translate-x-2' : 'translate-x-0'}`}>
+                    <span>Explore</span>
+                    <ArrowRightIcon className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Shine sweep effect on hover */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent
+                             transition-transform duration-700 ease-out
+                             ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
+                  style={{ transform: isHovered ? 'translateX(100%)' : 'translateX(-100%)' }}
+                />
+              </div>
             </div>
-          </div>
+          </>
+        ) : (
+          /* Fallback: Icon-based layout for categories without images */
+          <div className="relative bg-white dark:bg-dark-800 p-8 md:p-10">
+            {/* Icon Badge */}
+            <div className="mb-6">
+              <div
+                className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${iconGradient} p-4 shadow-lg flex items-center justify-center text-white relative overflow-hidden
+                          transition-transform duration-300 ${isHovered ? 'scale-110' : 'scale-100'}`}
+              >
+                {getCategoryIcon(category.name)}
+              </div>
+            </div>
 
-          {/* Text Content */}
-          <div className="space-y-3">
-            <h3
-              className={`text-2xl md:text-3xl font-bold transition-colors duration-300
-                        ${isHovered ? 'text-primary-500' : 'text-dark-900 dark:text-white'}`}
-            >
-              {category.name}
-            </h3>
+            {/* Text Content */}
+            <div className="space-y-3">
+              <h3
+                className={`text-2xl md:text-3xl font-bold transition-colors duration-300
+                          ${isHovered ? 'text-primary-500' : 'text-dark-900 dark:text-white'}`}
+              >
+                {category.name}
+              </h3>
 
-            {category.description && (
-              <p className="text-sm md:text-base text-dark-600 dark:text-dark-400 line-clamp-2 leading-relaxed">
-                {category.description}
-              </p>
-            )}
-
-            <div className="flex items-center justify-between pt-4">
-              {category.productCount !== undefined && (
-                <p
-                  className={`text-sm md:text-base text-dark-500 dark:text-dark-400 font-semibold
-                            transition-transform duration-300 ${isHovered ? 'scale-105' : 'scale-100'}`}
-                >
-                  {category.productCount} Products
+              {category.description && (
+                <p className="text-sm md:text-base text-dark-600 dark:text-dark-400 line-clamp-2 leading-relaxed">
+                  {category.description}
                 </p>
               )}
 
-              <div
-                className={`flex items-center gap-2 text-primary-600 dark:text-primary-400 font-bold text-sm md:text-base
-                          transition-transform duration-300 ${isHovered ? 'translate-x-2' : 'translate-x-0'}`}
-              >
-                <span>Explore</span>
-                <ArrowRightIcon className="w-5 h-5" />
+              <div className="flex items-center justify-between pt-4">
+                {category.productCount !== undefined && (
+                  <p className="text-sm md:text-base text-dark-500 dark:text-dark-400 font-semibold">
+                    {category.productCount} Products
+                  </p>
+                )}
+
+                <div
+                  className={`flex items-center gap-2 text-primary-600 dark:text-primary-400 font-bold text-sm md:text-base
+                            transition-transform duration-300 ${isHovered ? 'translate-x-2' : 'translate-x-0'}`}
+                >
+                  <span>Explore</span>
+                  <ArrowRightIcon className="w-5 h-5" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Glowing border on hover - CSS only */}
-        <div
-          className={`absolute inset-0 rounded-3xl pointer-events-none -z-10
-                     transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-          style={{
-            boxShadow: '0 0 30px rgba(244, 180, 44, 0.3)',
-          }}
-        />
+        )}
 
         {/* Bottom highlight bar - CSS transition */}
         <div
-          className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500
+          className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-500
                      transition-transform duration-300 ease-out origin-left
                      ${isHovered ? 'scale-x-100' : 'scale-x-0'}`}
         />
-
-        {/* Shine effect - CSS transition */}
-        <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-          <div
-            className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                       transition-transform duration-700 ease-out
-                       ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
-          />
-        </div>
 
         {/* Subtle glow effect */}
         <div
@@ -236,7 +257,7 @@ const CategoryCard = memo(function CategoryCard({ category, iconGradient, index 
                      transition-all duration-300
                      ${isHovered ? 'opacity-60 scale-105' : 'opacity-0 scale-100'}`}
           style={{
-            background: 'radial-gradient(circle at center, rgba(244, 180, 44, 0.15), transparent 70%)',
+            background: 'radial-gradient(circle at center, rgba(114, 47, 55, 0.15), transparent 70%)',
             filter: 'blur(15px)',
           }}
         />
@@ -251,7 +272,7 @@ const iconGradients = [
   'from-orange-500 to-red-500',
   'from-purple-500 to-pink-500',
   'from-emerald-500 to-teal-500',
-  'from-amber-500 to-yellow-500',
+  'from-primary-500 to-primary-400',
   'from-indigo-500 to-purple-500',
 ]
 

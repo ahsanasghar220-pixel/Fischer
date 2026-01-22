@@ -25,8 +25,8 @@ const popupAnimationStyles = `
   100% { transform: translateX(100%); }
 }
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 0 20px rgba(244,180,44,0.15); }
-  50% { box-shadow: 0 20px 50px rgba(0,0,0,0.25), 0 0 30px rgba(244,180,44,0.25); }
+  0%, 100% { box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 0 20px rgba(114,47,55,0.15); }
+  50% { box-shadow: 0 20px 50px rgba(0,0,0,0.25), 0 0 30px rgba(114,47,55,0.25); }
 }
 @keyframes fade-slide-up {
   0% { opacity: 0; transform: translateY(10px); }
@@ -102,7 +102,7 @@ export default function ProductPopup({
         className="fixed inset-0 z-40 cursor-pointer"
         onClick={handleBackdropClick}
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(244,180,44,0.08) 0%, rgba(0,0,0,0.3) 100%)',
+          background: 'radial-gradient(circle at 50% 50%, rgba(114,47,55,0.08) 0%, rgba(0,0,0,0.3) 100%)',
           animation: 'backdrop-enter 0.3s ease-out forwards',
         }}
       />

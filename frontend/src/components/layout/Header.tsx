@@ -76,7 +76,7 @@ const navigation = {
         </svg>
       ),
       desc: 'Hot & cold dispensers',
-      gradient: 'from-amber-500 to-yellow-500'
+      gradient: 'from-blue-500 to-cyan-500'
     },
     {
       name: 'Kitchen Appliances',
@@ -165,7 +165,7 @@ export default function Header() {
       >
         {/* Scroll progress indicator */}
         <motion.div
-          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary-500 via-amber-400 to-primary-500 origin-left z-10"
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary-500 via-primary-400 to-primary-500 origin-left z-10"
           style={{ scaleX }}
         />
 
@@ -204,7 +204,11 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="lg:hidden -ml-2 p-2 rounded-xl text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+              className={`lg:hidden -ml-2 p-2 rounded-xl transition-colors ${
+                isHomePage && !isScrolled
+                  ? 'text-white hover:bg-white/10'
+                  : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+              }`}
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
             >
@@ -213,19 +217,46 @@ export default function Header() {
 
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 relative group">
+              {/* Show light (white) logo when on homepage hero with video, otherwise show based on theme */}
               <img
-                src="/images/logo.png"
+                src="/images/logo-dark.png"
                 alt="Fischer"
                 width={120}
                 height={48}
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className="h-10 lg:h-12 w-auto"
+                className={`h-10 lg:h-12 w-auto ${
+                  isHomePage && !isScrolled
+                    ? 'hidden' // Hide dark logo on homepage hero
+                    : 'dark:hidden' // Normal: hide in dark mode
+                }`}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                   const span = document.createElement('span')
-                  span.className = 'text-2xl font-bold text-primary-500'
+                  span.className = 'text-2xl font-bold text-dark-900'
+                  span.textContent = 'FISCHER'
+                  e.currentTarget.parentElement?.appendChild(span)
+                }}
+              />
+              {/* White logo - show on homepage hero OR in dark mode */}
+              <img
+                src="/images/logo-light.png"
+                alt="Fischer"
+                width={120}
+                height={48}
+                loading="eager"
+                decoding="async"
+                {...{ fetchpriority: "high" } as any}
+                className={`h-10 lg:h-12 w-auto ${
+                  isHomePage && !isScrolled
+                    ? 'block' // Show white logo on homepage hero
+                    : 'hidden dark:block' // Normal: show only in dark mode
+                }`}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                  const span = document.createElement('span')
+                  span.className = 'text-2xl font-bold text-white'
                   span.textContent = 'FISCHER'
                   e.currentTarget.parentElement?.appendChild(span)
                 }}
@@ -244,7 +275,7 @@ export default function Header() {
                         open
                           ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
                           : isHomePage && !isScrolled
-                          ? 'text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-300'
+                          ? 'text-white hover:text-white/80 hover:bg-white/10'
                           : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
                       }`}
                     >
@@ -407,7 +438,7 @@ export default function Header() {
                     location.pathname === page.href
                       ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
                       : isHomePage && !isScrolled
-                      ? 'text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-300'
+                      ? 'text-white hover:text-white/80 hover:bg-white/10'
                       : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
                   }`}
                 >
@@ -421,7 +452,11 @@ export default function Header() {
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2.5 rounded-xl transition-colors text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800"
+                className={`p-2.5 rounded-xl transition-colors ${
+                  isHomePage && !isScrolled
+                    ? 'text-white hover:bg-white/10'
+                    : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+                }`}
                 aria-label="Search products"
               >
                 <MagnifyingGlassIcon className="h-5 w-5" />
@@ -435,7 +470,11 @@ export default function Header() {
                 <Link
                   to="/account/wishlist"
                   aria-label="Wishlist"
-                  className="p-2.5 rounded-xl transition-colors hidden sm:flex text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800"
+                  className={`p-2.5 rounded-xl transition-colors hidden sm:flex ${
+                    isHomePage && !isScrolled
+                      ? 'text-white hover:bg-white/10'
+                      : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+                  }`}
                 >
                   <HeartIcon className="h-5 w-5" />
                 </Link>
@@ -444,7 +483,11 @@ export default function Header() {
               {/* Cart */}
               <button
                 onClick={() => setCartDrawerOpen(true)}
-                className="relative p-2.5 rounded-xl transition-colors text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800"
+                className={`relative p-2.5 rounded-xl transition-colors ${
+                  isHomePage && !isScrolled
+                    ? 'text-white hover:bg-white/10'
+                    : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+                }`}
                 aria-label={`Shopping cart${cartItemsCount > 0 ? ` with ${cartItemsCount} items` : ''}`}
               >
                 <ShoppingCartIcon className="h-5 w-5" />
@@ -461,7 +504,7 @@ export default function Header() {
                   <Popover.Button
                     className={`p-2.5 rounded-xl transition-all duration-200 ${
                       isHomePage && !isScrolled
-                        ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
+                        ? 'text-white hover:bg-white/10'
                         : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                     }`}
                   >
@@ -541,7 +584,7 @@ export default function Header() {
                   to="/login"
                   className={`hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isHomePage && !isScrolled
-                      ? 'text-dark-900 dark:text-white hover:bg-dark-100/50 dark:hover:bg-white/10'
+                      ? 'text-white hover:bg-white/10'
                       : 'text-dark-700 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800'
                   }`}
                 >
@@ -553,7 +596,11 @@ export default function Header() {
               {/* Mobile Account/Login Icon */}
               <Link
                 to={isAuthenticated ? '/account' : '/login'}
-                className="lg:hidden p-2.5 rounded-xl transition-colors text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800"
+                className={`lg:hidden p-2.5 rounded-xl transition-colors ${
+                  isHomePage && !isScrolled
+                    ? 'text-white hover:bg-white/10'
+                    : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+                }`}
                 aria-label={isAuthenticated ? 'My Account' : 'Sign In'}
               >
                 <UserIcon className="h-5 w-5" />
@@ -646,7 +693,8 @@ export default function Header() {
             {/* Header */}
             <div className="flex items-center justify-between px-5 h-16 border-b border-dark-100 dark:border-dark-800">
               <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-                <img src="/images/logo.png" alt="Fischer" width={100} height={32} className="h-8 w-auto" />
+                <img src="/images/logo-dark.png" alt="Fischer" width={100} height={32} className="h-8 w-auto dark:hidden" />
+                <img src="/images/logo-light.png" alt="Fischer" width={100} height={32} className="h-8 w-auto hidden dark:block" />
               </Link>
               <button
                 type="button"

@@ -171,7 +171,7 @@ const QuickViewModal = memo(function QuickViewModal({
                           </span>
                         )}
                         {product.is_bestseller && (
-                          <span className="px-3 py-1 bg-amber-500 text-dark-900 text-sm font-bold rounded-full">
+                          <span className="px-3 py-1 bg-primary-500 text-white text-sm font-bold rounded-full">
                             BEST SELLER
                           </span>
                         )}
@@ -285,7 +285,7 @@ const QuickViewModal = memo(function QuickViewModal({
                           <CheckIcon className="w-5 h-5 text-green-500" />
                           <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
                           {product.stock && product.stock <= 10 && (
-                            <span className="text-amber-600 dark:text-amber-400 text-sm">
+                            <span className="text-orange-600 dark:text-orange-400 text-sm">
                               (Only {product.stock} left)
                             </span>
                           )}

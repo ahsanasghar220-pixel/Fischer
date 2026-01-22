@@ -268,7 +268,7 @@ export default function BundleDetail() {
                   {/* Badge */}
                   {bundle.badge_label && (
                     <div className={`absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide text-white bg-gradient-to-r ${
-                      bundle.badge_color === 'gold' ? 'from-amber-500 to-yellow-400' :
+                      bundle.badge_color === 'gold' ? 'from-primary-500 to-primary-400' :
                       bundle.badge_color === 'red' ? 'from-red-500 to-rose-400' :
                       bundle.badge_color === 'blue' ? 'from-blue-500 to-cyan-400' :
                       'from-green-500 to-emerald-400'
@@ -529,7 +529,7 @@ export default function BundleDetail() {
                   </motion.button>
 
                   {bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled && (
-                    <p className="text-sm text-center text-amber-600 dark:text-amber-400">
+                    <p className="text-sm text-center text-orange-600 dark:text-orange-400">
                       Please complete all required selections above
                     </p>
                   )}
@@ -608,7 +608,7 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
       isComplete
         ? 'border-green-500 dark:border-green-500/50'
         : slot.is_required
-        ? 'border-amber-500 dark:border-amber-500/50'
+        ? 'border-orange-500 dark:border-orange-500/50'
         : 'border-gray-200 dark:border-dark-700'
     }`}>
       {/* Header */}
