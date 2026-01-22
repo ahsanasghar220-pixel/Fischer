@@ -583,15 +583,14 @@ export default function Home() {
         {/* ==========================================
             SECTION 1: VIDEO HERO SECTION - MINIMAL
             ========================================== */}
-        <section className="relative h-screen w-full overflow-hidden">
-          {/* Video Background */}
+        <section className="relative h-screen w-full overflow-hidden bg-dark-950">
+          {/* Video Background - No poster, dark bg fallback */}
           <video
             className="absolute inset-0 w-full h-full object-cover"
             autoPlay
             loop
             muted
             playsInline
-            poster="/images/hero-banner.jpg"
           >
             <source src="/videos/hero-video.mp4" type="video/mp4" />
           </video>
