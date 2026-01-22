@@ -113,18 +113,18 @@ export default function Footer() {
             <div className="col-span-2">
               <Link to="/" className="inline-block">
                 <img
-                  src="/images/logo.png"
+                  src="/images/logo-dark.png"
                   alt="Fischer"
                   width={120}
                   height={48}
-                  className="h-12 w-auto dark:brightness-0 dark:invert"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    const span = document.createElement('span')
-                    span.className = 'text-2xl font-bold text-primary-500'
-                    span.textContent = 'FISCHER'
-                    e.currentTarget.parentElement?.appendChild(span)
-                  }}
+                  className="h-12 w-auto dark:hidden"
+                />
+                <img
+                  src="/images/logo-light.png"
+                  alt="Fischer"
+                  width={120}
+                  height={48}
+                  className="h-12 w-auto hidden dark:block"
                 />
               </Link>
               <p className="mt-6 text-dark-600 dark:text-dark-400 text-sm leading-relaxed max-w-xs">

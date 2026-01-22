@@ -115,9 +115,11 @@ export function preloadCriticalResources() {
   const heroImage = new Image()
   heroImage.src = '/images/products/water-cooler-100ltr.png'
 
-  // Preload logo
-  const logo = new Image()
-  logo.src = '/images/logo.png'
+  // Preload logos
+  const logoDark = new Image()
+  logoDark.src = '/images/logo-dark.png'
+  const logoLight = new Image()
+  logoLight.src = '/images/logo-light.png'
 
   // Preload critical fonts (if self-hosted)
   // const font = new FontFace('Poppins', 'url(/fonts/poppins.woff2)')

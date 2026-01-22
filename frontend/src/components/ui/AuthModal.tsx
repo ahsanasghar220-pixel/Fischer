@@ -142,11 +142,8 @@ export default function AuthModal({
 
                   <div className="text-center mb-6">
                     <Link to="/" onClick={onClose}>
-                      <img
-                        src="/images/logo.png"
-                        alt="Fischer"
-                        className="h-10 mx-auto dark:brightness-0 dark:invert"
-                      />
+                      <img src="/images/logo-dark.png" alt="Fischer" className="h-10 mx-auto dark:hidden" />
+                      <img src="/images/logo-light.png" alt="Fischer" className="h-10 mx-auto hidden dark:block" />
                     </Link>
                     <p className="mt-4 text-dark-600 dark:text-dark-400">{message}</p>
                   </div>
