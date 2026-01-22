@@ -556,7 +556,7 @@ export default function Home() {
         return {
           ...cat,
           // Always prefer fallback image for consistency with real product photos
-          image: fallback?.image || cat.image || null
+          image: fallback?.image || cat.image || undefined
         }
       })
     : fallbackCategories
