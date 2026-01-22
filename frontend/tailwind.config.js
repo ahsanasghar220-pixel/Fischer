@@ -8,19 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Fischer brand colors - Refined, sophisticated palette
+        // Fischer brand colors - Sophisticated Burgundy Wine
         primary: {
-          50: '#fdfaf5',
-          100: '#faf3e6',
-          200: '#f5e6c8',
-          300: '#e8d4a8',
-          400: '#d4b87a', // Muted gold
-          500: '#c9a227', // Main Fischer gold - more refined
-          600: '#a88620',
-          700: '#8a6d1a',
-          800: '#6d5615',
-          900: '#5a4712',
-          950: '#3d2f0c',
+          50: '#fdf2f4',
+          100: '#fce7eb',
+          200: '#f9d0d9',
+          300: '#f4a8b8',
+          400: '#ec7690',
+          500: '#722F37', // Main burgundy - sophisticated wine tone
+          600: '#5E2730',
+          700: '#4A1F27',
+          800: '#3D1920',
+          900: '#36171C',
+          950: '#1E0B0E',
         },
         dark: {
           50: '#fafafa',
@@ -62,7 +62,7 @@ export default {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'gradient-mesh': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'hero-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f4b42c' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        'hero-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23800000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
@@ -143,8 +143,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 5px #c9a227, 0 0 10px #c9a227, 0 0 15px #c9a227' },
-          '100%': { boxShadow: '0 0 10px #c9a227, 0 0 20px #c9a227, 0 0 30px #c9a227' },
+          '0%': { boxShadow: '0 0 5px #722F37, 0 0 10px #722F37, 0 0 15px #722F37' },
+          '100%': { boxShadow: '0 0 10px #722F37, 0 0 20px #722F37, 0 0 30px #722F37' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
@@ -176,11 +176,11 @@ export default {
         pulseGlow: {
           '0%, 100%': {
             opacity: '0.6',
-            boxShadow: '0 0 20px rgba(201, 162, 39, 0.3)',
+            boxShadow: '0 0 20px rgba(114, 47, 55, 0.3)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 40px rgba(201, 162, 39, 0.6)',
+            boxShadow: '0 0 40px rgba(114, 47, 55, 0.6)',
           },
         },
         gradientShift: {
@@ -203,11 +203,11 @@ export default {
         },
         glowPulse: {
           '0%, 100%': {
-            boxShadow: '0 0 20px rgba(201, 162, 39, 0.4), 0 0 40px rgba(201, 162, 39, 0.2)',
+            boxShadow: '0 0 20px rgba(114, 47, 55, 0.4), 0 0 40px rgba(114, 47, 55, 0.2)',
             opacity: '1'
           },
           '50%': {
-            boxShadow: '0 0 40px rgba(201, 162, 39, 0.6), 0 0 60px rgba(201, 162, 39, 0.3)',
+            boxShadow: '0 0 40px rgba(114, 47, 55, 0.6), 0 0 60px rgba(114, 47, 55, 0.3)',
             opacity: '0.9'
           },
         },
@@ -248,8 +248,8 @@ export default {
       },
       boxShadow: {
         'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.1)',
-        'glow': '0 0 15px rgba(201, 162, 39, 0.5)',
-        'glow-lg': '0 0 30px rgba(201, 162, 39, 0.6)',
+        'glow': '0 0 15px rgba(114, 47, 55, 0.5)',
+        'glow-lg': '0 0 30px rgba(114, 47, 55, 0.6)',
         '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
