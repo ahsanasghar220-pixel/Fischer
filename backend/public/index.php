@@ -2,10 +2,11 @@
 
 use Illuminate\Http\Request;
 
-// Enable error reporting for debugging (remove in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Production settings - errors logged to file, not displayed
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
+ini_set('log_errors', 1);
 
 define('LARAVEL_START', microtime(true));
 

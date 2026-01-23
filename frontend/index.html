@@ -7,9 +7,11 @@
     <meta name="description" content="Fischer Pakistan - Quality Home Appliances. Water Coolers, Geysers, Cooking Ranges, and more. Shop online with nationwide delivery." />
     <meta name="keywords" content="Fischer, home appliances, water cooler, geyser, cooking range, Pakistan, kitchen appliances" />
 
-    <!-- Performance Hints -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <!-- Performance Hints - Preconnect early for critical resources -->
+    <!-- fonts.googleapis.com serves the CSS (no crossorigin needed) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- fonts.gstatic.com serves the font files via CORS (crossorigin required) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -24,10 +26,7 @@
     <meta property="twitter:title" content="Fischer Pakistan - Quality Home Appliances" />
     <meta property="twitter:description" content="Shop premium home appliances - Water Coolers, Geysers, Cooking Ranges and more." />
 
-    <!-- Fonts - Optimized loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Load fonts asynchronously to prevent render blocking -->
+    <!-- Fonts - Load asynchronously to prevent render blocking -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">

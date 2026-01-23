@@ -96,7 +96,7 @@ const Bubble = memo(({ cx, cy, delay }: { cx: number; cy: number; delay: number 
 ))
 Bubble.displayName = 'Bubble'
 
-// Steam particles - simplified with CSS
+// Steam particles - simplified with CSS (GPU-composited animations only)
 const SteamParticle = memo(({ cx, delay }: { cx: number; delay: number }) => (
   <path
     d={`M${cx},375 Q${cx - 5},360 ${cx},345 Q${cx + 5},330 ${cx},315`}
@@ -105,6 +105,7 @@ const SteamParticle = memo(({ cx, delay }: { cx: number; delay: number }) => (
     strokeLinecap="round"
     style={{
       animation: `steamRise 2.5s ease-out ${delay}s infinite`,
+      transformOrigin: `${cx}px 375px`,
       willChange: 'transform, opacity',
     }}
   />
@@ -214,9 +215,9 @@ const CSSKeyframes = () => (
       100% { opacity: 0; transform: translateY(-80px) scale(0.3); }
     }
     @keyframes steamRise {
-      0% { opacity: 0; stroke-dashoffset: 100; }
-      50% { opacity: 0.7; stroke-dashoffset: 0; transform: translateY(-10px); }
-      100% { opacity: 0; stroke-dashoffset: 0; transform: translateY(-25px); }
+      0% { opacity: 0; transform: translateY(0) scaleY(0.3); }
+      50% { opacity: 0.7; transform: translateY(-10px) scaleY(1); }
+      100% { opacity: 0; transform: translateY(-25px) scaleY(0.8); }
     }
     @keyframes waterDrop {
       0% { opacity: 0; transform: translateY(0) scale(0.5); }

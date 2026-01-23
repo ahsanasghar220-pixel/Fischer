@@ -246,6 +246,7 @@ export const Parallax = memo(function Parallax({
       ref={ref}
       className={className}
       style={{
+        position: 'relative',
         [isHorizontal ? 'x' : 'y']: transforms[direction]
       }}
     >

@@ -22,10 +22,14 @@ use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
+    // Cache the schema check result to avoid repeated database queries
+    private static ?bool $hasNewTables = null;
+
     public function index()
     {
-        // Cache home page data for 5 minutes for balance between performance and freshness
-        $homeData = Cache::remember('homepage_data', 300, function () {
+        // Cache home page data for 1 hour - data changes infrequently
+        // Use cache tags if you need to invalidate on admin changes
+        $homeData = Cache::remember('homepage_data', 3600, function () {
             return $this->getHomePageData();
         });
 
@@ -34,10 +38,12 @@ class HomeController extends Controller
 
     protected function getHomePageData(): array
     {
-        // Check if new homepage tables exist
-        $hasNewTables = Schema::hasTable('homepage_sections');
+        // Cache schema check in static property to avoid repeated queries
+        if (self::$hasNewTables === null) {
+            self::$hasNewTables = Schema::hasTable('homepage_sections');
+        }
 
-        if ($hasNewTables) {
+        if (self::$hasNewTables) {
             return $this->getDynamicHomePageData();
         }
 
@@ -64,7 +70,13 @@ class HomeController extends Controller
         $categoriesSettings = $categoriesSection?->settings ?? [];
         $categoriesCount = $categoriesSettings['display_count'] ?? 6;
 
-        $homepageCategories = HomepageCategory::visible()->ordered()->with('category')->get();
+        // Eager load category with products_count to avoid N+1 queries
+        $homepageCategories = HomepageCategory::visible()
+            ->ordered()
+            ->with(['category' => function ($query) {
+                $query->withCount('products');
+            }])
+            ->get();
 
         if ($homepageCategories->isNotEmpty()) {
             // Use manually selected categories
@@ -78,7 +90,7 @@ class HomeController extends Controller
                         'slug' => $cat->slug,
                         'image' => $cat->image,
                         'icon' => $cat->icon,
-                        'products_count' => $cat->products()->count(),
+                        'products_count' => $cat->products_count ?? 0,
                     ] : null;
                 })
                 ->filter()
