@@ -1,9 +1,21 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, useScroll } from 'framer-motion'
 import api from '@/lib/api'
 import KitchenSVG from './KitchenSVG'
 import ProductPopup from './ProductPopup'
+
+// Mobile detection hook for performance optimization
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+  return isMobile
+}
 
 interface Product {
   id: number
@@ -37,32 +49,33 @@ export default function KitchenLineArt() {
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 })
   const sectionRef = useRef<HTMLElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const isMobile = useIsMobile()
 
-  // Mouse tracking for parallax and cursor follower
+  // Mouse tracking for parallax - DISABLED on mobile for performance
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const mouseXSpring = useSpring(mouseX, { stiffness: 100, damping: 20 })
   const mouseYSpring = useSpring(mouseY, { stiffness: 100, damping: 20 })
 
-  // Scroll progress for scroll-triggered animations
+  // Scroll progress for scroll-triggered animations - DISABLED on mobile
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start']
   })
 
-  // Parallax transforms for background blobs
-  const blob1X = useTransform(scrollYProgress, [0, 1], [-100, 100])
-  const blob1Y = useTransform(scrollYProgress, [0, 1], [0, -150])
-  const blob2X = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const blob2Y = useTransform(scrollYProgress, [0, 1], [0, 150])
+  // Parallax transforms - only used on desktop
+  const blob1X = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [-100, 100])
+  const blob1Y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -150])
+  const blob2X = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [100, -100])
+  const blob2Y = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, 150])
 
-  // Mouse follower glow position
+  // Mouse follower glow position - desktop only
   const glowX = useTransform(mouseXSpring, (x) => x - 200)
   const glowY = useTransform(mouseYSpring, (y) => y - 200)
 
-  // Handle mouse move for parallax effects
+  // Handle mouse move - DISABLED on mobile
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return
+    if (isMobile || !containerRef.current) return
     const rect = containerRef.current.getBoundingClientRect()
     mouseX.set(e.clientX - rect.left)
     mouseY.set(e.clientY - rect.top)
@@ -122,213 +135,205 @@ export default function KitchenLineArt() {
     <section
       ref={sectionRef}
       className="relative py-16 lg:py-24 bg-gray-100 dark:bg-dark-900 overflow-hidden"
-      onMouseMove={handleMouseMove}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
     >
-      {/* Animated morphing background blobs */}
-      <motion.div
-        className="absolute w-96 h-96 rounded-full blur-3xl opacity-30"
-        style={{
-          x: blob1X,
-          y: blob1Y,
-          background: 'radial-gradient(circle, rgba(114,47,55,0.4) 0%, transparent 70%)',
-          top: '10%',
-          left: '10%'
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 90, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }}
-      />
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
-        style={{
-          x: blob2X,
-          y: blob2Y,
-          background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
-          bottom: '10%',
-          right: '10%'
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, -90, 0],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 5
-        }}
-      />
-      <motion.div
-        className="absolute w-80 h-80 rounded-full blur-3xl opacity-20"
-        style={{
-          background: 'radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%)',
-          top: '50%',
-          left: '50%',
-          x: '-50%',
-          y: '-50%'
-        }}
-        animate={{
-          scale: [1, 1.5, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: 'linear'
-        }}
-      />
+      {/* Animated morphing background blobs - DESKTOP ONLY */}
+      {!isMobile && (
+        <>
+          <motion.div
+            className="absolute w-96 h-96 rounded-full blur-3xl opacity-30"
+            style={{
+              x: blob1X,
+              y: blob1Y,
+              background: 'radial-gradient(circle, rgba(114,47,55,0.4) 0%, transparent 70%)',
+              top: '10%',
+              left: '10%'
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 90, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+          />
+          <motion.div
+            className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
+            style={{
+              x: blob2X,
+              y: blob2Y,
+              background: 'radial-gradient(circle, rgba(59,130,246,0.4) 0%, transparent 70%)',
+              bottom: '10%',
+              right: '10%'
+            }}
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, -90, 0],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 5
+            }}
+          />
+          <motion.div
+            className="absolute w-80 h-80 rounded-full blur-3xl opacity-20"
+            style={{
+              background: 'radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%)',
+              top: '50%',
+              left: '50%',
+              x: '-50%',
+              y: '-50%'
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 30,
+              repeat: Infinity,
+              ease: 'linear'
+            }}
+          />
 
-      {/* Mouse follower subtle glow */}
-      <motion.div
-        className="absolute w-96 h-96 rounded-full pointer-events-none"
-        style={{
-          x: glowX,
-          y: glowY,
-          background: 'radial-gradient(circle, rgba(114,47,55,0.15) 0%, transparent 70%)',
-          filter: 'blur(60px)',
-          mixBlendMode: 'overlay'
-        }}
-      />
+          {/* Mouse follower subtle glow - DESKTOP ONLY */}
+          <motion.div
+            className="absolute w-96 h-96 rounded-full pointer-events-none"
+            style={{
+              x: glowX,
+              y: glowY,
+              background: 'radial-gradient(circle, rgba(114,47,55,0.15) 0%, transparent 70%)',
+              filter: 'blur(60px)',
+              mixBlendMode: 'overlay'
+            }}
+          />
 
-      {/* Animated background gradient */}
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(114,47,55,0.05) 0%, transparent 60%)'
-        }}
-        animate={{
-          background: [
-            'radial-gradient(ellipse at 20% 30%, rgba(114,47,55,0.05) 0%, transparent 60%)',
-            'radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.05) 0%, transparent 60%)',
-            'radial-gradient(ellipse at 20% 30%, rgba(114,47,55,0.05) 0%, transparent 60%)',
-          ]
-        }}
-        transition={{ duration: 10, repeat: Infinity }}
-      />
+          {/* Animated background gradient - DESKTOP ONLY */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(114,47,55,0.05) 0%, transparent 60%)'
+            }}
+            animate={{
+              background: [
+                'radial-gradient(ellipse at 20% 30%, rgba(114,47,55,0.05) 0%, transparent 60%)',
+                'radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.05) 0%, transparent 60%)',
+                'radial-gradient(ellipse at 20% 30%, rgba(114,47,55,0.05) 0%, transparent 60%)',
+              ]
+            }}
+            transition={{ duration: 10, repeat: Infinity }}
+          />
+        </>
+      )}
 
-      {/* Background Pattern with animation */}
-      <motion.div
-        className="absolute inset-0 opacity-5 dark:opacity-10"
-        animate={{
-          opacity: [0.05, 0.08, 0.05],
-        }}
-        transition={{ duration: 5, repeat: Infinity }}
-      >
+      {/* Static background for mobile */}
+      {isMobile && (
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(114,47,55,0.05) 0%, transparent 60%)'
+          }}
+        />
+      )}
+
+      {/* Background Pattern - static on mobile */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
-      </motion.div>
-
-      {/* Noise texture overlay for premium feel */}
-      <div
-        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Floating ambient particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: i % 2 === 0 ? 'rgba(114,47,55,0.2)' : 'rgba(59,130,246,0.2)',
-              boxShadow: '0 0 10px currentColor'
-            }}
-            animate={{
-              y: [0, -100, 0],
-              x: [0, Math.random() * 50 - 25, 0],
-              opacity: [0, 0.5, 0],
-              scale: [0, 1, 0]
-            }}
-            transition={{
-              duration: 8 + Math.random() * 4,
-              delay: Math.random() * 5,
-              repeat: Infinity,
-              ease: 'easeInOut'
-            }}
-          />
-        ))}
       </div>
 
+      {/* Floating ambient particles - REDUCED on mobile (4 vs 15) */}
+      {!isMobile && (
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                background: i % 2 === 0 ? 'rgba(114,47,55,0.2)' : 'rgba(59,130,246,0.2)',
+                boxShadow: '0 0 10px currentColor'
+              }}
+              animate={{
+                y: [0, -100, 0],
+                x: [0, Math.random() * 50 - 25, 0],
+                opacity: [0, 0.5, 0],
+                scale: [0, 1, 0]
+              }}
+              transition={{
+                duration: 8 + Math.random() * 4,
+                delay: Math.random() * 5,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <div ref={containerRef} className="container mx-auto px-4 relative">
-        {/* Header with enhanced animations */}
+        {/* Header - simplified animations on mobile */}
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <motion.span
-            className="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-medium mb-4"
-            initial={{ scale: 0, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{
-              type: 'spring',
-              stiffness: 200,
-              damping: 15,
-              delay: 0.2
-            }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: '0 4px 12px rgba(114,47,55,0.3)'
-            }}
-          >
+          <span className="inline-block px-4 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-medium mb-4">
             Explore Our Products
-          </motion.span>
+          </span>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white mb-4">
-            {['Your', 'Kitchen,', 'Elevated'].map((word, wordIndex) => (
-              <span key={wordIndex} className="inline-block mr-3">
-                {word.split('').map((letter, letterIndex) => (
-                  <motion.span
-                    key={`${wordIndex}-${letterIndex}`}
-                    className="inline-block"
-                    initial={{ opacity: 0, y: 50, rotateX: -90, scale: 0.5 }}
-                    whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      delay: 0.3 + (wordIndex * 0.15) + (letterIndex * 0.03),
-                      type: 'spring',
-                      stiffness: 200,
-                      damping: 12
-                    }}
-                    whileHover={{
-                      y: -5,
-                      color: '#722F37',
-                      transition: { duration: 0.2 }
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
-              </span>
-            ))}
+            {/* Desktop: Letter-by-letter animation, Mobile: Simple fade */}
+            {isMobile ? (
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                Your Kitchen, Elevated
+              </motion.span>
+            ) : (
+              ['Your', 'Kitchen,', 'Elevated'].map((word, wordIndex) => (
+                <span key={wordIndex} className="inline-block mr-3">
+                  {word.split('').map((letter, letterIndex) => (
+                    <motion.span
+                      key={`${wordIndex}-${letterIndex}`}
+                      className="inline-block"
+                      initial={{ opacity: 0, y: 50, rotateX: -90, scale: 0.5 }}
+                      whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        delay: 0.3 + (wordIndex * 0.15) + (letterIndex * 0.03),
+                        type: 'spring',
+                        stiffness: 200,
+                        damping: 12
+                      }}
+                      whileHover={{
+                        y: -5,
+                        color: '#722F37',
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </span>
+              ))
+            )}
           </h2>
 
-          <motion.p
-            className="text-dark-500 dark:text-dark-400 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.7 }}
-          >
-            Click on any product in our kitchen to discover premium Fischer appliances
-          </motion.p>
+          <p className="text-dark-500 dark:text-dark-400 max-w-2xl mx-auto">
+            {isMobile ? 'Tap on any product to explore' : 'Click on any product in our kitchen to discover premium Fischer appliances'}
+          </p>
         </motion.div>
 
         {/* Kitchen Illustration Container with enhanced effects */}

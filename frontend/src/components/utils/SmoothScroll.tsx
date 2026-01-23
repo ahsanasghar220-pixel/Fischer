@@ -23,9 +23,15 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   const location = useLocation()
   const lenisRef = useRef<Lenis | null>(null)
   const rafRef = useRef<number | null>(null)
+  const isMobileRef = useRef(typeof window !== 'undefined' && window.innerWidth < 768)
 
-  // Initialize Lenis smooth scrolling
+  // Initialize Lenis smooth scrolling - DISABLED on mobile for better performance
   useEffect(() => {
+    // Skip Lenis on mobile - native scroll is more performant
+    if (isMobileRef.current || window.innerWidth < 768) {
+      return
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease out
