@@ -22,12 +22,16 @@ DirectoryIndex index.html index.php
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # API requests go to Laravel
-    RewriteCond %{REQUEST_URI} ^/api [NC]
-    RewriteRule ^ index.php [L]
-
-    # Sanctum/CSRF requests go to Laravel
-    RewriteCond %{REQUEST_URI} ^/sanctum [NC]
+    # Laravel backend routes - API and utility endpoints
+    RewriteCond %{REQUEST_URI} ^/api [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/sanctum [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/up$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/clear-cache$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/run-migrations$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/fix-cart-bundle$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/fix-stats$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/debug-bundles$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/reset-admin-password$ [NC]
     RewriteRule ^ index.php [L]
 
     # Serve existing files directly (images, CSS, JS, etc.)
@@ -38,8 +42,8 @@ DirectoryIndex index.html index.php
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # All other requests go to React SPA (index.html)
-    RewriteRule ^ index.html [L]
+    # All other requests go to React SPA via Laravel (for proper routing)
+    RewriteRule ^ index.php [L]
 </IfModule>
 
 # Security Headers
