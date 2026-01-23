@@ -365,7 +365,23 @@ Route::get('/reset-admin-password', function () {
 });
 
 // Catch-all route for SPA - serves the React app
+// Root route
+Route::get('/', function () {
+    $indexPath = public_path('index.html');
+    if (file_exists($indexPath)) {
+        return response(file_get_contents($indexPath), 200)
+            ->header('Content-Type', 'text/html');
+    }
+    return response('Frontend not deployed', 500);
+});
+
+// All other frontend routes
 // Excludes: api, storage, sanctum, up, clear-cache, debug-bundles, reset-admin-password, run-migrations, fix-stats, fix-cart-bundle
 Route::get('/{any}', function () {
-    return file_get_contents(public_path('index.html'));
+    $indexPath = public_path('index.html');
+    if (file_exists($indexPath)) {
+        return response(file_get_contents($indexPath), 200)
+            ->header('Content-Type', 'text/html');
+    }
+    return response('Frontend not deployed', 500);
 })->where('any', '^(?!api|storage|sanctum|up|clear-cache|debug-bundles|reset-admin-password|run-migrations|fix-stats|fix-cart-bundle).*$');
