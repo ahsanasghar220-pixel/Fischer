@@ -19,6 +19,7 @@ class Category extends Model
         'name',
         'slug',
         'description',
+        'features',
         'image',
         'icon',
         'meta_title',
@@ -31,6 +32,7 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
+        'features' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

@@ -12,6 +12,7 @@ interface Category {
   name: string
   slug: string
   description?: string
+  features?: string[]
   image?: string
   parent?: Category
   children?: Category[]
@@ -142,7 +143,7 @@ export default function Category() {
             >
               <CategoryIcon slug={category.slug} className="w-16 h-16" />
             </motion.div>
-            <div>
+            <div className="flex-1">
               <motion.h1
                 className="text-3xl font-bold text-dark-900 dark:text-white"
                 initial={{ opacity: 0, y: 20 }}
@@ -151,24 +152,38 @@ export default function Category() {
               >
                 {category.name}
               </motion.h1>
-              {category.description && (
-                <motion.p
-                  className="text-dark-500 dark:text-dark-400 mt-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.25 }}
-                >
-                  {category.description}
-                </motion.p>
-              )}
               <motion.p
-                className="text-dark-500 dark:text-dark-400 mt-1"
+                className="text-dark-500 dark:text-dark-400 mt-1 mb-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.25 }}
               >
                 {products?.length || 0} Products
               </motion.p>
+              {/* Features as bullet points */}
+              {category.features && category.features.length > 0 && (
+                <motion.div
+                  className="flex flex-wrap gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {category.features.map((feature, index) => (
+                    <motion.span
+                      key={index}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-100 dark:bg-dark-700 rounded-full text-sm text-dark-700 dark:text-dark-300"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + index * 0.05 }}
+                    >
+                      <svg className="w-3.5 h-3.5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      {feature}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              )}
             </div>
           </div>
         </div>

@@ -116,6 +116,7 @@ interface Category {
   icon?: string
   products_count: number
   description?: string
+  features?: string[]
 }
 
 interface Product {
@@ -367,9 +368,9 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
                exceptional build quality, and innovative designs.`}
           </p>
 
-          {/* Features list - Simple, no animations */}
+          {/* Features list - Dynamic from category */}
           <div className="grid sm:grid-cols-2 gap-3 pt-2">
-            {['Premium Quality', 'Latest Technology', 'Energy Efficient', '1 Year Warranty'].map(
+            {(category.features || ['Premium Quality', 'Latest Technology', 'Energy Efficient', '1 Year Warranty']).slice(0, 4).map(
               (feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
