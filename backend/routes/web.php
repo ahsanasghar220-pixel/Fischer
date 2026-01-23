@@ -287,6 +287,62 @@ Route::get('/fix-stats', function () {
     }
 });
 
+// Debug home route (temporary)
+Route::get('/debug-home', function () {
+    try {
+        $results = [];
+
+        // Check if tables exist
+        $results['tables'] = [
+            'homepage_sections' => \Schema::hasTable('homepage_sections'),
+            'homepage_categories' => \Schema::hasTable('homepage_categories'),
+            'homepage_products' => \Schema::hasTable('homepage_products'),
+            'homepage_stats' => \Schema::hasTable('homepage_stats'),
+            'homepage_features' => \Schema::hasTable('homepage_features'),
+            'homepage_trust_badges' => \Schema::hasTable('homepage_trust_badges'),
+            'notable_clients' => \Schema::hasTable('notable_clients'),
+            'testimonials' => \Schema::hasTable('testimonials'),
+        ];
+
+        // Try each query step by step
+        $steps = [];
+
+        try {
+            $steps['homepage_sections'] = \App\Models\HomepageSection::count();
+        } catch (\Exception $e) {
+            $steps['homepage_sections_error'] = $e->getMessage();
+        }
+
+        try {
+            $steps['homepage_stats'] = \App\Models\HomepageStat::count();
+        } catch (\Exception $e) {
+            $steps['homepage_stats_error'] = $e->getMessage();
+        }
+
+        try {
+            $steps['notable_clients'] = \App\Models\NotableClient::count();
+        } catch (\Exception $e) {
+            $steps['notable_clients_error'] = $e->getMessage();
+        }
+
+        try {
+            $steps['testimonials'] = \App\Models\Testimonial::count();
+        } catch (\Exception $e) {
+            $steps['testimonials_error'] = $e->getMessage();
+        }
+
+        $results['steps'] = $steps;
+
+        return response()->json($results);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+});
+
 // Debug bundles route (temporary)
 Route::get('/debug-bundles', function () {
     try {
