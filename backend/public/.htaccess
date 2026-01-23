@@ -32,6 +32,7 @@ DirectoryIndex index.html index.php
     RewriteCond %{REQUEST_URI} ^/fix-stats$ [NC,OR]
     RewriteCond %{REQUEST_URI} ^/debug-bundles$ [NC,OR]
     RewriteCond %{REQUEST_URI} ^/debug-home$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/fix-tables$ [NC,OR]
     RewriteCond %{REQUEST_URI} ^/reset-admin-password$ [NC]
     RewriteRule ^ index.php [L]
 

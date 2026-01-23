@@ -287,6 +287,80 @@ Route::get('/fix-stats', function () {
     }
 });
 
+// Fix missing tables route (temporary)
+Route::get('/fix-tables', function () {
+    try {
+        $results = [];
+
+        // Create notable_clients table if missing
+        if (!\Schema::hasTable('notable_clients')) {
+            \Schema::create('notable_clients', function ($table) {
+                $table->id();
+                $table->string('name');
+                $table->string('logo')->nullable();
+                $table->string('website')->nullable();
+                $table->integer('sort_order')->default(0);
+                $table->boolean('is_visible')->default(true);
+                $table->timestamps();
+            });
+            $results['created'][] = 'notable_clients';
+        } else {
+            $results['existing'][] = 'notable_clients';
+        }
+
+        // Create visitor_sessions table if missing
+        if (!\Schema::hasTable('visitor_sessions')) {
+            \Schema::create('visitor_sessions', function ($table) {
+                $table->id();
+                $table->string('session_id')->unique();
+                $table->string('ip_address')->nullable();
+                $table->string('user_agent')->nullable();
+                $table->string('referrer')->nullable();
+                $table->string('landing_page')->nullable();
+                $table->string('device_type')->nullable();
+                $table->string('browser')->nullable();
+                $table->string('os')->nullable();
+                $table->string('country')->nullable();
+                $table->string('city')->nullable();
+                $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+                $table->timestamps();
+            });
+            $results['created'][] = 'visitor_sessions';
+        } else {
+            $results['existing'][] = 'visitor_sessions';
+        }
+
+        // Create visitor_events table if missing
+        if (!\Schema::hasTable('visitor_events')) {
+            \Schema::create('visitor_events', function ($table) {
+                $table->id();
+                $table->foreignId('visitor_session_id')->constrained()->onDelete('cascade');
+                $table->string('event_type');
+                $table->string('page_url')->nullable();
+                $table->json('event_data')->nullable();
+                $table->timestamps();
+            });
+            $results['created'][] = 'visitor_events';
+        } else {
+            $results['existing'][] = 'visitor_events';
+        }
+
+        // Clear cache after table changes
+        \Cache::forget('homepage_data');
+
+        return response()->json([
+            'status' => 'success',
+            'results' => $results,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+});
+
 // Debug home route (temporary)
 Route::get('/debug-home', function () {
     try {
