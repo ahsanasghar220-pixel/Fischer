@@ -226,7 +226,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-10 lg:h-12 w-auto ${
+                className={`h-8 sm:h-10 md:h-11 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'hidden' // Hide dark logo on homepage hero
                     : 'dark:hidden' // Normal: hide in dark mode
@@ -248,7 +248,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-10 lg:h-12 w-auto ${
+                className={`h-8 sm:h-10 md:h-11 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'block' // Show white logo on homepage hero
                     : 'hidden dark:block' // Normal: show only in dark mode
@@ -294,7 +294,7 @@ export default function Header() {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-2"
                     >
-                      <Popover.Panel className="absolute left-0 top-full mt-3 w-[900px] bg-white dark:bg-dark-800 rounded-2xl shadow-2xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
+                      <Popover.Panel className="absolute left-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-[900px] lg:w-[900px] bg-white dark:bg-dark-800 rounded-2xl shadow-2xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
                         <div className="grid grid-cols-3 divide-x divide-dark-100 dark:divide-dark-700">
                           {/* Categories Column */}
                           <div className="col-span-1 p-6">
@@ -452,7 +452,7 @@ export default function Header() {
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className={`p-2.5 rounded-xl transition-colors ${
+                className={`p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -470,7 +470,7 @@ export default function Header() {
                 <Link
                   to="/account/wishlist"
                   aria-label="Wishlist"
-                  className={`p-2.5 rounded-xl transition-colors hidden sm:flex ${
+                  className={`p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 hidden sm:flex ${
                     isHomePage && !isScrolled
                       ? 'text-white hover:bg-white/10'
                       : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -483,7 +483,7 @@ export default function Header() {
               {/* Cart */}
               <button
                 onClick={() => setCartDrawerOpen(true)}
-                className={`relative p-2.5 rounded-xl transition-colors ${
+                className={`relative p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -675,9 +675,9 @@ export default function Header() {
         onClose={() => setMobileMenuOpen(false)}
         className="lg:hidden"
       >
-        {/* Backdrop */}
+        {/* Backdrop with smooth fade transition */}
         <div
-          className={`fixed inset-0 bg-dark-900/60 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-dark-900/60 backdrop-blur-sm z-40 transition-all duration-300 ease-out ${
             mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={() => setMobileMenuOpen(false)}
@@ -729,14 +729,15 @@ export default function Header() {
                     Categories
                   </p>
                   <div className="space-y-1">
-                    {navigation.categories.map((item) => (
+                    {navigation.categories.map((item, index) => (
                       <Link
                         key={item.name}
                         to={item.href}
-                        className="flex items-center gap-4 px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-colors"
+                        className="flex items-center gap-4 px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-all duration-200 hover:translate-x-1 animate-fade-in-up"
+                        style={{ animationDelay: `${index * 75}ms` }}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} text-white`}>
+                        <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} text-white transition-transform duration-200 group-hover:scale-110`}>
                           {item.icon}
                         </div>
                         <span className="font-medium">{item.name}</span>
@@ -751,11 +752,12 @@ export default function Header() {
                     Pages
                   </p>
                   <div className="space-y-1">
-                    {navigation.pages.map((page) => (
+                    {navigation.pages.map((page, index) => (
                       <Link
                         key={page.name}
                         to={page.href}
-                        className="block px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-colors"
+                        className="block px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-all duration-200 hover:translate-x-1 animate-fade-in-up"
+                        style={{ animationDelay: `${(navigation.categories.length + index) * 75}ms` }}
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {page.name}

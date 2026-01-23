@@ -625,7 +625,7 @@ export default function Home() {
         <AnimatedSection animation="fade-up" duration={800} threshold={0.1} easing="gentle">
           <section className="section bg-white dark:bg-dark-900">
             <div className="container-xl text-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
                 Premium Home Appliances
               </h2>
               <p className="text-xl md:text-2xl text-dark-600 dark:text-dark-400 max-w-3xl mx-auto">
@@ -643,8 +643,8 @@ export default function Home() {
             <section className="section bg-dark-50 dark:bg-dark-900">
               <div className="container-xl">
                 {/* Section Header */}
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white mb-4">
+                <div className="text-center mb-8 sm:mb-10 md:mb-12">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
                     Shop by Category
                   </h2>
                   <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
@@ -654,7 +654,7 @@ export default function Home() {
 
                 {/* Categories Grid - Dark Card Style */}
                 <StaggeredChildren
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
                   staggerDelay={100}
                   duration={600}
                   animation="fade-up"
@@ -670,7 +670,7 @@ export default function Home() {
                       <div className="relative bg-white dark:bg-[#141414] rounded-2xl overflow-hidden
                                     border border-dark-200 dark:border-transparent
                                     shadow-md dark:shadow-none
-                                    hover:shadow-xl
+                                    hover:shadow-xl hover-lift
                                     hover:scale-[1.02]
                                     transition-all duration-300">
                         {/* Category Image */}
@@ -744,7 +744,7 @@ export default function Home() {
             <section className="section bg-white dark:bg-dark-950">
               <div className="container-xl">
                 {/* Stats Grid - More whitespace */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
                   {stats.map((stat) => {
                     return (
                       <div
@@ -752,7 +752,7 @@ export default function Home() {
                         className="text-center"
                       >
                         {/* Value - Red Accent */}
-                        <div className="text-5xl md:text-6xl font-bold text-primary-500 dark:text-red-600 mb-3">
+                        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-500 dark:text-red-600 mb-3">
                           <AnimatedCounter value={stat.value} />
                         </div>
 
@@ -777,8 +777,8 @@ export default function Home() {
             <div className="container-xl">
               {/* Section Header */}
               <AnimatedSection animation="fade-up" duration={800} easing="gentle">
-                <div className="text-center mb-16">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white mb-4">
+                <div className="text-center mb-10 sm:mb-12 md:mb-16">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
                     Explore Our Collections
                   </h2>
                   <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
@@ -812,14 +812,14 @@ export default function Home() {
             <section className="section bg-dark-50 dark:bg-dark-950">
               <div className="container-xl">
                 {/* Section Header */}
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white mb-4">
+                <div className="text-center mb-8 sm:mb-10 md:mb-12">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
                     Why Choose Fischer
                   </h2>
                 </div>
 
                 <StaggeredChildren
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
                   staggerDelay={100}
                   duration={600}
                   animation="fade-up"
@@ -832,11 +832,11 @@ export default function Home() {
                     return (
                       <div
                         key={feature.title}
-                        className="text-center p-6"
+                        className="text-center p-4 sm:p-6 hover-lift"
                       >
                         {/* Icon */}
-                        <div className={`inline-flex items-center justify-center w-16 h-16 ${colors.bg} rounded-2xl mb-4`}>
-                          <Icon className="w-8 h-8" style={{ color: colors.text }} />
+                        <div className={`inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 ${colors.bg} rounded-2xl mb-4`}>
+                          <Icon className="w-6 h-6 md:w-8 md:h-8" style={{ color: colors.text }} />
                         </div>
 
                         <h3 className="text-lg font-bold text-dark-900 dark:text-white mb-2">
@@ -884,7 +884,7 @@ export default function Home() {
                         <GiftIcon className="w-4 h-4" />
                         Special Bundles
                       </span>
-                      <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                         Save More with{' '}
                         <span className="text-primary-600 dark:text-primary-400">Bundles</span>
                       </h2>
@@ -956,7 +956,7 @@ export default function Home() {
                         <FireIcon className="w-4 h-4" />
                         Hand-picked for you
                       </span>
-                      <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                         Featured{' '}
                         <span className="text-primary-600 dark:text-primary-400">Products</span>
                       </h2>
@@ -966,22 +966,22 @@ export default function Home() {
                     </div>
                     <Link
                       to="/shop?featured=1"
-                      className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
                                bg-primary-500 dark:bg-red-600
-                               text-white font-semibold
+                               text-white font-semibold text-sm sm:text-base
                                hover:bg-primary-600 dark:hover:bg-red-700
-                               hover:shadow-lg hover:-translate-y-0.5
-                               active:scale-[0.98] transition-all duration-300"
+                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
+                               active:scale-95 transition-all duration-300"
                     >
                       View All Products
-                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
                 </AnimatedSection>
 
                 {/* Products Grid - Staggered Animation */}
                 <StaggeredChildren
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
                   staggerDelay={80}
                   duration={800}
                   animation="fade-up"
@@ -1022,7 +1022,7 @@ export default function Home() {
                         <SparklesIcon className="w-5 h-5" />
                         Partnership Opportunity
                       </span>
-                      <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-8">
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 sm:mb-8">
                         Become a Fischer
                         <span className="block text-primary-400">
                           Authorized Dealer
@@ -1106,7 +1106,7 @@ export default function Home() {
                         <BoltIcon className="w-4 h-4" />
                         Just Arrived
                       </span>
-                      <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                         New{' '}
                         <span className="text-primary-600 dark:text-primary-400">Arrivals</span>
                       </h2>
@@ -1116,21 +1116,21 @@ export default function Home() {
                     </div>
                     <Link
                       to="/shop?new=1"
-                      className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
                                bg-primary-500 dark:bg-red-600
-                               text-white font-semibold
+                               text-white font-semibold text-sm sm:text-base
                                hover:bg-primary-600 dark:hover:bg-red-700
-                               hover:shadow-lg hover:-translate-y-0.5
-                               active:scale-[0.98] transition-all duration-300"
+                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
+                               active:scale-95 transition-all duration-300"
                     >
                       View All New
-                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
                 </AnimatedSection>
 
                 <StaggeredChildren
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
                   staggerDelay={100}
                   duration={800}
                   animation="fade-up"
@@ -1165,7 +1165,7 @@ export default function Home() {
                       <StarIcon className="w-4 h-4" />
                       {sections.testimonials?.title || 'Customer Reviews'}
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                       What Our{' '}
                       <span className="text-primary-600 dark:text-primary-400">Customers</span>{' '}
                       Say
@@ -1342,7 +1342,7 @@ export default function Home() {
                       <SparklesIcon className="w-4 h-4" />
                       About Fischer
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-8 leading-tight">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-6 sm:mb-8 leading-tight">
                       Pakistan's Most{' '}
                       <span className="text-primary-600 dark:text-primary-400">Trusted</span>{' '}
                       Appliance Brand
@@ -1408,7 +1408,7 @@ export default function Home() {
             <section className="section bg-dark-900 dark:bg-[#0A0A0A]">
               <div className="container-xl">
                 <div className="max-w-2xl mx-auto text-center">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
                     Get Exclusive Offers
                   </h2>
                   <p className="text-lg text-dark-300 mb-8">

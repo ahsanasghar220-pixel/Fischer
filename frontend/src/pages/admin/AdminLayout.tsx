@@ -56,18 +56,18 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-dark-100 dark:bg-dark-900">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Mobile sidebar overlay with smooth fade transition */}
+      <div
+        className={`fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 ease-out ${
+          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
-      {/* Sidebar */}
+      {/* Sidebar with smooth transitions */}
       <aside
-        className={`fixed inset-y-0 left-0 w-64 bg-dark-900 transform transition-transform z-50 lg:translate-x-0 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 w-64 bg-dark-900 transform transition-all duration-300 ease-out z-50 lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
       >
         {/* Logo */}
@@ -86,7 +86,7 @@ export default function AdminLayout() {
           </button>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation with smooth animations */}
         <nav className="p-4 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon
@@ -95,13 +95,13 @@ export default function AdminLayout() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${
+                className={`group flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 hover:translate-x-1 ${
                   isActive(item.path, item.exact)
                     ? 'bg-primary-500 text-dark-900'
                     : 'text-dark-300 hover:bg-dark-800 hover:text-white'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                 {item.label}
               </Link>
             )
@@ -123,9 +123,9 @@ export default function AdminLayout() {
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 w-full px-4 py-2 text-dark-300 hover:text-white hover:bg-dark-800 rounded-lg transition-colors"
+            className="group flex items-center gap-2 w-full px-4 py-2 text-dark-300 hover:text-white hover:bg-dark-800 rounded-lg transition-all duration-200 hover:translate-x-1"
           >
-            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+            <ArrowRightOnRectangleIcon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
             Logout
           </button>
         </div>

@@ -108,7 +108,7 @@ export default function Footer() {
       {/* Main Footer */}
       <div className="border-t border-dark-200 dark:border-dark-800">
         <div className="container-xl py-12 lg:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
             {/* Brand Column */}
             <div className="col-span-2">
               <Link to="/" className="inline-block">
