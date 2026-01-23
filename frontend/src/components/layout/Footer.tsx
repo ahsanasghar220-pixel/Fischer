@@ -68,7 +68,7 @@ export default function Footer() {
                 Get exclusive offers, new product announcements, and tips delivered to your inbox.
               </p>
             </div>
-            <form onSubmit={handleNewsletterSubmit} className="flex w-full max-w-md">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row w-full max-w-md gap-3 sm:gap-0">
               <div className="relative flex-1">
                 <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-500" />
                 <input
@@ -76,8 +76,8 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-12 pr-4 py-4 bg-dark-800/50 border border-dark-700
-                           rounded-l-xl text-white placeholder:text-dark-500
+                  className="w-full pl-12 pr-4 py-3 sm:py-4 bg-dark-800/50 border border-dark-700
+                           rounded-xl sm:rounded-l-xl sm:rounded-r-none text-white placeholder:text-dark-500
                            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
                            transition-all duration-200"
                   required
@@ -86,9 +86,9 @@ export default function Footer() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-4 bg-primary-500 hover:bg-primary-400
-                         text-dark-900 font-semibold rounded-r-xl
-                         flex items-center gap-2 transition-all duration-200
+                className="px-6 py-3 sm:py-4 bg-primary-500 hover:bg-primary-400
+                         text-dark-900 font-semibold rounded-xl sm:rounded-l-none sm:rounded-r-xl
+                         flex items-center justify-center gap-2 transition-all duration-200
                          disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
@@ -110,7 +110,7 @@ export default function Footer() {
         <div className="container-xl py-12 lg:py-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
             {/* Brand Column */}
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <Link to="/" className="inline-block">
                 <img
                   src="/images/logo-dark.png"
@@ -219,11 +219,11 @@ export default function Footer() {
             </div>
 
             {/* Follow Us */}
-            <div>
+            <div className="col-span-1 sm:col-span-2 md:col-span-1">
               <h4 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider mb-4">
                 Follow Us
               </h4>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <a
                   href="https://facebook.com/fischerpakistan"
                   target="_blank"
@@ -301,14 +301,14 @@ export default function Footer() {
             <p className="text-dark-500 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} Fischer Pakistan (Fatima Engineering Works). All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               {/* Certifications */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+                <div className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
                   <span className="text-xs font-bold text-primary-600 dark:text-primary-400">ISO</span>
                   <span className="text-xs text-dark-600 dark:text-dark-400">9001:2015</span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
+                <div className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-dark-200 dark:bg-dark-800 rounded-lg">
                   <span className="text-xs font-bold text-primary-600 dark:text-primary-400">PSQCA</span>
                   <span className="text-xs text-dark-600 dark:text-dark-400">Certified</span>
                 </div>
