@@ -483,6 +483,7 @@ export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
   const [introComplete, setIntroComplete] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -584,13 +585,28 @@ export default function Home() {
             SECTION 1: VIDEO HERO SECTION - MINIMAL
             ========================================== */}
         <section className="relative h-screen w-full overflow-hidden bg-dark-950">
-          {/* Video Background - No poster, dark bg fallback */}
+          {/* Loading placeholder - shows gradient while video loads */}
+          <div
+            className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
+              videoLoaded ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            {/* Animated gradient shimmer while loading */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+          </div>
+
+          {/* Video Background - with smooth fade-in */}
           <video
-            className="absolute inset-0 w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              videoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
+            onCanPlayThrough={() => setVideoLoaded(true)}
+            onLoadedData={() => setVideoLoaded(true)}
           >
             <source src="/videos/hero-video.mp4" type="video/mp4" />
           </video>
