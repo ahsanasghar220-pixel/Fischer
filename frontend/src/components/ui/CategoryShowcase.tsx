@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { useState, useCallback, useRef, memo } from 'react'
+import { formatDescription } from '@/lib/utils'
 
 // CSS animations for GPU-accelerated smooth effects
 const categoryAnimationStyles = `
@@ -220,9 +221,11 @@ const CategoryCard = memo(function CategoryCard({ category, iconGradient, index 
               </h3>
 
               {category.description && (
-                <p className="text-sm md:text-base text-dark-600 dark:text-dark-400 line-clamp-2 leading-relaxed">
-                  {category.description}
-                </p>
+                <div className="text-sm md:text-base text-dark-600 dark:text-dark-400 leading-relaxed space-y-0.5">
+                  {formatDescription(category.description).slice(0, 2).map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+                </div>
               )}
 
               <div className="flex items-center justify-between pt-4">

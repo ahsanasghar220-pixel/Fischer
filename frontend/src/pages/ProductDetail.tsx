@@ -18,9 +18,10 @@ import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ProductCard from '@/components/products/ProductCard'
+import QuickViewModal from '@/components/products/QuickViewModal'
 import AuthModal from '@/components/ui/AuthModal'
 import ScrollReveal, { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
-import { formatPrice, formatDate } from '@/lib/utils'
+import { formatPrice, formatDate, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 interface ProductImage {
@@ -95,6 +96,7 @@ export default function ProductDetail() {
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description')
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
 
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -400,14 +402,16 @@ export default function ProductDetail() {
 
               {/* Short Description */}
               {product.short_description && (
-                <motion.p
-                  className="text-dark-600 dark:text-dark-400 mb-6"
+                <motion.div
+                  className="text-dark-600 dark:text-dark-400 mb-6 space-y-1"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  {product.short_description}
-                </motion.p>
+                  {formatDescription(product.short_description).map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+                </motion.div>
               )}
 
               {/* Variants */}
@@ -646,7 +650,7 @@ export default function ProductDetail() {
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="text-dark-700 dark:text-dark-300" dangerouslySetInnerHTML={{ __html: product.description || 'No description available.' }} />
+                      <div className="text-dark-700 dark:text-dark-300" dangerouslySetInnerHTML={{ __html: (product.description || 'No description available.').replace(/\\n/g, '<br>').replace(/\n/g, '<br>') }} />
                       {product.warranty_info && (
                         <motion.div
                           className="mt-6 p-4 bg-dark-50 dark:bg-dark-800 rounded-lg"
@@ -795,7 +799,7 @@ export default function ProductDetail() {
                 {relatedProducts.slice(0, 5).map((relatedProduct) => (
                   <StaggerItem key={relatedProduct.id}>
                     <HoverCard intensity={8}>
-                      <ProductCard product={relatedProduct} />
+                      <ProductCard product={relatedProduct} onQuickView={setQuickViewProduct} />
                     </HoverCard>
                   </StaggerItem>
                 ))}
@@ -812,6 +816,17 @@ export default function ProductDetail() {
         onSuccess={handleAuthSuccess}
         message="Sign in to add items to your wishlist"
       />
+
+      {/* Quick View Modal for related products */}
+      <AnimatePresence>
+        {quickViewProduct && (
+          <QuickViewModal
+            isOpen={!!quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            product={quickViewProduct}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

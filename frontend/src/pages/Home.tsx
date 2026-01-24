@@ -18,6 +18,7 @@ import {
 import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
+import QuickViewModal from '@/components/products/QuickViewModal'
 import FullWidthBanner from '@/components/ui/FullWidthBanner'
 import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
@@ -305,6 +306,130 @@ const fallbackCategories: Category[] = [
   { id: 12, name: 'Electric Water Heaters', slug: 'fast-electric-water-heaters', products_count: 8, image: '/images/products/fast-electric-water-heaters/ffew-f50.jpg' },
 ]
 
+// Category-specific features based on client requirements
+const categoryFeatures: Record<string, string[]> = {
+  'kitchen-hoods': [
+    'Premium Quality',
+    'BLDC copper motor',
+    '1 Year Warranty',
+    'Energy Efficient',
+    'Heat + Auto clean',
+    'Gesture and Touch Control',
+    'Inverter Technology A+++ rated',
+    'Low noise level',
+  ],
+  'hobs-hoods': [
+    'Complete Brass Burners',
+    'Sabaf Burners',
+    'EPS Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Immediate Auto Ignition',
+  ],
+  'built-in-hobs': [
+    'Complete Brass Burners',
+    'Sabaf Burners',
+    'EPS Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Immediate Auto Ignition',
+  ],
+  'geysers-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'hybrid-geysers': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'gas-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'instant-electric-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'fast-electric-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'oven-toasters': [
+    'Double Layered Glass door',
+    'Inner lamp',
+    'Rotisserie Function',
+    'Convection Function',
+    'Stainless steel elements',
+  ],
+  'water-dispensers': [
+    'Food-grade stainless steel tanks',
+    'Eco-friendly refrigerants',
+    '100% copper coiling',
+  ],
+  'air-fryers': [
+    'Digital Touch panel',
+    'Wide Temperature Control',
+    'Injection molding texture',
+    'Non-stick coating',
+    'Bottom heater for Even temperature control',
+  ],
+  'water-coolers': [
+    'Adjustable Thermostat',
+    'Food Grade Non Magnetic stainless steel',
+    'High back pressure compressor',
+    'Spring loaded push button',
+  ],
+  'storage-coolers': [
+    'Adjustable Thermostat',
+    'Food Grade Non Magnetic stainless steel',
+    'High back pressure compressor',
+    'Spring loaded push button',
+  ],
+  'cooking-ranges': [
+    'Complete Brass Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Auto Ignition',
+  ],
+  'blenders-processors': [
+    'Multi-Function Food processing',
+    'Precision stainless steel blades & Discs',
+    'Pulse & Speed control',
+    'Generous Capacity',
+  ],
+}
+
+// Get features for a category by slug
+const getCategoryFeatures = (slug: string): string[] => {
+  return categoryFeatures[slug] || ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
+}
+
 // Fotile-Inspired Category Showcase - Clean Split-Screen Layout
 interface CategoryShowcaseProps {
   category: Category
@@ -361,16 +486,9 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
             {category.name}
           </h3>
 
-          {/* Description */}
-          <p className="text-lg text-dark-600 dark:text-dark-400 leading-relaxed">
-            {category.description ||
-              `Discover our premium ${category.name.toLowerCase()} collection featuring the latest technology,
-               exceptional build quality, and innovative designs.`}
-          </p>
-
-          {/* Features list - Dynamic from category */}
-          <div className="grid sm:grid-cols-2 gap-3 pt-2">
-            {(category.features || ['Premium Quality', 'Latest Technology', 'Energy Efficient', '1 Year Warranty']).slice(0, 4).map(
+          {/* Features list - Category-specific bullet points only */}
+          <div className="grid sm:grid-cols-2 gap-3">
+            {getCategoryFeatures(category.slug).slice(0, 6).map(
               (feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
@@ -483,6 +601,7 @@ const getCategoryIcon = (categoryName: string) => {
 export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [introComplete, setIntroComplete] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
 
@@ -1006,7 +1125,7 @@ export default function Home() {
                   once
                 >
                   {data.featured_products.slice(0, 10).map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
                   ))}
                 </StaggeredChildren>
               </div>
@@ -1155,7 +1274,7 @@ export default function Home() {
                   once
                 >
                   {data.new_arrivals.slice(0, 5).map((product) => (
-                    <ProductCard key={product.id} product={product} showNew />
+                    <ProductCard key={product.id} product={product} showNew onQuickView={setQuickViewProduct} />
                   ))}
                 </StaggeredChildren>
               </div>
@@ -1479,6 +1598,15 @@ export default function Home() {
           isOpen={!!quickViewBundle}
           onClose={() => setQuickViewBundle(null)}
         />
+
+        {/* Product Quick View Modal */}
+        {quickViewProduct && (
+          <QuickViewModal
+            isOpen={!!quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            product={quickViewProduct}
+          />
+        )}
       </div>
     </>
   )

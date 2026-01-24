@@ -14,7 +14,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarSolidIcon, HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import { useCartStore } from '@/stores/cartStore'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 interface Product {
@@ -271,9 +271,11 @@ const QuickViewModal = memo(function QuickViewModal({
 
                     {/* Description */}
                     {(product.short_description || product.description) && (
-                      <p className="text-dark-600 dark:text-dark-300 mb-6 line-clamp-3">
-                        {product.short_description || product.description}
-                      </p>
+                      <div className="text-dark-600 dark:text-dark-300 mb-6 space-y-1">
+                        {formatDescription(product.short_description || product.description || '').slice(0, 4).map((line, index) => (
+                          <p key={index} className="text-sm">{line}</p>
+                        ))}
+                      </div>
                     )}
 
                     {/* Stock Status */}

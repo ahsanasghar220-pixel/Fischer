@@ -16,7 +16,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useCalculateBundlePrice, useAddBundleToCart } from '@/api/bundles'
 import type { Bundle, BundleSlot, SlotSelection, PricingBreakdown } from '@/api/bundles'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 interface BundleQuickViewProps {
@@ -326,9 +326,11 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
 
                     {/* Short Description */}
                     {bundle.short_description && (
-                      <p className="text-dark-600 dark:text-dark-300 mt-2 line-clamp-2">
-                        {bundle.short_description}
-                      </p>
+                      <div className="text-dark-600 dark:text-dark-300 mt-2 space-y-0.5">
+                        {formatDescription(bundle.short_description).slice(0, 2).map((line, index) => (
+                          <p key={index} className="text-sm">{line}</p>
+                        ))}
+                      </div>
                     )}
 
                     {/* Countdown */}

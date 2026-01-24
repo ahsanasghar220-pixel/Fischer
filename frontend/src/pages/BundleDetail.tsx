@@ -20,7 +20,7 @@ import type { BundleSlot, SlotSelection, PricingBreakdown } from '@/api/bundles'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import BundleCard from '@/components/bundles/BundleCard'
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
 interface CountdownTime {
@@ -358,9 +358,11 @@ export default function BundleDetail() {
 
                 {/* Short Description */}
                 {bundle.short_description && (
-                  <p className="text-lg text-dark-600 dark:text-dark-300">
-                    {bundle.short_description}
-                  </p>
+                  <div className="text-lg text-dark-600 dark:text-dark-300 space-y-1">
+                    {formatDescription(bundle.short_description).map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
+                  </div>
                 )}
 
                 {/* Countdown Timer */}
@@ -559,7 +561,7 @@ export default function BundleDetail() {
                     </h3>
                     <div
                       className="prose prose-sm dark:prose-invert max-w-none"
-                      dangerouslySetInnerHTML={{ __html: bundle.description }}
+                      dangerouslySetInnerHTML={{ __html: bundle.description.replace(/\\n/g, '<br>').replace(/\n/g, '<br>') }}
                     />
                   </div>
                 )}
@@ -628,9 +630,11 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
             )}
           </h4>
           {slot.description && (
-            <p className="text-sm text-dark-500 dark:text-dark-400 mt-0.5">
-              {slot.description}
-            </p>
+            <div className="text-sm text-dark-500 dark:text-dark-400 mt-0.5 space-y-0.5">
+              {formatDescription(slot.description).map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
           )}
         </div>
         <div className="text-sm text-dark-500 dark:text-dark-400">

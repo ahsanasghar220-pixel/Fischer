@@ -2,7 +2,7 @@ import { memo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { EyeIcon, ShoppingCartIcon, ClockIcon } from '@heroicons/react/24/outline'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDescription } from '@/lib/utils'
 import { HoverCard } from '@/components/effects/ScrollReveal'
 import type { Bundle } from '@/api/bundles'
 
@@ -208,9 +208,11 @@ const BundleCard = memo(function BundleCard({
 
           {/* Short Description */}
           {bundle.short_description && (
-            <p className="text-sm text-dark-500 dark:text-dark-400 mb-3 line-clamp-2">
-              {bundle.short_description}
-            </p>
+            <div className="text-sm text-dark-500 dark:text-dark-400 mb-3 space-y-0.5">
+              {formatDescription(bundle.short_description).slice(0, 2).map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
           )}
 
           {/* Pricing */}

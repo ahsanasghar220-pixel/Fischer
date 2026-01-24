@@ -123,8 +123,8 @@ html.lenis, html.lenis body {
   }
 
   .btn-primary {
-    @apply btn bg-gradient-to-r from-primary-500 to-primary-400 text-dark-900
-           hover:from-primary-400 hover:to-primary-300 hover:shadow-glow hover:-translate-y-0.5
+    @apply btn bg-primary-500 text-white
+           hover:bg-primary-600 hover:shadow-glow hover:-translate-y-0.5
            focus:ring-primary-500 dark:focus:ring-offset-dark-900;
   }
 
@@ -1510,3 +1510,4 @@ html.lenis, html.lenis body {
   perspective: 1000px;
   -webkit-perspective: 1000px;
 }
+

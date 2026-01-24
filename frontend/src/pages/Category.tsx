@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
+import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
@@ -16,6 +18,137 @@ interface Category {
   image?: string
   parent?: Category
   children?: Category[]
+}
+
+// Category-specific features based on client requirements
+const categoryFeatures: Record<string, string[]> = {
+  'kitchen-hoods': [
+    'Premium Quality',
+    'BLDC copper motor',
+    '1 Year Warranty',
+    'Energy Efficient',
+    'Heat + Auto clean',
+    'Gesture and Touch Control',
+    'Inverter Technology A+++ rated',
+    'Low noise level',
+  ],
+  'hobs-hoods': [
+    'Complete Brass Burners',
+    'Sabaf Burners',
+    'EPS Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Immediate Auto Ignition',
+  ],
+  'built-in-hobs': [
+    'Complete Brass Burners',
+    'Sabaf Burners',
+    'EPS Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Immediate Auto Ignition',
+  ],
+  'geysers-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'hybrid-geysers': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'gas-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'instant-electric-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'fast-electric-water-heaters': [
+    'Overheating Protection',
+    'Wattage Control',
+    'Fully Insulated',
+    'Accurate Volume Capacity',
+    'Incoloy 840 heating element',
+    'Imported Brass safety Valves',
+  ],
+  'oven-toasters': [
+    'Double Layered Glass door',
+    'Inner lamp',
+    'Rotisserie Function',
+    'Convection Function',
+    'Stainless steel elements',
+  ],
+  'water-dispensers': [
+    'Food-grade stainless steel tanks',
+    'Eco-friendly refrigerants',
+    '100% copper coiling',
+  ],
+  'air-fryers': [
+    'Digital Touch panel',
+    'Wide Temperature Control',
+    'Injection molding texture',
+    'Non-stick coating',
+    'Bottom heater for Even temperature control',
+  ],
+  'water-coolers': [
+    'Adjustable Thermostat',
+    'Food Grade Non Magnetic stainless steel',
+    'High back pressure compressor',
+    'Spring loaded push button',
+  ],
+  'storage-coolers': [
+    'Adjustable Thermostat',
+    'Food Grade Non Magnetic stainless steel',
+    'High back pressure compressor',
+    'Spring loaded push button',
+  ],
+  'cooking-ranges': [
+    'Complete Brass Burners',
+    'Tempered Glass',
+    'Flame Failure Device',
+    'Stainless steel finish',
+    '5KW powerful burners',
+    'Auto Ignition',
+  ],
+  'blenders-processors': [
+    'Multi-Function Food processing',
+    'Precision stainless steel blades & Discs',
+    'Pulse & Speed control',
+    'Generous Capacity',
+  ],
+  'room-coolers': [
+    'High Air Delivery',
+    'Large Water Tank',
+    'Honeycomb Cooling Pads',
+    'Inverter Compatible',
+    'Low Power Consumption',
+  ],
+}
+
+// Get features for a category by slug
+const getCategoryFeatures = (slug: string): string[] => {
+  return categoryFeatures[slug] || ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
 }
 
 interface Product {
@@ -43,12 +176,17 @@ interface CategoryData {
 
 export default function Category() {
   const { slug } = useParams<{ slug: string }>()
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
 
   const { data, isLoading, error } = useQuery<CategoryData>({
     queryKey: ['category', slug],
     queryFn: async () => {
       const response = await api.get(`/categories/${slug}`)
-      return response.data.data
+      // API returns: { success, data: { category }, products: [...] }
+      return {
+        category: response.data.data.category,
+        products: response.data.products || []
+      }
     },
   })
 
@@ -160,30 +298,31 @@ export default function Category() {
               >
                 {products?.length || 0} Products
               </motion.p>
-              {/* Features as bullet points */}
-              {category.features && category.features.length > 0 && (
-                <motion.div
-                  className="flex flex-wrap gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  {category.features.map((feature, index) => (
-                    <motion.span
-                      key={index}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-100 dark:bg-dark-700 rounded-full text-sm text-dark-700 dark:text-dark-300"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
-                    >
-                      <svg className="w-3.5 h-3.5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      {feature}
-                    </motion.span>
-                  ))}
-                </motion.div>
-              )}
+              {/* Features as bullet points - Always show with fallback */}
+              <motion.div
+                className="flex flex-wrap gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {(category.features && category.features.length > 0
+                  ? category.features
+                  : getCategoryFeatures(category.slug)
+                ).map((feature, index) => (
+                  <motion.span
+                    key={index}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-100 dark:bg-dark-700 rounded-full text-sm text-dark-700 dark:text-dark-300"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 + index * 0.05 }}
+                  >
+                    <svg className="w-3.5 h-3.5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {feature}
+                  </motion.span>
+                ))}
+              </motion.div>
             </div>
           </div>
         </div>
@@ -230,7 +369,7 @@ export default function Category() {
             {products.map((product) => (
               <StaggerItem key={product.id}>
                 <HoverCard intensity={8}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product} onQuickView={setQuickViewProduct} />
                 </HoverCard>
               </StaggerItem>
             ))}
@@ -258,6 +397,17 @@ export default function Category() {
           </motion.div>
         )}
       </div>
+
+      {/* Quick View Modal */}
+      <AnimatePresence>
+        {quickViewProduct && (
+          <QuickViewModal
+            isOpen={!!quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            product={quickViewProduct}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

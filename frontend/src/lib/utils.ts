@@ -44,6 +44,21 @@ export function truncate(text: string, length: number): string {
   return text.substring(0, length) + '...'
 }
 
+/**
+ * Format description text by converting \n (literal or actual) to proper line breaks
+ * Returns an array of strings split by newlines, filtering out empty lines
+ */
+export function formatDescription(text: string): string[] {
+  if (!text) return []
+  // Replace literal \n or \\n with actual newlines, then split
+  return text
+    .replace(/\\n/g, '\n')  // Replace literal \n with actual newline
+    .replace(/\r\n/g, '\n') // Normalize Windows line endings
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+}
+
 export function getInitials(name: string): string {
   return name
     .split(' ')

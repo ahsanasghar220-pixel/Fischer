@@ -17,77 +17,81 @@ import { useCartStore } from '@/stores/cartStore'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
+import CategoryIcon from '@/components/ui/CategoryIcon'
 import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
 
 const navigation = {
   categories: [
     {
-      name: 'Water Coolers',
-      href: '/category/water-coolers',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      ),
-      desc: 'Industrial & commercial coolers',
-      gradient: 'from-blue-500 to-cyan-500'
+      name: 'Kitchen Hoods',
+      href: '/category/kitchen-hoods',
+      slug: 'kitchen-hoods',
+      desc: 'Range hoods & ventilation',
+      gradient: 'from-slate-500 to-gray-600'
     },
     {
-      name: 'Geysers & Heaters',
-      href: '/category/geysers-heaters',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
-        </svg>
-      ),
-      desc: 'Electric, gas & hybrid',
-      gradient: 'from-orange-500 to-red-500'
+      name: 'Kitchen Hobs',
+      href: '/category/kitchen-hobs',
+      slug: 'kitchen-hobs',
+      desc: 'Gas & electric cooktops',
+      gradient: 'from-gray-600 to-slate-700'
     },
     {
       name: 'Cooking Ranges',
       href: '/category/cooking-ranges',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      ),
-      desc: 'Ranges & oven toasters',
-      gradient: 'from-purple-500 to-pink-500'
+      slug: 'cooking-ranges',
+      desc: 'Professional cooking ranges',
+      gradient: 'from-purple-500 to-violet-500'
     },
     {
-      name: 'Built-in Hobs & Hoods',
-      href: '/category/hobs-hoods',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-        </svg>
-      ),
-      desc: 'Kitchen ventilation',
+      name: 'Oven Toasters',
+      href: '/category/oven-toasters',
+      slug: 'oven-toasters',
+      desc: 'Baking & toasting ovens',
+      gradient: 'from-amber-500 to-orange-500'
+    },
+    {
+      name: 'Air Fryers',
+      href: '/category/air-fryers',
+      slug: 'air-fryers',
+      desc: 'Healthy cooking appliances',
       gradient: 'from-emerald-500 to-teal-500'
+    },
+    {
+      name: 'Water Coolers',
+      href: '/category/water-coolers',
+      slug: 'water-coolers',
+      desc: 'Industrial & commercial coolers',
+      gradient: 'from-cyan-500 to-blue-500'
     },
     {
       name: 'Water Dispensers',
       href: '/category/water-dispensers',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-        </svg>
-      ),
+      slug: 'water-dispensers',
       desc: 'Hot & cold dispensers',
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-indigo-500'
     },
     {
-      name: 'Kitchen Appliances',
-      href: '/category/kitchen-appliances',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-        </svg>
-      ),
-      desc: 'Home essentials',
-      gradient: 'from-indigo-500 to-purple-500'
+      name: 'Electric + Gas Geysers',
+      href: '/category/electric-gas-geysers',
+      slug: 'electric-gas-geysers',
+      desc: 'Hybrid water heaters',
+      gradient: 'from-orange-500 to-red-500'
+    },
+    {
+      name: 'Blenders & Processors',
+      href: '/category/blenders-processors',
+      slug: 'blenders-processors',
+      desc: 'Food processors & blenders',
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    {
+      name: 'Room Coolers',
+      href: '/category/room-coolers',
+      slug: 'room-coolers',
+      desc: 'Air coolers & evaporative cooling',
+      gradient: 'from-sky-500 to-cyan-500'
     },
   ],
   pages: [
@@ -309,8 +313,8 @@ export default function Header() {
                                   onClick={() => close()}
                                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700/50 transition-colors group"
                                 >
-                                  <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-10 text-white group-hover:scale-110 transition-transform`}>
-                                    {item.icon}
+                                  <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-10 group-hover:scale-110 transition-transform`}>
+                                    <CategoryIcon slug={item.slug} className="w-7 h-7" />
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <p className="font-medium text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate">
@@ -737,8 +741,8 @@ export default function Header() {
                         style={{ animationDelay: `${index * 75}ms` }}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <div className={`p-2 rounded-lg bg-gradient-to-br ${item.gradient} text-white transition-transform duration-200 group-hover:scale-110`}>
-                          {item.icon}
+                        <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.gradient} transition-transform duration-200 group-hover:scale-110`}>
+                          <CategoryIcon slug={item.slug} className="w-7 h-7" />
                         </div>
                         <span className="font-medium">{item.name}</span>
                       </Link>

@@ -1,6 +1,6 @@
 # Fischer Pakistan E-Commerce Platform
 
-A full-featured, enterprise-grade e-commerce platform built for Fischer Pakistan home appliances. This modern, scalable solution features a Laravel 11 backend API and React 18 frontend single-page application.
+A full-featured, enterprise-grade e-commerce platform built for Fischer Pakistan home appliances. This modern, scalable solution features a Laravel 11 backend API and React 18 frontend single-page application with stunning animations, interactive elements, and a premium user experience.
 
 ## Production URL
 
@@ -13,6 +13,9 @@ A full-featured, enterprise-grade e-commerce platform built for Fischer Pakistan
 
 - [Tech Stack](#tech-stack)
 - [Features Overview](#features-overview)
+- [Homepage & UI Features](#homepage--ui-features)
+- [Product Categories](#product-categories)
+- [Product Bundles](#product-bundles)
 - [Customer Features](#customer-features)
 - [Admin Dashboard](#admin-dashboard)
 - [Dealer/B2B Portal](#dealerb2b-portal)
@@ -24,6 +27,7 @@ A full-featured, enterprise-grade e-commerce platform built for Fischer Pakistan
 - [Database Schema](#database-schema)
 - [Deployment](#deployment)
 - [Security Features](#security-features)
+- [Changelog](#changelog)
 
 ---
 
@@ -82,6 +86,181 @@ A full-featured, enterprise-grade e-commerce platform built for Fischer Pakistan
 - Newsletter subscription
 - CMS for pages, banners, FAQs, and testimonials
 - Dark mode support
+- Product bundles with configurable options
+- Interactive kitchen visualization
+
+---
+
+## Homepage & UI Features
+
+### Hero Section
+| Feature | Description |
+|---------|-------------|
+| Video Background | Full-screen immersive video with gradient overlays |
+| Play/Pause Control | User-controlled video playback |
+| Fallback Image | Graceful degradation when video unavailable |
+| Animated Content | Smooth text and CTA animations |
+
+### Animation System
+| Animation | Usage |
+|-----------|-------|
+| Scroll Reveal | Elements animate as they enter viewport |
+| Stagger Effects | Sequential reveal of grid items |
+| Hover Cards | 3D tilt effect on product cards |
+| Parallax | Depth effect on scroll |
+| Floating Elements | Subtle floating decorative elements |
+| Shimmer Effects | Loading and highlight shimmer |
+
+### Interactive Kitchen Line Art
+- SVG-based interactive kitchen illustration
+- Clickable product hotspots
+- Animated product popups with pricing
+- Links to product detail pages
+
+### Quick View Modal
+- View product details without page navigation
+- Image gallery with thumbnails
+- Add to cart functionality
+- Wishlist toggle
+- Direct link to full product page
+
+### Responsive Design
+- Mobile-first approach
+- Touch-optimized interactions
+- Collapsible navigation
+- Adaptive typography
+- Reduced motion support
+
+---
+
+## Product Categories
+
+### Available Categories
+| Category | Description | Products |
+|----------|-------------|----------|
+| Kitchen Hoods | Range hoods & ventilation | 6+ |
+| Kitchen Hobs | Gas & electric cooktops | 8+ |
+| Cooking Ranges | Professional cooking ranges | 9+ |
+| Oven Toasters | Baking & toasting ovens | 2+ |
+| Air Fryers | Healthy cooking appliances | 3+ |
+| Water Coolers | Industrial & commercial coolers | Multiple |
+| Water Dispensers | Hot & cold water dispensers | Multiple |
+| Electric + Gas Geysers | Hybrid water heaters | Multiple |
+| Blenders & Processors | Food processors & blenders | 4-5 |
+| Room Coolers | Air coolers & evaporative cooling | 5+ |
+
+### Category-Specific Features
+
+Each category displays unique selling points:
+
+**Kitchen Hoods**
+- Premium Quality
+- BLDC copper motor
+- 1 Year Warranty
+- Energy Efficient
+- Heat + Auto clean
+- Gesture and Touch Control
+- Inverter Technology A+++ rated
+- Low noise level
+
+**Kitchen Hobs**
+- Complete Brass Burners
+- Sabaf Burners
+- EPS Burners
+- Tempered Glass
+- Flame Failure Device
+- Stainless steel finish
+- 5KW powerful burners
+- Immediate Auto Ignition
+
+**Geysers & Heaters**
+- Overheating Protection
+- Wattage Control
+- Fully Insulated
+- Accurate Volume Capacity
+- Incoloy 840 heating element
+- Imported Brass safety Valves
+
+**Oven Toasters**
+- Double Layered Glass door
+- Inner lamp
+- Rotisserie Function
+- Convection Function
+- Stainless steel elements
+
+**Water Dispensers**
+- Food-grade stainless steel tanks
+- Eco-friendly refrigerants
+- 100% copper coiling
+
+**Air Fryers**
+- Digital Touch panel
+- Wide Temperature Control
+- Injection molding texture
+- Non-stick coating
+- Dual Heating element for Even temperature control
+
+**Water Coolers**
+- Adjustable Thermostat
+- Made of Food Grade, Non Magnetic Heavy Gauge stainless steel
+- High back pressure compressor with condenser
+- Spring loaded push button
+
+**Blenders & Processors**
+- Multi-Function Food processing function
+- Precision stainless steel blades & Discs
+- Pulse & Speed control
+- Generous Capacity
+
+**Room Coolers**
+- High Air Delivery
+- Large Water Tank
+- Honeycomb Cooling Pads
+- Inverter Compatible
+- Low Power Consumption
+
+---
+
+## Product Bundles
+
+### Bundle System Features
+| Feature | Description |
+|---------|-------------|
+| Configurable Slots | Multiple product slots per bundle |
+| Required/Optional | Mark slots as required or optional |
+| Multi-Select | Allow multiple products per slot |
+| Dynamic Pricing | Real-time price calculation |
+| Countdown Timer | Limited-time offer countdown |
+| Savings Display | Show total savings prominently |
+
+### Bundle Components
+- **BundleCard**: Attractive card display for bundle listings
+- **BundleQuickView**: Modal for quick bundle preview
+- **BundleBanner**: Hero and compact promotional banners
+- **BundleDetail**: Full configuration and purchase page
+
+### Bundle Configuration
+```
+Bundle
+├── Slot 1 (Required)
+│   ├── Product Option A
+│   ├── Product Option B
+│   └── Product Option C
+├── Slot 2 (Optional)
+│   ├── Product Option D
+│   └── Product Option E
+└── Slot 3 (Multi-select)
+    ├── Accessory 1
+    ├── Accessory 2
+    └── Accessory 3
+```
+
+### Pricing Features
+- Base price calculation from selected products
+- Automatic discount application
+- Per-slot price adjustments
+- Total savings display
+- Compare to individual prices
 
 ---
 
@@ -895,22 +1074,51 @@ npm run build
 
 | Element | Value |
 |---------|-------|
-| Primary Color (Yellow) | `#f4b42c` |
+| Primary Color (Maroon) | `#722f37` |
+| Primary Light | `#8b4049` |
+| Primary Dark | `#5a252c` |
+| Accent Color (Gold) | `#f4b42c` |
 | Dark Color | `#313131` |
 | Secondary Gray | `#8e8e8e` |
 | Font Family | Poppins |
+
+### Color Usage
+- **Primary (Maroon)**: CTA buttons, links, active states, hover effects
+- **Accent (Gold)**: Highlights, badges, secondary actions
+- **Dark**: Text, headers, backgrounds
+- **Gray**: Secondary text, borders, disabled states
 
 ---
 
 ## Summary Statistics
 
-- **Frontend Pages:** 30+ pages (public, auth, account, admin)
+- **Frontend Pages:** 35+ pages (public, auth, account, admin)
 - **API Controllers:** 21 public + 15+ admin controllers
-- **Database Models:** 31 Eloquent models
-- **API Endpoints:** 100+ RESTful endpoints
+- **Database Models:** 35+ Eloquent models
+- **API Endpoints:** 110+ RESTful endpoints
 - **Admin Modules:** 15+ management sections
 - **Payment Methods:** 5 payment options
 - **User Roles:** 4 distinct roles
+- **Product Categories:** 10 main categories
+- **Animation Components:** 6 reusable animation wrappers
+- **Bundle System:** Full configurable bundle support
+
+---
+
+## Changelog
+
+For detailed version history and updates, see [CHANGELOG.md](CHANGELOG.md)
+
+### Latest Updates (v2.0.0)
+- Hero video background with controls
+- Interactive kitchen line art visualization
+- Product bundles system
+- Scroll reveal animations
+- Category-specific feature bullet points
+- Quick view modal for products
+- Maroon color scheme for CTAs
+- Mobile responsiveness improvements
+- Description formatting fixes
 
 ---
 
@@ -926,4 +1134,4 @@ Proprietary - Fischer Pakistan. All rights reserved.
 
 ---
 
-Built by the Fischer Pakistan Development Team
+Built by the Fischer Pakistan Development Team with Claude Code

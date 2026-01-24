@@ -158,6 +158,145 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       </svg>
     ),
 
+    // KITCHEN HOODS - Range hood / chimney style
+    'kitchen-hoods': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}KH`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#475569" />
+            <stop offset="100%" stopColor="#64748b" />
+          </linearGradient>
+        </defs>
+        {/* Hood chimney/duct */}
+        <rect x="30" y="6" width="20" height="18" rx="2" stroke={`url(#${uid}KH)`} strokeWidth="2.5" fill={`url(#${uid}KH)`} opacity="0.15" />
+        {/* Main hood body - pyramid shape */}
+        <path d="M14 24 L30 24 L30 38 L14 50 Z" stroke={`url(#${uid}KH)`} strokeWidth="2.5" fill={`url(#${uid}KH)`} opacity="0.1" />
+        <path d="M66 24 L50 24 L50 38 L66 50 Z" stroke={`url(#${uid}KH)`} strokeWidth="2.5" fill={`url(#${uid}KH)`} opacity="0.1" />
+        <rect x="30" y="24" width="20" height="26" stroke={`url(#${uid}KH)`} strokeWidth="2.5" fill={`url(#${uid}KH)`} opacity="0.15" />
+        {/* Hood bottom panel with filters */}
+        <rect x="10" y="50" width="60" height="10" rx="2" stroke={`url(#${uid}KH)`} strokeWidth="2.5" fill="none" />
+        <rect x="14" y="52" width="22" height="6" rx="1" fill={`url(#${uid}KH)`} opacity="0.3" />
+        <rect x="44" y="52" width="22" height="6" rx="1" fill={`url(#${uid}KH)`} opacity="0.3" />
+        {/* LED lights */}
+        <circle cx="28" cy="48" r="2" fill="#fbbf24" opacity="0.9" />
+        <circle cx="40" cy="48" r="2" fill="#fbbf24" opacity="0.9" />
+        <circle cx="52" cy="48" r="2" fill="#fbbf24" opacity="0.9" />
+        {/* Steam/air flow */}
+        <path d="M30 65 Q28 70 30 75" stroke={`url(#${uid}KH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        <path d="M40 64 Q38 70 40 76" stroke={`url(#${uid}KH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        <path d="M50 65 Q48 70 50 75" stroke={`url(#${uid}KH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        {/* Control panel */}
+        <rect x="35" y="30" width="10" height="6" rx="1" fill={`url(#${uid}KH)`} opacity="0.4" />
+        <circle cx="38" cy="33" r="1.5" fill={`url(#${uid}KH)`} />
+        <circle cx="42" cy="33" r="1.5" fill={`url(#${uid}KH)`} />
+      </svg>
+    ),
+
+    // AIR FRYERS - Modern digital air fryer
+    'air-fryers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}AF`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#34d399" />
+          </linearGradient>
+        </defs>
+        {/* Main body */}
+        <path d="M18 16 Q18 10 26 10 L54 10 Q62 10 62 16 L62 62 Q62 70 54 70 L26 70 Q18 70 18 62 Z" stroke={`url(#${uid}AF)`} strokeWidth="2.5" fill={`url(#${uid}AF)`} opacity="0.1" />
+        {/* Digital display panel */}
+        <rect x="24" y="16" width="32" height="14" rx="2" fill={`url(#${uid}AF)`} opacity="0.2" stroke={`url(#${uid}AF)`} strokeWidth="1.5" />
+        {/* Display text/numbers */}
+        <text x="40" y="27" textAnchor="middle" fill={`url(#${uid}AF)`} fontSize="8" fontWeight="bold">180°C</text>
+        {/* Touch controls */}
+        <circle cx="28" cy="38" r="3" fill={`url(#${uid}AF)`} opacity="0.5" />
+        <circle cx="40" cy="38" r="3" fill={`url(#${uid}AF)`} opacity="0.5" />
+        <circle cx="52" cy="38" r="3" fill={`url(#${uid}AF)`} opacity="0.5" />
+        {/* Basket area with handle */}
+        <rect x="22" y="46" width="36" height="18" rx="3" stroke={`url(#${uid}AF)`} strokeWidth="2" fill={`url(#${uid}AF)`} opacity="0.15" />
+        {/* Basket grid pattern */}
+        <line x1="28" y1="50" x2="28" y2="60" stroke={`url(#${uid}AF)`} strokeWidth="1" opacity="0.4" />
+        <line x1="34" y1="50" x2="34" y2="60" stroke={`url(#${uid}AF)`} strokeWidth="1" opacity="0.4" />
+        <line x1="40" y1="50" x2="40" y2="60" stroke={`url(#${uid}AF)`} strokeWidth="1" opacity="0.4" />
+        <line x1="46" y1="50" x2="46" y2="60" stroke={`url(#${uid}AF)`} strokeWidth="1" opacity="0.4" />
+        <line x1="52" y1="50" x2="52" y2="60" stroke={`url(#${uid}AF)`} strokeWidth="1" opacity="0.4" />
+        {/* Basket handle */}
+        <rect x="35" y="44" width="10" height="4" rx="1" fill={`url(#${uid}AF)`} />
+        {/* Heat waves on top */}
+        <path d="M32 6 Q30 3 32 0" stroke={`url(#${uid}AF)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+        <path d="M40 6 Q38 2 40 -2" stroke={`url(#${uid}AF)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+        <path d="M48 6 Q46 3 48 0" stroke={`url(#${uid}AF)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+      </svg>
+    ),
+
+    // KITCHEN HOBS - Built-in gas/electric hob cooktop
+    'kitchen-hobs': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}HB`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#374151" />
+            <stop offset="100%" stopColor="#4b5563" />
+          </linearGradient>
+          <linearGradient id={`${uid}FL2`} x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fbbf24" />
+          </linearGradient>
+        </defs>
+        {/* Glass surface */}
+        <rect x="8" y="20" width="64" height="44" rx="4" stroke={`url(#${uid}HB)`} strokeWidth="2.5" fill={`url(#${uid}HB)`} opacity="0.1" />
+        {/* Large burner - top left */}
+        <circle cx="26" cy="36" r="12" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
+        <circle cx="26" cy="36" r="7" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
+        <circle cx="26" cy="36" r="3" fill={`url(#${uid}FL2)`} opacity="0.8" />
+        {/* Small burner - top right */}
+        <circle cx="54" cy="36" r="9" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
+        <circle cx="54" cy="36" r="5" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
+        <circle cx="54" cy="36" r="2" fill={`url(#${uid}FL2)`} opacity="0.8" />
+        {/* Touch control panel */}
+        <rect x="28" y="54" width="24" height="6" rx="2" fill={`url(#${uid}HB)`} opacity="0.3" />
+        <circle cx="34" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        <circle cx="40" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        <circle cx="46" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        {/* Heat lines */}
+        <path d="M23 26 Q21 23 23 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M26 26 Q24 22 26 18" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M29 26 Q27 23 29 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
+
+    // BLENDERS & FOOD PROCESSORS
+    'blenders-processors': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}BP`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#34d399" />
+          </linearGradient>
+        </defs>
+        {/* Blender jar */}
+        <path d="M25 18 L22 52 L38 52 L35 18" stroke={`url(#${uid}BP)`} strokeWidth="2.5" fill={`url(#${uid}BP)`} opacity="0.15" />
+        <ellipse cx="30" cy="18" rx="6" ry="3" stroke={`url(#${uid}BP)`} strokeWidth="2" fill="none" />
+        {/* Blender lid */}
+        <rect x="27" y="12" width="6" height="6" rx="1" fill={`url(#${uid}BP)`} opacity="0.4" />
+        {/* Blender base */}
+        <rect x="20" y="52" width="20" height="12" rx="3" fill={`url(#${uid}BP)`} opacity="0.3" stroke={`url(#${uid}BP)`} strokeWidth="2" />
+        <circle cx="30" cy="58" r="4" fill={`url(#${uid}BP)`} />
+        {/* Blending liquid */}
+        <path d="M26 28 Q24 32 26 36 Q28 40 26 44" stroke={`url(#${uid}BP)`} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+        <path d="M30 26 Q28 30 30 34 Q32 38 30 42" stroke={`url(#${uid}BP)`} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+        {/* Food processor on right */}
+        <rect x="46" y="28" width="22" height="24" rx="3" stroke={`url(#${uid}BP)`} strokeWidth="2" fill={`url(#${uid}BP)`} opacity="0.1" />
+        <ellipse cx="57" cy="28" rx="11" ry="4" stroke={`url(#${uid}BP)`} strokeWidth="2" fill={`url(#${uid}BP)`} opacity="0.15" />
+        {/* Processor lid/pusher */}
+        <rect x="54" y="18" width="6" height="10" rx="1" fill={`url(#${uid}BP)`} opacity="0.3" />
+        {/* Processor blade indicator */}
+        <circle cx="57" cy="40" r="6" stroke={`url(#${uid}BP)`} strokeWidth="1.5" fill="none" />
+        <path d="M54 40 L60 40 M57 37 L57 43" stroke={`url(#${uid}BP)`} strokeWidth="1.5" />
+        {/* Processor base */}
+        <rect x="46" y="52" width="22" height="12" rx="3" fill={`url(#${uid}BP)`} opacity="0.3" stroke={`url(#${uid}BP)`} strokeWidth="2" />
+        <rect x="50" y="56" width="14" height="4" rx="1" fill={`url(#${uid}BP)`} opacity="0.5" />
+      </svg>
+    ),
+
     // BUILT-IN HOBS & HOODS - Kitchen hood above with built-in hob below
     'built-in-hobs': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
@@ -262,7 +401,16 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
   if (normalizedSlug.includes('storage') && normalizedSlug.includes('water')) {
     return icons['storage-type-water-coolers']
   }
-  if (normalizedSlug.includes('hob') || normalizedSlug.includes('hood')) {
+  if (normalizedSlug.includes('air') && normalizedSlug.includes('fryer')) {
+    return icons['air-fryers']
+  }
+  if (normalizedSlug.includes('kitchen') && normalizedSlug.includes('hood')) {
+    return icons['kitchen-hoods']
+  }
+  if (normalizedSlug.includes('hob')) {
+    return icons['built-in-hobs']
+  }
+  if (normalizedSlug.includes('hood') && !normalizedSlug.includes('kitchen')) {
     return icons['built-in-hobs']
   }
   if (normalizedSlug.includes('geyser') || normalizedSlug.includes('heater')) {
@@ -279,6 +427,9 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
   }
   if (normalizedSlug.includes('accessor')) {
     return icons['accessories']
+  }
+  if (normalizedSlug.includes('blender') || normalizedSlug.includes('processor')) {
+    return icons['blenders-processors']
   }
   if (normalizedSlug.includes('kitchen') || normalizedSlug.includes('appliance')) {
     return icons['kitchen-appliances']

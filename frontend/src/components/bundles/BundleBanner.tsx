@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCartIcon, ArrowRightIcon, PlayIcon } from '@heroicons/react/24/solid'
 import { ClockIcon, SparklesIcon } from '@heroicons/react/24/outline'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, formatDescription } from '@/lib/utils'
 import type { Bundle } from '@/api/bundles'
 
 interface BundleBannerProps {
@@ -105,9 +105,11 @@ const BundleBanner = memo(function BundleBanner({
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
               {bundle.name}
             </h3>
-            <p className="text-dark-300 mb-4 line-clamp-2">
-              {bundle.short_description}
-            </p>
+            <div className="text-dark-300 mb-4 space-y-0.5">
+              {formatDescription(bundle.short_description || '').slice(0, 2).map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
 
             {/* Pricing */}
             <div className="flex items-center gap-3 mb-4">
@@ -214,9 +216,11 @@ const BundleBanner = memo(function BundleBanner({
 
             {/* Description */}
             {bundle.short_description && (
-              <p className="text-lg md:text-xl text-white/80 mb-6 max-w-lg">
-                {bundle.short_description}
-              </p>
+              <div className="text-lg md:text-xl text-white/80 mb-6 max-w-lg space-y-1">
+                {formatDescription(bundle.short_description).slice(0, 3).map((line, index) => (
+                  <p key={index}>{line}</p>
+                ))}
+              </div>
             )}
 
             {/* Countdown Timer */}
