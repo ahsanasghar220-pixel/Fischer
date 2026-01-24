@@ -26,7 +26,7 @@ interface Product {
   description?: string
   short_description?: string
   primary_image?: string | null
-  images?: { id: number; image_path: string; is_primary: boolean }[]
+  images?: { id: number; image_path?: string; image?: string; is_primary: boolean }[]
   stock_status: string
   stock?: number
   is_new?: boolean
@@ -92,9 +92,9 @@ const QuickViewModal = memo(function QuickViewModal({
   if (!product) return null
 
   const images = product.images?.length
-    ? product.images
+    ? product.images.map(img => ({ ...img, image_path: img.image_path || img.image }))
     : product.primary_image
-    ? [{ id: 0, image_path: product.primary_image, is_primary: true }]
+    ? [{ id: 0, image_path: product.primary_image, image: product.primary_image, is_primary: true }]
     : []
 
   const discountPercentage = product.compare_price && product.compare_price > product.price

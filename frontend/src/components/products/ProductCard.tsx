@@ -16,8 +16,8 @@ const shimmerStyle = `
   100% { transform: translateX(100%); }
 }
 @keyframes subtle-glow {
-  0%, 100% { box-shadow: 0 8px 32px rgba(244, 180, 44, 0.15); }
-  50% { box-shadow: 0 12px 40px rgba(244, 180, 44, 0.25); }
+  0%, 100% { box-shadow: 0 8px 32px rgba(114, 47, 55, 0.2); }
+  50% { box-shadow: 0 12px 40px rgba(139, 64, 73, 0.3); }
 }
 `
 
@@ -27,14 +27,21 @@ interface Product {
   slug: string
   price: number
   compare_price?: number | null
+  description?: string
+  short_description?: string
   primary_image?: string | null
-  images?: Array<{ id: number; image: string; is_primary: boolean }>
+  images?: Array<{ id: number; image?: string; image_path?: string; is_primary: boolean }>
   stock_status: string
+  stock?: number
   is_new?: boolean
   is_bestseller?: boolean
   average_rating?: number
   review_count?: number
   category?: {
+    name: string
+    slug: string
+  }
+  brand?: {
     name: string
     slug: string
   }
@@ -93,7 +100,8 @@ const ProductCard = memo(function ProductCard({
   // Get secondary image for hover effect
   const secondaryImage = useMemo(() => {
     if (!product.images || product.images.length < 2) return null
-    return product.images.find(img => !img.is_primary)?.image || product.images[1]?.image || null
+    const img = product.images.find(img => !img.is_primary) || product.images[1]
+    return img?.image || img?.image_path || null
   }, [product.images])
 
   // Memoize discount calculation
@@ -378,7 +386,7 @@ const ProductCard = memo(function ProductCard({
           className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
                      ${isHovered ? 'opacity-100' : 'opacity-0'}`}
           style={{
-            boxShadow: '0 0 40px rgba(244, 180, 44, 0.2)',
+            boxShadow: '0 0 40px rgba(114, 47, 55, 0.25)',
             animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
           }}
         />

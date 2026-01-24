@@ -31,6 +31,27 @@ interface ProductImage {
   is_primary: boolean
 }
 
+// Simplified product type for QuickView modal
+interface QuickViewProduct {
+  id: number
+  name: string
+  slug: string
+  price: number
+  compare_price?: number | null
+  description?: string
+  short_description?: string
+  primary_image?: string | null
+  images?: { id: number; image_path?: string; image?: string; is_primary: boolean }[]
+  stock_status: string
+  stock?: number
+  is_new?: boolean
+  is_bestseller?: boolean
+  average_rating?: number
+  review_count?: number
+  category?: { name: string; slug: string }
+  brand?: { name: string; slug: string }
+}
+
 interface ProductVariant {
   id: number
   sku: string
@@ -96,7 +117,7 @@ export default function ProductDetail() {
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description')
   const [showAuthModal, setShowAuthModal] = useState(false)
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
+  const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null)
 
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)

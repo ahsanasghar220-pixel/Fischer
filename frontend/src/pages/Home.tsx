@@ -126,14 +126,21 @@ interface Product {
   slug: string
   price: number
   compare_price?: number | null
+  description?: string
+  short_description?: string
   primary_image?: string | null
-  images?: Array<{ id: number; image: string; is_primary: boolean }>
+  images?: Array<{ id: number; image?: string; image_path?: string; is_primary: boolean }>
   stock_status: string
+  stock?: number
   is_new?: boolean
   is_bestseller?: boolean
   average_rating?: number
   review_count?: number
   category?: {
+    name: string
+    slug: string
+  }
+  brand?: {
     name: string
     slug: string
   }
