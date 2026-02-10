@@ -302,12 +302,12 @@ const fallbackCategories: Category[] = [
   { id: 1, name: 'Water Coolers', slug: 'water-coolers', products_count: 12, image: '/images/products/water-coolers/fe-150-ss.png' },
   { id: 2, name: 'Cooking Ranges', slug: 'cooking-ranges', products_count: 8, image: '/images/products/cooking-ranges/fcr-5bb.png' },
   { id: 3, name: 'Geysers & Heaters', slug: 'geysers-heaters', products_count: 10, image: '/images/products/hybrid-geysers/fhg-65g.png' },
-  { id: 4, name: 'Built-in Hobs', slug: 'hobs-hoods', products_count: 6, image: '/images/products/kitchen-hobs/fbh-g90-5sbf.png' },
+  { id: 4, name: 'Built-in Hobs', slug: 'hobs-hoods', products_count: 6, image: '/images/products/hob.png' },
   { id: 5, name: 'Water Dispensers', slug: 'water-dispensers', products_count: 5, image: '/images/products/water-dispensers/fwd-fountain.png' },
   { id: 6, name: 'Storage Coolers', slug: 'storage-coolers', products_count: 4, image: '/images/products/storage-coolers/fst-200.png' },
-  { id: 7, name: 'Kitchen Hoods', slug: 'kitchen-hoods', products_count: 6, image: '/images/products/kitchen-hoods/fkh-t90-05s.png' },
+  { id: 7, name: 'Kitchen Hoods', slug: 'kitchen-hoods', products_count: 6, image: '/images/products/hood.png' },
   { id: 8, name: 'Oven Toasters', slug: 'oven-toasters', products_count: 3, image: '/images/products/oven-toasters/fot-2501c.jpg' },
-  { id: 9, name: 'Air Fryers', slug: 'air-fryers', products_count: 3, image: '/images/products/air-fryers/faf-601wd.jpg' },
+  { id: 9, name: 'Air Fryers', slug: 'air-fryers', products_count: 3, image: '/images/products/air-fryer.png' },
   { id: 10, name: 'Instant Water Heaters', slug: 'instant-electric-water-heaters', products_count: 5, image: '/images/products/instant-electric-water-heaters/fiewhs-25l.png' },
   { id: 11, name: 'Gas Water Heaters', slug: 'gas-water-heaters', products_count: 7, image: '/images/products/gas-water-heaters/fgg-55g.png' },
   { id: 12, name: 'Electric Water Heaters', slug: 'fast-electric-water-heaters', products_count: 8, image: '/images/products/fast-electric-water-heaters/ffew-f50.jpg' },
@@ -512,9 +512,9 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
             <Link
               to={`/category/${category.slug}`}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                       bg-primary-500 dark:bg-red-600
+                       bg-primary-500 dark:bg-primary-600
                        text-white font-semibold
-                       hover:bg-primary-600 dark:hover:bg-red-700
+                       hover:bg-primary-600 dark:hover:bg-primary-700
                        hover:shadow-lg hover:-translate-y-0.5
                        transition-all duration-300"
             >
@@ -863,10 +863,10 @@ export default function Home() {
                   <Link
                     to="/shop"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                             bg-primary-500 dark:bg-red-600
+                             bg-primary-500 dark:bg-primary-600
                              text-white
                              font-semibold
-                             hover:bg-primary-600 dark:hover:bg-red-700
+                             hover:bg-primary-600 dark:hover:bg-primary-700
                              hover:shadow-lg hover:-translate-y-0.5
                              transition-all duration-300"
                   >
@@ -895,7 +895,7 @@ export default function Home() {
                         className="text-center"
                       >
                         {/* Value - Red Accent */}
-                        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-500 dark:text-red-600 mb-3">
+                        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-500 dark:text-primary-600 mb-3">
                           <AnimatedCounter value={stat.value} />
                         </div>
 
@@ -1038,9 +1038,9 @@ export default function Home() {
                     <Link
                       to="/bundles"
                       className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                               bg-primary-500 dark:bg-red-600
+                               bg-primary-500 dark:bg-primary-600
                                text-white font-semibold
-                               hover:bg-primary-600 dark:hover:bg-red-700
+                               hover:bg-primary-600 dark:hover:bg-primary-700
                                hover:shadow-lg hover:-translate-y-0.5
                                transition-all duration-300"
                     >
@@ -1110,9 +1110,9 @@ export default function Home() {
                     <Link
                       to="/shop?featured=1"
                       className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-red-600
+                               bg-primary-500 dark:bg-primary-600
                                text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-red-700
+                               hover:bg-primary-600 dark:hover:bg-primary-700
                                hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
                                active:scale-95 transition-all duration-300"
                     >
@@ -1260,9 +1260,9 @@ export default function Home() {
                     <Link
                       to="/shop?new=1"
                       className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-red-600
+                               bg-primary-500 dark:bg-primary-600
                                text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-red-700
+                               hover:bg-primary-600 dark:hover:bg-primary-700
                                hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
                                active:scale-95 transition-all duration-300"
                     >
@@ -1521,7 +1521,7 @@ export default function Home() {
                     <Link
                       to="/about"
                       className="group inline-flex items-center gap-2 px-6 py-3
-                               bg-primary-500 dark:bg-red-600 hover:bg-primary-600 dark:hover:bg-red-700
+                               bg-primary-500 dark:bg-primary-600 hover:bg-primary-600 dark:hover:bg-primary-700
                                rounded-xl font-semibold text-white
                                hover:shadow-lg hover:-translate-y-0.5
                                transition-all duration-300"

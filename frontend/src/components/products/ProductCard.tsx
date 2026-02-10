@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon, StarIcon } from '@heroicons/react/24/solid'
-import { useState, useCallback, memo, useMemo, useRef } from 'react'
+import { useState, useCallback, memo, useMemo, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
@@ -70,6 +71,8 @@ const ProductCard = memo(function ProductCard({
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [pendingWishlistAction, setPendingWishlistAction] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const cycleIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const cardRef = useRef<HTMLDivElement>(null)
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -97,12 +100,34 @@ const ProductCard = memo(function ProductCard({
     setIsHovered(false)
   }, [])
 
-  // Get secondary image for hover effect
-  const secondaryImage = useMemo(() => {
-    if (!product.images || product.images.length < 2) return null
-    const img = product.images.find(img => !img.is_primary) || product.images[1]
-    return img?.image || img?.image_path || null
-  }, [product.images])
+  // Get all images for hover cycling effect
+  const allImages = useMemo(() => {
+    if (!product.images || product.images.length === 0) {
+      return product.primary_image ? [product.primary_image] : []
+    }
+    const sorted = [...product.images].sort((a, b) => (a.is_primary ? -1 : b.is_primary ? 1 : 0))
+    return sorted.map(img => img.image || img.image_path).filter(Boolean) as string[]
+  }, [product.images, product.primary_image])
+
+  const hasMultipleImages = allImages.length > 1
+
+  // Cycle through images on hover
+  useEffect(() => {
+    if (isHovered && hasMultipleImages) {
+      cycleIntervalRef.current = setInterval(() => {
+        setCurrentImageIndex(prev => (prev + 1) % allImages.length)
+      }, 1500)
+    } else {
+      if (cycleIntervalRef.current) {
+        clearInterval(cycleIntervalRef.current)
+        cycleIntervalRef.current = null
+      }
+      setCurrentImageIndex(0)
+    }
+    return () => {
+      if (cycleIntervalRef.current) clearInterval(cycleIntervalRef.current)
+    }
+  }, [isHovered, hasMultipleImages, allImages.length])
 
   // Memoize discount calculation
   const discountPercentage = useMemo(() => {
@@ -202,34 +227,60 @@ const ProductCard = memo(function ProductCard({
             <div className="absolute inset-0 skeleton" />
           )}
 
-          {product.primary_image && !imageError ? (
+          {allImages.length > 0 && !imageError ? (
             <>
-              {/* Primary Image - CSS transitions only */}
-              <img
-                src={product.primary_image}
-                alt={product.name}
-                width={300}
-                height={300}
-                className={`w-full h-full object-cover transition-all duration-300 ease-out
-                          ${imageLoaded ? 'opacity-100' : 'opacity-0'}
-                          ${secondaryImage ? 'group-hover:opacity-0' : ''}
-                          ${isHovered ? 'scale-105' : 'scale-100'}`}
-                loading="lazy"
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
-              />
-
-              {/* Secondary Image (shown on hover) */}
-              {secondaryImage && (
-                <img
-                  src={secondaryImage}
-                  alt={`${product.name} - alternate view`}
+              {/* Enhanced image animation with fade + slide */}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.img
+                  key={allImages[currentImageIndex]}
+                  src={allImages[currentImageIndex]}
+                  alt={currentImageIndex === 0 ? product.name : `${product.name} - view ${currentImageIndex + 1}`}
                   width={300}
                   height={300}
-                  className="absolute inset-0 w-full h-full object-cover transition-all duration-300 ease-out
-                           opacity-0 group-hover:opacity-100 group-hover:scale-105"
-                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading={currentImageIndex === 0 ? 'eager' : 'lazy'}
+                  onLoad={currentImageIndex === 0 ? () => setImageLoaded(true) : undefined}
+                  onError={currentImageIndex === 0 ? () => setImageError(true) : undefined}
+                  initial={{
+                    opacity: 0,
+                    x: 20,
+                    scale: 1
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    scale: isHovered ? 1.05 : 1
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: -20,
+                    scale: 1
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
                 />
+              </AnimatePresence>
+
+              {/* Enhanced dot indicators with animation */}
+              {hasMultipleImages && isHovered && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+                  {allImages.map((_, index) => (
+                    <motion.span
+                      key={index}
+                      className={`rounded-full transition-all duration-300
+                                ${currentImageIndex === index
+                                  ? 'bg-white'
+                                  : 'bg-white/50 hover:bg-white/70'}`}
+                      animate={{
+                        width: currentImageIndex === index ? 12 : 6,
+                        height: currentImageIndex === index ? 6 : 6,
+                      }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  ))}
+                </div>
               )}
             </>
           ) : (
@@ -250,7 +301,7 @@ const ProductCard = memo(function ProductCard({
             {discountPercentage && (
               <span
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-gradient-to-r from-red-500 to-red-400 text-white shadow-lg
+                           bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-lg
                            transition-transform duration-300 ease-out
                            ${isHovered ? 'scale-110' : 'scale-100'}`}
               >
