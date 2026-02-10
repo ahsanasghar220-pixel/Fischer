@@ -203,12 +203,12 @@ export default function Header() {
         </div>
 
         {/* Main header */}
-        <nav className="container-xl" aria-label="Top">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+        <nav className="container-xl px-4 sm:px-6" aria-label="Top">
+          <div className="flex items-center justify-between h-16 lg:h-20 gap-2 sm:gap-4">
             {/* Mobile menu button */}
             <button
               type="button"
-              className={`lg:hidden -ml-2 p-2 rounded-xl transition-colors ${
+              className={`lg:hidden p-2 rounded-xl transition-colors flex-shrink-0 ${
                 isHomePage && !isScrolled
                   ? 'text-white hover:bg-white/10'
                   : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -230,7 +230,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-8 sm:h-10 md:h-11 lg:h-12 w-auto ${
+                className={`h-7 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'hidden' // Hide dark logo on homepage hero
                     : 'dark:hidden' // Normal: hide in dark mode
@@ -252,7 +252,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-8 sm:h-10 md:h-11 lg:h-12 w-auto ${
+                className={`h-7 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'block' // Show white logo on homepage hero
                     : 'hidden dark:block' // Normal: show only in dark mode
@@ -452,11 +452,11 @@ export default function Header() {
             </Popover.Group>
 
             {/* Right section */}
-            <div className="flex items-center gap-1 lg:gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2 flex-shrink-0">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className={`p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
+                className={`p-2 sm:p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -487,7 +487,7 @@ export default function Header() {
               {/* Cart */}
               <button
                 onClick={() => setCartDrawerOpen(true)}
-                className={`relative p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
+                className={`relative p-2 sm:p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -600,7 +600,7 @@ export default function Header() {
               {/* Mobile Account/Login Icon */}
               <Link
                 to={isAuthenticated ? '/account' : '/login'}
-                className={`lg:hidden p-2.5 rounded-xl transition-colors ${
+                className={`lg:hidden p-2 sm:p-2.5 rounded-xl transition-colors ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
