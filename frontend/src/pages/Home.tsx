@@ -735,7 +735,7 @@ export default function Home() {
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
           >
-            <source src="/videos/hero-video.mp4" type="video/mp4" />
+            <source src="/videos/hero-video.mp4?v=2" type="video/mp4" />
           </video>
 
           {/* Subtle overlay for visual depth */}
