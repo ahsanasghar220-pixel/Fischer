@@ -1,10 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function WhatsAppWidget() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const whatsappNumber = '923211146642'
   const defaultMessage = 'Hello Fischer, I need assistance with your products.'
+
+  // Track scroll position to adjust WhatsApp button position
+  useEffect(() => {
+    const handleScroll = () => {
+      // Move up when user scrolls down 400px (same threshold as ScrollToTopButton)
+      setIsScrolled(window.scrollY > 400)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleWhatsAppClick = () => {
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`
@@ -13,9 +25,11 @@ export default function WhatsAppWidget() {
 
   return (
     <>
-      {/* Floating WhatsApp Button */}
+      {/* Floating WhatsApp Button - moves up when scroll button appears */}
       <motion.div
-        className="fixed bottom-24 right-6 z-50"
+        className={`fixed right-6 z-50 transition-all duration-300 ${
+          isScrolled ? 'bottom-24' : 'bottom-6'
+        }`}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 2, duration: 0.3, type: 'spring' }}
