@@ -192,9 +192,9 @@ export default function Header() {
 
         {/* Main header */}
         <nav className="container-xl px-4 sm:px-6" aria-label="Top">
-          <div className="flex items-center h-14 sm:h-16 lg:h-20 relative">
-            {/* Left section - hamburger + desktop navigation */}
-            <div className="flex items-center lg:flex-1">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4">
+            {/* Left section: Mobile hamburger OR Desktop logo */}
+            <div className="flex items-center gap-6">
               {/* Mobile menu button */}
               <button
                 type="button"
@@ -209,31 +209,8 @@ export default function Header() {
                 <Bars3Icon className="h-6 w-6" />
               </button>
 
-              {/* Desktop navigation */}
-              <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
-                {/* Products Mega Menu */}
-                <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
-
-                {navigation.pages.map((page) => (
-                  <Link
-                    key={page.name}
-                    to={page.href}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      location.pathname === page.href
-                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                        : isHomePage && !isScrolled
-                        ? 'text-white hover:text-white/80 hover:bg-white/10'
-                        : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
-                    }`}
-                  >
-                    {page.name}
-                  </Link>
-                ))}
-              </Popover.Group>
-            </div>
-
-            {/* Logo - absolutely centered on mobile, static on desktop */}
-            <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex-shrink-0 relative group z-10">
+              {/* Logo - LEFT side on desktop, CENTERED on mobile */}
+              <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex-shrink-0 relative group z-10">
               {/* Show light (white) logo when on homepage hero with video, otherwise show based on theme */}
               <img
                 src="/images/logo-dark.png"
@@ -281,8 +258,31 @@ export default function Header() {
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300" />
             </Link>
 
-            {/* Right section - icons with consistent sizing */}
-            <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 lg:flex-1 lg:justify-end ml-auto">
+            {/* Desktop navigation - after logo */}
+            <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
+              {/* Products Mega Menu */}
+              <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
+
+              {navigation.pages.map((page) => (
+                <Link
+                  key={page.name}
+                  to={page.href}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    location.pathname === page.href
+                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                      : isHomePage && !isScrolled
+                      ? 'text-white hover:text-white/80 hover:bg-white/10'
+                      : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
+                  }`}
+                >
+                  {page.name}
+                </Link>
+              ))}
+            </Popover.Group>
+          </div>
+
+          {/* Right section - icons with consistent sizing */}
+          <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
