@@ -19,6 +19,18 @@ interface Category {
   children?: Category[]
 }
 
+// Menu category with required href (always generated from slug)
+interface MenuCategory {
+  name: string
+  slug: string
+  href: string
+  image?: string
+  subcategories?: Array<{
+    name: string
+    href: string
+  }>
+}
+
 interface ProductsMegaMenuProps {
   isHomePage?: boolean
   isScrolled?: boolean
@@ -48,7 +60,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
   })
 
   // Transform API categories to match component structure
-  const categories: Category[] = categoriesData
+  const categories: MenuCategory[] = categoriesData
     ? categoriesData
         .filter((cat: Category) => !cat.parent_id) // Only parent categories
         .map((cat: Category) => ({
