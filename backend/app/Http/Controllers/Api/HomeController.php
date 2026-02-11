@@ -90,6 +90,8 @@ class HomeController extends Controller
                         'slug' => $cat->slug,
                         'image' => $cat->image,
                         'icon' => $cat->icon,
+                        'description' => $cat->description,
+                        'features' => $cat->features,
                         'products_count' => $cat->products_count ?? 0,
                     ] : null;
                 })
@@ -110,6 +112,8 @@ class HomeController extends Controller
                         'slug' => $cat->slug,
                         'image' => $cat->image,
                         'icon' => $cat->icon,
+                        'description' => $cat->description,
+                        'features' => $cat->features,
                         'products_count' => $cat->products_count,
                     ];
                 });
@@ -125,7 +129,7 @@ class HomeController extends Controller
             $homepageProducts = HomepageProduct::visible()
                 ->section('featured')
                 ->ordered()
-                ->with('product')
+                ->with(['product.images', 'product.category'])
                 ->take($featuredCount)
                 ->get();
 
@@ -147,14 +151,29 @@ class HomeController extends Controller
         $newArrivalsSection = $sections->get('new_arrivals');
         $newArrivalsSettings = $newArrivalsSection?->settings ?? [];
         $newArrivalsCount = $newArrivalsSettings['display_count'] ?? 5;
+        $newArrivalsSource = $newArrivalsSettings['source'] ?? 'auto';
 
-        $newArrivals = Product::with(['images', 'category'])
-            ->active()
-            ->new()
-            ->orderByDesc('created_at')
-            ->limit($newArrivalsCount)
-            ->get()
-            ->map(fn($p) => $this->formatProduct($p));
+        if ($newArrivalsSource === 'manual') {
+            $homepageNewArrivals = HomepageProduct::visible()
+                ->section('new_arrivals')
+                ->ordered()
+                ->with(['product.images', 'product.category'])
+                ->take($newArrivalsCount)
+                ->get();
+
+            $newArrivals = $homepageNewArrivals
+                ->map(fn($hp) => $hp->product)
+                ->filter()
+                ->map(fn($p) => $this->formatProduct($p));
+        } else {
+            $newArrivals = Product::with(['images', 'category'])
+                ->active()
+                ->new()
+                ->orderByDesc('created_at')
+                ->limit($newArrivalsCount)
+                ->get()
+                ->map(fn($p) => $this->formatProduct($p));
+        }
 
         // Get bestsellers
         $bestsellers = Product::with(['images', 'category'])

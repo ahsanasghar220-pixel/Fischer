@@ -17,7 +17,6 @@ const products: ProductHighlight[] = [
     category: 'Ventilation Solutions',
     images: [
       '/images/products/kitchen-hoods/fkh-h90-06s.png',
-      '/images/products/kitchen-hoods/fkh-l90-01in.png',
       '/images/products/kitchen-hoods/fkh-t90-04sc.png',
     ],
     href: '/category/built-in-hoods',
@@ -38,8 +37,9 @@ const products: ProductHighlight[] = [
     name: 'Oven Toaster',
     category: 'Baking Excellence',
     images: [
-      '/images/products/oven-toasters/fot-2501c.jpg',
-      '/images/products/oven-toasters/fot-1901d.jpg',
+      '/images/products/oven-toasters/fot-2501c-full.webp',
+      '/images/products/oven-toasters/fot-2501c-lit.webp',
+      '/images/products/oven-toasters/fot-1901d-full.webp',
     ],
     href: '/category/oven-toasters',
     description: 'Convection technology, 35L-48L capacity',
@@ -48,7 +48,9 @@ const products: ProductHighlight[] = [
     name: 'Air Fryer',
     category: 'Healthy Living',
     images: [
-      '/images/products/air-fryer.png',
+      '/images/products/air-fryers/faf-801wd-backup.jpg',
+      '/images/products/air-fryers/faf-601wd-backup.jpg',
+      '/images/products/air-fryers/faf-401wd-backup.jpg',
     ],
     href: '/category/air-fryers',
     description: 'Oil-free frying with digital controls',
@@ -57,7 +59,7 @@ const products: ProductHighlight[] = [
     name: 'Water Dispenser',
     category: 'Water Solutions',
     images: [
-      '/images/products/water-dispensers/fwd-1150.jpeg',
+      '/images/products/water-dispensers/fwd-1150.png',
       '/images/products/water-dispensers/fwd-bottle.png',
       '/images/products/water-dispensers/fwd-fountain.png',
     ],
@@ -116,8 +118,7 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
               onError={(e) => {
-                // Fallback to placeholder if image fails to load
-                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3Crect fill="%23e5e7eb" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="%239ca3af"%3EImage%3C/text%3E%3C/svg%3E'
+                e.currentTarget.style.display = 'none'
               }}
             />
           </AnimatePresence>

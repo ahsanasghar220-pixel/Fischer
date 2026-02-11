@@ -9,8 +9,8 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = [
-            // 1. Built-in Hoods
+        // Parent categories first (no parent_id)
+        $parentCategories = [
             [
                 'name' => 'Built-in Hoods',
                 'slug' => 'built-in-hoods',
@@ -25,13 +25,12 @@ class CategorySeeder extends Seeder
                     'Inverter Technology A+++ rated',
                     'Low noise level',
                 ],
-                'image' => '/images/products/hood.webp',
+                'image' => '/images/products/kitchen-hoods/fkh-h90-06s.png',
                 'icon' => 'kitchen-hood',
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 1,
             ],
-            // 2. Built-in Hobs
             [
                 'name' => 'Built-in Hobs',
                 'slug' => 'built-in-hobs',
@@ -46,7 +45,7 @@ class CategorySeeder extends Seeder
                     '5KW powerful burners',
                     'Immediate Auto Ignition',
                 ],
-                'image' => '/images/products/hob.webp',
+                'image' => '/images/products/kitchen-hobs/fbh-g90-5sbf.png',
                 'icon' => 'kitchen-hob',
                 'is_active' => true,
                 'is_featured' => true,
@@ -63,13 +62,12 @@ class CategorySeeder extends Seeder
                     'Convection Function',
                     'Stainless Steel Elements',
                 ],
-                'image' => '/images/categories/oven-toasters.png',
+                'image' => '/images/products/oven-toasters/fot-2501c-full.webp',
                 'icon' => 'oven',
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 3,
             ],
-            // 4. Air Fryers
             [
                 'name' => 'Air Fryers',
                 'slug' => 'air-fryers',
@@ -81,13 +79,77 @@ class CategorySeeder extends Seeder
                     'Non-stick coating',
                     'Dual Heating element for Even temperature control',
                 ],
-                'image' => '/images/categories/air-fryers.png',
+                'image' => '/images/products/air-fryers/faf-801wd-backup.jpg',
                 'icon' => 'air-fryer',
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 4,
             ],
-            // 9. Cooking Ranges (reordered from 5)
+            [
+                'name' => 'Water Coolers',
+                'slug' => 'water-coolers',
+                'description' => 'Commercial and industrial electric water coolers.',
+                'features' => [
+                    'Adjustable Thermostat',
+                    'Made of Food Grade, Non Magnetic Heavy Gauge stainless steel',
+                    'High back pressure compressor with condenser',
+                    'Spring loaded push button',
+                ],
+                'image' => '/images/products/water-coolers/fe-150-ss.png',
+                'icon' => 'water-cooler',
+                'is_active' => true,
+                'is_featured' => true,
+                'sort_order' => 5,
+            ],
+            [
+                'name' => 'Blenders & Processors',
+                'slug' => 'blenders-processors',
+                'description' => 'Multi-function food processors and blenders.',
+                'features' => [
+                    'Multi-Function Food processing function',
+                    'Precision stainless steel blades & Discs',
+                    'Pulse & Speed control',
+                    'Generous Capacity',
+                ],
+                'image' => '/images/products/accessories/fac-bl3.png',
+                'icon' => 'blender',
+                'is_active' => true,
+                'is_featured' => true,
+                'sort_order' => 6,
+            ],
+            [
+                'name' => 'Water Dispensers',
+                'slug' => 'water-dispensers',
+                'description' => 'Compact water dispensers for home and office use.',
+                'features' => [
+                    'Food-grade stainless steel tanks',
+                    'Eco-friendly refrigerants',
+                    '100% copper coiling',
+                ],
+                'image' => '/images/products/water-dispensers/fwd-fountain.png',
+                'icon' => 'dispenser',
+                'is_active' => true,
+                'is_featured' => true,
+                'sort_order' => 7,
+            ],
+            [
+                'name' => 'Geysers & Heaters',
+                'slug' => 'geysers-heaters',
+                'description' => 'Water geysers and heaters with various capacities.',
+                'features' => [
+                    'Overheating Protection',
+                    'Wattage Control',
+                    'Fully Insulated',
+                    'Accurate Volume Capacity',
+                    'Incoloy 840 heating element',
+                    'Imported Brass safety Valves',
+                ],
+                'image' => '/images/products/hybrid-geysers/fhg-65g.png',
+                'icon' => 'gas-geyser',
+                'is_active' => true,
+                'is_featured' => true,
+                'sort_order' => 8,
+            ],
             [
                 'name' => 'Cooking Ranges',
                 'slug' => 'cooking-ranges',
@@ -102,49 +164,45 @@ class CategorySeeder extends Seeder
                     'Immediate Auto Ignition',
                     'Multiple Size Options',
                 ],
-                'image' => '/images/categories/cooking-ranges.png',
+                'image' => '/images/products/cooking-ranges/fcr-5bb.png',
                 'icon' => 'cooking-range',
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 9,
             ],
-            // 6. Blenders & Processors
             [
-                'name' => 'Blenders & Processors',
-                'slug' => 'blenders-processors',
-                'description' => 'Multi-function food processors and blenders.',
+                'name' => 'Room Coolers',
+                'slug' => 'room-coolers',
+                'description' => 'Efficient room coolers for comfortable indoor cooling.',
                 'features' => [
-                    'Multi-Function Food processing function',
-                    'Precision stainless steel blades & Discs',
-                    'Pulse & Speed control',
-                    'Generous Capacity',
+                    'Powerful Air Throw',
+                    'Honeycomb Cooling Pads',
+                    'Large Water Tank Capacity',
+                    'Multiple Speed Settings',
+                    'Energy Efficient',
                 ],
-                'image' => '/images/products/accessories/fac-bl3.jpeg',
-                'icon' => 'blender',
+                'image' => '/images/products/water-coolers/fe-100-ss.png',
+                'icon' => 'room-cooler',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 6,
+                'sort_order' => 10,
             ],
-            // 8. Geysers & Heaters (reordered from 7)
-            [
-                'name' => 'Geysers & Heaters',
-                'slug' => 'geysers-heaters',
-                'description' => 'Water geysers and heaters with various capacities.',
-                'features' => [
-                    'Overheating Protection',
-                    'Wattage Control',
-                    'Fully Insulated',
-                    'Accurate Volume Capacity',
-                    'Incoloy 840 heating element',
-                    'Imported Brass safety Valves',
-                ],
-                'image' => '/images/categories/geysers-heaters.png',
-                'icon' => 'gas-geyser',
-                'is_active' => true,
-                'is_featured' => true,
-                'sort_order' => 8,
-            ],
-            // Sub-categories for Geysers & Heaters
+        ];
+
+        // Create parent categories
+        foreach ($parentCategories as $category) {
+            Category::updateOrCreate(
+                ['slug' => $category['slug']],
+                array_merge($category, ['parent_id' => null])
+            );
+        }
+
+        // Now create subcategories with parent_id references
+        $geysersParent = Category::where('slug', 'geysers-heaters')->first();
+        $waterCoolersParent = Category::where('slug', 'water-coolers')->first();
+
+        $subCategories = [
+            // Geysers & Heaters subcategories
             [
                 'name' => 'Gas Water Heaters',
                 'slug' => 'gas-water-heaters',
@@ -157,11 +215,12 @@ class CategorySeeder extends Seeder
                     'Copper Heat Exchangers',
                     'Digital Temperature Control',
                 ],
-                'image' => '/images/categories/gas-water-heaters.png',
+                'image' => '/images/products/gas-water-heaters/fgg-55g.png',
                 'icon' => 'gas-geyser',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 11,
+                'parent_id' => $geysersParent?->id,
             ],
             [
                 'name' => 'Electric + Gas Geysers',
@@ -175,11 +234,12 @@ class CategorySeeder extends Seeder
                     'Accurate Volume Capacity',
                     'Incoloy 840 Heating Element',
                 ],
-                'image' => '/images/categories/hybrid-geysers.png',
+                'image' => '/images/products/hybrid-geysers/fhg-65g.png',
                 'icon' => 'hybrid-geyser',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 12,
+                'parent_id' => $geysersParent?->id,
             ],
             [
                 'name' => 'Fast Electric Water Heaters',
@@ -192,11 +252,12 @@ class CategorySeeder extends Seeder
                     'Full Insulation',
                     'Incoloy 840 Heating Element',
                 ],
-                'image' => '/images/categories/electric-water-heaters.png',
+                'image' => '/images/products/fast-electric-water-heaters/ffeg-f100.png',
                 'icon' => 'electric-geyser',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 13,
+                'parent_id' => $geysersParent?->id,
             ],
             [
                 'name' => 'Instant Electric Water Heaters',
@@ -209,30 +270,14 @@ class CategorySeeder extends Seeder
                     'Wattage Control',
                     'Fully Insulated',
                 ],
-                'image' => '/images/categories/instant-water-heaters.png',
+                'image' => '/images/products/instant-electric-water-heaters/fiewhs-25l.png',
                 'icon' => 'instant-geyser',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 14,
+                'parent_id' => $geysersParent?->id,
             ],
-            // 5. Water Coolers (reordered from 12)
-            [
-                'name' => 'Water Coolers',
-                'slug' => 'water-coolers',
-                'description' => 'Commercial and industrial electric water coolers.',
-                'features' => [
-                    'Adjustable Thermostat',
-                    'Made of Food Grade, Non Magnetic Heavy Gauge stainless steel',
-                    'High back pressure compressor with condenser',
-                    'Spring loaded push button',
-                ],
-                'image' => '/images/categories/water-coolers.png',
-                'icon' => 'water-cooler',
-                'is_active' => true,
-                'is_featured' => true,
-                'sort_order' => 5,
-            ],
-            // Sub-categories for Water Coolers
+            // Water Coolers subcategories
             [
                 'name' => 'Slim Electric Water Coolers',
                 'slug' => 'slim-water-coolers',
@@ -243,27 +288,12 @@ class CategorySeeder extends Seeder
                     'Food Grade Stainless Steel',
                     'High Back Pressure Compressor',
                 ],
-                'image' => '/images/categories/slim-water-coolers.png',
+                'image' => '/images/products/slim-water-coolers/fe-35-slim.png',
                 'icon' => 'slim-cooler',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 15,
-            ],
-            // 7. Water Dispensers (reordered from 14)
-            [
-                'name' => 'Water Dispensers',
-                'slug' => 'water-dispensers',
-                'description' => 'Compact water dispensers for home and office use.',
-                'features' => [
-                    'Food-grade stainless steel tanks',
-                    'Eco-friendly refrigerants',
-                    '100% copper coiling',
-                ],
-                'image' => '/images/categories/water-dispensers.png',
-                'icon' => 'dispenser',
-                'is_active' => true,
-                'is_featured' => true,
-                'sort_order' => 7,
+                'parent_id' => $waterCoolersParent?->id,
             ],
             [
                 'name' => 'Self-Contained Storage Coolers',
@@ -275,33 +305,16 @@ class CategorySeeder extends Seeder
                     'Copper Fan Motors',
                     'Large Storage Capacity',
                 ],
-                'image' => '/images/categories/storage-coolers.png',
+                'image' => '/images/products/storage-coolers/fst-200.png',
                 'icon' => 'storage-cooler',
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 16,
-            ],
-            // 10. Room Coolers (reordered from 16)
-            [
-                'name' => 'Room Coolers',
-                'slug' => 'room-coolers',
-                'description' => 'Efficient room coolers for comfortable indoor cooling.',
-                'features' => [
-                    'Powerful Air Throw',
-                    'Honeycomb Cooling Pads',
-                    'Large Water Tank Capacity',
-                    'Multiple Speed Settings',
-                    'Energy Efficient',
-                ],
-                'image' => '/images/categories/room-coolers.png',
-                'icon' => 'room-cooler',
-                'is_active' => true,
-                'is_featured' => true,
-                'sort_order' => 10,
+                'parent_id' => $waterCoolersParent?->id,
             ],
         ];
 
-        foreach ($categories as $category) {
+        foreach ($subCategories as $category) {
             Category::updateOrCreate(
                 ['slug' => $category['slug']],
                 $category

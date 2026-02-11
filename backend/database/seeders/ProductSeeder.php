@@ -58,6 +58,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Auto-Heating Clean',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-t90-05s.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-t90-05s-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -79,6 +80,7 @@ class ProductSeeder extends Seeder
                     'Lighting' => 'LED Lamp',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-h90-06s.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-h90-06s-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_new' => true,
@@ -98,6 +100,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Heavy Gauge Oil Cup',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-t90-03in.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-t90-03in-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -115,6 +118,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Filterless, Tempered Glass',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-s90-02in.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-s90-02in-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -132,6 +136,7 @@ class ProductSeeder extends Seeder
                     'Lighting' => 'LED Lamp',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-t90-04sc.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-t90-04sc-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -153,6 +158,7 @@ class ProductSeeder extends Seeder
                     'Special' => 'Zero Vibration',
                 ],
                 'image' => '/images/products/kitchen-hoods/fkh-l90-01in.png',
+                'extra_images' => ['/images/products/kitchen-hoods/fkh-l90-01in-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_bestseller' => true,
@@ -182,6 +188,7 @@ class ProductSeeder extends Seeder
                     'Gas Type' => '2000 Pa (NG)',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-ss76-3eps.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-ss76-3eps-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -198,6 +205,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Dual Gas Compatibility',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-ss84-3sbf.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-ss84-3sbf-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -214,6 +222,7 @@ class ProductSeeder extends Seeder
                     'Burner' => 'Brass',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-ss76-3cb.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-ss76-3cb-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -232,6 +241,7 @@ class ProductSeeder extends Seeder
                     'Gas Type' => '2000 Pa (NG)',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-g78-3cb.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-g78-3cb-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -250,6 +260,7 @@ class ProductSeeder extends Seeder
                     'Knobs' => 'Zinc Alloy',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-g78-3cb-matte.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-g78-3cb-matte-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -287,6 +298,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Dual Gas Compatibility',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-ss90-5sbf.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-ss90-5sbf-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -303,6 +315,7 @@ class ProductSeeder extends Seeder
                     'Pan Support' => 'Heavy Iron',
                 ],
                 'image' => '/images/products/kitchen-hobs/fbh-ss86-3cb.png',
+                'extra_images' => ['/images/products/kitchen-hobs/fbh-ss86-3cb-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -328,6 +341,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Gas',
                 ],
                 'image' => '/images/products/gas-water-heaters/figwh-6l.png',
+                'extra_images' => ['/images/products/gas-water-heaters/figwh-6l-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -342,6 +356,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Gas',
                 ],
                 'image' => '/images/products/gas-water-heaters/figwh-8l.png',
+                'extra_images' => ['/images/products/gas-water-heaters/figwh-8l-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -356,6 +371,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Gas',
                 ],
                 'image' => '/images/products/gas-water-heaters/figwh-10l.png',
+                'extra_images' => ['/images/products/gas-water-heaters/figwh-10l-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -372,6 +388,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Gas Geyser',
                 ],
                 'image' => '/images/products/gas-water-heaters/fgg-35g.png',
+                'extra_images' => ['/images/products/gas-water-heaters/fgg-35g-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -387,6 +404,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Gas Geyser',
                 ],
                 'image' => '/images/products/gas-water-heaters/fgg-55g.png',
+                'extra_images' => ['/images/products/gas-water-heaters/fgg-55g-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -402,6 +420,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Gas Geyser',
                 ],
                 'image' => '/images/products/gas-water-heaters/fgg-65g.png',
+                'extra_images' => ['/images/products/gas-water-heaters/fgg-65g-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -419,6 +438,7 @@ class ProductSeeder extends Seeder
                     'Inner Tank' => '9/10 Gauge',
                 ],
                 'image' => '/images/products/gas-water-heaters/fgg-100g-hd.png',
+                'extra_images' => ['/images/products/gas-water-heaters/fgg-100g-hd-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -446,6 +466,7 @@ class ProductSeeder extends Seeder
                     'Flexibility' => 'Dual Fuel Options',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-25g.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-25g-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'average_rating' => 4.0,
@@ -464,6 +485,7 @@ class ProductSeeder extends Seeder
                     'Flexibility' => 'Dual Fuel Options',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-35g.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-35g-backup.png'],
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -481,6 +503,7 @@ class ProductSeeder extends Seeder
                     'Flexibility' => 'Dual Fuel Options',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-55g.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-55g-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -496,6 +519,7 @@ class ProductSeeder extends Seeder
                     'Flexibility' => 'Dual Fuel Options',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-65g.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-65g-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -511,6 +535,7 @@ class ProductSeeder extends Seeder
                     'Model' => 'Eco',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-eco.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-eco-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             [
@@ -529,6 +554,7 @@ class ProductSeeder extends Seeder
                     'Inner Tank' => '9/10 Gauge',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-100g-hd.png',
+                'extra_images' => ['/images/products/hybrid-geysers/fhg-100g-hd-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -627,6 +653,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Fast Electric Geyser',
                 ],
                 'image' => '/images/products/fast-electric-water-heaters/ffeg-f100.png',
+                'extra_images' => ['/images/products/fast-electric-water-heaters/ffeg-f100-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -641,6 +668,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Fast Electric Geyser',
                 ],
                 'image' => '/images/products/fast-electric-water-heaters/ffeg-f140.png',
+                'extra_images' => ['/images/products/fast-electric-water-heaters/ffeg-f140-backup.png'],
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -656,6 +684,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Fast Electric Geyser',
                 ],
                 'image' => '/images/products/fast-electric-water-heaters/ffeg-f200.png',
+                'extra_images' => ['/images/products/fast-electric-water-heaters/ffeg-f200-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -715,6 +744,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Cum Storage',
                 ],
                 'image' => '/images/products/instant-electric-water-heaters/fics-15l.png',
+                'extra_images' => ['/images/products/instant-electric-water-heaters/fics-15l-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -729,6 +759,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Cum Storage',
                 ],
                 'image' => '/images/products/instant-electric-water-heaters/fics-30l.png',
+                'extra_images' => ['/images/products/instant-electric-water-heaters/fics-30l-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -744,6 +775,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Electric with Storage',
                 ],
                 'image' => '/images/products/instant-electric-water-heaters/fiewhs-20l.png',
+                'extra_images' => ['/images/products/instant-electric-water-heaters/fiewhs-20l-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             [
@@ -758,6 +790,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Instant Electric with Storage',
                 ],
                 'image' => '/images/products/instant-electric-water-heaters/fiewhs-25l.png',
+                'extra_images' => ['/images/products/instant-electric-water-heaters/fiewhs-25l-backup.png'],
                 'stock_status' => 'out_of_stock',
                 'average_rating' => 4.5,
             ],
@@ -787,6 +820,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-35ltr.png',
+                'extra_images' => ['/images/products/water-cooler-35ltr-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -806,6 +840,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-45ltr.png',
+                'extra_images' => ['/images/products/water-cooler-45ltr-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -825,6 +860,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-65ltr.png',
+                'extra_images' => ['/images/products/water-cooler-65ltr-backup.png'],
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -844,6 +880,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-80ltr.png',
+                'extra_images' => ['/images/products/water-cooler-80ltr-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -862,6 +899,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-100ltr.png',
+                'extra_images' => ['/images/products/water-cooler-100ltr-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_bestseller' => true,
@@ -882,6 +920,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/water-cooler-150ltr.png',
+                'extra_images' => ['/images/products/water-cooler-150ltr-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -900,6 +939,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/water-cooler-fe200ss.png',
+                'extra_images' => ['/images/products/water-cooler-fe200ss-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -918,6 +958,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/water-cooler-fe300ss.png',
+                'extra_images' => ['/images/products/water-cooler-fe300ss-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -937,6 +978,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/water-coolers/fe-1000-ss.png',
+                'extra_images' => ['/images/products/water-coolers/fe-1000-ss-backup.png'],
                 'stock_status' => 'in_stock',
             ],
         ];
@@ -964,6 +1006,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/slim-water-coolers/fe-35-slim.png',
+                'extra_images' => ['/images/products/slim-water-coolers/fe-35-slim-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -981,6 +1024,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/slim-water-coolers/fe-45-slim.png',
+                'extra_images' => ['/images/products/slim-water-coolers/fe-45-slim-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -999,6 +1043,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/slim-water-coolers/fe-65-slim.png',
+                'extra_images' => ['/images/products/slim-water-coolers/fe-65-slim-backup.png'],
                 'stock_status' => 'in_stock',
             ],
         ];
@@ -1024,6 +1069,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Food-grade Components',
                 ],
                 'image' => '/images/products/water-dispensers/fwd-bottle.png',
+                'extra_images' => ['/images/products/water-dispensers/fwd-bottle-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1040,6 +1086,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                 ],
                 'image' => '/images/products/water-dispensers/fwd-fountain.png',
+                'extra_images' => ['/images/products/water-dispensers/fwd-fountain-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -1087,6 +1134,7 @@ class ProductSeeder extends Seeder
                     'Refrigerant' => 'CFC-free R134a',
                 ],
                 'image' => '/images/products/storage-coolers/fst-25.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-25-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1106,6 +1154,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => 'All-Copper',
                 ],
                 'image' => '/images/products/storage-coolers/fst-50.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-50-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -1125,6 +1174,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Premium Stainless Steel',
                 ],
                 'image' => '/images/products/storage-coolers/fst-100.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-100-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1143,6 +1193,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Premium Stainless Steel',
                 ],
                 'image' => '/images/products/storage-coolers/fst-200.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-200-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1158,6 +1209,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Commercial Grade Stainless Steel',
                 ],
                 'image' => '/images/products/storage-coolers/fst-400.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-400-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1173,6 +1225,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Industrial Grade Stainless Steel',
                 ],
                 'image' => '/images/products/storage-coolers/fst-600.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-600-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1189,6 +1242,7 @@ class ProductSeeder extends Seeder
                     'Type' => 'Maximum Capacity',
                 ],
                 'image' => '/images/products/storage-coolers/fst-1000.png',
+                'extra_images' => ['/images/products/storage-coolers/fst-1000-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -1332,6 +1386,7 @@ class ProductSeeder extends Seeder
                     'Top' => 'Metal',
                 ],
                 'image' => '/images/products/cooking-ranges/fcc-3b.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcc-3b-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -1349,6 +1404,7 @@ class ProductSeeder extends Seeder
                     'Top' => 'Metal',
                 ],
                 'image' => '/images/products/cooking-ranges/fcc-5b.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcc-5b-backup.png'],
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -1366,6 +1422,7 @@ class ProductSeeder extends Seeder
                     'Top' => 'Metal',
                 ],
                 'image' => '/images/products/cooking-ranges/fcc-3b-sd.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcc-3b-sd-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             // Cooking Ranges - Brass Burner
@@ -1384,6 +1441,7 @@ class ProductSeeder extends Seeder
                     'Glass' => 'Mercury Glass Front and Top',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3bb.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3bb-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             [
@@ -1401,6 +1459,7 @@ class ProductSeeder extends Seeder
                     'Glass' => 'Mercury Glass',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-5bb.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-5bb-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             // Cooking Ranges with Accessories
@@ -1416,6 +1475,7 @@ class ProductSeeder extends Seeder
                     'Accessories' => 'Deep Fryer',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3bb-df.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3bb-df-backup.png'],
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
                 'is_featured' => true,
@@ -1432,6 +1492,7 @@ class ProductSeeder extends Seeder
                     'Accessories' => 'Deep Fryer',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3b-df.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3b-df-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             [
@@ -1450,6 +1511,7 @@ class ProductSeeder extends Seeder
                     'Accessories' => 'Roasting Grill',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3b-rg.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3b-rg-backup.png'],
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -1465,6 +1527,7 @@ class ProductSeeder extends Seeder
                     'Accessories' => 'Pizza Baker',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-5b-pb.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-5b-pb-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1483,6 +1546,7 @@ class ProductSeeder extends Seeder
                     'Accessories' => 'Roasting Grill',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-5b-rg.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-5b-rg-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             // Single Door Cooking Ranges
@@ -1501,6 +1565,7 @@ class ProductSeeder extends Seeder
                     'Glass' => 'Mercury Glass Front',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3bb-sd.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3bb-sd-backup.png'],
                 'stock_status' => 'out_of_stock',
             ],
             [
@@ -1517,6 +1582,7 @@ class ProductSeeder extends Seeder
                     'Panels' => 'Stainless Steel',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-3b-sd.png',
+                'extra_images' => ['/images/products/cooking-ranges/fcr-3b-sd-backup.png'],
                 'stock_status' => 'in_stock',
             ],
         ];
@@ -1541,6 +1607,7 @@ class ProductSeeder extends Seeder
                     'Variants' => 'Multiple Colors',
                 ],
                 'image' => '/images/products/accessories/fac-irn.png',
+                'extra_images' => ['/images/products/accessories/fac-irn-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1555,6 +1622,7 @@ class ProductSeeder extends Seeder
                     'Functions' => 'Blending, Grinding',
                 ],
                 'image' => '/images/products/accessories/fac-bl2.png',
+                'extra_images' => ['/images/products/accessories/fac-bl2-backup.png'],
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1585,7 +1653,8 @@ class ProductSeeder extends Seeder
 
         foreach ($products as $productData) {
             $imageUrl = $productData['image'] ?? null;
-            unset($productData['image']);
+            $extraImages = $productData['extra_images'] ?? [];
+            unset($productData['image'], $productData['extra_images']);
 
             $sku = $productData['sku'];
             unset($productData['sku']);
@@ -1604,15 +1673,29 @@ class ProductSeeder extends Seeder
                 ])
             );
 
-            if ($imageUrl && $product->wasRecentlyCreated) {
-                ProductImage::firstOrCreate(
-                    ['product_id' => $product->id, 'is_primary' => true],
-                    [
-                        'image' => $imageUrl,
-                        'alt_text' => $product->name,
-                        'sort_order' => 0,
-                    ]
-                );
+            // Create images (primary + extra) for new products
+            if ($product->wasRecentlyCreated) {
+                if ($imageUrl) {
+                    ProductImage::firstOrCreate(
+                        ['product_id' => $product->id, 'is_primary' => true],
+                        [
+                            'image' => $imageUrl,
+                            'alt_text' => $product->name,
+                            'sort_order' => 0,
+                        ]
+                    );
+                }
+
+                foreach ($extraImages as $index => $extraImage) {
+                    ProductImage::firstOrCreate(
+                        ['product_id' => $product->id, 'image' => $extraImage],
+                        [
+                            'alt_text' => $product->name . ' - Image ' . ($index + 2),
+                            'is_primary' => false,
+                            'sort_order' => $index + 1,
+                        ]
+                    );
+                }
             }
         }
     }

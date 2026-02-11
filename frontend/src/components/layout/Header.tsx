@@ -12,6 +12,7 @@ import {
   PhoneIcon,
 } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
+import { getCategoryProductImage } from '@/lib/categoryImages'
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
@@ -76,7 +77,7 @@ export default function Header() {
             slug: cat.slug,
             desc: cat.short_description || cat.description || '',
             gradient: categoryGradients[cat.slug] || 'from-gray-500 to-slate-600',
-            image: cat.image,
+            image: getCategoryProductImage(cat.slug, cat.image),
           }))
       : [],
     pages: staticPages,

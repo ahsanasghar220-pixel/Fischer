@@ -4,7 +4,7 @@ import { Popover, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
-import CategoryIcon from '@/components/ui/CategoryIcon'
+import { getCategoryProductImage } from '@/lib/categoryImages'
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
 
@@ -67,7 +67,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
           name: cat.name,
           slug: cat.slug,
           href: `/category/${cat.slug}`,
-          image: cat.image,
+          image: getCategoryProductImage(cat.slug, cat.image),
           subcategories: categoriesData
             .filter((sub: Category) => sub.parent_id === cat.id)
             .map((sub: Category) => ({
@@ -176,9 +176,8 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                               }}
                             />
                           ) : (
-                            // Use CategoryIcon as fallback for categories without images
-                            <div className="p-8">
-                              <CategoryIcon slug={category.slug} className="w-full h-full" />
+                            <div className="w-full h-full flex items-center justify-center p-3">
+                              <span className="text-[10px] font-semibold text-dark-400 dark:text-dark-500 text-center leading-tight">{category.name}</span>
                             </div>
                           )}
                           {/* Hover overlay */}
@@ -275,8 +274,8 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                       />
                                     ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-2xl">
-                                        📦
+                                      <div className="w-full h-full flex items-center justify-center bg-dark-100 dark:bg-dark-700">
+                                        <span className="text-[9px] text-dark-400 dark:text-dark-500 text-center leading-tight px-1">{product.name}</span>
                                       </div>
                                     )}
                                   </div>
@@ -304,8 +303,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                         animate={{ opacity: 1 }}
                         className="flex flex-col items-center justify-center h-full text-center py-12"
                       >
-                        <div className="text-6xl mb-4">👈</div>
-                        <p className="text-sm text-dark-600 dark:text-dark-400">
+                        <p className="text-sm text-dark-500 dark:text-dark-400">
                           Hover over a category to see products
                         </p>
                       </motion.div>

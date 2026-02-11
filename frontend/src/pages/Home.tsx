@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, useInView } from 'framer-motion'
+import { getCategoryProductImage } from '@/lib/categoryImages'
 import {
   ArrowRightIcon,
   TruckIcon,
@@ -298,144 +299,12 @@ const colorMap: Record<string, { gradient: string; bg: string; text: string }> =
   cyan: { gradient: 'from-cyan-500 to-blue-400', bg: 'bg-cyan-500/10', text: '#06b6d4' },
 }
 
-// Fallback categories with actual product images
-const fallbackCategories: Category[] = [
-  { id: 1, name: 'Water Coolers', slug: 'water-coolers', products_count: 12, image: '/images/products/water-coolers/fe-150-ss.png' },
-  { id: 2, name: 'Cooking Ranges', slug: 'cooking-ranges', products_count: 8, image: '/images/products/cooking-ranges/fcr-5bb.png' },
-  { id: 3, name: 'Geysers & Heaters', slug: 'geysers-heaters', products_count: 10, image: '/images/products/hybrid-geysers/fhg-65g.png' },
-  { id: 4, name: 'Built-in Hobs', slug: 'hobs-hoods', products_count: 6, image: '/images/products/hob.png' },
-  { id: 5, name: 'Water Dispensers', slug: 'water-dispensers', products_count: 5, image: '/images/products/water-dispensers/fwd-fountain.png' },
-  { id: 6, name: 'Storage Coolers', slug: 'storage-coolers', products_count: 4, image: '/images/products/storage-coolers/fst-200.png' },
-  { id: 7, name: 'Kitchen Hoods', slug: 'kitchen-hoods', products_count: 6, image: '/images/products/hood.png' },
-  { id: 8, name: 'Oven Toasters', slug: 'oven-toasters', products_count: 3, image: '/images/products/oven-toasters/fot-2501c.jpg' },
-  { id: 9, name: 'Air Fryers', slug: 'air-fryers', products_count: 3, image: '/images/products/air-fryer.png' },
-  { id: 10, name: 'Instant Water Heaters', slug: 'instant-electric-water-heaters', products_count: 5, image: '/images/products/instant-electric-water-heaters/fiewhs-25l.png' },
-  { id: 11, name: 'Gas Water Heaters', slug: 'gas-water-heaters', products_count: 7, image: '/images/products/gas-water-heaters/fgg-55g.png' },
-  { id: 12, name: 'Electric Water Heaters', slug: 'fast-electric-water-heaters', products_count: 8, image: '/images/products/fast-electric-water-heaters/ffew-f50.jpg' },
-]
-
-// Category-specific features based on client requirements
-const categoryFeatures: Record<string, string[]> = {
-  'kitchen-hoods': [
-    'Premium Quality',
-    'BLDC copper motor',
-    '1 Year Warranty',
-    'Energy Efficient',
-    'Heat + Auto clean',
-    'Gesture and Touch Control',
-    'Inverter Technology A+++ rated',
-    'Low noise level',
-  ],
-  'hobs-hoods': [
-    'Complete Brass Burners',
-    'Sabaf Burners',
-    'EPS Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Immediate Auto Ignition',
-  ],
-  'built-in-hobs': [
-    'Complete Brass Burners',
-    'Sabaf Burners',
-    'EPS Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Immediate Auto Ignition',
-  ],
-  'geysers-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'hybrid-geysers': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'gas-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'instant-electric-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'fast-electric-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'oven-toasters': [
-    'Double Layered Glass door',
-    'Inner lamp',
-    'Rotisserie Function',
-    'Convection Function',
-    'Stainless steel elements',
-  ],
-  'water-dispensers': [
-    'Food-grade stainless steel tanks',
-    'Eco-friendly refrigerants',
-    '100% copper coiling',
-  ],
-  'air-fryers': [
-    'Digital Touch panel',
-    'Wide Temperature Control',
-    'Injection molding texture',
-    'Non-stick coating',
-    'Bottom heater for Even temperature control',
-  ],
-  'water-coolers': [
-    'Adjustable Thermostat',
-    'Food Grade Non Magnetic stainless steel',
-    'High back pressure compressor',
-    'Spring loaded push button',
-  ],
-  'storage-coolers': [
-    'Adjustable Thermostat',
-    'Food Grade Non Magnetic stainless steel',
-    'High back pressure compressor',
-    'Spring loaded push button',
-  ],
-  'cooking-ranges': [
-    'Complete Brass Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Auto Ignition',
-  ],
-  'blenders-processors': [
-    'Multi-Function Food processing',
-    'Precision stainless steel blades & Discs',
-    'Pulse & Speed control',
-    'Generous Capacity',
-  ],
-}
-
-// Get features for a category by slug
-const getCategoryFeatures = (slug: string): string[] => {
-  return categoryFeatures[slug] || ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
+// Get features for a category - prefer API data, fallback to defaults
+const getCategoryFeatures = (category: Category): string[] => {
+  if (category.features && category.features.length > 0) {
+    return category.features
+  }
+  return ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
 }
 
 // Fotile-Inspired Category Showcase - Clean Split-Screen Layout
@@ -469,20 +338,14 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
               alt={category.name}
               className="w-full h-full object-contain p-4 transition-transform duration-700 hover:scale-105"
               onError={(e) => {
-                const target = e.currentTarget
-                target.style.display = 'none'
-                const fallback = target.nextElementSibling as HTMLElement
-                if (fallback) fallback.classList.remove('hidden')
+                e.currentTarget.style.display = 'none'
               }}
             />
-          ) : null}
-          <div className={`${category.image ? 'hidden' : 'flex'} absolute inset-0 w-full h-full bg-gradient-to-br from-primary-50 to-primary-100
-                        dark:from-primary-900/20 dark:to-primary-800/10
-                        items-center justify-center`}>
-            <div className="w-48 h-48 text-primary-600 dark:text-primary-400">
-              {getCategoryIcon(category.name)}
+          ) : (
+            <div className="absolute inset-0 w-full h-full bg-dark-50 dark:bg-dark-800 flex items-center justify-center">
+              <span className="text-2xl font-semibold text-dark-400 dark:text-dark-500 text-center px-4">{category.name}</span>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -496,7 +359,7 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
 
           {/* Features list - Category-specific bullet points only */}
           <div className="grid sm:grid-cols-2 gap-3">
-            {getCategoryFeatures(category.slug).slice(0, 6).map(
+            {getCategoryFeatures(category).slice(0, 6).map(
               (feature, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
@@ -529,82 +392,6 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
   )
 }
 
-// Get category icon based on name - Enhanced with better icons
-const getCategoryIcon = (categoryName: string) => {
-  const name = categoryName.toLowerCase()
-
-  // Water Coolers - Water drop icon
-  if (name.includes('water') && name.includes('cooler')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2.25c-2.313 0-4.5 1.35-6 3.75-1.5 2.4-2.25 5.25-2.25 7.5 0 4.556 3.694 8.25 8.25 8.25s8.25-3.694 8.25-8.25c0-2.25-.75-5.1-2.25-7.5-1.5-2.4-3.687-3.75-6-3.75zm0 16.5c-3.308 0-6-2.692-6-6 0-1.8.6-4.2 1.8-6.15C9 4.65 10.5 3.75 12 3.75s3 .9 4.2 2.85c1.2 1.95 1.8 4.35 1.8 6.15 0 3.308-2.692 6-6 6z" />
-        <path d="M12 8.25c-.621 0-1.125.504-1.125 1.125v4.125c0 .621.504 1.125 1.125 1.125s1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125z" />
-      </svg>
-    )
-  }
-
-  // Geysers - Flame/Hot Water icon
-  if (name.includes('geyser') || name.includes('heater')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path fillRule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071-.136 9.742 9.742 0 00-3.539 6.177A7.547 7.547 0 016.648 6.61a.75.75 0 00-1.152-.082A9 9 0 1015.68 4.534a7.46 7.46 0 01-2.717-2.248zM15.75 14.25a3.75 3.75 0 11-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 011.925-3.545 3.75 3.75 0 013.255 3.717z" clipRule="evenodd" />
-      </svg>
-    )
-  }
-
-  // Cooking Ranges - Stove/Fire icon
-  if (name.includes('cooking') || name.includes('range')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M3 3h18a1 1 0 011 1v3a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1zm0 6h18a1 1 0 011 1v10a2 2 0 01-2 2H4a2 2 0 01-2-2V10a1 1 0 011-1zm3 3a2 2 0 100 4 2 2 0 000-4zm6 0a2 2 0 100 4 2 2 0 000-4zm6 0a2 2 0 100 4 2 2 0 000-4z" />
-      </svg>
-    )
-  }
-
-  // Hobs - Grid/Burner icon
-  if (name.includes('hob')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M6 3a3 3 0 00-3 3v12a3 3 0 003 3h12a3 3 0 003-3V6a3 3 0 00-3-3H6zm1 3a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM7 14a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" />
-      </svg>
-    )
-  }
-
-  // Kitchen Hoods - Wind/Ventilation icon
-  if (name.includes('hood')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-      </svg>
-    )
-  }
-
-  // Water Dispensers - Dispenser icon
-  if (name.includes('dispenser')) {
-    return (
-      <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M9 3a1 1 0 011-1h4a1 1 0 011 1v1h3a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h3V3zm3 8a2 2 0 100 4 2 2 0 000-4z" />
-        <path d="M11 16a1 1 0 011-1h.01a1 1 0 110 2H12a1 1 0 01-1-1z" />
-      </svg>
-    )
-  }
-
-  // Deep Freezers - Snowflake icon
-  if (name.includes('freezer') || name.includes('freeze')) {
-    return (
-      <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18l-3 3m3-3l3 3M3 12h18m-3-3l-3 3m6 0l-3 3M9 9L6 12m3 3l-3 3m3-3l3 3m0 0l3-3" />
-      </svg>
-    )
-  }
-
-  // Default icon - Grid of squares
-  return (
-    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M6 3a3 3 0 00-3 3v2.25a3 3 0 003 3h2.25a3 3 0 003-3V6a3 3 0 00-3-3H6zM15.75 3a3 3 0 00-3 3v2.25a3 3 0 003 3H18a3 3 0 003-3V6a3 3 0 00-3-3h-2.25zM6 12.75a3 3 0 00-3 3V18a3 3 0 003 3h2.25a3 3 0 003-3v-2.25a3 3 0 00-3-3H6zM15.75 12.75a3 3 0 00-3 3V18a3 3 0 003 3H18a3 3 0 003-3v-2.25a3 3 0 00-3-3h-2.25z" />
-    </svg>
-  )
-}
 
 export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
@@ -665,30 +452,11 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [testimonials.length])
 
-  // Merge API categories with fallback images to ensure real product images
-  const categories = data?.categories?.length
-    ? data.categories.map(cat => {
-        // Find matching fallback category to get the image (flexible matching)
-        const catSlug = cat.slug?.toLowerCase() || ''
-        const catName = cat.name?.toLowerCase() || ''
-        const fallback = fallbackCategories.find(fc => {
-          const fcSlug = fc.slug.toLowerCase()
-          const fcName = fc.name.toLowerCase()
-          // Match by exact slug, name, or partial match
-          return fcSlug === catSlug ||
-                 fcName === catName ||
-                 catSlug.includes(fcSlug) ||
-                 fcSlug.includes(catSlug) ||
-                 catName.includes(fcName.split(' ')[0]) ||
-                 fcName.includes(catName.split(' ')[0])
-        })
-        return {
-          ...cat,
-          // Always prefer fallback image for consistency with real product photos
-          image: fallback?.image || cat.image || undefined
-        }
-      })
-    : fallbackCategories
+  // Use categories from API with centralized image fallback mapping
+  const categories = (data?.categories || []).map(cat => ({
+    ...cat,
+    image: getCategoryProductImage(cat.slug, cat.image)
+  }))
 
   // Helper to get icon component from string
   const getIcon = (iconName?: string) => {
@@ -830,28 +598,21 @@ export default function Home() {
                                     hover:scale-[1.02]
                                     transition-all duration-300">
                         {/* Category Image */}
-                        <div className="aspect-[4/3] overflow-hidden bg-dark-100 dark:bg-dark-800 relative">
+                        <div className="aspect-[4/3] overflow-hidden bg-white dark:bg-dark-800 relative">
                           {category.image ? (
                             <img
                               src={category.image}
                               alt={category.name}
                               className="w-full h-full object-contain bg-white dark:bg-dark-800 group-hover:scale-105 transition-transform duration-500"
                               onError={(e) => {
-                                // Hide the image and show fallback icon
                                 e.currentTarget.style.display = 'none'
-                                const fallbackDiv = e.currentTarget.nextElementSibling as HTMLElement
-                                if (fallbackDiv) fallbackDiv.style.display = 'flex'
                               }}
                             />
-                          ) : null}
-                          {/* Fallback icon - shown when no image or image fails */}
-                          <div
-                            className={`w-full h-full bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-700 dark:to-dark-800 items-center justify-center absolute inset-0 ${category.image ? 'hidden' : 'flex'}`}
-                          >
-                            <div className="w-32 h-32 text-dark-400 dark:text-dark-600">
-                              {getCategoryIcon(category.name)}
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-dark-50 dark:bg-dark-800">
+                              <span className="text-lg font-semibold text-dark-400 dark:text-dark-500 text-center px-4">{category.name}</span>
                             </div>
-                          </div>
+                          )}
 
                           {/* Minimal overlay on hover */}
                           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

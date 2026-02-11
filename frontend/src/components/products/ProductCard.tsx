@@ -284,12 +284,8 @@ const ProductCard = memo(function ProductCard({
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-dark-100 to-dark-200
-                          dark:from-dark-800 dark:to-dark-900 flex items-center justify-center">
-              <div className="text-center">
-                <span className="text-5xl block mb-2">📦</span>
-                <span className="text-xs text-dark-400 dark:text-dark-500">No Image</span>
-              </div>
+            <div className="w-full h-full bg-dark-50 dark:bg-dark-800 flex items-center justify-center">
+              <span className="text-sm font-medium text-dark-400 dark:text-dark-500 text-center px-4">{product.name}</span>
             </div>
           )}
 

@@ -7,6 +7,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
+import { getCategoryProductImage } from '@/lib/categoryImages'
 
 interface Category {
   name: string
@@ -158,23 +159,23 @@ export default function MobileMenuOverlay({
                           >
                             {/* Category Image */}
                             <div className="w-full aspect-square mb-2 rounded-lg overflow-hidden bg-white dark:bg-dark-900">
-                              <img
-                                src={category.image || `/images/categories/${category.slug}.png`}
-                                alt={category.name}
-                                className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
-                                onError={(e) => {
-                                  // Fallback to gradient background if image doesn't exist
-                                  e.currentTarget.style.display = 'none'
-                                  const parent = e.currentTarget.parentElement
-                                  if (parent) {
-                                    parent.className = `w-full aspect-square mb-2 rounded-lg bg-gradient-to-br ${category.gradient || 'from-primary-400 to-primary-600'} flex items-center justify-center`
-                                    const icon = document.createElement('div')
-                                    icon.className = 'text-white text-2xl'
-                                    icon.textContent = '🔥'
-                                    parent.appendChild(icon)
-                                  }
-                                }}
-                              />
+                              {(() => {
+                                const imgSrc = getCategoryProductImage(category.slug, category.image)
+                                return imgSrc ? (
+                                  <img
+                                    src={imgSrc}
+                                    alt={category.name}
+                                    className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none'
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <span className="text-xs font-semibold text-dark-400 dark:text-dark-500 text-center px-2">{category.name}</span>
+                                  </div>
+                                )
+                              })()}
                             </div>
                             {/* Category Name */}
                             <span className="text-sm font-semibold text-dark-900 dark:text-white text-center">

@@ -120,8 +120,8 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                     />
                                   ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                      <ShoppingBagIcon className="w-8 h-8 text-dark-300 dark:text-dark-500" />
+                                    <div className="w-full h-full flex items-center justify-center bg-dark-50 dark:bg-dark-800">
+                                      <span className="text-[10px] font-medium text-dark-400 dark:text-dark-500 text-center px-1 leading-tight">{item.product?.name || 'Product'}</span>
                                     </div>
                                   )}
                                   {!item.is_available && (

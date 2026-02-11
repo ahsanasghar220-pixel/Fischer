@@ -172,8 +172,8 @@ export default function ProductPopup({
                       onLoad={() => setImageLoaded(true)}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-dark-500">
-                      <span className="text-4xl">📦</span>
+                    <div className="w-full h-full flex items-center justify-center bg-dark-50 dark:bg-dark-800">
+                      <span className="text-xs font-medium text-dark-400 dark:text-dark-500 text-center px-2">{product.name}</span>
                     </div>
                   )}
 

@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\HomepageCategory;
+use App\Models\HomepageProduct;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -56,9 +60,9 @@ class HomepageSeeder extends Seeder
                 'is_enabled' => true,
                 'sort_order' => 4,
                 'settings' => json_encode([
-                    'display_count' => 6,
+                    'display_count' => 10,
                     'show_product_count' => true,
-                    'columns' => 6,
+                    'columns' => 5,
                     'style' => 'grid',
                 ]),
             ],
@@ -70,7 +74,7 @@ class HomepageSeeder extends Seeder
                 'sort_order' => 5,
                 'settings' => json_encode([
                     'display_count' => 10,
-                    'source' => 'auto', // auto or manual
+                    'source' => 'manual',
                     'columns' => 5,
                 ]),
             ],
@@ -94,10 +98,10 @@ class HomepageSeeder extends Seeder
                 'is_enabled' => true,
                 'sort_order' => 7,
                 'settings' => json_encode([
-                    'display_count' => 5,
+                    'display_count' => 8,
                     'days_threshold' => 30,
-                    'source' => 'auto',
-                    'columns' => 5,
+                    'source' => 'manual',
+                    'columns' => 4,
                 ]),
             ],
             [
@@ -216,7 +220,7 @@ class HomepageSeeder extends Seeder
             );
         }
 
-        // Default testimonials (using existing table structure)
+        // Default testimonials
         $testimonials = [
             [
                 'customer_name' => 'Ahmed Khan',
@@ -277,6 +281,104 @@ class HomepageSeeder extends Seeder
                     'updated_at' => now(),
                 ])
             );
+        }
+
+        // Seed homepage categories - all 10 featured parent categories
+        $this->seedHomepageCategories();
+
+        // Seed homepage products - featured and new arrivals
+        $this->seedHomepageProducts();
+    }
+
+    /**
+     * Seed homepage categories with all featured parent categories
+     */
+    private function seedHomepageCategories(): void
+    {
+        // Clear existing
+        HomepageCategory::query()->delete();
+
+        $categorySlugs = [
+            'built-in-hoods',
+            'built-in-hobs',
+            'oven-toasters',
+            'air-fryers',
+            'water-coolers',
+            'blenders-processors',
+            'water-dispensers',
+            'geysers-heaters',
+            'cooking-ranges',
+            'room-coolers',
+        ];
+
+        foreach ($categorySlugs as $index => $slug) {
+            $category = Category::where('slug', $slug)->first();
+            if ($category) {
+                HomepageCategory::create([
+                    'category_id' => $category->id,
+                    'sort_order' => $index,
+                    'is_visible' => true,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Seed homepage products for featured and new_arrivals sections
+     */
+    private function seedHomepageProducts(): void
+    {
+        // Clear existing
+        HomepageProduct::query()->delete();
+
+        // Featured products - hand-picked bestsellers from each category
+        $featuredSkus = [
+            'FKH-L90-01IN',    // Kitchen Hood flagship
+            'FBH-G90-5SBF',    // 5-burner hob
+            'FBH-SS86-3CB',    // Premium hob
+            'FHG-25G',         // Hybrid geyser
+            'FE-100-SS',       // Water cooler 100L
+            'FCR-3BB-DF',      // Cooking range with deep fryer
+            'FAF-601WD',       // Air fryer 6L
+            'FOT-1901D',       // Oven toaster digital
+            'FWD-FOUNTAIN',    // Water dispenser
+            'FEW-ECOWATT',     // Eco watt heater
+        ];
+
+        foreach ($featuredSkus as $index => $sku) {
+            $product = Product::where('sku', $sku)->first();
+            if ($product) {
+                HomepageProduct::create([
+                    'product_id' => $product->id,
+                    'section' => 'featured',
+                    'sort_order' => $index,
+                    'is_visible' => true,
+                ]);
+            }
+        }
+
+        // New arrivals - products marked as is_new
+        $newArrivalSkus = [
+            'FKH-T90-05S',     // Kitchen Hood new
+            'FKH-H90-06S',     // Kitchen Hood new
+            'FBH-G78-3CB',     // Hob new
+            'FBH-G78-3CB-MATTE', // Hob matte new
+            'FAF-401WD',       // Air fryer 4L new
+            'FAF-601WD',       // Air fryer 6L new
+            'FAF-801WD',       // Air fryer 8L new
+            'FOT-2501C',       // Oven toaster new
+        ];
+
+        foreach ($newArrivalSkus as $index => $sku) {
+            $product = Product::where('sku', $sku)->first();
+            if ($product) {
+                HomepageProduct::create([
+                    'product_id' => $product->id,
+                    'section' => 'new_arrivals',
+                    'sort_order' => $index,
+                    'is_visible' => true,
+                ]);
+            }
         }
     }
 }
