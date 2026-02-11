@@ -316,13 +316,23 @@ export default function ProductPopup({
                 >
                   <Link to={`/category/${categorySlug}`}>
                     <div
-                      className={`flex items-center justify-center gap-2 w-full py-2.5 bg-dark-900 dark:bg-white
-                                text-white dark:text-dark-900 font-medium rounded-lg overflow-hidden relative
+                      className={`flex items-center justify-center gap-2 w-full py-2.5
+                                bg-dark-900 dark:bg-dark-100
+                                text-white dark:text-dark-900
+                                font-medium rounded-lg overflow-hidden relative
                                 transition-all duration-300 ease-out
-                                ${isHoveringButton ? 'scale-[1.03] shadow-lg' : 'scale-100'}`}
+                                hover:bg-primary-500 dark:hover:bg-primary-500
+                                hover:text-dark-900 dark:hover:text-white
+                                ${isHoveringButton ? 'scale-[1.03] shadow-lg shadow-primary-500/30' : 'scale-100'}`}
                       onMouseEnter={() => setIsHoveringButton(true)}
                       onMouseLeave={() => setIsHoveringButton(false)}
                     >
+                      {/* Shimmer effect on hover */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                                  transition-transform duration-500 ease-out
+                                  ${isHoveringButton ? 'translate-x-full' : '-translate-x-full'}`}
+                      />
                       <span className="relative z-10">Browse Category</span>
                       <ArrowRightIcon
                         className={`w-4 h-4 relative z-10 transition-transform duration-300
