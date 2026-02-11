@@ -192,10 +192,10 @@ export default function Header() {
         </div>
 
         {/* Main header */}
-        <nav className="container-xl px-4 sm:px-6 relative" aria-label="Top">
-          <div className="flex items-center h-14 sm:h-16 lg:h-20">
-            {/* Left section: Mobile hamburger */}
-            <div className="flex items-center lg:flex-1">
+        <nav className="container-xl px-4 sm:px-6" aria-label="Top">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+            {/* Left section: Logo and navigation */}
+            <div className="flex items-center gap-4 lg:gap-6 flex-1">
               {/* Mobile menu button */}
               <button
                 type="button"
@@ -210,8 +210,55 @@ export default function Header() {
                 <Bars3Icon className="h-6 w-6" />
               </button>
 
+              {/* Logo - LEFT side on all screen sizes */}
+              <Link to="/" className="flex-shrink-0 group">
+                {/* Dark logo - hidden on homepage hero and in dark mode */}
+                <AnimatedLogo
+                  src="/images/logo-dark.png"
+                  alt="Fischer"
+                  width={120}
+                  height={48}
+                  loading="eager"
+                  decoding="async"
+                  className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                    isHomePage && !isScrolled
+                      ? 'hidden'
+                      : 'dark:hidden'
+                  }`}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                    const span = document.createElement('span')
+                    span.className = 'text-2xl font-bold text-dark-900'
+                    span.textContent = 'FISCHER'
+                    e.currentTarget.parentElement?.appendChild(span)
+                  }}
+                />
+                {/* White logo - show on homepage hero OR in dark mode */}
+                <AnimatedLogo
+                  src="/images/logo-light.png"
+                  alt="Fischer"
+                  width={120}
+                  height={48}
+                  loading="eager"
+                  decoding="async"
+                  className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                    isHomePage && !isScrolled
+                      ? 'block'
+                      : 'hidden dark:block'
+                  }`}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                    const span = document.createElement('span')
+                    span.className = 'text-2xl font-bold text-white'
+                    span.textContent = 'FISCHER'
+                    e.currentTarget.parentElement?.appendChild(span)
+                  }}
+                />
+                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300" />
+              </Link>
+
               {/* Desktop navigation */}
-              <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
+              <Popover.Group className="hidden lg:flex lg:gap-x-1">
               {/* Products Mega Menu */}
               <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
 
@@ -233,58 +280,8 @@ export default function Header() {
             </Popover.Group>
           </div>
 
-          {/* Logo - CENTERED on mobile, static between sections on desktop */}
-          <Link
-            to="/"
-            className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex-shrink-0 group z-10"
-          >
-            {/* Dark logo - hidden on homepage hero and in dark mode */}
-            <AnimatedLogo
-              src="/images/logo-dark.png"
-              alt="Fischer"
-              width={120}
-              height={48}
-              loading="eager"
-              decoding="async"
-              className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
-                isHomePage && !isScrolled
-                  ? 'hidden'
-                  : 'dark:hidden'
-              }`}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none'
-                const span = document.createElement('span')
-                span.className = 'text-2xl font-bold text-dark-900'
-                span.textContent = 'FISCHER'
-                e.currentTarget.parentElement?.appendChild(span)
-              }}
-            />
-            {/* White logo - show on homepage hero OR in dark mode */}
-            <AnimatedLogo
-              src="/images/logo-light.png"
-              alt="Fischer"
-              width={120}
-              height={48}
-              loading="eager"
-              decoding="async"
-              className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
-                isHomePage && !isScrolled
-                  ? 'block'
-                  : 'hidden dark:block'
-              }`}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none'
-                const span = document.createElement('span')
-                span.className = 'text-2xl font-bold text-white'
-                span.textContent = 'FISCHER'
-                e.currentTarget.parentElement?.appendChild(span)
-              }}
-            />
-            <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300" />
-          </Link>
-
           {/* Right section - icons with consistent sizing */}
-          <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 lg:flex-1 lg:justify-end ml-auto">
+          <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
