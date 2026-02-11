@@ -21,13 +21,13 @@ const categories: Category[] = [
     name: 'Built-in Hoods',
     slug: 'built-in-hoods',
     href: '/category/built-in-hoods',
-    image: '/images/products/hood.png',
+    image: '/images/products/hood.webp',
   },
   {
     name: 'Built-in Hobs',
     slug: 'built-in-hobs',
     href: '/category/built-in-hobs',
-    image: '/images/products/hob.png',
+    image: '/images/products/hob.webp',
   },
   {
     name: 'Oven Toasters',
@@ -39,7 +39,7 @@ const categories: Category[] = [
     name: 'Air Fryers',
     slug: 'air-fryers',
     href: '/category/air-fryers',
-    image: '/images/products/air-fryer.png',
+    image: '/images/products/air-fryer.webp',
   },
   {
     name: 'Water Coolers',
