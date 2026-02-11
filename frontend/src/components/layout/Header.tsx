@@ -18,7 +18,6 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
 import AnimatedLogo from '@/components/ui/AnimatedLogo'
-import MobileTopBar from '@/components/layout/MobileTopBar'
 import MobileMenuOverlay from '@/components/layout/MobileMenuOverlay'
 
 const navigation = {
@@ -150,19 +149,12 @@ export default function Header() {
 
   return (
     <>
-      {/* Mobile Top Bar - Red bar with phone/email */}
-      <MobileTopBar
-        phoneNumber="+92 321 1146642"
-        email="info@fischerapp.com"
-      />
-
       <header
-        className={`fixed top-0 lg:top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
           isScrolled || !isHomePage
             ? 'bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
             : 'bg-transparent'
-        } lg:top-0`}
-        style={{ top: window.innerWidth < 1024 ? '40px' : '0' }}
+        }`}
       >
         {/* Scroll progress indicator */}
         <motion.div
@@ -201,24 +193,76 @@ export default function Header() {
 
         {/* Main header */}
         <nav className="container-xl px-4 sm:px-6" aria-label="Top">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+          {/* Mobile Layout - Hamburger | Logo (centered) | Cart */}
+          <div className="flex lg:hidden items-center justify-between h-14">
+            {/* Left: Hamburger */}
+            <button
+              type="button"
+              className={`p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-colors ${
+                isHomePage && !isScrolled
+                  ? 'text-white hover:bg-white/10'
+                  : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+              }`}
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <Bars3Icon className="h-6 w-6" />
+            </button>
+
+            {/* Center: Logo */}
+            <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center flex-shrink-0">
+              <AnimatedLogo
+                src="/images/logo-dark.png"
+                alt="Fischer"
+                width={100}
+                height={40}
+                loading="eager"
+                decoding="async"
+                className={`h-9 w-auto ${
+                  isHomePage && !isScrolled
+                    ? 'hidden'
+                    : 'dark:hidden'
+                }`}
+              />
+              <AnimatedLogo
+                src="/images/logo-light.png"
+                alt="Fischer"
+                width={100}
+                height={40}
+                loading="eager"
+                decoding="async"
+                className={`h-9 w-auto ${
+                  isHomePage && !isScrolled
+                    ? 'block'
+                    : 'hidden dark:block'
+                }`}
+              />
+            </Link>
+
+            {/* Right: Cart */}
+            <button
+              onClick={() => setCartDrawerOpen(true)}
+              className={`relative p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
+                isHomePage && !isScrolled
+                  ? 'text-white hover:bg-white/10'
+                  : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+              }`}
+              aria-label={`Shopping cart${cartItemsCount > 0 ? ` with ${cartItemsCount} items` : ''}`}
+            >
+              <ShoppingCartIcon className="h-5 w-5" />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs font-bold text-white bg-primary-500 rounded-full">
+                  {cartItemsCount > 99 ? '99+' : cartItemsCount}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Desktop Layout - Original */}
+          <div className="hidden lg:flex items-center justify-between h-20">
             {/* Left section: Logo and navigation */}
             <div className="flex items-center gap-4 lg:gap-6 flex-1">
-              {/* Mobile menu button */}
-              <button
-                type="button"
-                className={`lg:hidden p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-colors ${
-                  isHomePage && !isScrolled
-                    ? 'text-white hover:bg-white/10'
-                    : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
-                }`}
-                onClick={() => setMobileMenuOpen(true)}
-                aria-label="Open menu"
-              >
-                <Bars3Icon className="h-6 w-6" />
-              </button>
-
-              {/* Logo - LEFT side on all screen sizes */}
+              {/* Logo - LEFT side on desktop */}
               <Link to="/" className="flex-shrink-0 group">
                 {/* Dark logo - hidden on homepage hero and in dark mode */}
                 <AnimatedLogo

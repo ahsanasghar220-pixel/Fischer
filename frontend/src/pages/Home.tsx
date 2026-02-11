@@ -723,11 +723,11 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
           </div>
 
-          {/* Video Background - with mobile-optimized object positioning */}
+          {/* Video Background - zoomed out on mobile, cover on desktop */}
           <video
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
-            } object-cover object-center sm:object-center md:object-center`}
+            } object-contain sm:object-cover object-center`}
             style={{
               objectPosition: 'center center',
             }}
@@ -735,7 +735,7 @@ export default function Home() {
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => {

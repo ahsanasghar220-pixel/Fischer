@@ -12,6 +12,7 @@ interface Category {
   name: string
   slug: string
   href: string
+  gradient?: string
 }
 
 interface Page {
@@ -72,9 +73,19 @@ export default function MobileMenuOverlay({
           leaveTo="opacity-0 scale-95"
         >
           <Dialog.Panel className="fixed inset-0 bg-white dark:bg-dark-900 overflow-y-auto">
-            {/* Header with close button */}
+            {/* Header with centered logo and close button */}
             <div className="sticky top-0 z-10 bg-white dark:bg-dark-900 border-b border-dark-200 dark:border-dark-700">
-              <div className="flex items-center justify-between h-16 px-5">
+              <div className="flex items-center justify-center h-16 px-5 relative">
+                {/* Close button - absolute left */}
+                <button
+                  onClick={onClose}
+                  className="absolute left-5 p-2 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+
+                {/* Centered Logo */}
                 <Link to="/" onClick={onClose}>
                   <img
                     src="/images/logo-dark.png"
@@ -87,13 +98,6 @@ export default function MobileMenuOverlay({
                     className="h-8 w-auto hidden dark:block"
                   />
                 </Link>
-                <button
-                  onClick={onClose}
-                  className="p-2 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
-                  aria-label="Close menu"
-                >
-                  <XMarkIcon className="w-6 h-6" />
-                </button>
               </div>
             </div>
 
@@ -143,15 +147,38 @@ export default function MobileMenuOverlay({
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 -translate-y-2"
                     >
-                      <Disclosure.Panel className="mt-4 space-y-1">
+                      <Disclosure.Panel className="mt-4 grid grid-cols-2 gap-3">
                         {categories.map((category) => (
                           <Link
                             key={category.slug}
                             to={category.href}
                             onClick={onClose}
-                            className="block py-3 px-4 text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-800 rounded-lg transition-colors"
+                            className="flex flex-col items-center p-3 rounded-lg bg-dark-50 dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors group"
                           >
-                            {category.name}
+                            {/* Category Image */}
+                            <div className="w-full aspect-square mb-2 rounded-lg overflow-hidden bg-white dark:bg-dark-900">
+                              <img
+                                src={`/images/categories/${category.slug}.png`}
+                                alt={category.name}
+                                className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
+                                onError={(e) => {
+                                  // Fallback to gradient background if image doesn't exist
+                                  e.currentTarget.style.display = 'none'
+                                  const parent = e.currentTarget.parentElement
+                                  if (parent) {
+                                    parent.className = `w-full aspect-square mb-2 rounded-lg bg-gradient-to-br ${category.gradient || 'from-primary-400 to-primary-600'} flex items-center justify-center`
+                                    const icon = document.createElement('div')
+                                    icon.className = 'text-white text-2xl'
+                                    icon.textContent = '🔥'
+                                    parent.appendChild(icon)
+                                  }
+                                }}
+                              />
+                            </div>
+                            {/* Category Name */}
+                            <span className="text-sm font-semibold text-dark-900 dark:text-white text-center">
+                              {category.name}
+                            </span>
                           </Link>
                         ))}
                       </Disclosure.Panel>
