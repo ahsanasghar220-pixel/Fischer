@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
-import { useState, useRef, useMemo, memo, useCallback } from 'react'
+import { useState, useRef, useMemo, memo, useCallback, useEffect } from 'react'
 
 interface KitchenSVGProps {
   onProductClick: (productId: string, event: React.MouseEvent) => void
@@ -246,9 +246,21 @@ const CSSKeyframes = () => (
 
 function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
   const [hoveredHotspot, setHoveredHotspot] = useState<string | null>(null)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
+
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'))
+    }
+    checkDarkMode()
+    const observer = new MutationObserver(checkDarkMode)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
 
   // Smooth spring physics for mouse tracking - reduced stiffness for less computation
   const springConfig = useMemo(() => ({ stiffness: 100, damping: 30, mass: 0.5 }), [])
@@ -328,12 +340,16 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
       {/* Simplified SVG filters - removed heavy filters for performance */}
       <defs>
-        {/* Background gradient - dark mode compatible */}
-        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" className="dark:hidden" stopColor="#f9fafb" />
-          <stop offset="100%" className="dark:hidden" stopColor="#f3f4f6" />
-          <stop offset="0%" className="hidden dark:block" stopColor="#1a1a1a" />
-          <stop offset="100%" className="hidden dark:block" stopColor="#0f0f0f" />
+        {/* Background gradient - light mode */}
+        <linearGradient id="bgGradientLight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f9fafb" />
+          <stop offset="100%" stopColor="#f3f4f6" />
+        </linearGradient>
+
+        {/* Background gradient - dark mode */}
+        <linearGradient id="bgGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1a1a1a" />
+          <stop offset="100%" stopColor="#0f0f0f" />
         </linearGradient>
 
         {/* Glow filter with enhanced blur */}
@@ -371,14 +387,18 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="2"/>
         </filter>
 
-        {/* Light rays gradient for window - dark mode compatible */}
-        <radialGradient id="lightRays" cx="50%" cy="30%">
-          <stop offset="0%" className="dark:hidden" stopColor="#fbbf24" stopOpacity="0.3" />
-          <stop offset="50%" className="dark:hidden" stopColor="#f59e0b" stopOpacity="0.1" />
-          <stop offset="100%" className="dark:hidden" stopColor="#d97706" stopOpacity="0" />
-          <stop offset="0%" className="hidden dark:block" stopColor="#f59e0b" stopOpacity="0.15" />
-          <stop offset="50%" className="hidden dark:block" stopColor="#d97706" stopOpacity="0.05" />
-          <stop offset="100%" className="hidden dark:block" stopColor="#000000" stopOpacity="0" />
+        {/* Light rays gradient - light mode */}
+        <radialGradient id="lightRaysLight" cx="50%" cy="30%">
+          <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.3" />
+          <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#d97706" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Light rays gradient - dark mode */}
+        <radialGradient id="lightRaysDark" cx="50%" cy="30%">
+          <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
+          <stop offset="50%" stopColor="#d97706" stopOpacity="0.05" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
         </radialGradient>
 
         {/* Oven glow gradient */}
@@ -422,24 +442,32 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           </stop>
         </linearGradient>
 
-        {/* Counter reflection gradient - dark mode compatible */}
-        <linearGradient id="counterReflection" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="50%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0.1" />
-          <stop offset="100%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="0%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="50%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0.03" />
-          <stop offset="100%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0" />
+        {/* Counter reflection gradient - light mode */}
+        <linearGradient id="counterReflectionLight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
 
-        {/* Spotlight gradient for dramatic lighting - dark mode compatible */}
-        <radialGradient id="spotlight" cx="50%" cy="30%">
-          <stop offset="0%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0.4" />
-          <stop offset="50%" className="dark:hidden" stopColor="#fef3c7" stopOpacity="0.2" />
-          <stop offset="100%" className="dark:hidden" stopColor="#000000" stopOpacity="0" />
-          <stop offset="0%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0.08" />
-          <stop offset="50%" className="hidden dark:block" stopColor="#fef3c7" stopOpacity="0.04" />
-          <stop offset="100%" className="hidden dark:block" stopColor="#000000" stopOpacity="0" />
+        {/* Counter reflection gradient - dark mode */}
+        <linearGradient id="counterReflectionDark" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.03" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Spotlight gradient - light mode */}
+        <radialGradient id="spotlightLight" cx="50%" cy="30%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+          <stop offset="50%" stopColor="#fef3c7" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Spotlight gradient - dark mode */}
+        <radialGradient id="spotlightDark" cx="50%" cy="30%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.08" />
+          <stop offset="50%" stopColor="#fef3c7" stopOpacity="0.04" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
         </radialGradient>
 
         {/* Fridge glow gradient */}
@@ -457,7 +485,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         y="0"
         width="800"
         height="600"
-        fill="url(#bgGradient)"
+        fill={isDarkMode ? "url(#bgGradientDark)" : "url(#bgGradientLight)"}
         rx="16"
       />
 
@@ -467,7 +495,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         cy="100"
         rx="250"
         ry="400"
-        fill="url(#spotlight)"
+        fill={isDarkMode ? "url(#spotlightDark)" : "url(#spotlightLight)"}
         style={{ pointerEvents: 'none', mixBlendMode: 'overlay', opacity: 0.7 }}
       />
 
@@ -476,7 +504,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         cx="400"
         cy="300"
         r="100"
-        fill="url(#lightRays)"
+        fill={isDarkMode ? "url(#lightRaysDark)" : "url(#lightRaysLight)"}
         style={{
           pointerEvents: 'none',
           mixBlendMode: 'overlay',
@@ -760,7 +788,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           y="350"
           width="600"
           height="50"
-          fill="url(#counterReflection)"
+          fill={isDarkMode ? "url(#counterReflectionDark)" : "url(#counterReflectionLight)"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
