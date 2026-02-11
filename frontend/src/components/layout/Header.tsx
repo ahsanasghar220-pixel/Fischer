@@ -19,6 +19,7 @@ import CartDrawer from '@/components/cart/CartDrawer'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
 import AnimatedLogo from '@/components/ui/AnimatedLogo'
+import MobileTopBar from '@/components/layout/MobileTopBar'
 
 const navigation = {
   categories: [
@@ -149,12 +150,19 @@ export default function Header() {
 
   return (
     <>
+      {/* Mobile Top Bar - Red bar with phone/email */}
+      <MobileTopBar
+        phoneNumber="+92 321 1146642"
+        email="info@fischerapp.com"
+      />
+
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        className={`fixed top-0 lg:top-0 left-0 right-0 z-50 transition-colors duration-300 ${
           isScrolled || !isHomePage
             ? 'bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl shadow-lg border-b border-dark-100/50 dark:border-dark-800/50'
             : 'bg-transparent'
-        }`}
+        } lg:top-0`}
+        style={{ top: window.innerWidth < 1024 ? '40px' : '0' }}
       >
         {/* Scroll progress indicator */}
         <motion.div
