@@ -10,7 +10,6 @@ import {
   HeartIcon,
   MagnifyingGlassIcon,
   PhoneIcon,
-  ChevronDownIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
@@ -18,10 +17,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
 import CategoryIcon from '@/components/ui/CategoryIcon'
-import { useQuery } from '@tanstack/react-query'
-import api from '@/lib/api'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
-import AnimatedLogo from '@/components/ui/AnimatedLogo'
 
 const navigation = {
   categories: [
@@ -115,16 +111,6 @@ export default function Header() {
 
   const { isAuthenticated, user, logout } = useAuthStore()
   const cartItemsCount = useCartStore((state) => state.items_count)
-
-  // Fetch featured products for mega menu
-  const { data: featuredProducts = [] } = useQuery({
-    queryKey: ['header-featured-products'],
-    queryFn: async () => {
-      const { data } = await api.get('/products/bestsellers?per_page=6')
-      return data.data || []
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  })
 
   // Lock body scroll when mobile menu or cart drawer is open
   useBodyScrollLock(mobileMenuOpen || cartDrawerOpen)

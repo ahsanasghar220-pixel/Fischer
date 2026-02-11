@@ -327,41 +327,6 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       </svg>
     ),
 
-    // BUILT-IN HOBS - Built-in gas/electric hob cooktop
-    'built-in-hobs': (
-      <svg viewBox="0 0 80 80" fill="none" className={className}>
-        <defs>
-          <linearGradient id={`${uid}HB`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#374151" />
-            <stop offset="100%" stopColor="#4b5563" />
-          </linearGradient>
-          <linearGradient id={`${uid}FL2`} x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#fbbf24" />
-          </linearGradient>
-        </defs>
-        {/* Glass surface */}
-        <rect x="8" y="20" width="64" height="44" rx="4" stroke={`url(#${uid}HB)`} strokeWidth="2.5" fill={`url(#${uid}HB)`} opacity="0.1" />
-        {/* Large burner - top left */}
-        <circle cx="26" cy="36" r="12" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
-        <circle cx="26" cy="36" r="7" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
-        <circle cx="26" cy="36" r="3" fill={`url(#${uid}FL2)`} opacity="0.8" />
-        {/* Small burner - top right */}
-        <circle cx="54" cy="36" r="9" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
-        <circle cx="54" cy="36" r="5" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
-        <circle cx="54" cy="36" r="2" fill={`url(#${uid}FL2)`} opacity="0.8" />
-        {/* Touch control panel */}
-        <rect x="28" y="54" width="24" height="6" rx="2" fill={`url(#${uid}HB)`} opacity="0.3" />
-        <circle cx="34" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
-        <circle cx="40" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
-        <circle cx="46" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
-        {/* Heat lines */}
-        <path d="M23 26 Q21 23 23 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-        <path d="M26 26 Q24 22 26 18" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-        <path d="M29 26 Q27 23 29 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-      </svg>
-    ),
-
     // ROOM COOLERS - Evaporative air cooler
     'room-coolers': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
