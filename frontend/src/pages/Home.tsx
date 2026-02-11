@@ -712,7 +712,7 @@ export default function Home() {
         {/* ==========================================
             SECTION 1: VIDEO HERO SECTION - MINIMAL
             ========================================== */}
-        <section className="relative h-[60vh] sm:h-[75vh] md:h-[85vh] lg:h-screen w-full overflow-hidden bg-dark-950">
+        <section className="relative h-[45vh] min-h-[400px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
           {/* Loading placeholder - shows gradient while video loads */}
           <div
             className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
@@ -732,9 +732,14 @@ export default function Home() {
             loop
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
+            poster="/images/hero-poster.jpg"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
+            onError={() => {
+              console.error('Video failed to load')
+              setVideoLoaded(true)
+            }}
           >
             <source src="/videos/hero-video.mp4?v=2" type="video/mp4" />
           </video>

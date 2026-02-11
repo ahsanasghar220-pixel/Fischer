@@ -192,23 +192,48 @@ export default function Header() {
 
         {/* Main header */}
         <nav className="container-xl px-4 sm:px-6" aria-label="Top">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-3 sm:gap-4">
-            {/* Mobile menu button */}
-            <button
-              type="button"
-              className={`lg:hidden p-2 rounded-xl transition-colors flex-shrink-0 ${
-                isHomePage && !isScrolled
-                  ? 'text-white hover:bg-white/10'
-                  : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
-              }`}
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open menu"
-            >
-              <Bars3Icon className="h-6 w-6" />
-            </button>
+          <div className="flex items-center h-14 sm:h-16 lg:h-20 relative">
+            {/* Left section - hamburger + desktop navigation */}
+            <div className="flex items-center lg:flex-1">
+              {/* Mobile menu button */}
+              <button
+                type="button"
+                className={`lg:hidden p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-colors ${
+                  isHomePage && !isScrolled
+                    ? 'text-white hover:bg-white/10'
+                    : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
+                }`}
+                onClick={() => setMobileMenuOpen(true)}
+                aria-label="Open menu"
+              >
+                <Bars3Icon className="h-6 w-6" />
+              </button>
 
-            {/* Logo */}
-            <Link to="/" className="flex-shrink-0 relative group mx-auto lg:mx-0">
+              {/* Desktop navigation */}
+              <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
+                {/* Products Mega Menu */}
+                <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
+
+                {navigation.pages.map((page) => (
+                  <Link
+                    key={page.name}
+                    to={page.href}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      location.pathname === page.href
+                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                        : isHomePage && !isScrolled
+                        ? 'text-white hover:text-white/80 hover:bg-white/10'
+                        : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
+                    }`}
+                  >
+                    {page.name}
+                  </Link>
+                ))}
+              </Popover.Group>
+            </div>
+
+            {/* Logo - absolutely centered on mobile, static on desktop */}
+            <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex-shrink-0 relative group z-10">
               {/* Show light (white) logo when on homepage hero with video, otherwise show based on theme */}
               <img
                 src="/images/logo-dark.png"
@@ -256,34 +281,12 @@ export default function Header() {
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300" />
             </Link>
 
-            {/* Desktop navigation */}
-            <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
-              {/* Products Mega Menu */}
-              <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
-
-              {navigation.pages.map((page) => (
-                <Link
-                  key={page.name}
-                  to={page.href}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    location.pathname === page.href
-                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                      : isHomePage && !isScrolled
-                      ? 'text-white hover:text-white/80 hover:bg-white/10'
-                      : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
-                  }`}
-                >
-                  {page.name}
-                </Link>
-              ))}
-            </Popover.Group>
-
-            {/* Right section */}
-            <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 flex-shrink-0">
+            {/* Right section - icons with consistent sizing */}
+            <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 lg:flex-1 lg:justify-end ml-auto">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className={`p-2 sm:p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
+                className={`p-2 sm:p-2.5 rounded-xl w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -316,7 +319,7 @@ export default function Header() {
               {/* Cart */}
               <button
                 onClick={() => setCartDrawerOpen(true)}
-                className={`relative p-2 sm:p-2.5 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 ${
+                className={`relative p-2 sm:p-2.5 rounded-xl w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -429,7 +432,7 @@ export default function Header() {
               {/* Mobile Account/Login Icon */}
               <Link
                 to={isAuthenticated ? '/account' : '/login'}
-                className={`lg:hidden p-2 sm:p-2.5 rounded-xl transition-colors ${
+                className={`lg:hidden p-2 sm:p-2.5 rounded-xl w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center transition-colors ${
                   isHomePage && !isScrolled
                     ? 'text-white hover:bg-white/10'
                     : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -561,19 +564,27 @@ export default function Header() {
                   <p className="px-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-3">
                     Categories
                   </p>
-                  <div className="space-y-1">
+                  <div className="grid grid-cols-2 gap-3">
                     {navigation.categories.map((item, index) => (
                       <Link
                         key={item.name}
                         to={item.href}
-                        className="flex items-center gap-4 px-3 py-3 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-800 transition-all duration-200 hover:translate-x-1 animate-fade-in-up"
-                        style={{ animationDelay: `${index * 75}ms` }}
+                        className="flex flex-col items-center gap-2 p-3 rounded-xl
+                                   bg-dark-50 dark:bg-dark-800
+                                   border border-dark-100 dark:border-dark-700
+                                   hover:bg-dark-100 dark:hover:bg-dark-750
+                                   active:scale-95
+                                   transition-all duration-200
+                                   min-h-[100px] animate-fade-in-up"
+                        style={{ animationDelay: `${index * 50}ms` }}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.gradient} transition-transform duration-200 group-hover:scale-110`}>
-                          <CategoryIcon slug={item.slug} className="w-7 h-7" />
+                        <div className={`w-16 h-16 flex items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} shadow-sm`}>
+                          <CategoryIcon slug={item.slug} className="w-10 h-10" />
                         </div>
-                        <span className="font-medium">{item.name}</span>
+                        <span className="font-medium text-xs text-center line-clamp-2 text-dark-700 dark:text-dark-200 leading-tight">
+                          {item.name}
+                        </span>
                       </Link>
                     ))}
                   </div>
