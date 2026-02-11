@@ -32,7 +32,6 @@ interface MobileMenuOverlayProps {
   isAuthenticated: boolean
   user?: User
   onLogout: () => void
-  onSearch?: (query: string) => void
 }
 
 export default function MobileMenuOverlay({
@@ -41,9 +40,8 @@ export default function MobileMenuOverlay({
   categories,
   pages,
   isAuthenticated,
-  user,
+  user: _user,
   onLogout,
-  onSearch,
 }: MobileMenuOverlayProps) {
   useBodyScrollLock(isOpen)
 

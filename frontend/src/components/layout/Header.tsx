@@ -16,10 +16,10 @@ import { useCartStore } from '@/stores/cartStore'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
-import CategoryIcon from '@/components/ui/CategoryIcon'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
 import AnimatedLogo from '@/components/ui/AnimatedLogo'
 import MobileTopBar from '@/components/layout/MobileTopBar'
+import MobileMenuOverlay from '@/components/layout/MobileMenuOverlay'
 
 const navigation = {
   categories: [
