@@ -1526,7 +1526,7 @@ class ProductSeeder extends Seeder
 
     private function seedAccessories(Brand $brand): void
     {
-        $category = Category::where('slug', 'accessories')->first();
+        $category = Category::where('slug', 'blenders-processors')->first();
 
         $products = [
             [
