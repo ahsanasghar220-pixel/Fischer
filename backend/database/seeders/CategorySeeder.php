@@ -119,7 +119,7 @@ class CategorySeeder extends Seeder
                     'Pulse & Speed control',
                     'Generous Capacity',
                 ],
-                'image' => '/images/categories/blenders-processors.png',
+                'image' => '/images/products/accessories/fac-bl3.jpeg',
                 'icon' => 'blender',
                 'is_active' => true,
                 'is_featured' => true,

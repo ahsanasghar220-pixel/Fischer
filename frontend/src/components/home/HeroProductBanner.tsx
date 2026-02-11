@@ -48,9 +48,7 @@ const products: ProductHighlight[] = [
     name: 'Air Fryer',
     category: 'Healthy Living',
     images: [
-      '/images/products/air-fryers/faf-601wd.jpg',
-      '/images/products/air-fryers/faf-801wd.jpg',
-      '/images/products/air-fryers/faf-401wd.jpg',
+      '/images/products/air-fryer.png',
     ],
     href: '/category/air-fryers',
     description: 'Oil-free frying with digital controls',
