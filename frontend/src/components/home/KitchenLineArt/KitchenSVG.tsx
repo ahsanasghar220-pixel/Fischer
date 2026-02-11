@@ -332,14 +332,12 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
       {/* Simplified SVG filters - removed heavy filters for performance */}
       <defs>
-        {/* Animated background gradient */}
+        {/* Background gradient - dark mode compatible */}
         <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" className="text-gray-50 dark:text-dark-800">
-            <animate attributeName="stop-color" values="#f9fafb;#f3f4f6;#f9fafb" dur="8s" repeatCount="indefinite" />
-          </stop>
-          <stop offset="100%" className="text-gray-100 dark:text-dark-900">
-            <animate attributeName="stop-color" values="#f3f4f6;#e5e7eb;#f3f4f6" dur="8s" repeatCount="indefinite" />
-          </stop>
+          <stop offset="0%" className="dark:hidden" stopColor="#f9fafb" />
+          <stop offset="100%" className="dark:hidden" stopColor="#f3f4f6" />
+          <stop offset="0%" className="hidden dark:block" stopColor="#1a1a1a" />
+          <stop offset="100%" className="hidden dark:block" stopColor="#0f0f0f" />
         </linearGradient>
 
         {/* Glow filter with enhanced blur */}
@@ -377,15 +375,14 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="2"/>
         </filter>
 
-        {/* Light rays gradient for window */}
+        {/* Light rays gradient for window - dark mode compatible */}
         <radialGradient id="lightRays" cx="50%" cy="30%">
-          <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 0.3 }}>
-            <animate attributeName="stop-opacity" values="0.2;0.4;0.2" dur="4s" repeatCount="indefinite"/>
-          </stop>
-          <stop offset="50%" style={{ stopColor: '#f59e0b', stopOpacity: 0.1 }}>
-            <animate attributeName="stop-opacity" values="0.05;0.15;0.05" dur="4s" repeatCount="indefinite"/>
-          </stop>
-          <stop offset="100%" style={{ stopColor: '#d97706', stopOpacity: 0 }}/>
+          <stop offset="0%" className="dark:hidden" stopColor="#fbbf24" stopOpacity="0.3" />
+          <stop offset="50%" className="dark:hidden" stopColor="#f59e0b" stopOpacity="0.1" />
+          <stop offset="100%" className="dark:hidden" stopColor="#d97706" stopOpacity="0" />
+          <stop offset="0%" className="hidden dark:block" stopColor="#f59e0b" stopOpacity="0.15" />
+          <stop offset="50%" className="hidden dark:block" stopColor="#d97706" stopOpacity="0.05" />
+          <stop offset="100%" className="hidden dark:block" stopColor="#000000" stopOpacity="0" />
         </radialGradient>
 
         {/* Oven glow gradient */}
@@ -429,22 +426,24 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           </stop>
         </linearGradient>
 
-        {/* Counter reflection gradient */}
+        {/* Counter reflection gradient - dark mode compatible */}
         <linearGradient id="counterReflection" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style={{ stopColor: '#ffffff', stopOpacity: 0 }}/>
-          <stop offset="50%" style={{ stopColor: '#ffffff', stopOpacity: 0.1 }}>
-            <animate attributeName="stop-opacity" values="0.05;0.15;0.05" dur="5s" repeatCount="indefinite"/>
-          </stop>
-          <stop offset="100%" style={{ stopColor: '#ffffff', stopOpacity: 0 }}/>
+          <stop offset="0%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="50%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="100%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="0%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="50%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0.03" />
+          <stop offset="100%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
 
-        {/* Spotlight gradient for dramatic lighting */}
+        {/* Spotlight gradient for dramatic lighting - dark mode compatible */}
         <radialGradient id="spotlight" cx="50%" cy="30%">
-          <stop offset="0%" style={{ stopColor: '#ffffff', stopOpacity: 0.4 }}>
-            <animate attributeName="stop-opacity" values="0.3;0.5;0.3" dur="5s" repeatCount="indefinite"/>
-          </stop>
-          <stop offset="50%" style={{ stopColor: '#fef3c7', stopOpacity: 0.2 }}/>
-          <stop offset="100%" style={{ stopColor: '#000000', stopOpacity: 0 }}/>
+          <stop offset="0%" className="dark:hidden" stopColor="#ffffff" stopOpacity="0.4" />
+          <stop offset="50%" className="dark:hidden" stopColor="#fef3c7" stopOpacity="0.2" />
+          <stop offset="100%" className="dark:hidden" stopColor="#000000" stopOpacity="0" />
+          <stop offset="0%" className="hidden dark:block" stopColor="#ffffff" stopOpacity="0.08" />
+          <stop offset="50%" className="hidden dark:block" stopColor="#fef3c7" stopOpacity="0.04" />
+          <stop offset="100%" className="hidden dark:block" stopColor="#000000" stopOpacity="0" />
         </radialGradient>
 
         {/* Fridge glow gradient */}
@@ -466,57 +465,38 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         rx="16"
       />
 
-      {/* Dramatic spotlight effect - using scale instead of rx/ry */}
-      <motion.ellipse
+      {/* Subtle spotlight effect - static for performance */}
+      <ellipse
         cx="400"
         cy="100"
         rx="250"
         ry="400"
         fill="url(#spotlight)"
-        style={{ pointerEvents: 'none', mixBlendMode: 'overlay' }}
-        animate={{
-          scale: [0.96, 1.04, 0.96],
-          opacity: [0.6, 0.8, 0.6]
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ pointerEvents: 'none', mixBlendMode: 'overlay', opacity: 0.7 }}
       />
 
-      {/* Mouse follower glow - subtle cursor tracking effect - using CSS transform */}
-      <motion.circle
+      {/* Subtle ambient glow - static for performance */}
+      <circle
         cx="400"
         cy="300"
-        r="80"
+        r="100"
         fill="url(#lightRays)"
         style={{
           pointerEvents: 'none',
           mixBlendMode: 'overlay',
-          x: glowTranslateX,
-          y: glowTranslateY,
+          opacity: 0.25
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.4 }}
-        transition={{ duration: 0.3 }}
       />
 
-      {/* Light rays coming through window - god rays effect */}
-      <g opacity="0.6">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <motion.path
+      {/* Light rays coming through window - simplified for performance */}
+      <g opacity="0.4" style={{ filter: 'blur(8px)' }}>
+        {[0, 1, 2].map((i) => (
+          <path
             key={i}
-            d={`M${350 + i * 30},160 L${320 + i * 40},350`}
-            className="stroke-yellow-300/20 fill-none"
+            d={`M${370 + i * 30},160 L${340 + i * 40},350`}
+            className="stroke-yellow-300/20 dark:stroke-yellow-600/10 fill-none"
             strokeWidth="15"
             strokeLinecap="round"
-            initial={{ opacity: 0, pathLength: 0 }}
-            animate={{
-              opacity: [0.1, 0.3, 0.1],
-              pathLength: [0, 1, 1],
-            }}
-            transition={{
-              opacity: { duration: 4, delay: i * 0.3, repeat: Infinity },
-              pathLength: { duration: 2, delay: i * 0.2 }
-            }}
-            style={{ filter: 'blur(8px)' }}
           />
         ))}
       </g>
