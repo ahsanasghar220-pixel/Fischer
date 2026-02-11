@@ -12,6 +12,7 @@ interface Category {
   name: string
   slug: string
   href: string
+  image?: string
   gradient?: string
 }
 
@@ -158,7 +159,7 @@ export default function MobileMenuOverlay({
                             {/* Category Image */}
                             <div className="w-full aspect-square mb-2 rounded-lg overflow-hidden bg-white dark:bg-dark-900">
                               <img
-                                src={`/images/categories/${category.slug}.png`}
+                                src={category.image || `/images/categories/${category.slug}.png`}
                                 alt={category.name}
                                 className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
                                 onError={(e) => {
