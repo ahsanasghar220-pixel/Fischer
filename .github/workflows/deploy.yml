@@ -135,6 +135,10 @@ jobs:
             echo "=== Seeding data ==="
             $PHP artisan db:seed --force --verbose 2>&1 || echo "Seeding completed or skipped"
 
+            # Explicitly run CategorySeeder to update category images
+            echo "=== Ensuring categories are seeded ==="
+            $PHP artisan db:seed --class=CategorySeeder --force --verbose 2>&1 || echo "CategorySeeder completed or skipped"
+
             # Explicitly run ProductSeeder to ensure products exist
             echo "=== Ensuring products are seeded ==="
             $PHP artisan db:seed --class=ProductSeeder --force --verbose 2>&1 || echo "ProductSeeder completed or skipped"
