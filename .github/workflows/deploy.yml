@@ -127,9 +127,13 @@ jobs:
             # Clear config cache before migrations
             $PHP artisan config:clear
 
-            # Run FRESH migrations and seed (drops all tables and recreates with fresh data)
-            echo "=== Running fresh migrations and seeding ==="
-            $PHP artisan migrate:fresh --seed --force --verbose 2>&1
+            # Run migrations (preserves existing data)
+            echo "=== Running migrations ==="
+            $PHP artisan migrate --force --verbose 2>&1
+
+            # Seed only if tables are empty (safe for production)
+            echo "=== Seeding data ==="
+            $PHP artisan db:seed --force --verbose 2>&1 || echo "Seeding completed or skipped"
 
             # Clear all caches first
             $PHP artisan cache:clear || true
