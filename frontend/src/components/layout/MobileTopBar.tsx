@@ -7,7 +7,7 @@ interface MobileTopBarProps {
 
 export default function MobileTopBar({ phoneNumber, email }: MobileTopBarProps) {
   return (
-    <div className="lg:hidden fixed top-0 left-0 right-0 z-[60] h-10 bg-accent-red-600 text-white">
+    <div className="lg:hidden fixed top-0 left-0 right-0 z-[60] h-10 bg-primary-500 text-white">
       <div className="container-xl h-full flex items-center justify-between px-4">
         {/* Left: Phone */}
         <a

@@ -106,7 +106,7 @@ export default function MobileMenuOverlay({
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-dark-50 dark:bg-dark-800 border border-dark-200 dark:border-dark-700 text-dark-900 dark:text-white placeholder:text-dark-400 focus:outline-none focus:ring-2 focus:ring-accent-red-500"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-dark-50 dark:bg-dark-800 border border-dark-200 dark:border-dark-700 text-dark-900 dark:text-white placeholder:text-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function MobileMenuOverlay({
               <Link
                 to="/"
                 onClick={onClose}
-                className="block py-3 text-lg font-semibold text-dark-900 dark:text-white hover:text-accent-red-600 dark:hover:text-accent-red-500 transition-colors"
+                className="block py-3 text-lg font-semibold text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               >
                 Home
               </Link>
@@ -169,7 +169,7 @@ export default function MobileMenuOverlay({
                     key={page.href}
                     to={page.href}
                     onClick={onClose}
-                    className="block py-3 text-lg font-semibold text-dark-900 dark:text-white hover:text-accent-red-600 dark:hover:text-accent-red-500 transition-colors"
+                    className="block py-3 text-lg font-semibold text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     {page.name}
                   </Link>
@@ -215,7 +215,7 @@ export default function MobileMenuOverlay({
                   <Link
                     to="/login"
                     onClick={onClose}
-                    className="block w-full text-center px-6 py-3.5 bg-accent-red-600 hover:bg-accent-red-700 text-white font-semibold rounded-xl transition-colors"
+                    className="block w-full text-center px-6 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-colors"
                   >
                     Sign In
                   </Link>
