@@ -260,11 +260,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
   const parallaxY1 = useTransform(mouseYSpring, [0, 600], [-6, 6])
   const parallaxX2 = useTransform(mouseXSpring, [0, 800], [-3, 3])
   const parallaxY2 = useTransform(mouseYSpring, [0, 600], [-3, 3])
-  // REMOVED parallaxX3, parallaxY3 for performance
-
-  // Mouse follower glow effect - use transform for CSS positioning
-  const glowTranslateX = useTransform(mouseXSpring, [0, 800], [-400, 400])
-  const glowTranslateY = useTransform(mouseYSpring, [0, 600], [-300, 300])
+  // REMOVED parallaxX3, parallaxY3 and glow transforms for performance
 
   // Memoized mouse move handler
   const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
