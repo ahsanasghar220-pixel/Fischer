@@ -15,55 +15,35 @@ const products: ProductHighlight[] = [
   {
     name: 'Built-in Hood',
     category: 'Ventilation Solutions',
-    images: [
-      '/images/products/hood.png',
-      '/images/products/hood.png',
-      '/images/products/hood.png',
-    ],
+    images: ['/images/products/hood.png'], // Single image - no carousel
     href: '/category/built-in-hoods',
     description: 'Powerful airflow up to 1500 m³/h',
   },
   {
     name: 'Built-in Hob',
     category: 'Cooking Solutions',
-    images: [
-      '/images/products/hob.png',
-      '/images/products/hob.png',
-      '/images/products/hob.png',
-    ],
+    images: ['/images/products/hob.png'], // Single image - no carousel
     href: '/category/built-in-hobs',
     description: 'Premium brass burners with auto ignition',
   },
   {
     name: 'Oven Toaster',
     category: 'Baking Excellence',
-    images: [
-      '/images/products/oven-toasters/fot-2501c.jpg',
-      '/images/products/oven-toasters/fot-2501c.jpg',
-      '/images/products/oven-toasters/fot-2501c.jpg',
-    ],
+    images: ['/images/products/oven-toasters/fot-2501c.jpg'], // Single image - no carousel
     href: '/category/oven-toasters',
     description: 'Convection technology, 35L-48L capacity',
   },
   {
     name: 'Air Fryer',
     category: 'Healthy Living',
-    images: [
-      '/images/products/air-fryer.png',
-      '/images/products/air-fryer.png',
-      '/images/products/air-fryer.png',
-    ],
+    images: ['/images/products/air-fryer.png'], // Single image - no carousel
     href: '/category/air-fryers',
     description: 'Oil-free frying with digital controls',
   },
   {
     name: 'Water Dispenser',
     category: 'Water Solutions',
-    images: [
-      '/images/products/water-dispensers/fwd-1150.jpeg',
-      '/images/products/water-dispensers/fwd-1150.jpeg',
-      '/images/products/water-dispensers/fwd-1150.jpeg',
-    ],
+    images: ['/images/products/water-dispensers/fwd-1150.jpeg'], // Single image - no carousel
     href: '/category/water-dispensers',
     description: 'Hot & cold, food-grade stainless steel',
   },
