@@ -10,7 +10,7 @@ const footerNavigation = {
     { name: 'Geysers & Heaters', href: '/category/geysers-heaters' },
     { name: 'Cooking Ranges', href: '/category/cooking-ranges' },
     { name: 'Built-in Hobs & Hoods', href: '/category/hobs-hoods' },
-    { name: 'Kitchen Appliances', href: '/category/kitchen-appliances' },
+    { name: 'All Appliances', href: '/shop' },
   ],
   support: [
     { name: 'Contact Us', href: '/contact' },
@@ -129,7 +129,7 @@ export default function Footer() {
                 />
               </Link>
               <p className="mt-6 text-dark-600 dark:text-dark-400 text-sm leading-relaxed max-w-xs">
-                Pakistan's trusted appliance brand since 1990.
+                Designed Appliances for Modern Living since 1990.
                 ISO 9001:2015 & PSQCA certified manufacturing excellence.
               </p>
 

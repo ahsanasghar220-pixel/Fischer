@@ -14,7 +14,7 @@ interface ProductHighlight {
 const products: ProductHighlight[] = [
   {
     name: 'Built-in Hood',
-    category: 'Kitchen Ventilation',
+    category: 'Ventilation Solutions',
     images: [
       '/images/products/hood.png',
       '/images/products/hood.png',
@@ -47,7 +47,7 @@ const products: ProductHighlight[] = [
   },
   {
     name: 'Air Fryer',
-    category: 'Healthy Cooking',
+    category: 'Healthy Living',
     images: [
       '/images/products/air-fryer.png',
       '/images/products/air-fryer.png',
@@ -185,7 +185,7 @@ export default function HeroProductBanner() {
             Discover Fischer Essentials
           </h2>
           <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-            Premium appliances trusted by thousands of Pakistani families
+            Designed Appliances for Modern Living
           </p>
         </motion.div>
 

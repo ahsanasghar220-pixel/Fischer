@@ -18,6 +18,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
+import AnimatedLogo from '@/components/ui/AnimatedLogo'
 
 const navigation = {
   categories: [
@@ -212,14 +213,13 @@ export default function Header() {
               {/* Logo - LEFT side on desktop, CENTERED on mobile */}
               <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex-shrink-0 relative group z-10">
               {/* Show light (white) logo when on homepage hero with video, otherwise show based on theme */}
-              <img
+              <AnimatedLogo
                 src="/images/logo-dark.png"
                 alt="Fischer"
                 width={120}
                 height={48}
                 loading="eager"
                 decoding="async"
-                {...{ fetchpriority: "high" } as any}
                 className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'hidden' // Hide dark logo on homepage hero
@@ -234,14 +234,13 @@ export default function Header() {
                 }}
               />
               {/* White logo - show on homepage hero OR in dark mode */}
-              <img
+              <AnimatedLogo
                 src="/images/logo-light.png"
                 alt="Fischer"
                 width={120}
                 height={48}
                 loading="eager"
                 decoding="async"
-                {...{ fetchpriority: "high" } as any}
                 className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'block' // Show white logo on homepage hero

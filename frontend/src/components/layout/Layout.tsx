@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import Header from './Header'
 import Footer from './Footer'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton'
+import WhatsAppWidget from '@/components/ui/WhatsAppWidget'
 import PageTransition from '@/components/ui/PageTransition'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -33,6 +34,7 @@ export default function Layout() {
       </main>
       <Footer />
       <ScrollToTopButton />
+      <WhatsAppWidget />
     </div>
   )
 }
