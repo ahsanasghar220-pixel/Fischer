@@ -669,7 +669,7 @@ export default function Home() {
                         className="text-center"
                       >
                         {/* Value - Red Accent */}
-                        <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-500 dark:text-primary-600 mb-3">
+                        <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-500 dark:text-primary-600 mb-3">
                           <AnimatedCounter value={stat.value} />
                         </div>
 
@@ -705,7 +705,7 @@ export default function Home() {
               </AnimatedSection>
 
               {/* Categories Detail - Split Screen Alternating */}
-              <div className="space-y-24 overflow-hidden">
+              <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
                 {categories.slice(0, 4).map((category, index) => (
                   <CategoryShowcase key={category.id} category={category} index={index} />
                 ))}

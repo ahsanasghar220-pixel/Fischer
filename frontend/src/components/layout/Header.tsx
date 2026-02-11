@@ -168,7 +168,7 @@ export default function Header() {
             {/* Left: Hamburger */}
             <button
               type="button"
-              className={`p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-colors ${
+              className={`p-2.5 rounded-xl w-11 h-11 flex items-center justify-center transition-colors ${
                 isHomePage && !isScrolled
                   ? 'text-white hover:bg-white/10'
                   : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'
@@ -212,7 +212,7 @@ export default function Header() {
             {/* Right: Cart */}
             <button
               onClick={() => setCartDrawerOpen(true)}
-              className={`relative p-2 rounded-xl w-10 h-10 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
+              className={`relative p-2.5 rounded-xl w-11 h-11 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 ${
                 isHomePage && !isScrolled
                   ? 'text-white hover:bg-white/10'
                   : 'text-primary-500 hover:bg-dark-100 dark:hover:bg-dark-800'

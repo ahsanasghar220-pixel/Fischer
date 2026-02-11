@@ -358,6 +358,50 @@ html.lenis, html.lenis body {
   }
 
   /* ========================================
+     TOUCH DEVICE OVERRIDES
+     ======================================== */
+  /* On touch-primary devices, always show product actions and dots */
+  @media (pointer: coarse) {
+    .product-card .product-actions {
+      @apply translate-y-0 opacity-100;
+    }
+
+    .product-card .product-wishlist {
+      @apply opacity-100;
+    }
+
+    /* Disable 3D tilt transforms on touch */
+    .product-card {
+      transform: none !important;
+    }
+
+    /* Disable decorative hover animations on touch */
+    .shine-sweep::before,
+    .card-shine::after {
+      display: none;
+    }
+
+    .hover-glow::before {
+      display: none;
+    }
+
+    /* Reduce shimmer/glow animations on touch for performance */
+    .shimmer-gold,
+    .animate-shimmer {
+      animation: none;
+    }
+
+    /* Skip stagger delays on touch for faster perceived load */
+    .stagger-1,
+    .stagger-2,
+    .stagger-3,
+    .stagger-4,
+    .stagger-5 {
+      animation-delay: 0ms;
+    }
+  }
+
+  /* ========================================
      SKELETON LOADING
      ======================================== */
   .skeleton {

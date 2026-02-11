@@ -46,7 +46,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
 
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-0 sm:pl-10">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-out duration-300"
@@ -71,7 +71,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                       </Dialog.Title>
                       <button
                         onClick={onClose}
-                        className="p-2 rounded-xl text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
+                        className="p-2.5 rounded-xl text-dark-400 hover:text-dark-600 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
                         aria-label="Close cart"
                       >
                         <XMarkIcon className="w-6 h-6" />
@@ -155,7 +155,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                       <button
                                         onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                         disabled={item.quantity <= 1 || isLoading}
-                                        className="w-8 h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors"
+                                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors active:scale-95"
                                         aria-label="Decrease quantity"
                                       >
                                         <MinusIcon className="w-4 h-4" />
@@ -166,7 +166,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                       <button
                                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                         disabled={isLoading}
-                                        className="w-8 h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors"
+                                        className="w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 flex items-center justify-center text-dark-600 dark:text-dark-300 disabled:opacity-50 transition-colors active:scale-95"
                                         aria-label="Increase quantity"
                                       >
                                         <PlusIcon className="w-4 h-4" />

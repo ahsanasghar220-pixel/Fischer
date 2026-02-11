@@ -319,20 +319,18 @@ export default function ProductDetail() {
               </motion.div>
               {product.images && product.images.length > 1 && (
                 <motion.div
-                  className="flex gap-3 overflow-x-auto pb-2"
+                  className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 }}
                 >
                   {product.images.map((image, index) => (
-                    <motion.button
+                    <button
                       key={image.id}
                       onClick={() => setSelectedImage(index)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-110 active:scale-95 ${
                         selectedImage === index ? 'border-primary-500' : 'border-transparent hover:border-dark-300 dark:hover:border-dark-500'
                       }`}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
                     >
                       <img
                         src={image.image}
@@ -341,7 +339,7 @@ export default function ProductDetail() {
                         height={80}
                         className="w-full h-full object-cover"
                       />
-                    </motion.button>
+                    </button>
                   ))}
                 </motion.div>
               )}
@@ -497,7 +495,7 @@ export default function ProductDetail() {
 
               {/* Quantity & Add to Cart */}
               <motion.div
-                className="flex items-center gap-4 mb-6"
+                className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65 }}
@@ -595,11 +593,10 @@ export default function ProductDetail() {
                 ].map((feature, index) => (
                   <motion.div
                     key={feature.label}
-                    className="text-center"
+                    className="text-center hover:scale-105 hover:-translate-y-0.5 transition-transform"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 + index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -2 }}
                   >
                     <feature.icon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
                     <span className="text-sm text-dark-600 dark:text-dark-400">{feature.label}</span>
@@ -638,7 +635,7 @@ export default function ProductDetail() {
                   <motion.button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-4 px-6 text-center font-medium transition-colors relative ${
+                    className={`flex-1 py-4 px-2 sm:px-6 text-center font-medium transition-colors relative text-sm sm:text-base ${
                       activeTab === tab
                         ? 'text-primary-600 dark:text-primary-400'
                         : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'

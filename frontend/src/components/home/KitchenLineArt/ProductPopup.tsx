@@ -1,6 +1,6 @@
 import { XMarkIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 
 // CSS animations for smooth, GPU-accelerated effects
 const popupAnimationStyles = `
@@ -61,8 +61,10 @@ export default function ProductPopup({
   onClose
 }: ProductPopupProps) {
   const [isVisible, setIsVisible] = useState(false)
-  const [isHoveringButton, setIsHoveringButton] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+
+  // Detect small screen for bottom-anchored mode
+  const isSmallScreen = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 480, [])
 
   // Trigger entrance animation
   useEffect(() => {
@@ -71,11 +73,14 @@ export default function ProductPopup({
     return () => clearTimeout(timer)
   }, [])
 
-  // Calculate popup position (keep within viewport)
-  const popupStyle = {
-    left: Math.min(Math.max(position.x - 140, 20), window.innerWidth - 320),
-    top: position.y - 10,
-  }
+  // Calculate popup position (keep within viewport, clamped)
+  const popupWidth = isSmallScreen ? window.innerWidth - 40 : 288 // w-72 = 288px
+  const popupStyle = isSmallScreen
+    ? {} // bottom-anchored, no absolute positioning
+    : {
+        left: Math.min(Math.max(position.x - popupWidth / 2, 20), window.innerWidth - popupWidth - 20),
+        top: Math.max(position.y - 10, 20),
+      }
 
   // Handle backdrop click
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
@@ -107,29 +112,38 @@ export default function ProductPopup({
         }}
       />
 
-      {/* Popup container */}
+      {/* Popup container - bottom-anchored on small screens */}
       <div
-        className="absolute z-50"
+        className={isSmallScreen
+          ? 'fixed bottom-0 left-0 right-0 z-50 p-5 pb-safe'
+          : 'absolute z-50'
+        }
         style={{
-          ...popupStyle,
-          animation: isVisible ? 'popup-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' : 'none',
+          ...(isSmallScreen ? {} : popupStyle),
+          animation: isVisible
+            ? isSmallScreen
+              ? 'popup-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+              : 'popup-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+            : 'none',
         }}
       >
-        {/* Floating animation wrapper */}
+        {/* Floating animation wrapper - disabled on small screens */}
         <div
-          style={{
+          style={isSmallScreen ? undefined : {
             animation: 'float-subtle 3s ease-in-out infinite',
           }}
         >
-          {/* Arrow pointing to hotspot */}
-          <div
-            className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-dark-800 rotate-45 border-r border-b border-gray-200 dark:border-dark-700"
-          />
+          {/* Arrow pointing to hotspot - hidden on small screens */}
+          {!isSmallScreen && (
+            <div
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-dark-800 rotate-45 border-r border-b border-gray-200 dark:border-dark-700"
+            />
+          )}
 
-          {/* Main popup card */}
+          {/* Main popup card - responsive width */}
           <div
-            className="w-72 bg-white dark:bg-dark-800 rounded-xl overflow-hidden relative"
-            style={{
+            className="w-[calc(100vw-40px)] sm:w-72 max-w-[320px] mx-auto bg-white dark:bg-dark-800 rounded-xl overflow-hidden relative"
+            style={isSmallScreen ? undefined : {
               animation: 'pulse-glow 3s ease-in-out infinite',
             }}
           >
@@ -256,24 +270,14 @@ export default function ProductPopup({
                   >
                     <Link to={`/product/${product.slug}`}>
                       <div
-                        className={`flex items-center justify-center gap-2 w-full py-2.5 bg-primary-500 text-dark-900
+                        className="flex items-center justify-center gap-2 w-full py-2.5 bg-primary-500 text-dark-900
                                   font-medium rounded-lg overflow-hidden relative
                                   transition-all duration-300 ease-out
-                                  ${isHoveringButton ? 'scale-[1.03] shadow-lg shadow-primary-500/30' : 'scale-100'}`}
-                        onMouseEnter={() => setIsHoveringButton(true)}
-                        onMouseLeave={() => setIsHoveringButton(false)}
+                                  hover:scale-[1.03] hover:shadow-lg hover:shadow-primary-500/30
+                                  active:scale-[0.98]"
                       >
-                        {/* Shimmer effect on hover */}
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent
-                                    transition-transform duration-500 ease-out
-                                    ${isHoveringButton ? 'translate-x-full' : '-translate-x-full'}`}
-                        />
                         <span className="relative z-10">View Details</span>
-                        <ArrowRightIcon
-                          className={`w-4 h-4 relative z-10 transition-transform duration-300
-                                    ${isHoveringButton ? 'translate-x-1' : 'translate-x-0'}`}
-                        />
+                        <ArrowRightIcon className="w-4 h-4 relative z-10" />
                       </div>
                     </Link>
                   </div>
@@ -316,28 +320,18 @@ export default function ProductPopup({
                 >
                   <Link to={`/category/${categorySlug}`}>
                     <div
-                      className={`flex items-center justify-center gap-2 w-full py-2.5
+                      className="flex items-center justify-center gap-2 w-full py-2.5
                                 bg-dark-900 dark:bg-dark-100
                                 text-white dark:text-dark-900
                                 font-medium rounded-lg overflow-hidden relative
                                 transition-all duration-300 ease-out
                                 hover:bg-primary-500 dark:hover:bg-primary-500
                                 hover:text-dark-900 dark:hover:text-white
-                                ${isHoveringButton ? 'scale-[1.03] shadow-lg shadow-primary-500/30' : 'scale-100'}`}
-                      onMouseEnter={() => setIsHoveringButton(true)}
-                      onMouseLeave={() => setIsHoveringButton(false)}
+                                hover:scale-[1.03] hover:shadow-lg hover:shadow-primary-500/30
+                                active:scale-[0.98]"
                     >
-                      {/* Shimmer effect on hover */}
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                                  transition-transform duration-500 ease-out
-                                  ${isHoveringButton ? 'translate-x-full' : '-translate-x-full'}`}
-                      />
                       <span className="relative z-10">Browse Category</span>
-                      <ArrowRightIcon
-                        className={`w-4 h-4 relative z-10 transition-transform duration-300
-                                  ${isHoveringButton ? 'translate-x-1' : 'translate-x-0'}`}
-                      />
+                      <ArrowRightIcon className="w-4 h-4 relative z-10" />
                     </div>
                   </Link>
                 </div>

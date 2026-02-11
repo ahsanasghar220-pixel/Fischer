@@ -120,21 +120,26 @@ const QuickViewModal = memo(function QuickViewModal({
         </Transition.Child>
 
         <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="flex min-h-full items-end sm:items-center justify-center sm:p-4">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
+              enterFrom="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative w-full max-w-4xl transform overflow-hidden rounded-3xl bg-white dark:bg-dark-800 shadow-2xl transition-all">
+              <Dialog.Panel className="relative w-full max-w-4xl transform overflow-hidden rounded-t-3xl sm:rounded-3xl bg-white dark:bg-dark-800 shadow-2xl transition-all max-h-[90vh] overflow-y-auto">
+                {/* Drag handle indicator on mobile */}
+                <div className="sm:hidden flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 rounded-full bg-dark-300 dark:bg-dark-600" />
+                </div>
+
                 {/* Close button */}
                 <button
                   onClick={onClose}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-xl bg-white/80 dark:bg-dark-700/80 backdrop-blur-sm text-dark-500 hover:text-dark-700 dark:hover:text-dark-200 transition-colors"
+                  className="absolute top-4 right-4 z-10 p-2.5 rounded-xl bg-white/80 dark:bg-dark-700/80 backdrop-blur-sm text-dark-500 hover:text-dark-700 dark:hover:text-dark-200 transition-colors"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -194,7 +199,7 @@ const QuickViewModal = memo(function QuickViewModal({
                           <button
                             key={image.id}
                             onClick={() => setSelectedImage(index)}
-                            className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                            className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all active:scale-95 ${
                               selectedImage === index
                                 ? 'border-primary-500'
                                 : 'border-transparent hover:border-dark-300 dark:hover:border-dark-600'

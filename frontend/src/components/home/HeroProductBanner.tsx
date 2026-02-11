@@ -1,7 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
+import { useTouchSwipe } from '@/hooks/useTouchSwipe'
 
 interface ProductHighlight {
   name: string
@@ -72,24 +74,39 @@ const products: ProductHighlight[] = [
 function ProductCard({ product, index }: { product: ProductHighlight; index: number }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const isTouchDevice = useIsTouchDevice()
 
-  // Auto-cycle images on hover
+  // Auto-cycle images on hover (desktop only)
   useEffect(() => {
-    if (!isHovered || product.images.length <= 1) return
+    if (isTouchDevice || !isHovered || product.images.length <= 1) return
 
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % product.images.length)
-    }, 1500) // Change image every 1.5 seconds
+    }, 1500)
 
     return () => clearInterval(interval)
-  }, [isHovered, product.images.length])
+  }, [isHovered, product.images.length, isTouchDevice])
 
-  // Reset to first image when hover ends
+  // Reset to first image when hover ends (desktop only)
   useEffect(() => {
-    if (!isHovered) {
+    if (!isHovered && !isTouchDevice) {
       setCurrentImageIndex(0)
     }
-  }, [isHovered])
+  }, [isHovered, isTouchDevice])
+
+  // Swipe support for touch devices
+  const swipeHandlers = useTouchSwipe({
+    onSwipeLeft: useCallback(() => {
+      if (product.images.length > 1) {
+        setCurrentImageIndex((prev) => (prev + 1) % product.images.length)
+      }
+    }, [product.images.length]),
+    onSwipeRight: useCallback(() => {
+      if (product.images.length > 1) {
+        setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length)
+      }
+    }, [product.images.length]),
+  })
 
   return (
     <motion.div
@@ -106,7 +123,10 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
         className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
       >
         {/* Image Container with Carousel */}
-        <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 p-6 relative overflow-hidden">
+        <div
+          className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 p-6 relative overflow-hidden"
+          {...(isTouchDevice ? swipeHandlers : {})}
+        >
           <AnimatePresence mode="wait">
             <motion.img
               key={currentImageIndex}
@@ -123,9 +143,9 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
             />
           </AnimatePresence>
 
-          {/* Image Indicators (Dots) */}
+          {/* Image Indicators (Dots) - always visible on mobile */}
           {product.images.length > 1 && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
               {product.images.map((_, idx) => (
                 <div
                   key={idx}

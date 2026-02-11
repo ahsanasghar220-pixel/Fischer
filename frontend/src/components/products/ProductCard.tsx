@@ -5,6 +5,8 @@ import { useState, useCallback, memo, useMemo, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
+import { useTouchSwipe } from '@/hooks/useTouchSwipe'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import { formatPrice } from '@/lib/utils'
@@ -76,13 +78,14 @@ const ProductCard = memo(function ProductCard({
   const cardRef = useRef<HTMLDivElement>(null)
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const isTouchDevice = useIsTouchDevice()
 
   // Subtle 3D transform values - calculated once on mouse move
   const [transform3D, setTransform3D] = useState({ rotateX: 0, rotateY: 0 })
 
-  // Handle mouse move for subtle 3D effect - optimized with RAF
+  // Handle mouse move for subtle 3D effect - disabled on touch
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
+    if (isTouchDevice || !cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
@@ -93,7 +96,7 @@ const ProductCard = memo(function ProductCard({
       rotateX: mouseYPos * -4,
       rotateY: mouseXPos * 4,
     })
-  }, [])
+  }, [isTouchDevice])
 
   const handleMouseLeave = useCallback(() => {
     setTransform3D({ rotateX: 0, rotateY: 0 })
@@ -111,13 +114,13 @@ const ProductCard = memo(function ProductCard({
 
   const hasMultipleImages = allImages.length > 1
 
-  // Cycle through images on hover
+  // Cycle through images on hover (desktop only)
   useEffect(() => {
-    if (isHovered && hasMultipleImages) {
+    if (isHovered && hasMultipleImages && !isTouchDevice) {
       cycleIntervalRef.current = setInterval(() => {
         setCurrentImageIndex(prev => (prev + 1) % allImages.length)
       }, 1500)
-    } else {
+    } else if (!isTouchDevice) {
       if (cycleIntervalRef.current) {
         clearInterval(cycleIntervalRef.current)
         cycleIntervalRef.current = null
@@ -127,7 +130,21 @@ const ProductCard = memo(function ProductCard({
     return () => {
       if (cycleIntervalRef.current) clearInterval(cycleIntervalRef.current)
     }
-  }, [isHovered, hasMultipleImages, allImages.length])
+  }, [isHovered, hasMultipleImages, allImages.length, isTouchDevice])
+
+  // Swipe support for touch devices
+  const swipeHandlers = useTouchSwipe({
+    onSwipeLeft: useCallback(() => {
+      if (hasMultipleImages) {
+        setCurrentImageIndex(prev => (prev + 1) % allImages.length)
+      }
+    }, [hasMultipleImages, allImages.length]),
+    onSwipeRight: useCallback(() => {
+      if (hasMultipleImages) {
+        setCurrentImageIndex(prev => (prev - 1 + allImages.length) % allImages.length)
+      }
+    }, [hasMultipleImages, allImages.length]),
+  })
 
   // Memoize discount calculation
   const discountPercentage = useMemo(() => {
@@ -203,25 +220,25 @@ const ProductCard = memo(function ProductCard({
       {/* Inject CSS keyframes */}
       <style>{shimmerStyle}</style>
 
-      {/* Perspective container for subtle 3D effect */}
+      {/* Perspective container for subtle 3D effect - disabled on touch */}
       <div
-        style={{ perspective: '800px' }}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={handleMouseLeave}
+        style={isTouchDevice ? undefined : { perspective: '800px' }}
+        onMouseMove={isTouchDevice ? undefined : handleMouseMove}
+        onMouseEnter={isTouchDevice ? undefined : () => setIsHovered(true)}
+        onMouseLeave={isTouchDevice ? undefined : handleMouseLeave}
       >
         <div
           ref={cardRef}
           className={`product-card relative overflow-visible transition-all duration-300 ease-out
-                     ${isHovered ? 'scale-[1.02]' : 'scale-100'}`}
-          style={{
+                     ${isHovered && !isTouchDevice ? 'scale-[1.02]' : 'scale-100'}`}
+          style={isTouchDevice ? undefined : {
             transform: `rotateX(${transform3D.rotateX}deg) rotateY(${transform3D.rotateY}deg)`,
             transformStyle: 'preserve-3d',
             transition: 'transform 0.15s ease-out, scale 0.3s ease-out',
           }}
         >
         {/* Image Container */}
-        <div className="product-image">
+        <div className="product-image" {...(isTouchDevice ? swipeHandlers : {})}>
           {/* Loading skeleton */}
           {!imageLoaded && (
             <div className="absolute inset-0 skeleton" />
@@ -263,8 +280,8 @@ const ProductCard = memo(function ProductCard({
                 />
               </AnimatePresence>
 
-              {/* Enhanced dot indicators with animation */}
-              {hasMultipleImages && isHovered && (
+              {/* Enhanced dot indicators with animation - always visible on touch */}
+              {hasMultipleImages && (isHovered || isTouchDevice) && (
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
                   {allImages.map((_, index) => (
                     <motion.span
@@ -349,7 +366,7 @@ const ProductCard = memo(function ProductCard({
             )}
           </button>
 
-          {/* Quick Actions on Hover */}
+          {/* Quick Actions on Hover (always visible on touch via CSS) */}
           <div className="product-actions">
             <button
               onClick={handleAddToCart}
@@ -364,16 +381,19 @@ const ProductCard = memo(function ProductCard({
               <ShoppingCartIcon className="w-4 h-4" />
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}
             </button>
-            <button
-              onClick={handleQuickView}
-              className="p-3 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
-                        text-dark-900 dark:text-white rounded-xl
-                        transition-all duration-200 shadow-lg
-                        hover:scale-105 active:scale-95"
-              aria-label="Quick view"
-            >
-              <EyeIcon className="w-5 h-5" />
-            </button>
+            {/* Hide Quick View on touch - users can tap the card itself */}
+            {!isTouchDevice && (
+              <button
+                onClick={handleQuickView}
+                className="p-3 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
+                          text-dark-900 dark:text-white rounded-xl
+                          transition-all duration-200 shadow-lg
+                          hover:scale-105 active:scale-95"
+                aria-label="Quick view"
+              >
+                <EyeIcon className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -414,38 +434,44 @@ const ProductCard = memo(function ProductCard({
             <span className="bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black relative z-10">
               {formatPrice(product.price)}
             </span>
-            {/* CSS-based shimmer on hover */}
-            <div
-              className={`absolute inset-0 bg-gradient-to-r from-transparent via-primary-300/40 to-transparent
-                         transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-              style={{
-                animation: isHovered ? 'shimmer 2s infinite' : 'none',
-              }}
-            />
+            {/* CSS-based shimmer on hover - skip on touch */}
+            {!isTouchDevice && (
+              <div
+                className={`absolute inset-0 bg-gradient-to-r from-transparent via-primary-300/40 to-transparent
+                           transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+                style={{
+                  animation: isHovered ? 'shimmer 2s infinite' : 'none',
+                }}
+              />
+            )}
             {product.compare_price && product.compare_price > product.price && (
               <span className="product-price-old">{formatPrice(product.compare_price)}</span>
             )}
           </div>
         </div>
 
-        {/* Subtle glow effect on hover - CSS only */}
-        <div
-          className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
-                     ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-          style={{
-            boxShadow: '0 0 40px rgba(114, 47, 55, 0.25)',
-            animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
-          }}
-        />
-
-        {/* Shine sweep effect on hover - CSS animation */}
-        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
+        {/* Subtle glow effect on hover - CSS only, skip on touch */}
+        {!isTouchDevice && (
           <div
-            className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                       transition-transform duration-700 ease-out
-                       ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
+            className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
+                       ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              boxShadow: '0 0 40px rgba(114, 47, 55, 0.25)',
+              animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
+            }}
           />
-        </div>
+        )}
+
+        {/* Shine sweep effect on hover - CSS animation, skip on touch */}
+        {!isTouchDevice && (
+          <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
+            <div
+              className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                         transition-transform duration-700 ease-out
+                         ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
+            />
+          </div>
+        )}
       </div>
       </div>
 

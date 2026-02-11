@@ -81,7 +81,7 @@ export default function MobileMenuOverlay({
                 {/* Close button - absolute left */}
                 <button
                   onClick={onClose}
-                  className="absolute left-5 p-2 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+                  className="absolute left-5 p-2.5 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
                   aria-label="Close menu"
                 >
                   <XMarkIcon className="w-6 h-6" />
@@ -155,7 +155,7 @@ export default function MobileMenuOverlay({
                             key={category.slug}
                             to={category.href}
                             onClick={onClose}
-                            className="flex flex-col items-center p-3 rounded-lg bg-dark-50 dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors group"
+                            className="flex flex-col items-center p-3 rounded-lg bg-dark-50 dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700 active:bg-dark-200 dark:active:bg-dark-600 transition-colors group"
                           >
                             {/* Category Image */}
                             <div className="w-full aspect-square mb-2 rounded-lg overflow-hidden bg-white dark:bg-dark-900">
