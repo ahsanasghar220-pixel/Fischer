@@ -39,7 +39,7 @@ class ProductSeeder extends Seeder
 
     private function seedKitchenHoods(Brand $brand): void
     {
-        $category = Category::where('slug', 'kitchen-hoods')->first();
+        $category = Category::where('slug', 'built-in-hoods')->first();
 
         $products = [
             [
@@ -164,7 +164,7 @@ class ProductSeeder extends Seeder
 
     private function seedKitchenHobs(Brand $brand): void
     {
-        $category = Category::where('slug', 'kitchen-hobs')->first();
+        $category = Category::where('slug', 'built-in-hobs')->first();
 
         $products = [
             [
