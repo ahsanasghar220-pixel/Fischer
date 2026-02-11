@@ -518,7 +518,7 @@ export default function Header() {
         categories={navigation.categories}
         pages={navigation.pages}
         isAuthenticated={isAuthenticated}
-        user={user}
+        user={user ?? undefined}
         onLogout={logout}
       />
 
