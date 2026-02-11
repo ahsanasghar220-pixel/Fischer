@@ -733,7 +733,6 @@ export default function Home() {
             muted
             playsInline
             preload="metadata"
-            poster="/images/hero-poster.jpg"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => {
