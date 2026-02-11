@@ -11,6 +11,7 @@ import {
   MagnifyingGlassIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/authStore'
 import { useCartStore } from '@/stores/cartStore'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
@@ -19,87 +20,29 @@ import CartDrawer from '@/components/cart/CartDrawer'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
 import AnimatedLogo from '@/components/ui/AnimatedLogo'
 import MobileMenuOverlay from '@/components/layout/MobileMenuOverlay'
+import api from '@/lib/api'
 
-const navigation = {
-  categories: [
-    {
-      name: 'Built-in Hoods',
-      href: '/category/built-in-hoods',
-      slug: 'built-in-hoods',
-      desc: 'Range hoods & ventilation',
-      gradient: 'from-slate-500 to-gray-600'
-    },
-    {
-      name: 'Built-in Hobs',
-      href: '/category/built-in-hobs',
-      slug: 'built-in-hobs',
-      desc: 'Gas & electric cooktops',
-      gradient: 'from-gray-600 to-slate-700'
-    },
-    {
-      name: 'Cooking Ranges',
-      href: '/category/cooking-ranges',
-      slug: 'cooking-ranges',
-      desc: 'Professional cooking ranges',
-      gradient: 'from-purple-500 to-violet-500'
-    },
-    {
-      name: 'Oven Toasters',
-      href: '/category/oven-toasters',
-      slug: 'oven-toasters',
-      desc: 'Baking & toasting ovens',
-      gradient: 'from-amber-500 to-orange-500'
-    },
-    {
-      name: 'Air Fryers',
-      href: '/category/air-fryers',
-      slug: 'air-fryers',
-      desc: 'Healthy cooking appliances',
-      gradient: 'from-emerald-500 to-teal-500'
-    },
-    {
-      name: 'Water Coolers',
-      href: '/category/water-coolers',
-      slug: 'water-coolers',
-      desc: 'Industrial & commercial coolers',
-      gradient: 'from-cyan-500 to-blue-500'
-    },
-    {
-      name: 'Water Dispensers',
-      href: '/category/water-dispensers',
-      slug: 'water-dispensers',
-      desc: 'Hot & cold dispensers',
-      gradient: 'from-blue-500 to-indigo-500'
-    },
-    {
-      name: 'Electric + Gas Geysers',
-      href: '/category/electric-gas-geysers',
-      slug: 'electric-gas-geysers',
-      desc: 'Hybrid water heaters',
-      gradient: 'from-orange-500 to-red-500'
-    },
-    {
-      name: 'Blenders & Processors',
-      href: '/category/blenders-processors',
-      slug: 'blenders-processors',
-      desc: 'Food processors & blenders',
-      gradient: 'from-green-500 to-emerald-500'
-    },
-    {
-      name: 'Room Coolers',
-      href: '/category/room-coolers',
-      slug: 'room-coolers',
-      desc: 'Air coolers & evaporative cooling',
-      gradient: 'from-sky-500 to-cyan-500'
-    },
-  ],
-  pages: [
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Service Request', href: '/service-request' },
-    { name: 'Find Dealer', href: '/find-dealer' },
-  ],
+// Gradient map for categories (can be customized per category)
+const categoryGradients: Record<string, string> = {
+  'built-in-hoods': 'from-slate-500 to-gray-600',
+  'built-in-hobs': 'from-gray-600 to-slate-700',
+  'cooking-ranges': 'from-purple-500 to-violet-500',
+  'oven-toasters': 'from-amber-500 to-orange-500',
+  'air-fryers': 'from-emerald-500 to-teal-500',
+  'water-coolers': 'from-cyan-500 to-blue-500',
+  'water-dispensers': 'from-blue-500 to-indigo-500',
+  'hybrid-geysers': 'from-orange-500 to-red-500',
+  'blenders-processors': 'from-green-500 to-emerald-500',
+  'room-coolers': 'from-sky-500 to-cyan-500',
 }
+
+// Static pages (these rarely change)
+const staticPages = [
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
+  { name: 'Service Request', href: '/service-request' },
+  { name: 'Find Dealer', href: '/find-dealer' },
+]
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -112,6 +55,32 @@ export default function Header() {
 
   const { isAuthenticated, user, logout } = useAuthStore()
   const cartItemsCount = useCartStore((state) => state.items_count)
+
+  // Fetch categories from API
+  const { data: categoriesData } = useQuery({
+    queryKey: ['header-categories'],
+    queryFn: async () => {
+      const response = await api.get('/categories')
+      return response.data.data
+    },
+  })
+
+  // Transform categories for navigation
+  const navigation = {
+    categories: categoriesData
+      ? categoriesData
+          .filter((cat: any) => !cat.parent_id)
+          .map((cat: any) => ({
+            name: cat.name,
+            href: `/category/${cat.slug}`,
+            slug: cat.slug,
+            desc: cat.short_description || cat.description || '',
+            gradient: categoryGradients[cat.slug] || 'from-gray-500 to-slate-600',
+            image: cat.image,
+          }))
+      : [],
+    pages: staticPages,
+  }
 
   // Lock body scroll when mobile menu or cart drawer is open
   useBodyScrollLock(mobileMenuOpen || cartDrawerOpen)

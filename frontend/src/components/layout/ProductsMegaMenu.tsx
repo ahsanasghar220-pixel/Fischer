@@ -3,89 +3,21 @@ import { Link } from 'react-router-dom'
 import { Popover, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
 
 interface Category {
+  id?: number
   name: string
   slug: string
-  href: string
+  href?: string
   image?: string
-  subcategories?: Array<{
-    name: string
-    href: string
-  }>
+  parent_id?: number | null
+  subcategories?: Category[]
+  children?: Category[]
 }
-
-const categories: Category[] = [
-  {
-    name: 'Built-in Hoods',
-    slug: 'built-in-hoods',
-    href: '/category/built-in-hoods',
-    image: '/images/products/hood.webp',
-  },
-  {
-    name: 'Built-in Hobs',
-    slug: 'built-in-hobs',
-    href: '/category/built-in-hobs',
-    image: '/images/products/hob.webp',
-  },
-  {
-    name: 'Oven Toasters',
-    slug: 'oven-toasters',
-    href: '/category/oven-toasters',
-    image: '/images/products/oven-toasters/fot-2501c.jpg',
-  },
-  {
-    name: 'Air Fryers',
-    slug: 'air-fryers',
-    href: '/category/air-fryers',
-    image: '/images/products/air-fryer.webp',
-  },
-  {
-    name: 'Water Coolers',
-    slug: 'water-coolers',
-    href: '/category/water-coolers',
-    image: '/images/products/water-cooler-100ltr.png',
-  },
-  {
-    name: 'Water Dispensers',
-    slug: 'water-dispensers',
-    href: '/category/water-dispensers',
-    image: '/images/products/water-dispensers/fwd-1150.jpeg',
-  },
-  {
-    name: 'Geysers & Heaters',
-    slug: 'geysers-heaters',
-    href: '/category/geysers-heaters',
-    image: '/images/products/gas-water-heaters/fgg-100g-hd.png',
-    subcategories: [
-      { name: 'Gas Water Heaters', href: '/category/gas-water-heaters' },
-      { name: 'Electric + Gas Geysers', href: '/category/hybrid-geysers' },
-      { name: 'Fast Electric Heaters', href: '/category/fast-electric-water-heaters' },
-      { name: 'Instant Electric Heaters', href: '/category/instant-electric-water-heaters' },
-    ],
-  },
-  {
-    name: 'Cooking Ranges',
-    slug: 'cooking-ranges',
-    href: '/category/cooking-ranges',
-    image: '/images/products/cooking-range-5-brass.png',
-  },
-  {
-    name: 'Room Coolers',
-    slug: 'room-coolers',
-    href: '/category/room-coolers',
-    image: '/images/products/storage-coolers/fst-100.png',
-  },
-  {
-    name: 'Blenders & Processors',
-    slug: 'blenders-processors',
-    href: '/category/blenders-processors',
-    // No image available, will use icon fallback
-  },
-]
 
 interface ProductsMegaMenuProps {
   isHomePage?: boolean
@@ -105,6 +37,33 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
   const [categoryProducts, setCategoryProducts] = useState<Record<string, Product[]>>({})
   const [loadingProducts, setLoadingProducts] = useState(false)
+
+  // Fetch categories from API
+  const { data: categoriesData } = useQuery({
+    queryKey: ['megamenu-categories'],
+    queryFn: async () => {
+      const response = await api.get('/categories')
+      return response.data.data
+    },
+  })
+
+  // Transform API categories to match component structure
+  const categories: Category[] = categoriesData
+    ? categoriesData
+        .filter((cat: Category) => !cat.parent_id) // Only parent categories
+        .map((cat: Category) => ({
+          name: cat.name,
+          slug: cat.slug,
+          href: `/category/${cat.slug}`,
+          image: cat.image,
+          subcategories: categoriesData
+            .filter((sub: Category) => sub.parent_id === cat.id)
+            .map((sub: Category) => ({
+              name: sub.name,
+              href: `/category/${sub.slug}`,
+            })),
+        }))
+    : []
 
   // Fetch products when hovering over a category
   useEffect(() => {
