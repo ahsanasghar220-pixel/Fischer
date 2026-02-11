@@ -15,35 +15,54 @@ const products: ProductHighlight[] = [
   {
     name: 'Built-in Hood',
     category: 'Ventilation Solutions',
-    images: ['/images/products/hood.png'], // Single image - no carousel
+    images: [
+      '/images/products/kitchen-hoods/fkh-h90-06s.png',
+      '/images/products/kitchen-hoods/fkh-l90-01in.png',
+      '/images/products/kitchen-hoods/fkh-t90-04sc.png',
+    ],
     href: '/category/built-in-hoods',
     description: 'Powerful airflow up to 1500 m³/h',
   },
   {
     name: 'Built-in Hob',
     category: 'Cooking Solutions',
-    images: ['/images/products/hob.png'], // Single image - no carousel
+    images: [
+      '/images/products/kitchen-hobs/fbh-g78-3cb.png',
+      '/images/products/kitchen-hobs/fbh-g90-5sbf.png',
+      '/images/products/kitchen-hobs/fbh-ss76-3cb.png',
+    ],
     href: '/category/built-in-hobs',
     description: 'Premium brass burners with auto ignition',
   },
   {
     name: 'Oven Toaster',
     category: 'Baking Excellence',
-    images: ['/images/products/oven-toasters/fot-2501c.jpg'], // Single image - no carousel
+    images: [
+      '/images/products/oven-toasters/fot-2501c.jpg',
+      '/images/products/oven-toasters/fot-1901d.jpg',
+    ],
     href: '/category/oven-toasters',
     description: 'Convection technology, 35L-48L capacity',
   },
   {
     name: 'Air Fryer',
     category: 'Healthy Living',
-    images: ['/images/products/air-fryer.png'], // Single image - no carousel
+    images: [
+      '/images/products/air-fryers/faf-601wd.jpg',
+      '/images/products/air-fryers/faf-801wd.jpg',
+      '/images/products/air-fryers/faf-401wd.jpg',
+    ],
     href: '/category/air-fryers',
     description: 'Oil-free frying with digital controls',
   },
   {
     name: 'Water Dispenser',
     category: 'Water Solutions',
-    images: ['/images/products/water-dispensers/fwd-1150.jpeg'], // Single image - no carousel
+    images: [
+      '/images/products/water-dispensers/fwd-1150.jpeg',
+      '/images/products/water-dispensers/fwd-bottle.png',
+      '/images/products/water-dispensers/fwd-fountain.png',
+    ],
     href: '/category/water-dispensers',
     description: 'Hot & cold, food-grade stainless steel',
   },
