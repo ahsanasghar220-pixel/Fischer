@@ -712,7 +712,7 @@ export default function Home() {
         {/* ==========================================
             SECTION 1: VIDEO HERO SECTION - MINIMAL
             ========================================== */}
-        <section className="relative h-[45vh] min-h-[400px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
+        <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
           {/* Loading placeholder - shows gradient while video loads */}
           <div
             className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
@@ -723,11 +723,14 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
           </div>
 
-          {/* Video Background - with smooth fade-in and mobile-optimized positioning */}
+          {/* Video Background - with mobile-optimized object positioning */}
           <video
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
-            } object-cover object-center`}
+            } object-cover object-center sm:object-center md:object-center`}
+            style={{
+              objectPosition: 'center center',
+            }}
             autoPlay
             loop
             muted
