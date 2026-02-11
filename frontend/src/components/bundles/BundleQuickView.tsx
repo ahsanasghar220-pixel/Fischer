@@ -253,7 +253,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                       {bundle.badge_label && (
                         <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide text-white bg-gradient-to-r ${
                           bundle.badge_color === 'gold' ? 'from-primary-500 to-primary-400' :
-                          bundle.badge_color === 'red' ? 'from-red-500 to-rose-400' :
+                          bundle.badge_color === 'red' ? 'from-primary-500 to-primary-400' :
                           bundle.badge_color === 'blue' ? 'from-blue-500 to-cyan-400' :
                           'from-green-500 to-emerald-400'
                         } shadow-lg`}>
@@ -335,9 +335,9 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
 
                     {/* Countdown */}
                     {bundle.show_countdown && countdown && (
-                      <div className="flex items-center gap-2 mt-4 px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                        <ClockIcon className="w-5 h-5 text-red-500" />
-                        <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                      <div className="flex items-center gap-2 mt-4 px-3 py-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+                        <ClockIcon className="w-5 h-5 text-primary-500" />
+                        <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
                           Ends in {countdown.days}d {countdown.hours}h {countdown.minutes}m
                         </span>
                       </div>

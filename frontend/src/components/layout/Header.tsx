@@ -20,20 +20,22 @@ import CartDrawer from '@/components/cart/CartDrawer'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
+import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
+import AnimatedLogo from '@/components/ui/AnimatedLogo'
 
 const navigation = {
   categories: [
     {
-      name: 'Kitchen Hoods',
-      href: '/category/kitchen-hoods',
-      slug: 'kitchen-hoods',
+      name: 'Built-in Hoods',
+      href: '/category/built-in-hoods',
+      slug: 'built-in-hoods',
       desc: 'Range hoods & ventilation',
       gradient: 'from-slate-500 to-gray-600'
     },
     {
-      name: 'Kitchen Hobs',
-      href: '/category/kitchen-hobs',
-      slug: 'kitchen-hobs',
+      name: 'Built-in Hobs',
+      href: '/category/built-in-hobs',
+      slug: 'built-in-hobs',
       desc: 'Gas & electric cooktops',
       gradient: 'from-gray-600 to-slate-700'
     },
@@ -204,7 +206,7 @@ export default function Header() {
 
         {/* Main header */}
         <nav className="container-xl px-4 sm:px-6" aria-label="Top">
-          <div className="flex items-center justify-between h-16 lg:h-20 gap-2 sm:gap-4">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-3 sm:gap-4">
             {/* Mobile menu button */}
             <button
               type="button"
@@ -220,7 +222,7 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link to="/" className="flex-shrink-0 relative group">
+            <Link to="/" className="flex-shrink-0 relative group mx-auto lg:mx-0">
               {/* Show light (white) logo when on homepage hero with video, otherwise show based on theme */}
               <img
                 src="/images/logo-dark.png"
@@ -230,7 +232,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-7 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'hidden' // Hide dark logo on homepage hero
                     : 'dark:hidden' // Normal: hide in dark mode
@@ -252,7 +254,7 @@ export default function Header() {
                 loading="eager"
                 decoding="async"
                 {...{ fetchpriority: "high" } as any}
-                className={`h-7 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
                   isHomePage && !isScrolled
                     ? 'block' // Show white logo on homepage hero
                     : 'hidden dark:block' // Normal: show only in dark mode
@@ -270,169 +272,8 @@ export default function Header() {
 
             {/* Desktop navigation */}
             <Popover.Group className="hidden lg:flex lg:gap-x-1 lg:ml-8">
-              {/* Products Dropdown */}
-              <Popover className="relative">
-                {({ open, close }: { open: boolean; close: () => void }) => (
-                  <>
-                    <Popover.Button
-                      className={`flex items-center gap-x-1 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        open
-                          ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                          : isHomePage && !isScrolled
-                          ? 'text-white hover:text-white/80 hover:bg-white/10'
-                          : 'text-dark-700 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800'
-                      }`}
-                    >
-                      Products
-                      <ChevronDownIcon
-                        className={`w-4 h-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      />
-                    </Popover.Button>
-
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-200"
-                      enterFrom="opacity-0 translate-y-2"
-                      enterTo="opacity-100 translate-y-0"
-                      leave="transition ease-in duration-150"
-                      leaveFrom="opacity-100 translate-y-0"
-                      leaveTo="opacity-0 translate-y-2"
-                    >
-                      <Popover.Panel className="absolute left-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-[900px] lg:w-[900px] bg-white dark:bg-dark-800 rounded-2xl shadow-2xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
-                        <div className="grid grid-cols-3 divide-x divide-dark-100 dark:divide-dark-700">
-                          {/* Categories Column */}
-                          <div className="col-span-1 p-6">
-                            <p className="text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-4">
-                              Categories
-                            </p>
-                            <div className="space-y-1">
-                              {navigation.categories.map((item) => (
-                                <Link
-                                  key={item.name}
-                                  to={item.href}
-                                  onClick={() => close()}
-                                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700/50 transition-colors group"
-                                >
-                                  <div className={`p-1.5 rounded-lg bg-gradient-to-br ${item.gradient} bg-opacity-10 group-hover:scale-110 transition-transform`}>
-                                    <CategoryIcon slug={item.slug} className="w-7 h-7" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate">
-                                      {item.name}
-                                    </p>
-                                    <p className="text-xs text-dark-500 dark:text-dark-400 truncate">{item.desc}</p>
-                                  </div>
-                                </Link>
-                              ))}
-                            </div>
-                            <Link
-                              to="/shop"
-                              onClick={() => close()}
-                              className="mt-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-500 text-dark-900 font-semibold hover:bg-primary-400 transition-colors text-sm"
-                            >
-                              View All
-                            </Link>
-                          </div>
-
-                          {/* Featured Products Column */}
-                          <div className="col-span-2 p-6 bg-dark-50/50 dark:bg-dark-900/30">
-                            <p className="text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider mb-4">
-                              Featured Products
-                            </p>
-                            <div className="grid grid-cols-3 gap-4">
-                              {featuredProducts.length > 0 ? (
-                                featuredProducts.map((product: any, index: number) => {
-                                  // Get secondary image for hover effect
-                                  const secondaryImage = product.images && product.images.length > 1
-                                    ? (product.images.find((img: any) => !img.is_primary)?.image || product.images[1]?.image)
-                                    : null
-
-                                  return (
-                                    <motion.div
-                                      key={product.id}
-                                      initial={{ opacity: 0, y: 10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      transition={{ delay: index * 0.05, duration: 0.3 }}
-                                    >
-                                      <Link
-                                        to={`/product/${product.slug}`}
-                                        onClick={() => close()}
-                                        className="group block"
-                                      >
-                                        <div className="aspect-square bg-white dark:bg-dark-800 rounded-xl overflow-hidden mb-2 ring-2 ring-dark-100 dark:ring-dark-700 group-hover:ring-primary-500 transition-all relative shadow-md group-hover:shadow-xl group-hover:shadow-primary-500/20 duration-500">
-                                          {product.primary_image ? (
-                                            <>
-                                              {/* Primary Image */}
-                                              <img
-                                                src={product.primary_image}
-                                                alt={product.name}
-                                                className={`w-full h-full object-cover transition-all duration-500 ease-out ${
-                                                  secondaryImage
-                                                    ? 'group-hover:opacity-0'
-                                                    : 'group-hover:scale-110'
-                                                }`}
-                                              />
-
-                                              {/* Secondary Image (shown on hover) */}
-                                              {secondaryImage && (
-                                                <img
-                                                  src={secondaryImage}
-                                                  alt={`${product.name} - alternate view`}
-                                                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
-                                                />
-                                              )}
-
-                                              {/* Enhanced Overlay with Badge */}
-                                              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                                <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                                  <div className="flex items-center justify-center gap-1 text-white">
-                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                    <span className="text-xs font-bold tracking-wide">QUICK VIEW</span>
-                                                  </div>
-                                                </div>
-                                              </div>
-
-                                              {/* Shine Sweep Effect */}
-                                              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out skew-x-12" />
-                                              </div>
-                                            </>
-                                          ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-primary-500/10 to-primary-600/10 flex items-center justify-center">
-                                              <span className="text-4xl">📦</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        <h3 className="font-medium text-sm text-dark-900 dark:text-white truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
-                                          {product.name}
-                                        </h3>
-                                        <p className="text-xs text-primary-600 dark:text-primary-400 font-semibold mt-1">
-                                          Rs {product.price?.toLocaleString()}
-                                        </p>
-                                      </Link>
-                                    </motion.div>
-                                  )
-                                })
-                              ) : (
-                                // Skeleton loader while fetching
-                                Array.from({ length: 6 }).map((_, i) => (
-                                  <div key={i} className="animate-pulse">
-                                    <div className="aspect-square bg-dark-200 dark:bg-dark-700 rounded-xl mb-2" />
-                                    <div className="h-4 bg-dark-200 dark:bg-dark-700 rounded w-3/4" />
-                                  </div>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </Popover.Panel>
-                    </Transition>
-                  </>
-                )}
-              </Popover>
+              {/* Products Mega Menu */}
+              <ProductsMegaMenu isHomePage={isHomePage} isScrolled={isScrolled} />
 
               {navigation.pages.map((page) => (
                 <Link
@@ -452,7 +293,7 @@ export default function Header() {
             </Popover.Group>
 
             {/* Right section */}
-            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 flex-shrink-0">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(true)}
@@ -466,8 +307,10 @@ export default function Header() {
                 <MagnifyingGlassIcon className="h-5 w-5" />
               </button>
 
-              {/* Theme Toggle - Always visible */}
-              <ThemeToggle variant="dropdown" />
+              {/* Theme Toggle - Hidden on mobile */}
+              <div className="hidden sm:block">
+                <ThemeToggle variant="dropdown" />
+              </div>
 
               {/* Wishlist - Desktop only */}
               {isAuthenticated && (

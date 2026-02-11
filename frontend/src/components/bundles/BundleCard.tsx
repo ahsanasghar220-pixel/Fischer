@@ -47,7 +47,7 @@ const BundleCard = memo(function BundleCard({
   const getBadgeColor = (color: string) => {
     const colors: Record<string, string> = {
       gold: 'bg-gradient-to-r from-primary-500 to-primary-400 text-white',
-      red: 'bg-gradient-to-r from-red-500 to-rose-400 text-white',
+      red: 'bg-gradient-to-r from-primary-500 to-primary-400 text-white',
       blue: 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white',
       green: 'bg-gradient-to-r from-green-500 to-emerald-400 text-white',
     }
@@ -108,7 +108,7 @@ const BundleCard = memo(function BundleCard({
           {/* Countdown Timer */}
           {bundle.show_countdown && bundle.time_remaining && (
             <motion.div
-              className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-red-500/90 backdrop-blur-sm rounded-full text-white text-xs font-medium"
+              className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/90 backdrop-blur-sm rounded-full text-white text-xs font-medium"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
@@ -195,7 +195,7 @@ const BundleCard = memo(function BundleCard({
               {bundle.bundle_type === 'fixed' ? 'Fixed Bundle' : 'Build Your Own'}
             </span>
             {bundle.stock_remaining !== null && bundle.stock_remaining < 10 && (
-              <span className="text-[10px] font-bold text-red-700 dark:text-red-400">
+              <span className="text-[10px] font-bold text-primary-700 dark:text-primary-400">
                 Only {bundle.stock_remaining} left!
               </span>
             )}

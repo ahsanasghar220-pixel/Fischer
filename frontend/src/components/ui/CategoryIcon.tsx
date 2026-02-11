@@ -21,9 +21,9 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
         {/* Cold water tap (blue) */}
         <rect x="27" y="44" width="11" height="8" rx="2" fill={`url(#${uid}WC)`} />
         <circle cx="32.5" cy="56" r="3" stroke={`url(#${uid}WC)`} strokeWidth="1.5" fill="none" />
-        {/* Hot water tap (red indicator) */}
-        <rect x="42" y="44" width="11" height="8" rx="2" fill="#ef4444" opacity="0.8" />
-        <circle cx="47.5" cy="56" r="3" stroke="#ef4444" strokeWidth="1.5" fill="none" opacity="0.8" />
+        {/* Hot water tap (burgundy indicator) */}
+        <rect x="42" y="44" width="11" height="8" rx="2" fill="#722F37" opacity="0.8" />
+        <circle cx="47.5" cy="56" r="3" stroke="#722F37" strokeWidth="1.5" fill="none" opacity="0.8" />
         {/* Base/legs */}
         <rect x="24" y="70" width="8" height="6" rx="1" fill={`url(#${uid}WC)`} opacity="0.5" />
         <rect x="48" y="70" width="8" height="6" rx="1" fill={`url(#${uid}WC)`} opacity="0.5" />
@@ -76,10 +76,10 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
         {/* Control panel */}
         <rect x="28" y="32" width="24" height="10" rx="2" fill={`url(#${uid}WD)`} opacity="0.15" />
         <circle cx="34" cy="37" r="2.5" fill={`url(#${uid}WD)`} />
-        <circle cx="46" cy="37" r="2.5" fill="#ef4444" opacity="0.7" />
+        <circle cx="46" cy="37" r="2.5" fill="#722F37" opacity="0.7" />
         {/* Taps */}
         <rect x="28" y="48" width="10" height="5" rx="1" fill={`url(#${uid}WD)`} />
-        <rect x="42" y="48" width="10" height="5" rx="1" fill="#ef4444" opacity="0.7" />
+        <rect x="42" y="48" width="10" height="5" rx="1" fill="#722F37" opacity="0.7" />
         {/* Drip tray */}
         <rect x="26" y="58" width="28" height="4" rx="1" fill={`url(#${uid}WD)`} opacity="0.3" />
         {/* Base cabinet */}
@@ -158,8 +158,8 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       </svg>
     ),
 
-    // KITCHEN HOODS - Range hood / chimney style
-    'kitchen-hoods': (
+    // BUILT-IN HOODS - Range hood / chimney style
+    'built-in-hoods': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
         <defs>
           <linearGradient id={`${uid}KH`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -228,8 +228,38 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       </svg>
     ),
 
-    // KITCHEN HOBS - Built-in gas/electric hob cooktop
-    'kitchen-hobs': (
+    // OVEN TOASTERS - Digital oven with convection
+    'oven-toasters': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}OT`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#f97316" />
+          </linearGradient>
+        </defs>
+        {/* Oven body */}
+        <rect x="12" y="16" width="56" height="52" rx="4" stroke={`url(#${uid}OT)`} strokeWidth="2.5" fill="none" />
+        {/* Control panel */}
+        <rect x="16" y="20" width="48" height="12" rx="2" fill={`url(#${uid}OT)`} opacity="0.15" />
+        <circle cx="24" cy="26" r="3" fill={`url(#${uid}OT)`} />
+        <circle cx="36" cy="26" r="3" fill={`url(#${uid}OT)`} />
+        <circle cx="48" cy="26" r="3" fill={`url(#${uid}OT)`} />
+        <circle cx="60" cy="26" r="3" fill={`url(#${uid}OT)`} />
+        {/* Oven window */}
+        <rect x="18" y="36" width="44" height="24" rx="2" fill={`url(#${uid}OT)`} opacity="0.1" stroke={`url(#${uid}OT)`} strokeWidth="2" />
+        {/* Window grid */}
+        <line x1="40" y1="38" x2="40" y2="58" stroke={`url(#${uid}OT)`} strokeWidth="1" opacity="0.3" />
+        <line x1="20" y1="48" x2="60" y2="48" stroke={`url(#${uid}OT)`} strokeWidth="1" opacity="0.3" />
+        {/* Heating elements visible through window */}
+        <path d="M26 42 Q28 40 30 42 Q32 44 34 42" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        <path d="M26 54 Q28 52 30 54 Q32 56 34 54" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        {/* Door handle */}
+        <rect x="32" y="62" width="16" height="4" rx="2" fill={`url(#${uid}OT)`} />
+      </svg>
+    ),
+
+    // BUILT-IN HOBS - Built-in gas/electric hob cooktop
+    'built-in-hobs': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
         <defs>
           <linearGradient id={`${uid}HB`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -297,42 +327,68 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       </svg>
     ),
 
-    // BUILT-IN HOBS & HOODS - Kitchen hood above with built-in hob below
+    // BUILT-IN HOBS - Built-in gas/electric hob cooktop
     'built-in-hobs': (
       <svg viewBox="0 0 80 80" fill="none" className={className}>
         <defs>
-          <linearGradient id={`${uid}HH`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#475569" />
-            <stop offset="100%" stopColor="#64748b" />
-          </linearGradient>
           <linearGradient id={`${uid}HB`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#1e293b" />
-            <stop offset="100%" stopColor="#334155" />
+            <stop offset="0%" stopColor="#374151" />
+            <stop offset="100%" stopColor="#4b5563" />
+          </linearGradient>
+          <linearGradient id={`${uid}FL2`} x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#fbbf24" />
           </linearGradient>
         </defs>
-        {/* Range Hood - chimney style */}
-        <path d="M25 6 L25 16 L12 26 L12 36 L68 36 L68 26 L55 16 L55 6" stroke={`url(#${uid}HH)`} strokeWidth="2.5" fill={`url(#${uid}HH)`} opacity="0.15" />
-        {/* Hood filters */}
-        <rect x="18" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
-        <rect x="44" y="28" width="18" height="6" rx="1" fill={`url(#${uid}HH)`} opacity="0.3" />
-        {/* Hood lights */}
-        <circle cx="30" cy="24" r="2" fill="#8B4049" opacity="0.9" />
-        <circle cx="50" cy="24" r="2" fill="#8B4049" opacity="0.9" />
-        {/* Steam rising */}
-        <path d="M32 40 Q30 44 32 48" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-        <path d="M40 42 Q38 46 40 50" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-        <path d="M48 40 Q46 44 48 48" stroke={`url(#${uid}HH)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-        {/* Built-in Hob - glass surface */}
-        <rect x="8" y="52" width="64" height="24" rx="3" stroke={`url(#${uid}HB)`} strokeWidth="2.5" fill={`url(#${uid}HB)`} opacity="0.1" />
-        {/* Burner zones */}
-        <circle cx="24" cy="64" r="8" stroke={`url(#${uid}HH)`} strokeWidth="2" fill="none" />
-        <circle cx="24" cy="64" r="4" stroke={`url(#${uid}HH)`} strokeWidth="1" fill="none" />
-        <circle cx="56" cy="64" r="8" stroke={`url(#${uid}HH)`} strokeWidth="2" fill="none" />
-        <circle cx="56" cy="64" r="4" stroke={`url(#${uid}HH)`} strokeWidth="1" fill="none" />
-        {/* Control touch panel */}
-        <rect x="35" y="58" width="10" height="12" rx="1" fill={`url(#${uid}HH)`} opacity="0.2" />
-        <circle cx="40" cy="62" r="1.5" fill={`url(#${uid}HH)`} />
-        <circle cx="40" cy="67" r="1.5" fill={`url(#${uid}HH)`} />
+        {/* Glass surface */}
+        <rect x="8" y="20" width="64" height="44" rx="4" stroke={`url(#${uid}HB)`} strokeWidth="2.5" fill={`url(#${uid}HB)`} opacity="0.1" />
+        {/* Large burner - top left */}
+        <circle cx="26" cy="36" r="12" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
+        <circle cx="26" cy="36" r="7" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
+        <circle cx="26" cy="36" r="3" fill={`url(#${uid}FL2)`} opacity="0.8" />
+        {/* Small burner - top right */}
+        <circle cx="54" cy="36" r="9" stroke={`url(#${uid}HB)`} strokeWidth="2" fill="none" />
+        <circle cx="54" cy="36" r="5" stroke={`url(#${uid}HB)`} strokeWidth="1.5" fill="none" />
+        <circle cx="54" cy="36" r="2" fill={`url(#${uid}FL2)`} opacity="0.8" />
+        {/* Touch control panel */}
+        <rect x="28" y="54" width="24" height="6" rx="2" fill={`url(#${uid}HB)`} opacity="0.3" />
+        <circle cx="34" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        <circle cx="40" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        <circle cx="46" cy="57" r="1.5" fill={`url(#${uid}HB)`} />
+        {/* Heat lines */}
+        <path d="M23 26 Q21 23 23 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M26 26 Q24 22 26 18" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M29 26 Q27 23 29 20" stroke={`url(#${uid}FL2)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
+
+    // ROOM COOLERS - Evaporative air cooler
+    'room-coolers': (
+      <svg viewBox="0 0 80 80" fill="none" className={className}>
+        <defs>
+          <linearGradient id={`${uid}RC`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0ea5e9" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+        </defs>
+        {/* Cooler body */}
+        <rect x="16" y="12" width="48" height="56" rx="4" stroke={`url(#${uid}RC)`} strokeWidth="2.5" fill="none" />
+        {/* Cooling pads (honeycomb pattern) */}
+        <rect x="20" y="16" width="40" height="20" rx="2" fill={`url(#${uid}RC)`} opacity="0.15" />
+        <path d="M24 20 L26 22 L26 28 L24 30 M30 20 L32 22 L32 28 L30 30 M36 20 L38 22 L38 28 L36 30 M42 20 L44 22 L44 28 L42 30 M48 20 L50 22 L50 28 L48 30" stroke={`url(#${uid}RC)`} strokeWidth="1" opacity="0.5" />
+        {/* Fan blades */}
+        <circle cx="40" cy="46" r="12" stroke={`url(#${uid}RC)`} strokeWidth="2" fill="none" />
+        <path d="M40 34 L40 46 M28 46 L40 46 M40 46 L52 46" stroke={`url(#${uid}RC)`} strokeWidth="2" strokeLinecap="round" />
+        <circle cx="40" cy="46" r="4" fill={`url(#${uid}RC)`} opacity="0.3" />
+        {/* Air flow indicators */}
+        <path d="M10 44 L14 44 M10 46 L14 46 M10 48 L14 48" stroke={`url(#${uid}RC)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        <path d="M66 44 L70 44 M66 46 L70 46 M66 48 L70 48" stroke={`url(#${uid}RC)`} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+        {/* Water level indicator */}
+        <rect x="22" y="58" width="36" height="6" rx="2" fill={`url(#${uid}RC)`} opacity="0.2" />
+        <path d="M26 61 Q28 59 30 61 Q32 59 34 61" stroke={`url(#${uid}RC)`} strokeWidth="1.5" strokeLinecap="round" />
+        {/* Wheels */}
+        <circle cx="24" cy="70" r="3" fill={`url(#${uid}RC)`} opacity="0.5" />
+        <circle cx="56" cy="70" r="3" fill={`url(#${uid}RC)`} opacity="0.5" />
       </svg>
     ),
 

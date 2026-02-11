@@ -28,6 +28,7 @@ import toast from 'react-hot-toast'
 import LogoSplitIntro from '@/components/home/LogoSplitIntro'
 import KitchenLineArt from '@/components/home/KitchenLineArt'
 import NotableClients from '@/components/home/NotableClients'
+import HeroProductBanner from '@/components/home/HeroProductBanner'
 
 // Animated Counter component for stats
 function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
@@ -711,7 +712,7 @@ export default function Home() {
         {/* ==========================================
             SECTION 1: VIDEO HERO SECTION - MINIMAL
             ========================================== */}
-        <section className="relative h-screen w-full overflow-hidden bg-dark-950">
+        <section className="relative h-[60vh] sm:h-[75vh] md:h-[85vh] lg:h-screen w-full overflow-hidden bg-dark-950">
           {/* Loading placeholder - shows gradient while video loads */}
           <div
             className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
@@ -722,11 +723,11 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
           </div>
 
-          {/* Video Background - with smooth fade-in */}
+          {/* Video Background - with smooth fade-in and mobile-optimized positioning */}
           <video
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            } object-cover object-center`}
             autoPlay
             loop
             muted
@@ -739,10 +740,10 @@ export default function Home() {
           </video>
 
           {/* Subtle overlay for visual depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-dark-950/20 via-transparent to-dark-950/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
 
-          {/* Scroll Indicator - Simple animated chevron */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
+          {/* Scroll Indicator - Hidden on mobile to save space */}
+          <div className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
             <div className="flex flex-col items-center gap-2 text-white">
               <span className="text-sm font-medium tracking-wider opacity-80">Scroll</span>
               <svg
@@ -769,14 +770,19 @@ export default function Home() {
           <section className="section bg-white dark:bg-dark-900">
             <div className="container-xl text-center">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
-                Premium Home Appliances
+                Premium Appliances
               </h2>
               <p className="text-xl md:text-2xl text-dark-600 dark:text-dark-400 max-w-3xl mx-auto">
-                Crafted for Pakistani Homes Since 1989
+                Crafted for Pakistan Since 1990
               </p>
             </div>
           </section>
         </AnimatedSection>
+
+        {/* ==========================================
+            SECTION 2.5: HERO PRODUCT BANNER
+            ========================================== */}
+        <HeroProductBanner />
 
         {/* ==========================================
             SECTION 3: CATEGORIES GRID - FOTILE STYLE
@@ -791,7 +797,7 @@ export default function Home() {
                     Shop by Category
                   </h2>
                   <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-                    Discover our comprehensive range of premium home appliances
+                    Discover our comprehensive range of premium appliances
                   </p>
                 </div>
 
@@ -1067,9 +1073,9 @@ export default function Home() {
         <FullWidthBanner
           title="Discover Fischer Premium Series"
           subtitle="New Collection"
-          description="Experience the perfect blend of innovation and elegance in modern kitchen appliances"
+          description="Experience the perfect blend of innovation and elegance in modern appliances"
           image="/images/all-products.png"
-          imageAlt="Fischer Premium Kitchen Appliances"
+          imageAlt="Fischer Premium Appliances"
           ctaText="Explore Collection"
           ctaLink="/shop"
           textPosition="center"
@@ -1173,7 +1179,7 @@ export default function Home() {
                       </h2>
                       <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                         Join our nationwide network of 500+ dealers and grow your business with
-                        Pakistan's most trusted home appliance brand.
+                        Pakistan's most trusted appliance brand.
                       </p>
                       <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                         <Link

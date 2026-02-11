@@ -180,7 +180,7 @@ export default function ProductPopup({
                   {/* Discount badge */}
                   {discountPercent && (
                     <div
-                      className="absolute top-2 left-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded
+                      className="absolute top-2 left-2 px-2 py-1 bg-primary-500 text-white text-xs font-bold rounded
                                 transition-transform duration-300 hover:scale-105"
                       style={{
                         animation: 'fade-slide-up 0.4s ease-out 0.2s both',

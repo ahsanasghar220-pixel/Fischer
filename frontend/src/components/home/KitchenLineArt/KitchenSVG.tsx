@@ -407,7 +407,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
         {/* Geyser heat indicator gradient */}
         <linearGradient id="geyserHeat" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style={{ stopColor: '#ef4444', stopOpacity: 0.8 }}>
+          <stop offset="0%" style={{ stopColor: '#722F37', stopOpacity: 0.8 }}>
             <animate attributeName="offset" values="0%;30%;0%" dur="3s" repeatCount="indefinite"/>
           </stop>
           <stop offset="50%" style={{ stopColor: '#f97316', stopOpacity: 0.5 }}>
@@ -1108,10 +1108,10 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           />
           <motion.circle
             cx="135" cy="500" r="8"
-            className="fill-red-400/40"
+            className="fill-primary-400/40"
             animate={{
               scale: [1, 1.1, 1],
-              fill: ['rgba(239,68,68,0.3)', 'rgba(239,68,68,0.5)', 'rgba(239,68,68,0.3)']
+              fill: ['rgba(114,47,55,0.3)', 'rgba(114,47,55,0.5)', 'rgba(114,47,55,0.3)']
             }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
             style={{ filter: 'url(#glow)' }}
@@ -1140,7 +1140,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           {/* Temperature gauge */}
           <motion.circle
             cx="680" cy="510" r="15"
-            className="fill-red-500/30"
+            className="fill-primary-500/30"
             animate={{
               opacity: [0.6, 1, 0.6],
               scale: [1, 1.05, 1]
@@ -1154,7 +1154,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
             strokeWidth="2"
             strokeLinecap="round"
             animate={{
-              stroke: ['rgba(239,68,68,0.6)', 'rgba(239,68,68,1)', 'rgba(239,68,68,0.6)'],
+              stroke: ['rgba(114,47,55,0.6)', 'rgba(114,47,55,1)', 'rgba(114,47,55,0.6)'],
               scale: [1, 1.1, 1]
             }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -1165,7 +1165,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
             <motion.path
               key={i}
               d={`M${665 + i * 8},420 Q${668 + i * 8},410 ${665 + i * 8},400`}
-              className="stroke-red-400/40 fill-none"
+              className="stroke-primary-400/40 fill-none"
               strokeWidth="2"
               initial={{ opacity: 0, pathLength: 0 }}
               animate={{

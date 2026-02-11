@@ -39,6 +39,7 @@ const DealerRegister = lazy(() => import('./pages/DealerRegister'))
 const FindDealer = lazy(() => import('./pages/FindDealer'))
 const About = lazy(() => import('./pages/About'))
 const Contact = lazy(() => import('./pages/Contact'))
+const Experience = lazy(() => import('./pages/Experience'))
 const Page = lazy(() => import('./pages/Page'))
 const Bundles = lazy(() => import('./pages/Bundles'))
 const BundleDetail = lazy(() => import('./pages/BundleDetail'))
@@ -109,6 +110,7 @@ function App() {
           {/* Static pages */}
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="experience" element={<Experience />} />
           <Route path="page/:slug" element={<Page />} />
 
           {/* 404 */}

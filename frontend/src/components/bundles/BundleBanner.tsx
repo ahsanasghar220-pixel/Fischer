@@ -59,7 +59,7 @@ const BundleBanner = memo(function BundleBanner({
   const getBadgeColor = (color: string) => {
     const colors: Record<string, string> = {
       gold: 'from-primary-500 to-primary-400',
-      red: 'from-red-500 to-rose-400',
+      red: 'from-primary-500 to-primary-400',
       blue: 'from-blue-500 to-cyan-400',
       green: 'from-green-500 to-emerald-400',
     }
@@ -69,7 +69,7 @@ const BundleBanner = memo(function BundleBanner({
   const getThemeGradient = (color: string) => {
     const gradients: Record<string, string> = {
       gold: 'from-primary-900/90 via-primary-800/70 to-transparent',
-      red: 'from-red-900/90 via-red-800/70 to-transparent',
+      red: 'from-primary-900/90 via-primary-800/70 to-transparent',
       blue: 'from-blue-900/90 via-blue-800/70 to-transparent',
       green: 'from-green-900/90 via-green-800/70 to-transparent',
       purple: 'from-purple-900/90 via-purple-800/70 to-transparent',

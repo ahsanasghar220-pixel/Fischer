@@ -10,20 +10,20 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            // Kitchen Appliances
+            // 1. Built-in Hoods
             [
-                'name' => 'Kitchen Hoods',
-                'slug' => 'kitchen-hoods',
-                'description' => 'Premium kitchen hoods with powerful airflow up to 1500 m³/h.',
+                'name' => 'Built-in Hoods',
+                'slug' => 'built-in-hoods',
+                'description' => 'Premium built-in hoods with powerful airflow up to 1500 m³/h.',
                 'features' => [
                     'Premium Quality',
-                    'BLDC Copper Motor',
+                    'BLDC copper motor',
                     '1 Year Warranty',
                     'Energy Efficient',
-                    'Heat + Auto Clean',
+                    'Heat + Auto clean',
                     'Gesture and Touch Control',
-                    'Inverter Technology A+++ Rated',
-                    'Low Noise Level',
+                    'Inverter Technology A+++ rated',
+                    'Low noise level',
                 ],
                 'image' => '/images/categories/kitchen-hoods.png',
                 'icon' => 'kitchen-hood',
@@ -31,18 +31,19 @@ class CategorySeeder extends Seeder
                 'is_featured' => true,
                 'sort_order' => 1,
             ],
+            // 2. Built-in Hobs
             [
-                'name' => 'Kitchen Hobs',
-                'slug' => 'kitchen-hobs',
-                'description' => 'Built-in kitchen hobs with tempered glass or stainless steel panels.',
+                'name' => 'Built-in Hobs',
+                'slug' => 'built-in-hobs',
+                'description' => 'Built-in hobs with tempered glass or stainless steel panels.',
                 'features' => [
                     'Complete Brass Burners',
                     'Sabaf Burners',
                     'EPS Burners',
                     'Tempered Glass',
                     'Flame Failure Device',
-                    'Stainless Steel Finish',
-                    '5KW Powerful Burners',
+                    'Stainless steel finish',
+                    '5KW powerful burners',
                     'Immediate Auto Ignition',
                 ],
                 'image' => '/images/categories/kitchen-hobs.png',
@@ -68,16 +69,17 @@ class CategorySeeder extends Seeder
                 'is_featured' => true,
                 'sort_order' => 3,
             ],
+            // 4. Air Fryers
             [
                 'name' => 'Air Fryers',
                 'slug' => 'air-fryers',
                 'description' => 'Digital air fryers with capacities from 4L to 8L for healthy oil-free cooking.',
                 'features' => [
-                    'Digital Touch Panel',
+                    'Digital Touch panel',
                     'Wide Temperature Control',
-                    'Injection Molding Texture',
-                    'Non-Stick Coating',
-                    'Bottom Heater for Even Temperature Control',
+                    'Injection molding texture',
+                    'Non-stick coating',
+                    'Dual Heating element for Even temperature control',
                 ],
                 'image' => '/images/categories/air-fryers.png',
                 'icon' => 'air-fryer',
@@ -85,6 +87,7 @@ class CategorySeeder extends Seeder
                 'is_featured' => true,
                 'sort_order' => 4,
             ],
+            // 9. Cooking Ranges (reordered from 5)
             [
                 'name' => 'Cooking Ranges',
                 'slug' => 'cooking-ranges',
@@ -103,16 +106,17 @@ class CategorySeeder extends Seeder
                 'icon' => 'cooking-range',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 5,
+                'sort_order' => 9,
             ],
+            // 6. Blenders & Processors
             [
                 'name' => 'Blenders & Processors',
                 'slug' => 'blenders-processors',
-                'description' => 'Multi-function food processors and blenders for your kitchen.',
+                'description' => 'Multi-function food processors and blenders.',
                 'features' => [
-                    'Multi-Function Food Processing',
-                    'Precision Stainless Steel Blades & Discs',
-                    'Pulse & Speed Control',
+                    'Multi-Function Food processing function',
+                    'Precision stainless steel blades & Discs',
+                    'Pulse & Speed control',
                     'Generous Capacity',
                 ],
                 'image' => '/images/categories/blenders-processors.png',
@@ -121,7 +125,7 @@ class CategorySeeder extends Seeder
                 'is_featured' => true,
                 'sort_order' => 6,
             ],
-            // Water Heating
+            // 8. Geysers & Heaters (reordered from 7)
             [
                 'name' => 'Geysers & Heaters',
                 'slug' => 'geysers-heaters',
@@ -131,15 +135,16 @@ class CategorySeeder extends Seeder
                     'Wattage Control',
                     'Fully Insulated',
                     'Accurate Volume Capacity',
-                    'Incoloy 840 Heating Element',
-                    'Imported Brass Safety Valves',
+                    'Incoloy 840 heating element',
+                    'Imported Brass safety Valves',
                 ],
                 'image' => '/images/categories/geysers-heaters.png',
                 'icon' => 'gas-geyser',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 7,
+                'sort_order' => 8,
             ],
+            // Sub-categories for Geysers & Heaters
             [
                 'name' => 'Gas Water Heaters',
                 'slug' => 'gas-water-heaters',
@@ -156,7 +161,7 @@ class CategorySeeder extends Seeder
                 'icon' => 'gas-geyser',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 8,
+                'sort_order' => 11,
             ],
             [
                 'name' => 'Electric + Gas Geysers',
@@ -174,7 +179,7 @@ class CategorySeeder extends Seeder
                 'icon' => 'hybrid-geyser',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 9,
+                'sort_order' => 12,
             ],
             [
                 'name' => 'Fast Electric Water Heaters',
@@ -191,7 +196,7 @@ class CategorySeeder extends Seeder
                 'icon' => 'electric-geyser',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 10,
+                'sort_order' => 13,
             ],
             [
                 'name' => 'Instant Electric Water Heaters',
@@ -208,25 +213,26 @@ class CategorySeeder extends Seeder
                 'icon' => 'instant-geyser',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 11,
+                'sort_order' => 14,
             ],
-            // Water Cooling
+            // 5. Water Coolers (reordered from 12)
             [
                 'name' => 'Water Coolers',
                 'slug' => 'water-coolers',
                 'description' => 'Commercial and industrial electric water coolers.',
                 'features' => [
                     'Adjustable Thermostat',
-                    'Food Grade Non Magnetic Heavy Gauge Stainless Steel',
-                    'High Back Pressure Compressor with Condenser',
-                    'Spring Loaded Push Button',
+                    'Made of Food Grade, Non Magnetic Heavy Gauge stainless steel',
+                    'High back pressure compressor with condenser',
+                    'Spring loaded push button',
                 ],
                 'image' => '/images/categories/water-coolers.png',
                 'icon' => 'water-cooler',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 12,
+                'sort_order' => 5,
             ],
+            // Sub-categories for Water Coolers
             [
                 'name' => 'Slim Electric Water Coolers',
                 'slug' => 'slim-water-coolers',
@@ -241,22 +247,23 @@ class CategorySeeder extends Seeder
                 'icon' => 'slim-cooler',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 13,
+                'sort_order' => 15,
             ],
+            // 7. Water Dispensers (reordered from 14)
             [
                 'name' => 'Water Dispensers',
                 'slug' => 'water-dispensers',
                 'description' => 'Compact water dispensers for home and office use.',
                 'features' => [
-                    'Food-Grade Stainless Steel Tanks',
-                    'Eco-Friendly Refrigerants',
-                    '100% Copper Coiling',
+                    'Food-grade stainless steel tanks',
+                    'Eco-friendly refrigerants',
+                    '100% copper coiling',
                 ],
                 'image' => '/images/categories/water-dispensers.png',
                 'icon' => 'dispenser',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 14,
+                'sort_order' => 7,
             ],
             [
                 'name' => 'Self-Contained Storage Coolers',
@@ -272,9 +279,9 @@ class CategorySeeder extends Seeder
                 'icon' => 'storage-cooler',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 15,
+                'sort_order' => 16,
             ],
-            // Room Coolers - NEW
+            // 10. Room Coolers (reordered from 16)
             [
                 'name' => 'Room Coolers',
                 'slug' => 'room-coolers',
@@ -290,7 +297,7 @@ class CategorySeeder extends Seeder
                 'icon' => 'room-cooler',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 16,
+                'sort_order' => 10,
             ],
         ];
 

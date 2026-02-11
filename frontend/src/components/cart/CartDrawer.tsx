@@ -175,7 +175,7 @@ const CartDrawer = memo(function CartDrawer({ isOpen, onClose }: CartDrawerProps
                                     <button
                                       onClick={() => handleRemoveItem(item.id)}
                                       disabled={isLoading}
-                                      className="p-2 text-dark-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                                      className="p-2 text-dark-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
                                       aria-label="Remove item"
                                     >
                                       <TrashIcon className="w-5 h-5" />

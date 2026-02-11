@@ -127,25 +127,9 @@ jobs:
             # Clear config cache before migrations
             $PHP artisan config:clear
 
-            # Run migrations
-            $PHP artisan migrate --force
-
-            # Seed homepage data specifically (idempotent - uses updateOrInsert)
-            echo "=== Running HomepageSeeder ==="
-            $PHP artisan db:seed --class=HomepageSeeder --force --verbose 2>&1 || {
-              echo "HomepageSeeder failed, trying full seeder..."
-              $PHP artisan db:seed --force --verbose 2>&1 || {
-                echo "Seeding failed, checking if tables exist..."
-                $PHP artisan migrate:status
-              }
-            }
-
-            # Seed categories and products
-            echo "=== Running CategorySeeder ==="
-            $PHP artisan db:seed --class=CategorySeeder --force --verbose 2>&1 || echo "CategorySeeder completed or skipped"
-
-            echo "=== Running ProductSeeder ==="
-            $PHP artisan db:seed --class=ProductSeeder --force --verbose 2>&1 || echo "ProductSeeder completed or skipped"
+            # Run FRESH migrations and seed (drops all tables and recreates with fresh data)
+            echo "=== Running fresh migrations and seeding ==="
+            $PHP artisan migrate:fresh --seed --force --verbose 2>&1
 
             # Clear all caches first
             $PHP artisan cache:clear || true
