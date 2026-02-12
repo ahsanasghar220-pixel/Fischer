@@ -304,7 +304,7 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-image img {
-    @apply w-full h-full object-cover transition-transform duration-700 ease-out;
+    @apply w-full h-full object-contain transition-transform duration-700 ease-out;
   }
 
   .product-card:hover .product-image img {

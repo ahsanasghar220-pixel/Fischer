@@ -5,9 +5,12 @@ import {
   XMarkIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
+  SunIcon,
+  MoonIcon,
 } from '@heroicons/react/24/outline'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import { getCategoryProductImage } from '@/lib/categoryImages'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface Category {
   name: string
@@ -47,6 +50,7 @@ export default function MobileMenuOverlay({
   onLogout,
 }: MobileMenuOverlayProps) {
   useBodyScrollLock(isOpen)
+  const { resolvedTheme, toggleTheme } = useTheme()
 
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -100,6 +104,26 @@ export default function MobileMenuOverlay({
                     className="h-8 w-auto hidden dark:block"
                   />
                 </Link>
+
+                {/* Dark/Light mode toggle - absolute right */}
+                <button
+                  onClick={toggleTheme}
+                  className="absolute right-5 p-2.5 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 transition-all duration-200 active:scale-95"
+                  aria-label="Toggle dark mode"
+                >
+                  <div className="relative w-5 h-5">
+                    <SunIcon
+                      className={`w-5 h-5 absolute inset-0 transition-all duration-300
+                                 ${resolvedTheme === 'dark' ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'}
+                                 text-amber-500`}
+                    />
+                    <MoonIcon
+                      className={`w-5 h-5 absolute inset-0 transition-all duration-300
+                                 ${resolvedTheme === 'dark' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'}
+                                 text-blue-400`}
+                    />
+                  </div>
+                </button>
               </div>
             </div>
 

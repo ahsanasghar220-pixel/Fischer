@@ -40,6 +40,7 @@ const categoryGradients: Record<string, string> = {
 // Static pages (these rarely change)
 const staticPages = [
   { name: 'About', href: '/about' },
+  // { name: 'Kitchen Experience', href: '/kitchen-experience' },
   { name: 'Contact', href: '/contact' },
   { name: 'Service Request', href: '/service-request' },
   { name: 'Find Dealer', href: '/find-dealer' },

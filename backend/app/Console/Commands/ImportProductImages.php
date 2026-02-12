@@ -330,9 +330,15 @@ class ImportProductImages extends Command
         // Get all image files in the product folder
         $imageFiles = [];
         $files = scandir($productPath);
+        $imageIndex = 1;
         foreach ($files as $file) {
             if (preg_match('/^(\d+)\.(jpg|jpeg|png|webp)$/i', $file, $matches)) {
                 $imageFiles[(int)$matches[1]] = $productPath . DIRECTORY_SEPARATOR . $file;
+            } elseif (preg_match('/\.(jpg|jpeg|png|webp)$/i', $file)) {
+                // Non-numbered images (e.g. named files) — assign sequential index
+                while (isset($imageFiles[$imageIndex])) $imageIndex++;
+                $imageFiles[$imageIndex] = $productPath . DIRECTORY_SEPARATOR . $file;
+                $imageIndex++;
             }
         }
 

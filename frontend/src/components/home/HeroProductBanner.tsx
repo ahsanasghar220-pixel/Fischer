@@ -171,10 +171,7 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
           <h3 className="text-xl font-bold text-dark-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
             {product.name}
           </h3>
-          <p className="text-sm text-dark-600 dark:text-dark-400 mb-4 line-clamp-2">
-            {product.description}
-          </p>
-          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm">
+          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm mt-4">
             Explore
             <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </div>

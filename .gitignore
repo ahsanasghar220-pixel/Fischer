@@ -48,6 +48,17 @@ tmpclaude-*
 nul
 *.tmp
 
+# Raw source assets (not for production)
+frontend/public/images/animations-*/
+frontend/public/images/products/1 website data/
+frontend/public/images/products/1 website data processed/
+INVOICE-FISCHER-PAKISTAN.html
+PRODUCT PORTFOLIO INFO.docx
+
+# Backend uploaded storage (local only)
+/backend/public/storage/
+/backend/storage/app/
+
 # Storage framework contents (regenerated)
 /backend/storage/framework/cache/*
 /backend/storage/framework/sessions/*

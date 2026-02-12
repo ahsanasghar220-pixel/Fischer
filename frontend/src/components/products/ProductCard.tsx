@@ -254,7 +254,7 @@ const ProductCard = memo(function ProductCard({
                   alt={currentImageIndex === 0 ? product.name : `${product.name} - view ${currentImageIndex + 1}`}
                   width={300}
                   height={300}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-contain p-2"
                   loading={currentImageIndex === 0 ? 'eager' : 'lazy'}
                   onLoad={currentImageIndex === 0 ? () => setImageLoaded(true) : undefined}
                   onError={currentImageIndex === 0 ? () => setImageError(true) : undefined}
@@ -429,23 +429,18 @@ const ProductCard = memo(function ProductCard({
             </div>
           )}
 
-          {/* Price with CSS shimmer effect */}
-          <div className="product-price relative overflow-hidden">
-            <span className="bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black relative z-10">
+          {/* Price with clean scale-up on hover */}
+          <div className="product-price">
+            <span
+              className={`inline-block bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black
+                         transition-transform duration-300 origin-left
+                         ${isHovered && !isTouchDevice ? 'scale-105' : 'scale-100'}`}
+              style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+            >
               {formatPrice(product.price)}
             </span>
-            {/* CSS-based shimmer on hover - skip on touch */}
-            {!isTouchDevice && (
-              <div
-                className={`absolute inset-0 bg-gradient-to-r from-transparent via-primary-300/40 to-transparent
-                           transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-                style={{
-                  animation: isHovered ? 'shimmer 2s infinite' : 'none',
-                }}
-              />
-            )}
             {product.compare_price && product.compare_price > product.price && (
-              <span className="product-price-old">{formatPrice(product.compare_price)}</span>
+              <span className="text-sm font-normal text-dark-400 ml-2">{formatPrice(product.compare_price)}</span>
             )}
           </div>
         </div>

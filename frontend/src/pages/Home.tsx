@@ -20,6 +20,7 @@ import {
 import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
+import ProductCarousel from '@/components/products/ProductCarousel'
 import QuickViewModal from '@/components/products/QuickViewModal'
 import FullWidthBanner from '@/components/ui/FullWidthBanner'
 import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
@@ -28,7 +29,6 @@ import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
 import type { Bundle } from '@/api/bundles'
 import toast from 'react-hot-toast'
 import LogoSplitIntro from '@/components/home/LogoSplitIntro'
-import KitchenLineArt from '@/components/home/KitchenLineArt'
 import NotableClients from '@/components/home/NotableClients'
 import HeroProductBanner from '@/components/home/HeroProductBanner'
 
@@ -308,6 +308,14 @@ const getCategoryFeatures = (category: Category): string[] => {
   return ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
 }
 
+// Map category slugs to video files
+const categoryVideos: Record<string, string> = {
+  'built-in-hoods': '/videos/categories/built-in-hoods.mp4',
+  'built-in-hobs': '/videos/categories/built-in-hobs.mp4',
+  'oven-toasters': '/videos/categories/oven-toasters.mp4',
+  'air-fryers': '/videos/categories/air-fryers.mp4',
+}
+
 // Fotile-Inspired Category Showcase - Clean Split-Screen Layout
 interface CategoryShowcaseProps {
   category: Category
@@ -318,6 +326,7 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
   const isEven = index % 2 === 0
+  const videoSrc = categoryVideos[category.slug]
 
   return (
     <motion.div
@@ -330,10 +339,21 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
       }}
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
-      {/* Image Side - Clean, no crazy animations */}
+      {/* Video / Image Side */}
       <div className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-white dark:bg-dark-800">
-          {category.image ? (
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
+          {videoSrc ? (
+            <video
+              className="w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          ) : category.image ? (
             <img
               src={category.image}
               alt={category.name}
@@ -395,7 +415,6 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
 
 
 export default function Home() {
-  const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [introComplete, setIntroComplete] = useState(false)
@@ -462,14 +481,6 @@ export default function Home() {
     return sections[key]?.is_enabled !== false
   }
 
-  // Auto-slide testimonials
-  useEffect(() => {
-    if (!testimonials.length) return
-    const timer = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [testimonials.length])
 
   // Use categories from API with centralized image fallback mapping
   const categories = (data?.categories || []).map(cat => ({
@@ -589,100 +600,6 @@ export default function Home() {
         <HeroProductBanner />
 
         {/* ==========================================
-            SECTION 3: CATEGORIES GRID - FOTILE STYLE
-            ========================================== */}
-        {isSectionEnabled('categories') && (
-          <AnimatedSection animation="fade-up" duration={800} threshold={0.08} easing="gentle">
-            <section className="section bg-dark-50 dark:bg-dark-900">
-              <div className="container-xl">
-                {/* Section Header */}
-                <div className="text-center mb-8 sm:mb-10 md:mb-12">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
-                    Shop by Category
-                  </h2>
-                  <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-                    Discover our comprehensive range of premium appliances
-                  </p>
-                </div>
-
-                {/* Categories Grid - Dark Card Style */}
-                <StaggeredChildren
-                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8"
-                  staggerDelay={100}
-                  duration={600}
-                  animation="fade-up"
-                  easing="gentle"
-                  once
-                >
-                  {categories.slice(0, 6).map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/category/${category.slug}`}
-                      className="group block"
-                    >
-                      <div className="relative bg-white dark:bg-[#141414] rounded-2xl overflow-hidden
-                                    border border-dark-200 dark:border-transparent
-                                    shadow-md dark:shadow-none
-                                    hover:shadow-xl hover-lift
-                                    hover:scale-[1.02]
-                                    transition-all duration-300">
-                        {/* Category Image */}
-                        <div className="aspect-[4/3] overflow-hidden bg-white dark:bg-dark-800 relative">
-                          {category.image ? (
-                            <img
-                              src={category.image}
-                              alt={category.name}
-                              className="w-full h-full object-contain bg-white dark:bg-dark-800 group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                e.currentTarget.style.display = 'none'
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-dark-50 dark:bg-dark-800">
-                              <span className="text-lg font-semibold text-dark-400 dark:text-dark-500 text-center px-4">{category.name}</span>
-                            </div>
-                          )}
-
-                          {/* Minimal overlay on hover */}
-                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-
-                        {/* Content - Minimal */}
-                        <div className="p-5">
-                          <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">
-                            {category.name}
-                          </h3>
-                          <p className="text-dark-500 dark:text-dark-400 text-sm">
-                            {category.products_count} Products
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </StaggeredChildren>
-
-                {/* View All Link */}
-                <div className="text-center mt-10">
-                  <Link
-                    to="/shop"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                             bg-primary-500 dark:bg-primary-600
-                             text-white
-                             font-semibold
-                             hover:bg-primary-600 dark:hover:bg-primary-700
-                             hover:shadow-lg hover:-translate-y-0.5
-                             transition-all duration-300"
-                  >
-                    View All Products
-                    <ArrowRightIcon className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
             SECTION 4: STATS SECTION - CLEAN PROFESSIONAL
             ========================================== */}
         {isSectionEnabled('stats') && (
@@ -733,22 +650,22 @@ export default function Home() {
                 </div>
               </AnimatedSection>
 
-              {/* Categories Detail - Split Screen Alternating */}
+              {/* Categories Detail - Split Screen Alternating (prioritize categories with videos) */}
               <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
-                {categories.slice(0, 4).map((category, index) => (
-                  <CategoryShowcase key={category.id} category={category} index={index} />
-                ))}
+                {[...categories]
+                  .sort((a, b) => {
+                    const aHasVideo = categoryVideos[a.slug] ? 1 : 0
+                    const bHasVideo = categoryVideos[b.slug] ? 1 : 0
+                    return bHasVideo - aHasVideo
+                  })
+                  .slice(0, 4)
+                  .map((category, index) => (
+                    <CategoryShowcase key={category.id} category={category} index={index} />
+                  ))}
               </div>
             </div>
           </section>
         )}
-
-        {/* ==========================================
-            KITCHEN LINE ART - Interactive Product Showcase
-            ========================================== */}
-        <AnimatedSection animation="fade-up" duration={1200} threshold={0.05} easing="gentle">
-          <KitchenLineArt />
-        </AnimatedSection>
 
         {/* ==========================================
             SECTION 7: WHY CHOOSE FISCHER - CLEAN 4-COLUMN
@@ -880,7 +797,7 @@ export default function Home() {
         />
 
         {/* ==========================================
-            FEATURED PRODUCTS - Elegant Animated Grid
+            FEATURED PRODUCTS - Carousel Showcase
             ========================================== */}
         {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
           <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
@@ -894,7 +811,7 @@ export default function Home() {
               <div className="container-xl relative">
                 {/* Section Header */}
                 <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
                                      bg-primary-500/20 text-primary-600 dark:text-primary-400
@@ -925,20 +842,74 @@ export default function Home() {
                   </div>
                 </AnimatedSection>
 
-                {/* Products Grid - Staggered Animation */}
-                <StaggeredChildren
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
-                  staggerDelay={80}
-                  duration={800}
-                  animation="fade-up"
-                  easing="gentle"
-                  once
-                >
-                  {data.featured_products.slice(0, 10).map((product) => (
+              </div>
+
+              {/* Products Carousel — full-bleed */}
+              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                <ProductCarousel speed={100} fadeClass="from-dark-100 dark:from-dark-950">
+                  {data.featured_products.slice(0, 12).map((product) => (
                     <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
                   ))}
-                </StaggeredChildren>
+                </ProductCarousel>
+              </AnimatedSection>
+            </section>
+          </AnimatedSection>
+        )}
+
+        {/* ==========================================
+            BEST SELLERS - Carousel Showcase
+            ========================================== */}
+        {data?.bestsellers && data.bestsellers.length > 0 && (
+          <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+            <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px]" />
+                <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-primary-500/6 rounded-full blur-[100px]" />
               </div>
+
+              <div className="container-xl relative">
+                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div>
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
+                                     bg-amber-100 dark:bg-amber-900/30
+                                     text-amber-600 dark:text-amber-400
+                                     text-sm font-semibold mb-4">
+                        <StarIcon className="w-4 h-4" />
+                        Customer Favorites
+                      </span>
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                        Best{' '}
+                        <span className="text-primary-600 dark:text-primary-400">Sellers</span>
+                      </h2>
+                      <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                        Top-rated appliances trusted by thousands of Pakistani homes
+                      </p>
+                    </div>
+                    <Link
+                      to="/shop?bestseller=1"
+                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
+                               bg-primary-500 dark:bg-primary-600
+                               text-white font-semibold text-sm sm:text-base
+                               hover:bg-primary-600 dark:hover:bg-primary-700
+                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
+                               active:scale-95 transition-all duration-300"
+                    >
+                      View All Best Sellers
+                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </AnimatedSection>
+
+              </div>
+
+              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
+                  {data.bestsellers.slice(0, 12).map((product) => (
+                    <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+                  ))}
+                </ProductCarousel>
+              </AnimatedSection>
             </section>
           </AnimatedSection>
         )}
@@ -1036,11 +1007,11 @@ export default function Home() {
         )}
 
         {/* ==========================================
-            NEW ARRIVALS - Elegant Animated Grid
+            NEW ARRIVALS - Carousel Showcase
             ========================================== */}
         {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
           <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
-            <section className="section bg-white dark:bg-dark-900 overflow-hidden">
+            <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
               <div className="container-xl">
                 <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -1075,25 +1046,21 @@ export default function Home() {
                   </div>
                 </AnimatedSection>
 
-                <StaggeredChildren
-                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
-                  staggerDelay={100}
-                  duration={800}
-                  animation="fade-up"
-                  easing="gentle"
-                  once
-                >
-                  {data.new_arrivals.slice(0, 5).map((product) => (
+              </div>
+
+              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                <ProductCarousel speed={110} direction="right" fadeClass="from-dark-50 dark:from-dark-950">
+                  {data.new_arrivals.slice(0, 12).map((product) => (
                     <ProductCard key={product.id} product={product} showNew onQuickView={setQuickViewProduct} />
                   ))}
-                </StaggeredChildren>
-              </div>
+                </ProductCarousel>
+              </AnimatedSection>
             </section>
           </AnimatedSection>
         )}
 
         {/* ==========================================
-            TESTIMONIALS - Elegant Animated Slider
+            TESTIMONIALS - Continuous Marquee Strip
             ========================================== */}
         {isSectionEnabled('testimonials') && testimonials.length > 0 && (
           <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
@@ -1121,100 +1088,77 @@ export default function Home() {
                     </p>
                   </div>
                 </AnimatedSection>
-
-                {/* Testimonials Slider */}
-                <div className="max-w-4xl mx-auto">
-                  <div className="relative">
-                    {testimonials.map((testimonial, index) => {
-                      const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-                      return (
-                        <div
-                          key={testimonial.name}
-                          className={`transition-opacity duration-500 ${
-                            index === activeTestimonial
-                              ? 'opacity-100'
-                              : 'opacity-0 absolute inset-0 pointer-events-none'
-                          }`}
-                        >
-                          <div className="bg-white dark:bg-dark-800 rounded-[2.5rem] p-10 md:p-14
-                                        shadow-2xl border border-dark-100 dark:border-dark-700">
-                            {/* Quote icon */}
-                            <div className="text-6xl text-primary-500/20 mb-6">"</div>
-
-                            {/* Content */}
-                            <p className="text-2xl md:text-3xl text-dark-700 dark:text-dark-200
-                                        leading-relaxed mb-10 font-light">
-                              {testimonial.content}
-                            </p>
-
-                            {/* Author */}
-                            <div className="flex items-center gap-6">
-                              {testimonial.image ? (
-                                <img
-                                  src={testimonial.image}
-                                  alt={testimonial.name}
-                                  width={64}
-                                  height={64}
-                                  className="w-16 h-16 rounded-2xl object-cover
-                                           ring-4 ring-primary-100 dark:ring-primary-900/30"
-                                  onError={(e) => {
-                                    e.currentTarget.style.display = 'none'
-                                    const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                                    if (fallback) fallback.classList.remove('hidden')
-                                  }}
-                                />
-                              ) : null}
-                              <div className={`w-16 h-16 rounded-2xl
-                                             bg-primary-100 dark:bg-primary-900/30
-                                             ${testimonial.image ? 'hidden' : 'flex'}
-                                             items-center justify-center`}>
-                                <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                                  {initials}
-                                </span>
-                              </div>
-                              <div>
-                                <p className="text-xl font-bold text-dark-900 dark:text-white">
-                                  {testimonial.name}
-                                </p>
-                                <p className="text-dark-500 dark:text-dark-400">
-                                  {testimonial.role}
-                                </p>
-                              </div>
-                              <div className="ml-auto flex gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <StarSolidIcon
-                                    key={i}
-                                    className={`w-6 h-6 ${
-                                      i < testimonial.rating
-                                        ? 'text-primary-500'
-                                        : 'text-dark-200 dark:text-dark-700'
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Navigation dots */}
-                  <div className="flex justify-center gap-3 mt-8">
-                    {testimonials.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setActiveTestimonial(index)}
-                        className={`h-3 rounded-full transition-all duration-300
-                                  ${index === activeTestimonial
-                                    ? 'w-10 bg-primary-500'
-                                    : 'w-3 bg-dark-300 dark:bg-dark-600 hover:bg-primary-300'}`}
-                        aria-label={`Go to testimonial ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
               </div>
+
+              {/* Full-bleed testimonial marquee */}
+              <ProductCarousel speed={70} gap={24} fixedCardWidth={400} fadeClass="from-dark-50 dark:from-dark-950">
+                {testimonials.map((testimonial) => {
+                  const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                  return (
+                    <div
+                      key={testimonial.name}
+                      className="bg-white dark:bg-dark-800 rounded-2xl p-6 sm:p-8
+                                shadow-lg border border-dark-100 dark:border-dark-700
+                                h-full"
+                    >
+                      {/* Stars */}
+                      <div className="flex gap-0.5 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <StarSolidIcon
+                            key={i}
+                            className={`w-5 h-5 ${
+                              i < testimonial.rating
+                                ? 'text-primary-500'
+                                : 'text-dark-200 dark:text-dark-700'
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Quote */}
+                      <p className="text-base sm:text-lg text-dark-700 dark:text-dark-200
+                                  leading-relaxed mb-6 line-clamp-4">
+                        "{testimonial.content}"
+                      </p>
+
+                      {/* Author */}
+                      <div className="flex items-center gap-3 mt-auto">
+                        {testimonial.image ? (
+                          <img
+                            src={testimonial.image}
+                            alt={testimonial.name}
+                            width={40}
+                            height={40}
+                            className="w-10 h-10 rounded-xl object-cover
+                                     ring-2 ring-primary-100 dark:ring-primary-900/30"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                              if (fallback) fallback.classList.remove('hidden')
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-10 h-10 rounded-xl
+                                       bg-primary-100 dark:bg-primary-900/30
+                                       ${testimonial.image ? 'hidden' : 'flex'}
+                                       items-center justify-center`}>
+                          <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
+                            {initials}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-dark-900 dark:text-white text-sm">
+                            {testimonial.name}
+                          </p>
+                          <p className="text-xs text-dark-500 dark:text-dark-400">
+                            {testimonial.role}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </ProductCarousel>
             </section>
           </AnimatedSection>
         )}
