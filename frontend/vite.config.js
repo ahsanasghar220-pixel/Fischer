@@ -72,19 +72,14 @@ export default defineConfig({
                 entryFileNames: 'assets/js/[name]-[hash].js',
                 assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
                 manualChunks: function (id) {
-                    // Critical path optimization - keep core small
                     if (id.includes('node_modules')) {
-                        // Core React libraries - highest priority
-                        if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                        // Shared React internals — must load with React
+                        if (id.includes('use-sync-external-store') || id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
                             return 'vendor-core';
                         }
-                        // Framer Motion - lazy load this
+                        // Framer Motion
                         if (id.includes('framer-motion')) {
                             return 'animations';
-                        }
-                        // Headless UI - used in header/modals
-                        if (id.includes('@headlessui')) {
-                            return 'ui-components';
                         }
                         // Icons - split by type for better caching
                         if (id.includes('@heroicons/react/24/outline')) {
@@ -93,19 +88,7 @@ export default defineConfig({
                         if (id.includes('@heroicons/react/24/solid')) {
                             return 'icons-solid';
                         }
-                        // Data fetching
-                        if (id.includes('@tanstack/react-query')) {
-                            return 'data-query';
-                        }
-                        // Toast
-                        if (id.includes('react-hot-toast')) {
-                            return 'toast';
-                        }
-                        // State management
-                        if (id.includes('zustand')) {
-                            return 'state';
-                        }
-                        // Other node_modules
+                        // Everything else in one chunk to avoid dependency split issues
                         return 'vendor-misc';
                     }
                 },
