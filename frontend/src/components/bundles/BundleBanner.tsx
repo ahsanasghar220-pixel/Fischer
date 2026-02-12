@@ -89,7 +89,7 @@ const BundleBanner = memo(function BundleBanner({
           {/* Image */}
           <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto">
             <img
-              src={bundle.featured_image || '/images/all-products.png'}
+              src={bundle.featured_image || '/images/all-products.webp'}
               alt={bundle.name}
               className="w-full h-full object-cover"
             />
@@ -174,7 +174,7 @@ const BundleBanner = memo(function BundleBanner({
           />
         ) : (
           <img
-            src={bundle.featured_image || '/images/all-products.png'}
+            src={bundle.featured_image || '/images/all-products.webp'}
             alt={bundle.name}
             className="w-full h-full object-cover"
           />

@@ -45,12 +45,25 @@ const staticPages = [
   { name: 'Find Dealer', href: '/find-dealer' },
 ]
 
+interface CategoryItem {
+  id: number
+  name: string
+  slug: string
+  parent_id: number | null
+  children?: CategoryItem[]
+  image?: string
+  products_count?: number
+  short_description?: string
+  description?: string
+}
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+  const [logoError, setLogoError] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -64,14 +77,15 @@ export default function Header() {
       const response = await api.get('/categories')
       return response.data.data
     },
+    staleTime: 5 * 60 * 1000,
   })
 
   // Transform categories for navigation
   const navigation = {
     categories: categoriesData
       ? categoriesData
-          .filter((cat: any) => !cat.parent_id)
-          .map((cat: any) => ({
+          .filter((cat: CategoryItem) => !cat.parent_id)
+          .map((cat: CategoryItem) => ({
             name: cat.name,
             href: `/category/${cat.slug}`,
             slug: cat.slug,
@@ -150,8 +164,8 @@ export default function Header() {
                 <span className="hidden md:inline text-dark-500 dark:text-dark-400">Free shipping on orders over PKR 10,000</span>
               </div>
               <div className="flex items-center gap-4">
-                <Link to="/track-order" className="text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                  Track Order
+                <Link to="/contact" className="text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                  Contact Us
                 </Link>
                 <Link to="/become-dealer" className="text-dark-600 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Become a Dealer
@@ -182,7 +196,7 @@ export default function Header() {
             {/* Center: Logo */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center flex-shrink-0">
               <AnimatedLogo
-                src="/images/logo-dark.png"
+                src="/images/logo-dark.webp"
                 alt="Fischer"
                 width={100}
                 height={40}
@@ -195,7 +209,7 @@ export default function Header() {
                 }`}
               />
               <AnimatedLogo
-                src="/images/logo-light.png"
+                src="/images/logo-light.webp"
                 alt="Fischer"
                 width={100}
                 height={40}
@@ -234,48 +248,42 @@ export default function Header() {
             <div className="flex items-center gap-4 lg:gap-6 flex-1">
               {/* Logo - LEFT side on desktop */}
               <Link to="/" className="flex-shrink-0 group">
-                {/* Dark logo - hidden on homepage hero and in dark mode */}
-                <AnimatedLogo
-                  src="/images/logo-dark.png"
-                  alt="Fischer"
-                  width={120}
-                  height={48}
-                  loading="eager"
-                  decoding="async"
-                  className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
-                    isHomePage && !isScrolled
-                      ? 'hidden'
-                      : 'dark:hidden'
-                  }`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    const span = document.createElement('span')
-                    span.className = 'text-2xl font-bold text-dark-900'
-                    span.textContent = 'FISCHER'
-                    e.currentTarget.parentElement?.appendChild(span)
-                  }}
-                />
-                {/* White logo - show on homepage hero OR in dark mode */}
-                <AnimatedLogo
-                  src="/images/logo-light.png"
-                  alt="Fischer"
-                  width={120}
-                  height={48}
-                  loading="eager"
-                  decoding="async"
-                  className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
-                    isHomePage && !isScrolled
-                      ? 'block'
-                      : 'hidden dark:block'
-                  }`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    const span = document.createElement('span')
-                    span.className = 'text-2xl font-bold text-white'
-                    span.textContent = 'FISCHER'
-                    e.currentTarget.parentElement?.appendChild(span)
-                  }}
-                />
+                {logoError ? (
+                  <span className="text-xl font-bold text-primary-600">Fischer</span>
+                ) : (
+                  <>
+                    {/* Dark logo - hidden on homepage hero and in dark mode */}
+                    <AnimatedLogo
+                      src="/images/logo-dark.webp"
+                      alt="Fischer"
+                      width={120}
+                      height={48}
+                      loading="eager"
+                      decoding="async"
+                      className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                        isHomePage && !isScrolled
+                          ? 'hidden'
+                          : 'dark:hidden'
+                      }`}
+                      onError={() => setLogoError(true)}
+                    />
+                    {/* White logo - show on homepage hero OR in dark mode */}
+                    <AnimatedLogo
+                      src="/images/logo-light.webp"
+                      alt="Fischer"
+                      width={120}
+                      height={48}
+                      loading="eager"
+                      decoding="async"
+                      className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
+                        isHomePage && !isScrolled
+                          ? 'block'
+                          : 'hidden dark:block'
+                      }`}
+                      onError={() => setLogoError(true)}
+                    />
+                  </>
+                )}
                 <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300" />
               </Link>
 
@@ -349,7 +357,7 @@ export default function Header() {
               >
                 <ShoppingCartIcon className="h-5 w-5" />
                 {cartItemsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs font-bold text-dark-900 bg-primary-500 rounded-full">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs font-bold text-white bg-primary-500 rounded-full">
                     {cartItemsCount > 99 ? '99+' : cartItemsCount}
                   </span>
                 )}

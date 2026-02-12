@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { Helmet } from 'react-helmet-async'
 import { motion, useInView } from 'framer-motion'
 import { getCategoryProductImage } from '@/lib/categoryImages'
 import {
@@ -399,6 +400,9 @@ export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
   const [introComplete, setIntroComplete] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [subscribing, setSubscribing] = useState(false)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -420,14 +424,29 @@ export default function Home() {
     }
 
     try {
-      console.log('Adding bundle to cart:', bundle.slug)
-      const result = await addBundleToCart.mutateAsync({ bundleSlug: bundle.slug })
-      console.log('Bundle added successfully:', result)
+      await addBundleToCart.mutateAsync({ bundleSlug: bundle.slug })
       toast.success(`${bundle.name} added to cart!`)
     } catch (err: any) {
-      console.error('Failed to add bundle to cart:', err)
       const errorMessage = err.response?.data?.message || err.message || 'Failed to add bundle to cart'
       toast.error(errorMessage)
+    }
+  }
+
+  // Handle newsletter subscription
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newsletterEmail || subscribing) return
+
+    setSubscribing(true)
+    try {
+      await api.post('/newsletter/subscribe', { email: newsletterEmail })
+      toast.success('Successfully subscribed to our newsletter!')
+      setNewsletterEmail('')
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || 'Failed to subscribe. Please try again.'
+      toast.error(errorMessage)
+    } finally {
+      setSubscribing(false)
     }
   }
 
@@ -471,6 +490,11 @@ export default function Home() {
 
   return (
     <>
+      <Helmet>
+        <title>Fischer Pakistan - Premium Home Appliances</title>
+        <meta name="description" content="Discover premium home appliances by Fischer Pakistan. Shop kitchen appliances, air fryers, geysers, and more." />
+      </Helmet>
+
       {/* Logo Split Intro Animation */}
       {!introComplete && (
         <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
@@ -491,8 +515,13 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
           </div>
 
+          {/* Video Error Fallback */}
+          {videoError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
+          )}
+
           {/* Video Background - zoomed out on mobile, cover on desktop */}
-          <video
+          {!videoError && <video
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
             } object-contain sm:object-cover object-center`}
@@ -507,12 +536,12 @@ export default function Home() {
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => {
-              console.error('Video failed to load')
+              setVideoError(true)
               setVideoLoaded(true)
             }}
           >
-            <source src="/videos/hero-video.mp4?v=2" type="video/mp4" />
-          </video>
+            <source src="/videos/hero-video.mp4?v=4" type="video/mp4" />
+          </video>}
 
           {/* Subtle overlay for visual depth */}
           <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
@@ -842,7 +871,7 @@ export default function Home() {
           title="Discover Fischer Premium Series"
           subtitle="New Collection"
           description="Experience the perfect blend of innovation and elegance in modern appliances"
-          image="/images/all-products.png"
+          image="/images/all-products.webp"
           imageAlt="Fischer Premium Appliances"
           ctaText="Explore Collection"
           ctaLink="/shop"
@@ -1210,7 +1239,7 @@ export default function Home() {
                       <div className="relative">
                         <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
                           <img
-                            src="/images/about-factory.jpg"
+                            src="/images/about-factory.webp"
                             alt="Fischer Factory - Manufacturing Facility"
                             width={600}
                             height={450}
@@ -1219,7 +1248,7 @@ export default function Home() {
                               const target = e.currentTarget
                               if (!target.dataset.fallback) {
                                 target.dataset.fallback = 'true'
-                                target.src = '/images/about-fischer.jpg'
+                                target.src = '/images/about-fischer.webp'
                               }
                             }}
                           />
@@ -1332,10 +1361,13 @@ export default function Home() {
                     Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.
                   </p>
 
-                  <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                  <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={handleNewsletterSubmit}>
                     <input
                       type="email"
                       placeholder="Enter your email address"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      required
                       className="flex-1 px-6 py-4 rounded-xl bg-white/10 border border-white/20
                                text-white placeholder:text-dark-400
                                focus:outline-none focus:border-primary-500
@@ -1343,10 +1375,12 @@ export default function Home() {
                     />
                     <button
                       type="submit"
+                      disabled={subscribing}
                       className="px-6 py-4 bg-primary-500 hover:bg-primary-600
-                               rounded-xl font-semibold text-white transition-colors"
+                               rounded-xl font-semibold text-white transition-colors
+                               disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Subscribe
+                      {subscribing ? 'Subscribing...' : 'Subscribe'}
                     </button>
                   </form>
 

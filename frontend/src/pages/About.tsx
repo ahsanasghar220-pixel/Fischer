@@ -5,7 +5,7 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/effect
 
 export default function About() {
   const milestones = [
-    { year: '1995', title: 'Company Founded', description: 'Fischer Pakistan established with a vision to provide quality home appliances' },
+    { year: '1990', title: 'Company Founded', description: 'Fischer Pakistan (Fatima Engineering Works) established with a vision to provide quality home appliances' },
     { year: '2000', title: 'First Factory', description: 'Opened our first manufacturing facility in Lahore' },
     { year: '2008', title: 'ISO Certification', description: 'Achieved ISO 9001:2008 certification for quality management' },
     { year: '2015', title: 'National Expansion', description: 'Expanded dealer network to all major cities in Pakistan' },
@@ -52,7 +52,7 @@ export default function About() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              For over 25 years, Fischer has been a trusted name in Pakistani households,
+              For over 35 years, Fischer has been a trusted name in Pakistani households,
               providing quality home appliances that make everyday life easier and more comfortable.
             </motion.p>
           </motion.div>
@@ -73,7 +73,7 @@ export default function About() {
                 <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-6">Our Story</h2>
                 <div className="space-y-4 text-dark-600 dark:text-dark-400">
                   <p>
-                    Founded in 1995, Fischer Pakistan started with a simple mission: to provide
+                    Founded in 1990, Fischer Pakistan (Fatima Engineering Works) started with a simple mission: to provide
                     high-quality, affordable home appliances to Pakistani families. What began
                     as a small operation has grown into one of the country's most trusted
                     appliance brands.
@@ -98,7 +98,7 @@ export default function About() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <motion.img
-                  src="/images/about-factory.jpg"
+                  src="/images/about-factory.webp"
                   alt="Fischer Factory"
                   width={600}
                   height={400}
@@ -116,7 +116,7 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
                 >
-                  <span className="text-4xl font-bold">25+</span>
+                  <span className="text-4xl font-bold">35+</span>
                   <span className="block text-sm">Years of Excellence</span>
                 </motion.div>
               </motion.div>

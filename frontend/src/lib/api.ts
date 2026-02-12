@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/authStore'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -34,8 +35,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout()
-      window.location.href = '/login'
+      const isAuthEndpoint = error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/register')
+      if (!isAuthEndpoint) {
+        useAuthStore.getState().logout()
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }
@@ -45,7 +49,7 @@ api.interceptors.response.use(
 export function getOrCreateSessionId(): string {
   let sessionId = localStorage.getItem('session_id')
   if (!sessionId) {
-    sessionId = 'sess_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
+    sessionId = 'sess_' + crypto.randomUUID()
     localStorage.setItem('session_id', sessionId)
   }
   return sessionId

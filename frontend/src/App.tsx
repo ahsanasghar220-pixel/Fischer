@@ -1,8 +1,58 @@
 import { Routes, Route } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, Component } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
 import Layout from './components/layout/Layout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import ScrollToTop from './components/utils/ScrollToTop'
+
+// Error Boundary component
+interface ErrorBoundaryProps {
+  children: ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-dark-50 dark:bg-dark-900">
+          <div className="text-center p-8 max-w-md">
+            <h1 className="text-2xl font-bold text-dark-900 dark:text-white mb-4">
+              Something went wrong
+            </h1>
+            <p className="text-dark-500 dark:text-dark-400 mb-6">
+              An unexpected error occurred. Please try reloading the page.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Reload
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
 
 // Fast page loader - shows immediately without animation delay
 const PageLoader = () => (
@@ -67,6 +117,7 @@ const AdminBundleForm = lazy(() => import('./pages/admin/BundleForm'))
 
 function App() {
   return (
+    <ErrorBoundary>
     <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
       <Routes>
@@ -137,9 +188,11 @@ function App() {
           <Route path="bundles/new" element={<AdminBundleForm />} />
           <Route path="bundles/:id" element={<AdminBundleForm />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </Suspense>
+    </ErrorBoundary>
   )
 }
 

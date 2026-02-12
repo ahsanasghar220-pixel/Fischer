@@ -229,6 +229,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
     Route::apiResource('products', App\Http\Controllers\Api\Admin\ProductController::class);
     Route::post('/products/{product}/images', [App\Http\Controllers\Api\Admin\ProductController::class, 'uploadImages']);
     Route::delete('/products/{product}/images/{image}', [App\Http\Controllers\Api\Admin\ProductController::class, 'deleteImage']);
+    Route::put('/products/{product}/images/{image}/primary', [App\Http\Controllers\Api\Admin\ProductController::class, 'setPrimaryImage']);
     Route::post('/products/import', [App\Http\Controllers\Api\Admin\ProductController::class, 'import']);
     Route::get('/products/export', [App\Http\Controllers\Api\Admin\ProductController::class, 'export']);
 

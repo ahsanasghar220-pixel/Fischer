@@ -160,10 +160,11 @@ class CartController extends Controller
     {
         $cart = $this->getCart($request);
 
-        if ($cart) {
-            $cart->removeCoupon();
+        if (!$cart) {
+            return $this->success(null, 'No cart found');
         }
 
+        $cart->removeCoupon();
         $cart->load(['items.product.images', 'items.productVariant.attributeValues.attribute']);
 
         return $this->success($this->formatCart($cart), 'Coupon removed');

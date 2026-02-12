@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
 
+const scrollKeyframes = `@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}`
+
 interface Client {
   id: number
   name: string
@@ -96,16 +101,7 @@ export default function NotableClients({ clients, speed = 'medium' }: NotableCli
       </div>
 
       {/* CSS Animation */}
-      <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{ __html: scrollKeyframes }} />
     </section>
   )
 }

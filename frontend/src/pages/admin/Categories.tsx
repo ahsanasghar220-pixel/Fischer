@@ -11,11 +11,19 @@ interface Category {
   name: string
   slug: string
   description?: string
+  features?: string[] | string | null
   image?: string
   parent_id?: number
   products_count: number
   is_active: boolean
   children?: Category[]
+}
+
+// Parse features from API (may be JSON string from raw DB query or array from Eloquent)
+const parseFeatures = (features: string[] | string | null | undefined): string[] => {
+  if (!features) return []
+  if (Array.isArray(features)) return features
+  try { return JSON.parse(features) } catch { return [] }
 }
 
 export default function AdminCategories() {
@@ -27,6 +35,7 @@ export default function AdminCategories() {
     name: '',
     slug: '',
     description: '',
+    features: '',
     parent_id: '',
     is_active: true,
   })
@@ -42,10 +51,16 @@ export default function AdminCategories() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      const payload = {
+        ...data,
+        features: data.features.trim()
+          ? data.features.split('\n').map(f => f.trim()).filter(Boolean)
+          : [],
+      }
       if (editingId) {
-        await api.put(`/admin/categories/${editingId}`, data)
+        await api.put(`/admin/categories/${editingId}`, payload)
       } else {
-        await api.post('/admin/categories', data)
+        await api.post('/admin/categories', payload)
       }
     },
     onSuccess: () => {
@@ -72,10 +87,12 @@ export default function AdminCategories() {
   })
 
   const handleEdit = (category: Category) => {
+    const featuresArr = parseFeatures(category.features)
     setFormData({
       name: category.name,
       slug: category.slug,
       description: category.description || '',
+      features: featuresArr.join('\n'),
       parent_id: category.parent_id?.toString() || '',
       is_active: category.is_active,
     })
@@ -89,7 +106,7 @@ export default function AdminCategories() {
   }
 
   const resetForm = () => {
-    setFormData({ name: '', slug: '', description: '', parent_id: '', is_active: true })
+    setFormData({ name: '', slug: '', description: '', features: '', parent_id: '', is_active: true })
     setEditingId(null)
     setShowForm(false)
   }
@@ -311,6 +328,22 @@ export default function AdminCategories() {
                 rows={3}
                 className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
+                Features
+                <span className="text-dark-400 dark:text-dark-500 font-normal ml-1">(one per line)</span>
+              </label>
+              <textarea
+                value={formData.features}
+                onChange={(e) => setFormData({ ...formData, features: e.target.value })}
+                rows={4}
+                placeholder={"e.g.\nPremium Quality\nEnergy Efficient\n1 Year Warranty"}
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">
+                These features are displayed on the category page. Enter one feature per line.
+              </p>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div>

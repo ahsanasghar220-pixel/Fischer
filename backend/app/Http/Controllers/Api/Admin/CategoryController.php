@@ -24,7 +24,7 @@ class CategoryController extends Controller
         // Fast raw query for parent categories
         $query = DB::table('categories')
             ->select([
-                'id', 'name', 'slug', 'description', 'image', 'icon',
+                'id', 'name', 'slug', 'description', 'features', 'image', 'icon',
                 'parent_id', 'sort_order', 'is_active', 'is_featured',
                 DB::raw('(SELECT COUNT(*) FROM products WHERE products.category_id = categories.id AND products.deleted_at IS NULL) as products_count'),
             ])
@@ -44,7 +44,7 @@ class CategoryController extends Controller
         if (!empty($parentIds)) {
             $children = DB::table('categories')
                 ->select([
-                    'id', 'name', 'slug', 'description', 'image', 'icon',
+                    'id', 'name', 'slug', 'description', 'features', 'image', 'icon',
                     'parent_id', 'sort_order', 'is_active', 'is_featured',
                     DB::raw('(SELECT COUNT(*) FROM products WHERE products.category_id = categories.id AND products.deleted_at IS NULL) as products_count'),
                 ])
@@ -86,6 +86,8 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'features' => 'nullable|array',
+            'features.*' => 'string|max:255',
             'image' => 'nullable|string|max:500',
             'icon' => 'nullable|string|max:100',
             'parent_id' => 'nullable|exists:categories,id',
@@ -118,6 +120,8 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
+            'features' => 'nullable|array',
+            'features.*' => 'string|max:255',
             'image' => 'nullable|string|max:500',
             'icon' => 'nullable|string|max:100',
             'parent_id' => 'nullable|exists:categories,id',

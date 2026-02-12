@@ -61,7 +61,7 @@ class HomeController extends Controller
                 'title' => $section->title,
                 'subtitle' => $section->subtitle,
                 'is_enabled' => $section->is_enabled,
-                'settings' => $section->settings,
+                'settings' => is_string($section->settings) ? json_decode($section->settings, true) : $section->settings,
             ]];
         });
 
@@ -261,8 +261,8 @@ class HomeController extends Controller
 
         // Get general settings
         $settings = [
-            'phone' => Setting::get('phone', '+92 321 1146642'),
-            'email' => Setting::get('email', 'fischer.few@gmail.com'),
+            'phone' => Setting::get('phone', '+92 XXX XXXXXXX'),
+            'email' => Setting::get('email', 'info@fischerpk.com'),
             'address' => Setting::get('address'),
             'whatsapp' => Setting::get('whatsapp_number'),
             'social_facebook' => Setting::get('facebook_url'),
@@ -339,8 +339,8 @@ class HomeController extends Controller
 
         // Settings
         $settings = [
-            'phone' => Setting::get('phone', '+92 321 1146642'),
-            'email' => Setting::get('email', 'fischer.few@gmail.com'),
+            'phone' => Setting::get('phone', '+92 XXX XXXXXXX'),
+            'email' => Setting::get('email', 'info@fischerpk.com'),
             'address' => Setting::get('address'),
             'social_facebook' => Setting::get('facebook_url'),
             'social_instagram' => Setting::get('instagram_url'),

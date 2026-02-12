@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface LogoSplitIntroProps {
@@ -52,11 +52,11 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
   }, [onComplete, skipOnRepeatVisit])
 
   // Handle skip
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     sessionStorage.setItem('fischer-intro-seen', 'true')
     setPhase('complete')
     setTimeout(onComplete, 200)
-  }
+  }, [onComplete])
 
   // Listen for keypress or click to skip
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
     const handleKeyPress = () => handleSkip()
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [shouldShow])
+  }, [shouldShow, handleSkip])
 
   if (!shouldShow) return null
 

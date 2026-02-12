@@ -90,12 +90,12 @@ export default function MobileMenuOverlay({
                 {/* Centered Logo */}
                 <Link to="/" onClick={onClose}>
                   <img
-                    src="/images/logo-dark.png"
+                    src="/images/logo-dark.webp"
                     alt="Fischer"
                     className="h-8 w-auto dark:hidden"
                   />
                   <img
-                    src="/images/logo-light.png"
+                    src="/images/logo-light.webp"
                     alt="Fischer"
                     className="h-8 w-auto hidden dark:block"
                   />

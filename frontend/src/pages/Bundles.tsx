@@ -221,7 +221,7 @@ export default function Bundles() {
                       className="flex items-center gap-6 p-4 bg-white dark:bg-dark-800 rounded-2xl border border-dark-100 dark:border-dark-700 hover:border-primary-500 hover:shadow-lg transition-all"
                     >
                       <img
-                        src={bundle.featured_image || '/images/all-products.png'}
+                        src={bundle.featured_image || '/images/all-products.webp'}
                         alt={bundle.name}
                         className="w-32 h-32 object-cover rounded-xl"
                       />

@@ -1,9 +1,51 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import http from 'http'
+
+// Custom proxy plugin to work around http-proxy incompatibility with Node 24
+function manualProxy() {
+  const BACKEND = { hostname: '127.0.0.1', port: 80 }
+  const PATH_PREFIX = '/fischer/backend/public'
+
+  return {
+    name: 'manual-proxy',
+    configureServer(server: any) {
+      server.middlewares.use((req: any, res: any, next: any) => {
+        if (!req.url?.startsWith('/api') && !req.url?.startsWith('/storage')) {
+          return next()
+        }
+
+        const proxyReq = http.request(
+          {
+            hostname: BACKEND.hostname,
+            port: BACKEND.port,
+            path: PATH_PREFIX + req.url,
+            method: req.method,
+            headers: { ...req.headers, host: BACKEND.hostname },
+          },
+          (proxyRes) => {
+            res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+            proxyRes.pipe(res)
+          }
+        )
+
+        proxyReq.on('error', (err) => {
+          console.error('Proxy error:', err.message)
+          if (!res.headersSent) {
+            res.writeHead(502)
+            res.end('Proxy error')
+          }
+        })
+
+        req.pipe(proxyReq)
+      })
+    },
+  }
+}
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), manualProxy()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -11,16 +53,6 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost/fischer/backend/public',
-        changeOrigin: true,
-      },
-      '/storage': {
-        target: 'http://localhost/fischer/backend/public',
-        changeOrigin: true,
-      },
-    },
   },
   build: {
     outDir: 'dist',

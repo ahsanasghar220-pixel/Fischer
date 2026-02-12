@@ -7,7 +7,10 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
 {
@@ -243,14 +246,25 @@ class ProductController extends Controller
 
         $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:5120',
         ]);
 
         $uploadedImages = [];
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('products', 'public');
+        foreach ($request->file('images') as $file) {
+            // Convert to WebP using Intervention Image
+            $filename = Str::uuid() . '.webp';
+            $directory = 'products';
+
+            // Ensure directory exists
+            Storage::disk('public')->makeDirectory($directory);
+
+            $manager = new ImageManager(new Driver());
+            $img = $manager->read($file->getPathname());
+            $encoded = $img->toWebp(85);
+            Storage::disk('public')->put($directory . '/' . $filename, (string) $encoded);
+
             $productImage = $product->images()->create([
-                'image' => '/storage/' . $path,
+                'image' => '/storage/' . $directory . '/' . $filename,
                 'is_primary' => $product->images()->count() === 0,
             ]);
             $uploadedImages[] = $productImage;
@@ -274,5 +288,19 @@ class ProductController extends Controller
         $image->delete();
 
         return $this->success(null, 'Image deleted successfully');
+    }
+
+    public function setPrimaryImage($productId, $imageId)
+    {
+        $product = Product::findOrFail($productId);
+        $image = $product->images()->findOrFail($imageId);
+
+        // Unset all other images as primary
+        $product->images()->update(['is_primary' => false]);
+
+        // Set the selected image as primary
+        $image->update(['is_primary' => true]);
+
+        return $this->success(null, 'Primary image updated successfully');
     }
 }

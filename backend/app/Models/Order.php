@@ -163,9 +163,13 @@ class Order extends Model
     {
         $prefix = 'FSC';
         $date = now()->format('Ymd');
-        $random = strtoupper(substr(uniqid(), -4));
 
-        return "{$prefix}-{$date}-{$random}";
+        do {
+            $random = strtoupper(bin2hex(random_bytes(4)));
+            $orderNumber = "{$prefix}-{$date}-{$random}";
+        } while (static::where('order_number', $orderNumber)->exists());
+
+        return $orderNumber;
     }
 
     public function updateStatus(string $status, ?string $notes = null, ?int $changedBy = null): void

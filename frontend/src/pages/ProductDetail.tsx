@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -13,6 +13,7 @@ import {
   StarIcon
 } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'
+import { Helmet } from 'react-helmet-async'
 import api from '@/lib/api'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -132,6 +133,18 @@ export default function ProductDetail() {
 
   const product = productData?.product
   const relatedProducts = productData?.related_products || []
+
+  // Reset selected image when navigating between products
+  useEffect(() => { setSelectedImage(0) }, [slug])
+
+  // Sync wishlist state with server
+  useEffect(() => {
+    if (isAuthenticated && product) {
+      api.post('/wishlist/check', { product_id: product.id })
+        .then(res => setIsInWishlist(res.data.data?.in_wishlist || false))
+        .catch(() => {})
+    }
+  }, [product?.id, isAuthenticated])
 
   const handleAddToCart = async () => {
     if (!product) return
@@ -255,6 +268,10 @@ export default function ProductDetail() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
+      <Helmet>
+        <title>{product.name} - Fischer Pakistan</title>
+        <meta name="description" content={product.short_description || product.description?.substring(0, 160) || ''} />
+      </Helmet>
       {/* Breadcrumb */}
       <div className="bg-dark-50 dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-4">
@@ -368,7 +385,7 @@ export default function ProductDetail() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <Link to={`/brand/${product.brand.slug}`} className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                  <Link to={`/shop?brand=${product.brand.slug}`} className="text-sm text-primary-600 dark:text-primary-400 hover:underline">
                     {product.brand.name}
                   </Link>
                 </motion.div>
@@ -777,15 +794,20 @@ export default function ProductDetail() {
                           >
                             No reviews yet. Be the first to review this product!
                           </motion.p>
-                          {isAuthenticated && (
-                            <motion.button
-                              className="btn btn-primary"
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              Write a Review
-                            </motion.button>
-                          )}
+                          <motion.button
+                            className="btn btn-primary"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => {
+                              if (!isAuthenticated) {
+                                setShowAuthModal(true)
+                                return
+                              }
+                              toast('Review submission coming soon!', { icon: '📝' })
+                            }}
+                          >
+                            Write a Review
+                          </motion.button>
                         </div>
                       )}
                     </motion.div>

@@ -14,6 +14,8 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes, HasSlug;
 
+    protected $hidden = ['deleted_at'];
+
     protected $fillable = [
         'parent_id',
         'name',
@@ -86,6 +88,7 @@ class Category extends Model
 
     public function getAllChildrenIds(): array
     {
+        $this->loadMissing('children.children.children');
         $ids = [$this->id];
 
         foreach ($this->children as $child) {

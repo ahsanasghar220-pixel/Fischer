@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrashIcon, MinusIcon, PlusIcon, ShoppingBagIcon, GiftIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useCartStore } from '@/stores/cartStore'
@@ -96,6 +97,7 @@ export default function Cart() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
+      <Helmet><title>Shopping Cart - Fischer Pakistan</title></Helmet>
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
@@ -251,7 +253,8 @@ export default function Cart() {
                               </motion.span>
                               <motion.button
                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
+                                disabled={item.quantity >= (item.product?.stock_quantity || 99)}
+                                className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                               >
@@ -525,7 +528,8 @@ interface BundleCartItemProps {
 
 function BundleCartItem({ item, index, onQuantityChange, onRemove }: BundleCartItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const bundle = item.bundle!
+  const bundle = item.bundle
+  if (!bundle) return null
 
   return (
     <motion.div

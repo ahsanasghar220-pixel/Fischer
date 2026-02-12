@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FunnelIcon, XMarkIcon, ChevronDownIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
@@ -8,6 +9,7 @@ import ProductCard from '@/components/products/ProductCard'
 import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 
 interface Product {
   id: number
@@ -67,6 +69,8 @@ export default function Shop() {
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
+
+  useBodyScrollLock(showFilters)
 
   const page = parseInt(searchParams.get('page') || '1')
   const sort = searchParams.get('sort') || 'latest'
@@ -219,6 +223,11 @@ export default function Shop() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
+      <Helmet>
+        <title>Shop - Fischer Pakistan</title>
+        <meta name="description" content="Browse our complete range of home appliances. Kitchen hoods, air fryers, geysers, room coolers and more." />
+      </Helmet>
+
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
@@ -605,21 +614,41 @@ export default function Shop() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    {Array.from({ length: productsData.meta.last_page }, (_, i) => i + 1).map((p) => (
-                      <motion.button
-                        key={p}
-                        onClick={() => updateFilter('page', p.toString())}
-                        className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-                          p === productsData.meta.current_page
-                            ? 'bg-primary-500 text-white'
-                            : 'bg-white dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
-                        }`}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {p}
-                      </motion.button>
-                    ))}
+                    {(() => {
+                      const currentPage = productsData.meta.current_page
+                      const lastPage = productsData.meta.last_page
+                      const pages: (number | string)[] = []
+
+                      if (lastPage <= 7) {
+                        for (let i = 1; i <= lastPage; i++) pages.push(i)
+                      } else {
+                        pages.push(1)
+                        if (currentPage > 3) pages.push('...')
+                        for (let i = Math.max(2, currentPage - 1); i <= Math.min(lastPage - 1, currentPage + 1); i++) {
+                          pages.push(i)
+                        }
+                        if (currentPage < lastPage - 2) pages.push('...')
+                        pages.push(lastPage)
+                      }
+
+                      return pages.map((page, idx) =>
+                        typeof page === 'string' ? (
+                          <span key={`ellipsis-${idx}`} className="px-3 py-2 text-dark-400">...</span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => updateFilter('page', page.toString())}
+                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                              currentPage === page
+                                ? 'bg-primary-600 text-white shadow-md'
+                                : 'text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-700'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      )
+                    })()}
                   </motion.div>
                 )}
               </>

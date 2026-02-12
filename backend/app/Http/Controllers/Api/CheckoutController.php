@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Coupon;
 use App\Models\ShippingZone;
 use App\Models\ShippingMethod;
+use App\Models\Setting;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,7 +77,7 @@ class CheckoutController extends Controller
         $user = auth('sanctum')->user();
         if ($loyaltyPoints > 0 && $user) {
             $maxPoints = min($loyaltyPoints, $user->loyalty_points);
-            $loyaltyDiscount = $maxPoints * 0.1; // 1 point = Rs. 0.10
+            $loyaltyDiscount = $maxPoints * 1; // 1 point = Rs. 1
             $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount); // Can't exceed order total
         }
 
@@ -186,7 +187,7 @@ class CheckoutController extends Controller
             $loyaltyDiscount = 0;
             if ($user && ($validated['loyalty_points'] ?? 0) > 0) {
                 $loyaltyPointsUsed = min($validated['loyalty_points'], $user->loyalty_points);
-                $loyaltyDiscount = $loyaltyPointsUsed * 0.1;
+                $loyaltyDiscount = $loyaltyPointsUsed * 1; // 1 point = Rs. 1
                 $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount);
             }
 
@@ -312,10 +313,10 @@ class CheckoutController extends Controller
                     'method' => 'bank_transfer',
                     'message' => 'Please transfer the amount to our bank account.',
                     'bank_details' => [
-                        'bank_name' => 'Bank Al-Habib',
-                        'account_title' => 'Fischer Pakistan',
-                        'account_number' => 'XXXX-XXXX-XXXX',
-                        'iban' => 'PKXXXXXXXXXXXX',
+                        'bank_name' => Setting::get('bank.bank_name', 'Contact us for bank details'),
+                        'account_title' => Setting::get('bank.account_title', 'Fischer Pakistan'),
+                        'account_number' => Setting::get('bank.account_number', ''),
+                        'iban' => Setting::get('bank.iban', ''),
                     ],
                 ];
 

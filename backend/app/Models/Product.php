@@ -15,6 +15,8 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes, HasSlug;
 
+    protected $hidden = ['deleted_at'];
+
     protected $fillable = [
         'category_id',
         'brand_id',
@@ -45,10 +47,6 @@ class Product extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'view_count',
-        'sales_count',
-        'average_rating',
-        'review_count',
     ];
 
     protected $casts = [
@@ -201,6 +199,9 @@ class Product extends Model
     public function getIsInStockAttribute(): bool
     {
         if ($this->has_variants) {
+            if ($this->relationLoaded('variants')) {
+                return $this->variants->where('is_active', true)->where('stock_quantity', '>', 0)->isNotEmpty();
+            }
             return $this->activeVariants()->where('stock_quantity', '>', 0)->exists();
         }
 

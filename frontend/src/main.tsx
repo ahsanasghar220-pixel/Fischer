@@ -8,6 +8,7 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import SmoothScroll from './components/utils/SmoothScroll'
 import CustomCursor from './components/ui/CustomCursor'
 import App from './App'
+import { useCartStore } from './stores/cartStore'
 import { trackPageLoad, preloadCriticalResources } from './lib/performance'
 import './index.css'
 
@@ -72,3 +73,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </React.StrictMode>,
 )
+
+// Initialize cart on app load
+useCartStore.getState().fetchCart()

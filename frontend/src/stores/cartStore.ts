@@ -58,7 +58,6 @@ interface CartState {
   items: CartItem[]
   subtotal: number
   discount: number
-  coupon_code: string | null
   couponCode: string | null
   total: number
   items_count: number
@@ -78,7 +77,6 @@ export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   subtotal: 0,
   discount: 0,
-  coupon_code: null,
   couponCode: null,
   total: 0,
   items_count: 0,
@@ -95,7 +93,6 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: data.items || [],
         subtotal: data.subtotal || 0,
         discount: data.discount || 0,
-        coupon_code: data.coupon_code,
         couponCode: data.coupon_code,
         total: data.total || 0,
         items_count: data.items_count || 0,
@@ -121,7 +118,6 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: data.items || [],
         subtotal: data.subtotal || 0,
         discount: data.discount || 0,
-        coupon_code: data.coupon_code,
         couponCode: data.coupon_code,
         total: data.total || 0,
         items_count: data.items_count || 0,
@@ -182,7 +178,6 @@ export const useCartStore = create<CartState>((set, get) => ({
         items: [],
         subtotal: 0,
         discount: 0,
-        coupon_code: null,
         couponCode: null,
         total: 0,
         items_count: 0,
@@ -198,7 +193,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       const data = response.data.data
       set({
         discount: data.discount || 0,
-        coupon_code: data.coupon_code,
         couponCode: data.coupon_code,
         total: data.total || get().subtotal,
       })
@@ -217,7 +211,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       const data = response.data.data
       set({
         discount: 0,
-        coupon_code: null,
         couponCode: null,
         total: data.total || get().subtotal,
       })

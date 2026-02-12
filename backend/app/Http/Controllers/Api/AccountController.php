@@ -14,7 +14,7 @@ class AccountController extends Controller
         $stats = [
             'total_orders' => $user->orders()->count(),
             'pending_orders' => $user->orders()->where('status', 'pending')->count(),
-            'wishlist_count' => $user->wishlistItems()->count(),
+            'wishlist_count' => $user->wishlist()->count(),
             'loyalty_points' => $user->loyalty_points,
         ];
 

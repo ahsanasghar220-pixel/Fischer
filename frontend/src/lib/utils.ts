@@ -1,9 +1,3 @@
-import { clsx, type ClassValue } from 'clsx'
-
-export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
-}
-
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat('en-PK', {
     style: 'currency',
@@ -21,111 +15,18 @@ export function formatDate(date: string | Date): string {
   }).format(new Date(date))
 }
 
-export function formatDateTime(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-PK', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-  }).format(new Date(date))
-}
-
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
-
-export function truncate(text: string, length: number): string {
-  if (text.length <= length) return text
-  return text.substring(0, length) + '...'
-}
-
 /**
  * Format description text by converting \n (literal or actual) to proper line breaks
  * Returns an array of strings split by newlines, filtering out empty lines
  */
 export function formatDescription(text: string): string[] {
   if (!text) return []
-  // Replace literal \n or \\n with actual newlines, then split
   return text
-    .replace(/\\n/g, '\n')  // Replace literal \n with actual newline
-    .replace(/\r\n/g, '\n') // Normalize Windows line endings
+    .replace(/\\n/g, '\n')
+    .replace(/\r\n/g, '\n')
     .split('\n')
     .map(line => line.trim())
     .filter(line => line.length > 0)
-}
-
-export function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase()
-    .substring(0, 2)
-}
-
-export function pluralize(count: number, singular: string, plural?: string): string {
-  return count === 1 ? singular : (plural || singular + 's')
-}
-
-export function generateSessionId(): string {
-  return 'sess_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
-}
-
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout>
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => func(...args), wait)
-  }
-}
-
-interface ThrottledFunction<T extends (...args: never[]) => void> {
-  (...args: Parameters<T>): void
-  cancel: () => void
-}
-
-export function throttle<T extends (...args: never[]) => void>(
-  func: T,
-  limit: number
-): ThrottledFunction<T> {
-  let inThrottle = false
-  let lastArgs: Parameters<T> | null = null
-  let timeoutId: ReturnType<typeof setTimeout> | null = null
-
-  const throttled = ((...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args)
-      inThrottle = true
-      timeoutId = setTimeout(() => {
-        inThrottle = false
-        if (lastArgs) {
-          throttled(...lastArgs)
-          lastArgs = null
-        }
-      }, limit)
-    } else {
-      lastArgs = args
-    }
-  }) as ThrottledFunction<T>
-
-  throttled.cancel = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-      timeoutId = null
-    }
-    inThrottle = false
-    lastArgs = null
-  }
-
-  return throttled
 }
 
 export function getOrderStatusColor(status: string): string {

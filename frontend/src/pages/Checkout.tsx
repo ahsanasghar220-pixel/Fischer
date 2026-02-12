@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDownIcon, CheckCircleIcon, TruckIcon, CreditCardIcon } from '@heroicons/react/24/outline'
+import { Helmet } from 'react-helmet-async'
 import api from '@/lib/api'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -63,9 +64,15 @@ const paymentMethods = [
 ]
 
 const pakistanCities = [
-  'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
-  'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala', 'Hyderabad', 'Abbottabad',
-  'Bahawalpur', 'Sargodha', 'Sukkur', 'Mardan', 'Sahiwal', 'Sheikhupura'
+  'Abbottabad', 'Bahawalnagar', 'Bahawalpur', 'Bannu', 'Burewala', 'Chakwal',
+  'Chiniot', 'Dadu', 'Dera Ghazi Khan', 'Dera Ismail Khan', 'Faisalabad',
+  'Gojra', 'Gujranwala', 'Gujrat', 'Hafizabad', 'Hyderabad', 'Islamabad',
+  'Jacobabad', 'Jhang', 'Jhelum', 'Kamoke', 'Karachi', 'Kasur', 'Khairpur',
+  'Khanewal', 'Kohat', 'Lahore', 'Larkana', 'Mandi Bahauddin', 'Mardan',
+  'Mingora', 'Mirpur Khas', 'Multan', 'Muridke', 'Muzaffargarh', 'Nawabshah',
+  'Okara', 'Peshawar', 'Quetta', 'Rahim Yar Khan', 'Rawalpindi', 'Sadiqabad',
+  'Sahiwal', 'Sargodha', 'Sheikhupura', 'Shikarpur', 'Sialkot', 'Sukkur',
+  'Swabi', 'Tando Adam', 'Taxila', 'Vehari', 'Wah Cantonment'
 ]
 
 export default function Checkout() {
@@ -125,11 +132,12 @@ export default function Checkout() {
       const response = await api.post('/checkout/place-order', {
         ...data,
         shipping_email: data.email,
-        items: items.filter(item => item.product).map(item => ({
-          product_id: item.product!.id,
-          variant_id: item.variant?.id,
-          quantity: item.quantity,
-        })),
+        items: items.filter(item => item.product || item.bundle).map(item => {
+          if (item.bundle) {
+            return { bundle_id: item.bundle.id, quantity: item.quantity, price: item.unit_price }
+          }
+          return { product_id: item.product!.id, variant_id: item.variant?.id, quantity: item.quantity }
+        }),
         coupon_code: couponCode,
       })
       return response.data
@@ -138,7 +146,8 @@ export default function Checkout() {
       if (data.data?.payment?.redirect_url) {
         window.location.href = data.data.payment.redirect_url
       } else {
-        navigate(`/order-success/${data.data?.order?.order_number}`)
+        const orderNum = data.data?.order?.order_number
+        navigate(`/order-success/${orderNum}`)
       }
     },
     onError: (error: Error & { response?: { data?: { message?: string } } }) => {
@@ -289,6 +298,7 @@ export default function Checkout() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
+      <Helmet><title>Checkout - Fischer Pakistan</title></Helmet>
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
@@ -466,6 +476,8 @@ export default function Checkout() {
                         value={form.shipping_phone}
                         onChange={handleInputChange}
                         placeholder="03XX-XXXXXXX"
+                        pattern="^03[0-9]{2}[0-9]{7}$"
+                        title="Please enter a valid Pakistani phone number (e.g., 03001234567)"
                         className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       />

@@ -37,7 +37,7 @@ const BundleCard = memo(function BundleCard({
 
     // Fallback 3: Default placeholder
     if (!imageUrl) {
-      return '/images/all-products.png'
+      return '/images/all-products.webp'
     }
 
     // Ensure absolute path - already has leading slash from backend
@@ -82,7 +82,7 @@ const BundleCard = memo(function BundleCard({
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
               const target = e.currentTarget
-              const fallbackUrl = '/images/all-products.png'
+              const fallbackUrl = '/images/all-products.webp'
               // Prevent infinite loop - only set fallback once
               if (!target.src.includes('all-products.png')) {
                 target.src = fallbackUrl

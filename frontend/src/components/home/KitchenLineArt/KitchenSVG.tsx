@@ -244,6 +244,269 @@ const CSSKeyframes = () => (
   `}</style>
 )
 
+interface HotspotItemProps {
+  hotspot: ProductHotspot
+  index: number
+  mouseXSpring: any
+  mouseYSpring: any
+  activeProductId: string | null
+  hoveredHotspot: string | null
+  setHoveredHotspot: (id: string | null) => void
+  onProductClick: (productId: string, event: React.MouseEvent) => void
+}
+
+function HotspotItem({
+  hotspot,
+  index,
+  mouseXSpring,
+  mouseYSpring,
+  activeProductId,
+  hoveredHotspot,
+  setHoveredHotspot,
+  onProductClick,
+}: HotspotItemProps) {
+  const isActive = activeProductId === hotspot.id
+  const isHovered = hoveredHotspot === hotspot.id
+
+  // Calculate distance from mouse to hotspot for magnetic effect
+  const distanceX = useTransform(mouseXSpring, (x: number) => x - hotspot.cx)
+  const distanceY = useTransform(mouseYSpring, (y: number) => y - hotspot.cy)
+  const distance = useTransform([distanceX, distanceY], ([x, y]: number[]) => Math.sqrt(x * x + y * y))
+
+  // Magnetic pull - hotspot moves slightly toward cursor when nearby
+  const magnetX = useTransform(distance, [0, 100], [0, 0], {
+    clamp: false,
+    ease: (_t: number) => {
+      const dist = distance.get()
+      if (dist > 100) return 0
+      return (distanceX.get() / dist) * (1 - dist / 100) * 8
+    }
+  })
+  const magnetY = useTransform(distance, [0, 100], [0, 0], {
+    clamp: false,
+    ease: (_t: number) => {
+      const dist = distance.get()
+      if (dist > 100) return 0
+      return (distanceY.get() / dist) * (1 - dist / 100) * 8
+    }
+  })
+
+  return (
+    <motion.g
+      key={hotspot.id}
+      className="cursor-pointer"
+      onClick={(e) => onProductClick(hotspot.id, e)}
+      onMouseEnter={() => setHoveredHotspot(hotspot.id)}
+      onMouseLeave={() => setHoveredHotspot(null)}
+      style={{ x: magnetX, y: magnetY }}
+    >
+      {/* INTENSE pulsing glow around active hotspots */}
+      <motion.circle
+        cx={hotspot.cx}
+        cy={hotspot.cy}
+        r="35"
+        className="fill-primary-400/20"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: index * 0.2
+        }}
+        style={{ filter: 'url(#glowIntense)' }}
+      />
+      <motion.circle
+        cx={hotspot.cx}
+        cy={hotspot.cy}
+        r="28"
+        className="fill-primary-500/30"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.4, 0.7, 0.4],
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: index * 0.2 + 0.2
+        }}
+        style={{ filter: 'url(#glowIntense)' }}
+      />
+
+      {/* Outer pulse rings - multiple for depth */}
+      <motion.circle
+        cx={hotspot.cx}
+        cy={hotspot.cy}
+        r="20"
+        className="fill-transparent stroke-primary-500"
+        strokeWidth="2"
+        initial={{ scale: 1, opacity: 0 }}
+        animate={{
+          scale: [1, 1.8, 1],
+          opacity: [0.6, 0, 0.6],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: 'easeOut',
+          delay: index * 0.2
+        }}
+      />
+      <motion.circle
+        cx={hotspot.cx}
+        cy={hotspot.cy}
+        r="20"
+        className="fill-transparent stroke-primary-400"
+        strokeWidth="1.5"
+        initial={{ scale: 1, opacity: 0 }}
+        animate={{
+          scale: [1, 1.5, 1],
+          opacity: [0.5, 0, 0.5],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: 'easeOut',
+          delay: index * 0.2 + 0.3
+        }}
+      />
+
+      {/* Glow ring on hover */}
+      {isHovered && (
+        <motion.circle
+          cx={hotspot.cx}
+          cy={hotspot.cy}
+          r="25"
+          className="fill-transparent stroke-primary-400"
+          strokeWidth="3"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{
+            scale: 1.2,
+            opacity: [0.4, 0],
+          }}
+          transition={{
+            duration: 0.8,
+            repeat: Infinity,
+            ease: 'easeOut'
+          }}
+          style={{ filter: 'url(#glow)' }}
+        />
+      )}
+
+      {/* Floating animation for hotspot */}
+      <motion.g
+        animate={{
+          y: [0, -5, 0],
+        }}
+        transition={{
+          duration: 2 + (index * 0.2),
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: index * 0.15
+        }}
+      >
+        {/* Inner circle with magnetic effect */}
+        <motion.circle
+          cx={hotspot.cx}
+          cy={hotspot.cy}
+          r="12"
+          className={`transition-colors duration-300 ${
+            isActive
+              ? 'fill-primary-500 stroke-primary-600'
+              : 'fill-primary-400/80 stroke-primary-500 hover:fill-primary-500'
+          }`}
+          strokeWidth="2"
+          whileHover={{
+            scale: 1.3,
+            rotate: 180,
+            transition: { type: 'spring', stiffness: 300, damping: 15 }
+          }}
+          whileTap={{
+            scale: 0.9,
+            rotate: -90
+          }}
+          style={{ filter: isHovered ? 'url(#glow)' : 'none' }}
+        />
+
+        {/* Plus icon with rotation on hover */}
+        <g className="pointer-events-none">
+          <motion.line
+            x1={hotspot.cx - 5}
+            y1={hotspot.cy}
+            x2={hotspot.cx + 5}
+            y2={hotspot.cy}
+            className="stroke-white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            animate={isHovered ? { scaleX: [1, 1.3, 1] } : {}}
+            transition={{ duration: 0.5 }}
+          />
+          <motion.line
+            x1={hotspot.cx}
+            y1={hotspot.cy - 5}
+            x2={hotspot.cx}
+            y2={hotspot.cy + 5}
+            className="stroke-white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            animate={isHovered ? { scaleY: [1, 1.3, 1] } : {}}
+            transition={{ duration: 0.5 }}
+          />
+        </g>
+      </motion.g>
+
+      {/* Ripple effect on click */}
+      {isActive && (
+        <motion.circle
+          cx={hotspot.cx}
+          cy={hotspot.cy}
+          r="15"
+          className="fill-transparent stroke-primary-500"
+          strokeWidth="3"
+          initial={{ scale: 1, opacity: 0.8 }}
+          animate={{
+            scale: 2,
+            opacity: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: 'easeOut'
+          }}
+        />
+      )}
+
+      {/* Label on hover with animation */}
+      <motion.g
+        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+        animate={isHovered ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 10, scale: 0.9 }}
+        className="pointer-events-none"
+        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      >
+        <motion.rect
+          x={hotspot.cx - 50}
+          y={hotspot.cy + 25}
+          width="100"
+          height="24"
+          rx="4"
+          className="fill-dark-900 dark:fill-dark-700"
+          style={{ filter: 'url(#glow)' }}
+        />
+        <text
+          x={hotspot.cx}
+          y={hotspot.cy + 42}
+          textAnchor="middle"
+          className="fill-white text-xs font-medium"
+        >
+          {hotspot.label}
+        </text>
+      </motion.g>
+    </motion.g>
+  )
+}
+
 function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
   const [hoveredHotspot, setHoveredHotspot] = useState<string | null>(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
@@ -1263,248 +1526,19 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
       </motion.g>
 
       {/* Product Hotspots with PULSING GLOW and enhanced animations */}
-      {productHotspots.map((hotspot, index) => {
-        const isActive = activeProductId === hotspot.id
-        const isHovered = hoveredHotspot === hotspot.id
-
-        // Calculate distance from mouse to hotspot for magnetic effect
-        const distanceX = useTransform(mouseXSpring, (x) => x - hotspot.cx)
-        const distanceY = useTransform(mouseYSpring, (y) => y - hotspot.cy)
-        const distance = useTransform([distanceX, distanceY], ([x, y]: number[]) => Math.sqrt(x * x + y * y))
-
-        // Magnetic pull - hotspot moves slightly toward cursor when nearby
-        const magnetX = useTransform(distance, [0, 100], [0, 0], {
-          clamp: false,
-          ease: (_t: number) => {
-            const dist = distance.get()
-            if (dist > 100) return 0
-            return (distanceX.get() / dist) * (1 - dist / 100) * 8
-          }
-        })
-        const magnetY = useTransform(distance, [0, 100], [0, 0], {
-          clamp: false,
-          ease: (_t: number) => {
-            const dist = distance.get()
-            if (dist > 100) return 0
-            return (distanceY.get() / dist) * (1 - dist / 100) * 8
-          }
-        })
-
-        return (
-          <motion.g
-            key={hotspot.id}
-            className="cursor-pointer"
-            onClick={(e) => onProductClick(hotspot.id, e)}
-            onMouseEnter={() => setHoveredHotspot(hotspot.id)}
-            onMouseLeave={() => setHoveredHotspot(null)}
-            style={{ x: magnetX, y: magnetY }}
-          >
-            {/* INTENSE pulsing glow around active hotspots */}
-            <motion.circle
-              cx={hotspot.cx}
-              cy={hotspot.cy}
-              r="35"
-              className="fill-primary-400/20"
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: index * 0.2
-              }}
-              style={{ filter: 'url(#glowIntense)' }}
-            />
-            <motion.circle
-              cx={hotspot.cx}
-              cy={hotspot.cy}
-              r="28"
-              className="fill-primary-500/30"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.4, 0.7, 0.4],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: index * 0.2 + 0.2
-              }}
-              style={{ filter: 'url(#glowIntense)' }}
-            />
-
-            {/* Outer pulse rings - multiple for depth */}
-            <motion.circle
-              cx={hotspot.cx}
-              cy={hotspot.cy}
-              r="20"
-              className="fill-transparent stroke-primary-500"
-              strokeWidth="2"
-              initial={{ scale: 1, opacity: 0 }}
-              animate={{
-                scale: [1, 1.8, 1],
-                opacity: [0.6, 0, 0.6],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: 'easeOut',
-                delay: index * 0.2
-              }}
-            />
-            <motion.circle
-              cx={hotspot.cx}
-              cy={hotspot.cy}
-              r="20"
-              className="fill-transparent stroke-primary-400"
-              strokeWidth="1.5"
-              initial={{ scale: 1, opacity: 0 }}
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.5, 0, 0.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeOut',
-                delay: index * 0.2 + 0.3
-              }}
-            />
-
-            {/* Glow ring on hover */}
-            {isHovered && (
-              <motion.circle
-                cx={hotspot.cx}
-                cy={hotspot.cy}
-                r="25"
-                className="fill-transparent stroke-primary-400"
-                strokeWidth="3"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{
-                  scale: 1.2,
-                  opacity: [0.4, 0],
-                }}
-                transition={{
-                  duration: 0.8,
-                  repeat: Infinity,
-                  ease: 'easeOut'
-                }}
-                style={{ filter: 'url(#glow)' }}
-              />
-            )}
-
-            {/* Floating animation for hotspot */}
-            <motion.g
-              animate={{
-                y: [0, -5, 0],
-              }}
-              transition={{
-                duration: 2 + (index * 0.2),
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: index * 0.15
-              }}
-            >
-              {/* Inner circle with magnetic effect */}
-              <motion.circle
-                cx={hotspot.cx}
-                cy={hotspot.cy}
-                r="12"
-                className={`transition-colors duration-300 ${
-                  isActive
-                    ? 'fill-primary-500 stroke-primary-600'
-                    : 'fill-primary-400/80 stroke-primary-500 hover:fill-primary-500'
-                }`}
-                strokeWidth="2"
-                whileHover={{
-                  scale: 1.3,
-                  rotate: 180,
-                  transition: { type: 'spring', stiffness: 300, damping: 15 }
-                }}
-                whileTap={{
-                  scale: 0.9,
-                  rotate: -90
-                }}
-                style={{ filter: isHovered ? 'url(#glow)' : 'none' }}
-              />
-
-              {/* Plus icon with rotation on hover */}
-              <g className="pointer-events-none">
-                <motion.line
-                  x1={hotspot.cx - 5}
-                  y1={hotspot.cy}
-                  x2={hotspot.cx + 5}
-                  y2={hotspot.cy}
-                  className="stroke-white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  animate={isHovered ? { scaleX: [1, 1.3, 1] } : {}}
-                  transition={{ duration: 0.5 }}
-                />
-                <motion.line
-                  x1={hotspot.cx}
-                  y1={hotspot.cy - 5}
-                  x2={hotspot.cx}
-                  y2={hotspot.cy + 5}
-                  className="stroke-white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  animate={isHovered ? { scaleY: [1, 1.3, 1] } : {}}
-                  transition={{ duration: 0.5 }}
-                />
-              </g>
-            </motion.g>
-
-            {/* Ripple effect on click */}
-            {isActive && (
-              <motion.circle
-                cx={hotspot.cx}
-                cy={hotspot.cy}
-                r="15"
-                className="fill-transparent stroke-primary-500"
-                strokeWidth="3"
-                initial={{ scale: 1, opacity: 0.8 }}
-                animate={{
-                  scale: 2,
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 0.6,
-                  ease: 'easeOut'
-                }}
-              />
-            )}
-
-            {/* Label on hover with animation */}
-            <motion.g
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={isHovered ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 10, scale: 0.9 }}
-              className="pointer-events-none"
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            >
-              <motion.rect
-                x={hotspot.cx - 50}
-                y={hotspot.cy + 25}
-                width="100"
-                height="24"
-                rx="4"
-                className="fill-dark-900 dark:fill-dark-700"
-                style={{ filter: 'url(#glow)' }}
-              />
-              <text
-                x={hotspot.cx}
-                y={hotspot.cy + 42}
-                textAnchor="middle"
-                className="fill-white text-xs font-medium"
-              >
-                {hotspot.label}
-              </text>
-            </motion.g>
-          </motion.g>
-        )
-      })}
+      {productHotspots.map((hotspot, index) => (
+        <HotspotItem
+          key={hotspot.id}
+          hotspot={hotspot}
+          index={index}
+          mouseXSpring={mouseXSpring}
+          mouseYSpring={mouseYSpring}
+          activeProductId={activeProductId}
+          hoveredHotspot={hoveredHotspot}
+          setHoveredHotspot={setHoveredHotspot}
+          onProductClick={onProductClick}
+        />
+      ))}
 
       {/* Sparkle particles throughout the kitchen - REDUCED from 9 to 5 */}
       <g>

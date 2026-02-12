@@ -26,6 +26,9 @@ class ProductController extends Controller
             if ($category) {
                 $categoryIds = $category->getAllChildrenIds();
                 $query->whereIn('category_id', $categoryIds);
+            } else {
+                // Invalid category slug - return empty results
+                $query->whereRaw('1 = 0');
             }
         }
 

@@ -1,6 +1,6 @@
 import { XMarkIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // CSS animations for smooth, GPU-accelerated effects
 const popupAnimationStyles = `
@@ -64,7 +64,14 @@ export default function ProductPopup({
   const [imageLoaded, setImageLoaded] = useState(false)
 
   // Detect small screen for bottom-anchored mode
-  const isSmallScreen = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 480, [])
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    typeof window !== 'undefined' && window.innerWidth < 480
+  )
+  useEffect(() => {
+    const handler = () => setIsSmallScreen(window.innerWidth < 480)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
 
   // Trigger entrance animation
   useEffect(() => {

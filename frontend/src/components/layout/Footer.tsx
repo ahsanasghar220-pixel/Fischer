@@ -15,8 +15,8 @@ const footerNavigation = {
   support: [
     { name: 'Contact Us', href: '/contact' },
     { name: 'Service Request', href: '/service-request' },
-    { name: 'Track Order', href: '/track-order' },
-    { name: 'Track Service', href: '/track-service' },
+    { name: 'Track Order', href: '/contact' },
+    { name: 'Track Service', href: '/service-request' },
     { name: 'FAQs', href: '/page/faqs' },
   ],
   company: [
@@ -114,14 +114,14 @@ export default function Footer() {
             <div className="col-span-1 sm:col-span-2">
               <Link to="/" className="inline-block">
                 <img
-                  src="/images/logo-dark.png"
+                  src="/images/logo-dark.webp"
                   alt="Fischer"
                   width={120}
                   height={48}
                   className="h-12 w-auto dark:hidden"
                 />
                 <img
-                  src="/images/logo-light.png"
+                  src="/images/logo-light.webp"
                   alt="Fischer"
                   width={120}
                   height={48}

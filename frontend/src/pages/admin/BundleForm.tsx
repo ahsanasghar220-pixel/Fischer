@@ -285,7 +285,6 @@ export default function BundleForm() {
       // Reset file input
       e.target.value = ''
     } catch (error: any) {
-      console.error('Image upload failed:', error)
       const message = error.response?.data?.message || 'Failed to upload images'
       toast.error(message)
       // Reset file input even on error

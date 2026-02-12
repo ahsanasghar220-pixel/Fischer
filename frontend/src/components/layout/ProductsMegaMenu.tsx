@@ -89,8 +89,8 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
           ...prev,
           [hoveredCategory]: response.data.data.slice(0, 4)
         }))
-      } catch (error) {
-        console.error('Failed to fetch category products:', error)
+      } catch {
+        // Silently fail - mega menu products are non-critical
       } finally {
         setLoadingProducts(false)
       }
