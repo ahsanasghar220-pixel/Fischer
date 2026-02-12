@@ -84,7 +84,7 @@ const BundleCard = memo(function BundleCard({
               const target = e.currentTarget
               const fallbackUrl = '/images/all-products.webp'
               // Prevent infinite loop - only set fallback once
-              if (!target.src.includes('all-products.png')) {
+              if (!target.src.includes('all-products.webp')) {
                 target.src = fallbackUrl
               }
             }}

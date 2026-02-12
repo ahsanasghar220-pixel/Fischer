@@ -1576,7 +1576,7 @@ export default function HomePageSettings() {
                     value={bannerForm.image || ''}
                     onChange={(e) => setBannerForm({ ...bannerForm, image: e.target.value })}
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    placeholder="/images/banner.jpg"
+                    placeholder="/images/banner.webp"
                     required
                   />
                 </div>
@@ -1698,7 +1698,7 @@ export default function HomePageSettings() {
                     value={testimonialForm.image || ''}
                     onChange={(e) => setTestimonialForm({ ...testimonialForm, image: e.target.value })}
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                    placeholder="https://example.com/avatar.jpg"
+                    placeholder="https://example.com/avatar.webp"
                   />
                 </div>
                 <div>

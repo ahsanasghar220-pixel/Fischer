@@ -253,7 +253,7 @@ export default function AdminSettings() {
                     type="text"
                     value={generalSettings.logo_url}
                     onChange={(e) => setGeneralSettings({ ...generalSettings, logo_url: e.target.value })}
-                    placeholder="/images/logo.png"
+                    placeholder="/images/logo.webp"
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
@@ -985,7 +985,7 @@ export default function AdminSettings() {
                   type="text"
                   value={seoSettings.og_image}
                   onChange={(e) => setSeoSettings({ ...seoSettings, og_image: e.target.value })}
-                  placeholder="/images/og-image.jpg"
+                  placeholder="/images/og-image.webp"
                   className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
                 />
               </div>
