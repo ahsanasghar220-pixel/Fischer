@@ -149,7 +149,7 @@ export default function Shop() {
       if (isBestseller) params.set('bestseller', '1')
       if (isFeatured) params.set('featured', '1')
 
-      const response = await api.get(`/products?${params.toString()}`)
+      const response = await api.get(`/api/products?${params.toString()}`)
       return response.data
     },
   })
@@ -209,7 +209,7 @@ export default function Shop() {
           if (isNew) params.set('new', '1')
           if (isBestseller) params.set('bestseller', '1')
           if (isFeatured) params.set('featured', '1')
-          const response = await api.get(`/products?${params.toString()}`)
+          const response = await api.get(`/api/products?${params.toString()}`)
           return response.data
         },
       })
