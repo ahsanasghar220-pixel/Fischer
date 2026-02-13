@@ -54,7 +54,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
   const { data: categoriesData } = useQuery({
     queryKey: ['megamenu-categories'],
     queryFn: async () => {
-      const response = await api.get('/categories')
+      const response = await api.get('/api/categories')
       return response.data.data
     },
   })
@@ -84,7 +84,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
     const fetchCategoryProducts = async () => {
       setLoadingProducts(true)
       try {
-        const response = await api.get(`/products?category=${hoveredCategory}&per_page=4`)
+        const response = await api.get(`/api/products?category=${hoveredCategory}&per_page=4`)
         setCategoryProducts(prev => ({
           ...prev,
           [hoveredCategory]: response.data.data.slice(0, 4)
@@ -151,7 +151,6 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                       transition={{ delay: index * 0.03, duration: 0.2 }}
                       className="group"
                       onMouseEnter={() => setHoveredCategory(category.slug)}
-                      onMouseLeave={() => setHoveredCategory(null)}
                     >
                       <Link
                         to={category.href}

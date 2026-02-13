@@ -327,16 +327,16 @@ const QuickViewModal = memo(function QuickViewModal({
                       <button
                         onClick={handleAddToCart}
                         disabled={isOutOfStock || isAddingToCart}
-                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 disabled:bg-dark-300 dark:disabled:bg-dark-600 text-white font-bold rounded-xl transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 disabled:bg-dark-300 dark:disabled:bg-dark-600 text-white font-semibold text-sm rounded-lg transition-colors"
                       >
-                        <ShoppingCartIcon className="w-5 h-5" />
+                        <ShoppingCartIcon className="w-4 h-4" />
                         {isAddingToCart ? 'Adding...' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                       </button>
 
                       {/* Wishlist Button */}
                       <button
                         onClick={handleWishlistClick}
-                        className={`w-12 h-12 flex items-center justify-center rounded-xl border transition-colors ${
+                        className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-colors ${
                           inWishlist
                             ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-500'
                             : 'border-dark-200 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:border-red-500 hover:text-red-500'

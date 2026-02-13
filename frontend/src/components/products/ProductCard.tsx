@@ -183,7 +183,7 @@ const ProductCard = memo(function ProductCard({
     }
 
     try {
-      const response = await api.post('/wishlist/toggle', { product_id: product.id })
+      const response = await api.post('/api/wishlist/toggle', { product_id: product.id })
       const newState = response.data.data.in_wishlist
       setIsInWishlist(newState)
       onWishlistChange?.(newState)
@@ -198,7 +198,7 @@ const ProductCard = memo(function ProductCard({
     if (pendingWishlistAction) {
       setPendingWishlistAction(false)
       try {
-        const response = await api.post('/wishlist/toggle', { product_id: product.id })
+        const response = await api.post('/api/wishlist/toggle', { product_id: product.id })
         const newState = response.data.data.in_wishlist
         setIsInWishlist(newState)
         onWishlistChange?.(newState)
@@ -229,12 +229,11 @@ const ProductCard = memo(function ProductCard({
       >
         <div
           ref={cardRef}
-          className={`product-card relative overflow-visible transition-all duration-300 ease-out
-                     ${isHovered && !isTouchDevice ? 'scale-[1.02]' : 'scale-100'}`}
+          className="product-card relative overflow-visible"
           style={isTouchDevice ? undefined : {
             transform: `rotateX(${transform3D.rotateX}deg) rotateY(${transform3D.rotateY}deg)`,
             transformStyle: 'preserve-3d',
-            transition: 'transform 0.15s ease-out, scale 0.3s ease-out',
+            transition: 'transform 0.15s ease-out',
           }}
         >
         {/* Image Container */}
@@ -371,27 +370,27 @@ const ProductCard = memo(function ProductCard({
             <button
               onClick={handleAddToCart}
               disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-              className="flex-1 py-3 bg-primary-500 hover:bg-primary-400
-                        text-dark-900 text-sm font-semibold rounded-xl
-                        flex items-center justify-center gap-2
+              className="flex-1 py-2 bg-primary-500 hover:bg-primary-400
+                        text-dark-900 text-xs font-semibold rounded-lg
+                        flex items-center justify-center gap-1.5
                         disabled:opacity-50 disabled:cursor-not-allowed
                         transition-all duration-200 shadow-lg
                         hover:scale-[1.02] active:scale-[0.98]"
             >
-              <ShoppingCartIcon className="w-4 h-4" />
+              <ShoppingCartIcon className="w-3.5 h-3.5" />
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}
             </button>
             {/* Hide Quick View on touch - users can tap the card itself */}
             {!isTouchDevice && (
               <button
                 onClick={handleQuickView}
-                className="p-3 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
-                          text-dark-900 dark:text-white rounded-xl
+                className="p-2 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
+                          text-dark-900 dark:text-white rounded-lg
                           transition-all duration-200 shadow-lg
                           hover:scale-105 active:scale-95"
                 aria-label="Quick view"
               >
-                <EyeIcon className="w-5 h-5" />
+                <EyeIcon className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -440,7 +439,7 @@ const ProductCard = memo(function ProductCard({
               {formatPrice(product.price)}
             </span>
             {product.compare_price && product.compare_price > product.price && (
-              <span className="text-sm font-normal text-dark-400 ml-2">{formatPrice(product.compare_price)}</span>
+              <span className="product-price-old">{formatPrice(product.compare_price)}</span>
             )}
           </div>
         </div>

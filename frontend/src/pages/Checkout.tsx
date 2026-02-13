@@ -108,7 +108,7 @@ export default function Checkout() {
   const { data: addresses } = useQuery<Address[]>({
     queryKey: ['addresses'],
     queryFn: async () => {
-      const response = await api.get('/addresses')
+      const response = await api.get('/api/addresses')
       return response.data.data
     },
     enabled: isAuthenticated,
@@ -118,7 +118,7 @@ export default function Checkout() {
   const { data: shippingMethods } = useQuery<ShippingMethod[]>({
     queryKey: ['shipping-methods', form.shipping_city],
     queryFn: async () => {
-      const response = await api.get('/shipping/methods', {
+      const response = await api.get('/api/shipping/methods', {
         params: { city: form.shipping_city }
       })
       return response.data.data
@@ -129,7 +129,7 @@ export default function Checkout() {
   // Place order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async (data: CheckoutForm) => {
-      const response = await api.post('/checkout/place-order', {
+      const response = await api.post('/api/checkout/place-order', {
         ...data,
         shipping_email: data.email,
         items: items.filter(item => item.product || item.bundle).map(item => {
@@ -354,12 +354,9 @@ export default function Checkout() {
                 </span>
                 {i < 2 && (
                   <motion.div
-                    className="w-16 h-0.5 mx-4"
+                    className={`w-16 h-0.5 mx-4 ${step > s.num ? 'bg-green-500' : 'bg-dark-200 dark:bg-dark-700'}`}
                     initial={{ scaleX: 0 }}
-                    animate={{
-                      scaleX: 1,
-                      backgroundColor: step > s.num ? '#22c55e' : '#e5e7eb',
-                    }}
+                    animate={{ scaleX: 1 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
                   />
                 )}

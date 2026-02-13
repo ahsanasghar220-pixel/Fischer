@@ -59,7 +59,7 @@ export default function MyServiceRequests() {
   const { data: requests, isLoading, error } = useQuery<ServiceRequest[]>({
     queryKey: ['my-service-requests'],
     queryFn: async () => {
-      const response = await api.get('/account/service-requests')
+      const response = await api.get('/api/account/service-requests')
       return response.data.data
     },
   })

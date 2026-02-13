@@ -91,7 +91,7 @@ export default function Shop() {
   const { data: categoriesRaw } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
-      const response = await api.get('/categories')
+      const response = await api.get('/api/categories')
       return response.data.data
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
@@ -114,7 +114,7 @@ export default function Shop() {
   const { data: brandsRaw } = useQuery<Brand[]>({
     queryKey: ['brands'],
     queryFn: async () => {
-      const response = await api.get('/brands')
+      const response = await api.get('/api/brands')
       return response.data.data
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes

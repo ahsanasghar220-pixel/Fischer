@@ -41,7 +41,7 @@ export default function Footer() {
 
     setIsSubmitting(true)
     try {
-      await api.post('/newsletter/subscribe', { email })
+      await api.post('/api/newsletter/subscribe', { email })
       toast.success('Thank you for subscribing!')
       setEmail('')
     } catch {

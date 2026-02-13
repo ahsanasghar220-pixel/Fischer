@@ -124,7 +124,7 @@ class HomepageSeeder extends Seeder
                 'sort_order' => 9,
                 'settings' => json_encode([
                     'content' => 'Established in 1990, Fischer (Fatima Engineering Works) has been at the forefront of manufacturing high-quality home and commercial appliances. With over three decades of excellence, we\'ve become a household name trusted by millions across Pakistan.',
-                    'image' => '/images/about-factory.jpg',
+                    'image' => '/images/about-factory.webp',
                     'show_badges' => true,
                     'features' => [
                         'ISO 9001:2015 & PSQCA Certified',

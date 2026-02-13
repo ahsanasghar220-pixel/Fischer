@@ -87,7 +87,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ isLoading: true })
     try {
       getOrCreateSessionId()
-      const response = await api.get('/cart')
+      const response = await api.get('/api/cart')
       const data = response.data.data
       set({
         items: data.items || [],
@@ -108,7 +108,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ isLoading: true })
     try {
       getOrCreateSessionId()
-      const response = await api.post('/cart/add', {
+      const response = await api.post('/api/cart/add', {
         product_id: productId,
         variant_id: variantId,
         quantity,
@@ -134,7 +134,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   updateQuantity: async (itemId: number, quantity: number) => {
     try {
-      const response = await api.put(`/cart/items/${itemId}`, { quantity })
+      const response = await api.put(`/api/cart/items/${itemId}`, { quantity })
       const data = response.data.data
       set({
         items: data.items || [],
@@ -156,7 +156,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   removeItem: async (itemId: number) => {
     try {
-      const response = await api.delete(`/cart/items/${itemId}`)
+      const response = await api.delete(`/api/cart/items/${itemId}`)
       const data = response.data.data
       set({
         items: data.items || [],
@@ -173,7 +173,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   clearCart: async () => {
     try {
-      await api.delete('/cart/clear')
+      await api.delete('/api/cart/clear')
       set({
         items: [],
         subtotal: 0,
@@ -189,7 +189,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   applyCoupon: async (code: string) => {
     try {
-      const response = await api.post('/cart/coupon', { code })
+      const response = await api.post('/api/cart/coupon', { code })
       const data = response.data.data
       set({
         discount: data.discount || 0,
@@ -207,7 +207,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   removeCoupon: async () => {
     try {
-      const response = await api.delete('/cart/coupon')
+      const response = await api.delete('/api/cart/coupon')
       const data = response.data.data
       set({
         discount: 0,

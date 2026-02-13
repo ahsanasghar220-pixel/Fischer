@@ -56,7 +56,7 @@ export default function DealerRegister() {
 
   const mutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      await api.post('/dealers/register', data)
+      await api.post('/api/dealers/register', data)
     },
     onSuccess: () => {
       setSubmitted(true)

@@ -79,7 +79,7 @@ export default function ServiceRequest() {
 
   const mutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await api.post('/service-requests', data)
+      const response = await api.post('/api/service-requests', data)
       return response.data
     },
     onSuccess: (data) => {

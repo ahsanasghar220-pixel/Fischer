@@ -49,7 +49,7 @@ export default function Addresses() {
   const { data: addresses, isLoading } = useQuery<Address[]>({
     queryKey: ['addresses'],
     queryFn: async () => {
-      const response = await api.get('/addresses')
+      const response = await api.get('/api/addresses')
       return response.data.data
     },
   })
@@ -59,7 +59,7 @@ export default function Addresses() {
       if (editingId) {
         await api.put(`/addresses/${editingId}`, data)
       } else {
-        await api.post('/addresses', data)
+        await api.post('/api/addresses', data)
       }
     },
     onSuccess: () => {

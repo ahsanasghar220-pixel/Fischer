@@ -120,11 +120,11 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
     >
       <Link
         to={product.href}
-        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col min-h-[340px] md:min-h-[380px]"
       >
         {/* Image Container with Carousel */}
         <div
-          className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 p-6 relative overflow-hidden"
+          className="h-[180px] md:h-[220px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 p-4 md:p-6 relative overflow-hidden flex-shrink-0 flex items-center justify-center"
           {...(isTouchDevice ? swipeHandlers : {})}
         >
           <AnimatePresence mode="wait">
@@ -132,7 +132,7 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
               key={currentImageIndex}
               src={product.images[currentImageIndex]}
               alt={`${product.name} - Image ${currentImageIndex + 1}`}
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-full object-contain"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -164,16 +164,16 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <div className="text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-2">
+        <div className="p-4 md:p-6 flex-grow flex flex-col">
+          <div className="text-[10px] md:text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-1 md:mb-2">
             {product.category}
           </div>
-          <h3 className="text-xl font-bold text-dark-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+          <h3 className="text-base md:text-xl font-bold text-dark-900 dark:text-white mb-1 md:mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-tight">
             {product.name}
           </h3>
-          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-sm mt-4">
+          <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold text-xs md:text-sm mt-auto">
             Explore
-            <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <ArrowRightIcon className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
       </Link>
@@ -183,7 +183,7 @@ function ProductCard({ product, index }: { product: ProductHighlight; index: num
 
 export default function HeroProductBanner() {
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-900 dark:via-dark-900 dark:to-dark-800">
+    <section className="py-12 md:py-16 lg:py-24 bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-900 dark:via-dark-900 dark:to-dark-800">
       <div className="container-xl">
         {/* Section Header */}
         <motion.div
@@ -191,24 +191,30 @@ export default function HeroProductBanner() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 lg:mb-16"
+          className="text-center mb-8 md:mb-12 lg:mb-16 px-4"
         >
-          <span className="inline-block px-4 py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
             Our Bestsellers
           </span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-dark-900 dark:text-white font-display mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-dark-900 dark:text-white font-display mb-2 md:mb-4">
             Discover Fischer Essentials
           </h2>
-          <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
+          <p className="text-sm md:text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
             Designed Appliances for Modern Living
           </p>
         </motion.div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4">
-          {products.map((product, index) => (
-            <ProductCard key={product.name} product={product} index={index} />
-          ))}
+        {/* Products Grid - Horizontal scroll on mobile, grid on larger screens */}
+        <div className="relative">
+          <div className="md:grid md:grid-cols-2 lg:grid-cols-5 md:gap-6 lg:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide pb-4 md:pb-0 -mx-4 md:mx-0">
+            <div className="flex md:contents gap-4 md:gap-6 lg:gap-4 px-4 md:px-0">
+              {products.map((product, index) => (
+                <div key={product.name} className="flex-shrink-0 w-[260px] sm:w-[280px] md:w-auto snap-center md:snap-align-none">
+                  <ProductCard product={product} index={index} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* CTA Button */}

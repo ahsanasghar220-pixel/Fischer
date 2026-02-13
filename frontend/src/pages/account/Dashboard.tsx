@@ -33,7 +33,7 @@ export default function Dashboard() {
   const { data, isLoading } = useQuery<DashboardData>({
     queryKey: ['account-dashboard'],
     queryFn: async () => {
-      const response = await api.get('/account/dashboard')
+      const response = await api.get('/api/account/dashboard')
       return response.data.data
     },
   })

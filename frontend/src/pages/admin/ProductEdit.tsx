@@ -100,7 +100,7 @@ export default function ProductEdit() {
   const { data: categories } = useQuery<Category[]>({
     queryKey: ['admin-categories-list'],
     queryFn: async () => {
-      const response = await api.get('/admin/categories')
+      const response = await api.get('/api/admin/categories')
       return response.data.data
     },
   })
@@ -166,7 +166,7 @@ export default function ProductEdit() {
       }
 
       if (isNew) {
-        const response = await api.post('/admin/products', payload)
+        const response = await api.post('/api/admin/products', payload)
         const newProduct = response.data.data?.data || response.data.data
         // Upload pending images for the new product
         if (pendingFiles.length > 0 && newProduct?.id) {

@@ -291,8 +291,11 @@ html.lenis, html.lenis body {
   .product-card {
     @apply relative bg-white dark:bg-dark-800/50 rounded-2xl overflow-visible
            border border-dark-100 dark:border-dark-700/50
-           shadow-card hover:shadow-card-hover
-           transition-all duration-500 ease-out;
+           shadow-lg hover:shadow-2xl
+           transition-all duration-300 ease-out;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
   }
 
   .product-card:hover {
@@ -324,6 +327,18 @@ html.lenis, html.lenis body {
 
   .product-card .product-info {
     @apply p-5;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card .product-name {
+    min-height: 3rem;
+  }
+
+  .product-card .product-price {
+    margin-top: auto;
+    padding-top: 0.75rem;
   }
 
   .product-card .product-category {
@@ -592,6 +607,21 @@ html.lenis, html.lenis body {
   .animation-delay-300 { animation-delay: 300ms; }
   .animation-delay-400 { animation-delay: 400ms; }
   .animation-delay-500 { animation-delay: 500ms; }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Active scale utilities */
+  .active\:scale-98:active {
+    transform: scale(0.98);
+  }
 
   /* Enhanced shadow for dark mode glow */
   .shadow-glow-lg {
@@ -1016,6 +1046,10 @@ html.lenis, html.lenis body {
 }
 
 .animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-fadeInUp {
   animation: fade-in-up 0.6s ease-out forwards;
 }
 
@@ -1586,10 +1620,88 @@ html.lenis, html.lenis body {
   /* Product cards - simplified on mobile */
   .product-card {
     @apply shadow-sm hover:shadow-md;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card .product-image {
+    flex-shrink: 0;
+    height: 200px;
+  }
+
+  .product-card .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+  }
+
+  .product-card .product-name {
+    min-height: 2.5rem;
+  }
+
+  .product-card .product-price {
+    margin-top: auto;
+    padding-top: 0.75rem;
   }
 
   .product-card .product-wishlist {
-    @apply opacity-100;
+    @apply opacity-100 top-2 right-2 w-8 h-8 p-1.5 flex items-center justify-center;
+  }
+
+  .product-card .product-wishlist svg {
+    @apply w-4 h-4;
+  }
+
+  /* Smaller badge on mobile */
+  .product-card .product-badge {
+    @apply top-2 left-2;
+  }
+
+  .product-card .product-badge span {
+    @apply px-2 py-0.5 text-[10px];
+  }
+
+  /* Compact product info on mobile */
+  .product-card .product-info {
+    @apply p-3;
+  }
+
+  /* Smaller product actions on mobile */
+  .product-card .product-actions {
+    @apply bottom-3 left-1.5 right-1.5 gap-1;
+  }
+
+  /* Extra small Add to Cart button on mobile */
+  .product-card .product-actions button {
+    @apply py-1 px-2 text-[10px] gap-0.5 font-medium min-h-0;
+  }
+
+  .product-card .product-actions button svg {
+    @apply w-2.5 h-2.5;
+  }
+
+  /* Make Quick View button smaller too */
+  .product-card .product-actions button[aria-label="Quick view"] {
+    @apply p-1;
+  }
+
+  .product-card .product-actions button[aria-label="Quick view"] svg {
+    @apply w-3 h-3;
+  }
+
+  /* More compact product elements */
+  .product-card .product-name {
+    @apply text-sm leading-tight;
+  }
+
+  .product-card .product-category {
+    @apply text-xs;
+  }
+
+  .product-card .product-price {
+    @apply text-base;
   }
 }
 

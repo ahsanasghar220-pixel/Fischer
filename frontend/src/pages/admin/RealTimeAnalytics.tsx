@@ -101,7 +101,7 @@ export default function RealTimeAnalytics() {
   const { data: overview, isLoading: loadingOverview, refetch: refetchOverview } = useQuery<OverviewData>({
     queryKey: ['realtime-overview'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/overview')
+      const response = await api.get('/api/admin/analytics/realtime/overview')
       return response.data.data
     },
     refetchInterval: refreshInterval,
@@ -111,7 +111,7 @@ export default function RealTimeAnalytics() {
   const { data: activityData, refetch: refetchActivity } = useQuery<{ activities: Activity[] }>({
     queryKey: ['realtime-activity'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/activity-feed')
+      const response = await api.get('/api/admin/analytics/realtime/activity-feed')
       return response.data.data
     },
     refetchInterval: refreshInterval,
@@ -121,7 +121,7 @@ export default function RealTimeAnalytics() {
   const { data: trafficData } = useQuery<{ sources: TrafficSource[]; total: number }>({
     queryKey: ['realtime-traffic'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/traffic-sources')
+      const response = await api.get('/api/admin/analytics/realtime/traffic-sources')
       return response.data.data
     },
     refetchInterval: 30000, // 30 seconds
@@ -131,7 +131,7 @@ export default function RealTimeAnalytics() {
   const { data: funnelData } = useQuery<{ funnel: FunnelStep[]; conversion_rate: number }>({
     queryKey: ['realtime-funnel'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/conversion-funnel')
+      const response = await api.get('/api/admin/analytics/realtime/conversion-funnel')
       return response.data.data
     },
     refetchInterval: 30000,
@@ -141,7 +141,7 @@ export default function RealTimeAnalytics() {
   const { data: geoData } = useQuery<{ by_country: CountryData[] }>({
     queryKey: ['realtime-geo'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/geographic')
+      const response = await api.get('/api/admin/analytics/realtime/geographic')
       return response.data.data
     },
     refetchInterval: 30000,
@@ -151,7 +151,7 @@ export default function RealTimeAnalytics() {
   const { data: cartData } = useQuery({
     queryKey: ['realtime-cart'],
     queryFn: async () => {
-      const response = await api.get('/admin/analytics/realtime/cart-analytics')
+      const response = await api.get('/api/admin/analytics/realtime/cart-analytics')
       return response.data.data
     },
     refetchInterval: 30000,

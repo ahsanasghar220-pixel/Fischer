@@ -158,7 +158,7 @@ export function useBundles(params?: {
   return useQuery({
     queryKey: ['bundles', params],
     queryFn: async () => {
-      const { data } = await api.get('/bundles', { params })
+      const { data } = await api.get('/api/bundles', { params })
       return data
     },
   })
@@ -179,7 +179,7 @@ export function useHomepageBundles() {
   return useQuery({
     queryKey: ['bundles', 'homepage'],
     queryFn: async () => {
-      const { data } = await api.get('/bundles/homepage')
+      const { data } = await api.get('/api/bundles/homepage')
       return data.data as HomepageBundles
     },
   })
@@ -216,7 +216,7 @@ export function useAddBundleToCart() {
       bundleSlug: string
       selections?: SlotSelection[]
     }) => {
-      const { data } = await api.post('/cart/bundle', {
+      const { data } = await api.post('/api/cart/bundle', {
         bundle_slug: bundleSlug,
         selections,
       })
@@ -243,7 +243,7 @@ export function useAdminBundles(params?: {
   return useQuery({
     queryKey: ['admin', 'bundles', params],
     queryFn: async () => {
-      const { data } = await api.get('/admin/bundles', { params })
+      const { data } = await api.get('/api/admin/bundles', { params })
       return data
     },
   })
@@ -286,7 +286,7 @@ export function useCreateBundle() {
         products?: Array<{ product_id: number; price_override?: number }>
       }>
     }) => {
-      const { data } = await api.post('/admin/bundles', bundleData)
+      const { data } = await api.post('/api/admin/bundles', bundleData)
       return data.data as Bundle
     },
     onSuccess: () => {
@@ -547,7 +547,7 @@ export function useBundleBulkAction() {
       ids: number[]
       action: 'activate' | 'deactivate' | 'delete'
     }) => {
-      const { data } = await api.post('/admin/bundles/bulk', { ids, action })
+      const { data } = await api.post('/api/admin/bundles/bulk', { ids, action })
       return data.data
     },
     onSuccess: () => {

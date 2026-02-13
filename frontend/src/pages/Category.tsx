@@ -181,7 +181,7 @@ export default function Category() {
   const { data, isLoading, error } = useQuery<CategoryData>({
     queryKey: ['category', slug],
     queryFn: async () => {
-      const response = await api.get(`/categories/${slug}`)
+      const response = await api.get(`/api/categories/${slug}`)
       // API returns: { success, data: { category }, products: [...] }
       return {
         category: response.data.data.category,
@@ -249,9 +249,9 @@ export default function Category() {
     >
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 md:py-8">
           <motion.div
-            className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4"
+            className="flex items-center gap-2 text-xs md:text-sm text-dark-500 dark:text-dark-400 mb-3 md:mb-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -271,19 +271,19 @@ export default function Category() {
             <span className="text-dark-900 dark:text-white">{category.name}</span>
           </motion.div>
 
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <motion.div
-              className="w-24 h-24 bg-dark-100 dark:bg-dark-700 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center"
+              className="w-20 h-20 md:w-24 md:h-24 bg-dark-100 dark:bg-dark-700 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15, type: 'spring', stiffness: 200 }}
               whileHover={{ scale: 1.05, rotate: 5 }}
             >
-              <CategoryIcon slug={category.slug} className="w-16 h-16" />
+              <CategoryIcon slug={category.slug} className="w-14 h-14 md:w-16 md:h-16" />
             </motion.div>
             <div className="flex-1">
               <motion.h1
-                className="text-3xl font-bold text-dark-900 dark:text-white"
+                className="text-2xl md:text-3xl font-bold text-dark-900 dark:text-white"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -291,7 +291,7 @@ export default function Category() {
                 {category.name}
               </motion.h1>
               <motion.p
-                className="text-dark-500 dark:text-dark-400 mt-1 mb-4"
+                className="text-sm md:text-base text-dark-500 dark:text-dark-400 mt-1 mb-3 md:mb-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.25 }}
@@ -300,7 +300,7 @@ export default function Category() {
               </motion.p>
               {/* Features as bullet points - Always show with fallback */}
               <motion.div
-                className="flex flex-wrap gap-2"
+                className="flex flex-wrap gap-1.5 md:gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -311,12 +311,12 @@ export default function Category() {
                 ).map((feature, index) => (
                   <motion.span
                     key={index}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-100 dark:bg-dark-700 rounded-full text-sm text-dark-700 dark:text-dark-300"
+                    className="inline-flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-dark-100 dark:bg-dark-700 rounded-full text-xs md:text-sm text-dark-700 dark:text-dark-300"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.3 + index * 0.05 }}
                   >
-                    <svg className="w-3.5 h-3.5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-3 h-3 md:w-3.5 md:h-3.5 text-primary-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                     {feature}
@@ -360,10 +360,10 @@ export default function Category() {
       )}
 
       {/* Products */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 md:py-8">
         {products && products.length > 0 ? (
           <StaggerContainer
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 lg:gap-6"
             staggerDelay={0.05}
           >
             {products.map((product) => (

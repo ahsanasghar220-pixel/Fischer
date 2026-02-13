@@ -19,12 +19,25 @@ import {
 import { ArrowDownTrayIcon, CalendarIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import { useTheme } from '@/contexts/ThemeContext'
 
 const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
 
 type ReportType = 'sales' | 'products' | 'customers' | 'inventory'
 
 export default function AdminReports() {
+  const { resolvedTheme } = useTheme()
+
+  // Theme-aware colors for charts
+  const isDark = resolvedTheme === 'dark'
+  const tooltipStyle = {
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
+    border: isDark ? 'none' : '1px solid #e5e7eb',
+    borderRadius: '8px',
+    color: isDark ? '#fff' : '#111827',
+  }
+  const axisTickColor = isDark ? '#9ca3af' : '#6b7280'
+
   const [reportType, setReportType] = useState<ReportType>('sales')
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0],
@@ -201,17 +214,10 @@ export default function AdminReports() {
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-                  <XAxis dataKey="date" tick={{ fill: '#6b7280' }} />
-                  <YAxis yAxisId="left" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-                  <YAxis yAxisId="right" orientation="right" tick={{ fill: '#6b7280' }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: 'none',
-                      borderRadius: '8px',
-                      color: '#fff',
-                    }}
-                  />
+                  <XAxis dataKey="date" tick={{ fill: axisTickColor }} />
+                  <YAxis yAxisId="left" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fill: axisTickColor }} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Legend />
                   <Area yAxisId="left" type="monotone" dataKey="revenue" fill="#0ea5e9" fillOpacity={0.2} stroke="#0ea5e9" name="Revenue" />
                   <Bar yAxisId="left" dataKey="profit" fill="#10b981" name="Profit" radius={[4, 4, 0, 0]} />
@@ -232,16 +238,9 @@ export default function AdminReports() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={productPerformance} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-                  <XAxis type="number" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-                  <YAxis type="category" dataKey="name" width={180} tick={{ fill: '#6b7280', fontSize: 12 }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: 'none',
-                      borderRadius: '8px',
-                      color: '#fff',
-                    }}
-                  />
+                  <XAxis type="number" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+                  <YAxis type="category" dataKey="name" width={180} tick={{ fill: axisTickColor, fontSize: 12 }} />
+                  <Tooltip contentStyle={tooltipStyle} />
                   <Bar dataKey="revenue" fill="#0ea5e9" radius={[0, 4, 4, 0]}>
                     {productPerformance.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -324,16 +323,9 @@ export default function AdminReports() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={customerSegments}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-                    <XAxis dataKey="segment" tick={{ fill: '#6b7280' }} />
-                    <YAxis tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: 'none',
-                        borderRadius: '8px',
-                        color: '#fff',
-                      }}
-                    />
+                    <XAxis dataKey="segment" tick={{ fill: axisTickColor }} />
+                    <YAxis tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+                    <Tooltip contentStyle={tooltipStyle} />
                     <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
                       {customerSegments.map((_, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

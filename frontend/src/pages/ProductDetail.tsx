@@ -140,7 +140,7 @@ export default function ProductDetail() {
   // Sync wishlist state with server
   useEffect(() => {
     if (isAuthenticated && product) {
-      api.post('/wishlist/check', { product_id: product.id })
+      api.post('/api/wishlist/check', { product_id: product.id })
         .then(res => setIsInWishlist(res.data.data?.in_wishlist || false))
         .catch(() => {})
     }
@@ -169,7 +169,7 @@ export default function ProductDetail() {
     }
 
     try {
-      const response = await api.post('/wishlist/toggle', { product_id: product?.id })
+      const response = await api.post('/api/wishlist/toggle', { product_id: product?.id })
       setIsInWishlist(response.data.data.in_wishlist)
       toast.success(response.data.data.in_wishlist ? 'Added to wishlist' : 'Removed from wishlist')
     } catch {
@@ -180,7 +180,7 @@ export default function ProductDetail() {
   const handleAuthSuccess = async () => {
     // After successful auth, add to wishlist
     try {
-      const response = await api.post('/wishlist/toggle', { product_id: product?.id })
+      const response = await api.post('/api/wishlist/toggle', { product_id: product?.id })
       setIsInWishlist(response.data.data.in_wishlist)
       toast.success(response.data.data.in_wishlist ? 'Added to wishlist' : 'Removed from wishlist')
     } catch {
@@ -550,7 +550,7 @@ export default function ProductDetail() {
                 <motion.button
                   onClick={handleAddToCart}
                   disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-                  className="flex-1 btn btn-primary py-3"
+                  className="flex-1 btn btn-primary py-2.5"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -559,7 +559,7 @@ export default function ProductDetail() {
 
                 <motion.button
                   onClick={handleToggleWishlist}
-                  className="p-3 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                  className="p-2.5 border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >

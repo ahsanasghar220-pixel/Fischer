@@ -55,7 +55,7 @@ export default function AdminPages() {
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      await api.post('/admin/pages', data)
+      await api.post('/api/admin/pages', data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] })

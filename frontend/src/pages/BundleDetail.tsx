@@ -510,7 +510,7 @@ export default function BundleDetail() {
                   <motion.button
                     onClick={handleAddToCart}
                     disabled={isAddingToCart || !bundle.is_available || (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)}
-                    className={`w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-lg transition-all ${
+                    className={`w-full flex items-center justify-center gap-2.5 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
                       isAddingToCart || !bundle.is_available || (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
                         ? 'bg-gray-300 dark:bg-dark-600 text-gray-500 dark:text-dark-400 cursor-not-allowed'
                         : 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25 hover:scale-[1.02]'
@@ -524,7 +524,7 @@ export default function BundleDetail() {
                       </>
                     ) : (
                       <>
-                        <ShoppingCartIcon className="w-6 h-6" />
+                        <ShoppingCartIcon className="w-5 h-5" />
                         {bundle.cta_text || 'Add Bundle to Cart'}
                       </>
                     )}

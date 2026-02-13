@@ -19,7 +19,7 @@ export default function FindDealer() {
   const { data: citiesData } = useQuery({
     queryKey: ['dealer-cities'],
     queryFn: async () => {
-      const res = await api.get('/dealers/cities')
+      const res = await api.get('/api/dealers/cities')
       return res.data.data as string[]
     },
   })
@@ -28,7 +28,7 @@ export default function FindDealer() {
     queryKey: ['dealers', selectedCity],
     queryFn: async () => {
       const params = selectedCity ? { city: selectedCity } : {}
-      const res = await api.get('/dealers/find', { params })
+      const res = await api.get('/api/dealers/find', { params })
       return res.data.data as Dealer[]
     },
   })

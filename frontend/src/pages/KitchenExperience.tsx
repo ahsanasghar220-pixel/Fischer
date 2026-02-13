@@ -385,7 +385,7 @@ export default function KitchenExperience() {
   const { data: productsData } = useQuery({
     queryKey: ['kitchen-experience-products'],
     queryFn: async () => {
-      const res = await api.get('/products/featured')
+      const res = await api.get('/api/products/featured')
       return res.data?.data || res.data || []
     },
     staleTime: 5 * 60 * 1000,
@@ -569,8 +569,7 @@ export default function KitchenExperience() {
           SECTION 4: Design Blueprint
           ========================================== */}
       <section
-        className="section relative overflow-hidden"
-        style={{ backgroundColor: '#0a1628' }}
+        className="section relative overflow-hidden bg-[#0a1628] dark:bg-dark-950"
       >
         {/* Blueprint grid */}
         <div

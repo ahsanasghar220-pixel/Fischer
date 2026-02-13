@@ -300,11 +300,11 @@ const BundleBanner = memo(function BundleBanner({
               {bundle.bundle_type === 'fixed' && onAddToCart && (
                 <motion.button
                   onClick={() => onAddToCart(bundle)}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold text-lg rounded-xl border border-white/20 transition-all hover:scale-105"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold text-base rounded-lg border border-white/20 transition-all hover:scale-105"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <ShoppingCartIcon className="w-5 h-5" />
+                  <ShoppingCartIcon className="w-4 h-4" />
                   Add to Cart
                 </motion.button>
               )}

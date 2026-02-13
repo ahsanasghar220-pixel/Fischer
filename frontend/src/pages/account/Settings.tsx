@@ -25,7 +25,7 @@ export default function Settings() {
 
   const profileMutation = useMutation({
     mutationFn: async (data: typeof profileData) => {
-      await api.put('/account/profile', data)
+      await api.put('/api/account/profile', data)
     },
     onSuccess: () => {
       fetchUser()
@@ -38,7 +38,7 @@ export default function Settings() {
 
   const passwordMutation = useMutation({
     mutationFn: async (data: typeof passwordData) => {
-      await api.put('/account/password', data)
+      await api.put('/api/account/password', data)
     },
     onSuccess: () => {
       setPasswordData({ current_password: '', password: '', password_confirmation: '' })

@@ -43,7 +43,7 @@ export default function AdminCategories() {
   const { data: categories, isLoading } = useQuery<Category[]>({
     queryKey: ['admin-categories'],
     queryFn: async () => {
-      const response = await api.get('/admin/categories')
+      const response = await api.get('/api/admin/categories')
       // Backend returns { success, data: [...] }
       return response.data.data
     },
@@ -60,7 +60,7 @@ export default function AdminCategories() {
       if (editingId) {
         await api.put(`/admin/categories/${editingId}`, payload)
       } else {
-        await api.post('/admin/categories', payload)
+        await api.post('/api/admin/categories', payload)
       }
     },
     onSuccess: () => {

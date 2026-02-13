@@ -99,7 +99,7 @@ export default function BundleForm() {
   const { data: searchResults, isLoading: loadingProducts } = useQuery({
     queryKey: ['admin-products-for-bundle', productSearch],
     queryFn: async () => {
-      const { data } = await api.get('/admin/products', {
+      const { data } = await api.get('/api/admin/products', {
         params: {
           search: productSearch || undefined,
           per_page: 100, // Get more products

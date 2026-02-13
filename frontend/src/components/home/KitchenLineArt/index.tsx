@@ -86,7 +86,7 @@ export default function KitchenLineArt() {
     queryKey: ['kitchen-featured-products'],
     queryFn: async () => {
       // Fetch featured/bestseller products and match by category
-      const response = await api.get('/products/featured', {
+      const response = await api.get('/api/products/featured', {
         params: { limit: 20 }
       })
       return response.data.data as Product[]

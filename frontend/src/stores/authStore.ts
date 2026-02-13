@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true })
         try {
           const sessionId = localStorage.getItem('session_id')
-          const response = await api.post('/auth/login', {
+          const response = await api.post('/api/auth/login', {
             email,
             password,
             session_id: sessionId,
@@ -88,7 +88,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true })
         try {
           const sessionId = localStorage.getItem('session_id')
-          const response = await api.post('/auth/register', {
+          const response = await api.post('/api/auth/register', {
             ...data,
             session_id: sessionId,
           })
@@ -108,7 +108,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         try {
           if (get().token) {
-            await api.post('/auth/logout')
+            await api.post('/api/auth/logout')
           }
         } catch {
           // Ignore errors during logout
@@ -124,7 +124,7 @@ export const useAuthStore = create<AuthState>()(
       fetchUser: async () => {
         if (!get().token) return
         try {
-          const response = await api.get('/auth/user')
+          const response = await api.get('/api/auth/user')
           set({ user: response.data.data.user })
         } catch {
           set({ user: null, token: null, isAuthenticated: false })
@@ -132,7 +132,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       updateProfile: async (data: Partial<User>) => {
-        const response = await api.put('/auth/profile', data)
+        const response = await api.put('/api/auth/profile', data)
         set({ user: response.data.data.user })
       },
     }),

@@ -66,7 +66,7 @@ const BundleCard = memo(function BundleCard({
   return (
     <HoverCard intensity={8}>
       <motion.div
-        className="group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+        className="group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         initial={{ opacity: 0, y: 20 }}
@@ -172,11 +172,11 @@ const BundleCard = memo(function BundleCard({
                     onAddToCart(bundle)
                   }}
                   aria-label="Add to cart"
-                  className="p-3 bg-primary-500 rounded-full text-white hover:bg-primary-600 hover:scale-110 transition-all shadow-lg"
+                  className="p-2.5 bg-primary-500 rounded-full text-white hover:bg-primary-600 hover:scale-110 transition-all shadow-lg"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <ShoppingCartIcon className="w-5 h-5" />
+                  <ShoppingCartIcon className="w-4 h-4" />
                 </motion.button>
               )}
             </motion.div>

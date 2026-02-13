@@ -98,7 +98,7 @@ export default function AdminSettings() {
   const { data: settings, isLoading } = useQuery({
     queryKey: ['admin-settings'],
     queryFn: async () => {
-      const response = await api.get('/admin/settings')
+      const response = await api.get('/api/admin/settings')
       return response.data.data
     },
   })
@@ -117,7 +117,7 @@ export default function AdminSettings() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: Record<string, unknown>) => {
-      await api.put('/admin/settings', data)
+      await api.put('/api/admin/settings', data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-settings'] })

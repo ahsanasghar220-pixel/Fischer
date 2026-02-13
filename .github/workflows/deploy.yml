@@ -1,174 +1,27 @@
+# Fischer E-commerce Auto-Deployment Workflow
+# Triggers on push to main branch
+
 name: Deploy to Hostinger
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 🚀 Deploy to Hostinger
+        uses: appleboy/ssh-action@master
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm install
-
-      - name: Build frontend
-        working-directory: frontend
-        run: npm run build
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-
-      - name: Create deployment package
-        run: |
-          # Create deployment directory
-          mkdir -p deploy
-
-          # Copy backend files (WITHOUT vendor - will install on server)
-          cp -r backend/* deploy/
-          rm -rf deploy/vendor
-
-          # Copy frontend build to public folder
-          cp -r frontend/dist/* deploy/public/
-
-          # Remove unnecessary files
-          rm -rf deploy/tests
-          rm -rf deploy/storage/logs/*
-          rm -rf deploy/.git
-          rm -f deploy/.env.example
-          rm -f deploy/phpunit.xml
-
-          # Create required directories
-          mkdir -p deploy/storage/app/public
-          mkdir -p deploy/storage/framework/cache
-          mkdir -p deploy/storage/framework/sessions
-          mkdir -p deploy/storage/framework/views
-          mkdir -p deploy/storage/logs
-          mkdir -p deploy/bootstrap/cache
-
-          # Debug: Show what's in deploy folder
-          echo "=== Deploy folder contents ==="
-          ls -la deploy/
-          echo "=== composer.json exists? ==="
-          cat deploy/composer.json | head -5
-
-      - name: Deploy to Hostinger via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./deploy/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.env
-
-      - name: Post-deployment tasks
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          port: ${{ secrets.HOSTINGER_PORT }}
           script: |
-            cd ${{ secrets.SSH_SERVER_DIR }}
-
-            # PHP 8.2 path on Hostinger
-            PHP=/opt/alt/php82/usr/bin/php
-
-            echo "=== PHP Version ==="
-            $PHP -v
-
-            # Find composer location
-            COMPOSER=$(which composer 2>/dev/null || echo "/usr/local/bin/composer")
-            echo "=== Composer location: $COMPOSER ==="
-
-            # Remove old vendor to force fresh install with correct PHP
-            rm -rf vendor
-
-            # Install composer dependencies using PHP 8.2
-            $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-              echo "Trying alternative composer path..."
-              $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-                echo "Trying to download composer..."
-                curl -sS https://getcomposer.org/installer | $PHP
-                $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction
-              }
-            }
-
-            # Set permissions
-            chmod -R 755 storage bootstrap/cache
-
-            # Ensure views directory exists
-            mkdir -p resources/views
-
-            # Generate APP_KEY if not set
-            if ! grep -q "APP_KEY=base64:" .env; then
-              echo "=== Generating APP_KEY ==="
-              $PHP artisan key:generate --force
-            fi
-
-            # Clear config cache before migrations
-            $PHP artisan config:clear
-
-            # Run migrations (preserves existing data)
-            echo "=== Running migrations ==="
-            $PHP artisan migrate --force --verbose 2>&1
-
-            # Seed data (safe for production - uses updateOrCreate)
-            echo "=== Seeding data ==="
-            $PHP artisan db:seed --force --verbose 2>&1 || echo "Seeding completed or skipped"
-
-            # Explicitly run CategorySeeder to update category images
-            echo "=== Ensuring categories are seeded ==="
-            $PHP artisan db:seed --class=CategorySeeder --force --verbose 2>&1 || echo "CategorySeeder completed or skipped"
-
-            # Explicitly run ProductSeeder to ensure products exist
-            echo "=== Ensuring products are seeded ==="
-            $PHP artisan db:seed --class=ProductSeeder --force --verbose 2>&1 || echo "ProductSeeder completed or skipped"
-
-            # Clear all caches first
-            $PHP artisan cache:clear || true
-            $PHP artisan config:clear
-            $PHP artisan route:clear
-            $PHP artisan view:clear || true
-
-            # Rebuild caches for production performance
-            $PHP artisan config:cache
-            $PHP artisan route:cache
-            $PHP artisan view:cache
-
-            # Debug: Test if Laravel is working
-            echo "=== Testing Laravel ==="
-            $PHP artisan --version
-            echo "=== Available API routes ==="
-            $PHP artisan route:list --path=api | head -20 || echo "Route listing failed"
-
-            # Create storage link manually (exec() is disabled on Hostinger)
-            rm -rf public/storage
-            ln -s ../storage/app/public public/storage
-            echo "Storage link created manually"
-
-      - name: Notify on success
-        if: success()
-        run: echo "Deployment completed successfully!"
-
-      - name: Notify on failure
-        if: failure()
-        run: echo "Deployment failed!"
+            cd ${{ secrets.HOSTINGER_PATH }}
+            git pull origin main
+            chmod +x deploy.sh
+            ./deploy.sh

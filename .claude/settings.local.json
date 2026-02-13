@@ -112,7 +112,14 @@
       "Bash(FFMPEG=\"/c/Users/ASUS/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe\")",
       "Bash(\"$FFMPEG\" -version)",
       "Bash(\"/c/Users/ASUS/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.0.1-full_build/bin/ffmpeg.exe\" -version)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(npm ls:*)",
+      "Bash(head:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(for img in about-factory about-fischer all-products banner-1 banner-2 banner-3 banner-4 bottom-banner-1 bottom-banner-2 category-water-cooler iso-certified logo-dark logo-light)",
+      "Bash(do echo -n \"$img: \")",
+      "Bash(done)",
+      "Bash(.github/workflows/deploy.yml << 'EOF'\n# Fischer E-commerce Auto-Deployment Workflow\n# Triggers on push to main branch\n\nname: Deploy to Hostinger\n\non:\n  push:\n    branches:\n      - main\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: 🚀 Deploy to Hostinger\n        uses: appleboy/ssh-action@master\n        with:\n          host: ${{ secrets.HOSTINGER_HOST }}\n          username: ${{ secrets.HOSTINGER_USERNAME }}\n          password: ${{ secrets.HOSTINGER_PASSWORD }}\n          port: ${{ secrets.HOSTINGER_PORT }}\n          script: |\n            cd ${{ secrets.HOSTINGER_PATH }}\n            git pull origin main\n            chmod +x deploy.sh\n            ./deploy.sh\nEOF)"
     ]
   }
 }

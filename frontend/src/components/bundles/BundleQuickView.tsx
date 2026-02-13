@@ -426,7 +426,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                           !bundle.is_available ||
                           (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
                         }
-                        className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                        className={`w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                           isAddingToCart ||
                           !bundle.is_available ||
                           (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
@@ -441,7 +441,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                           </>
                         ) : (
                           <>
-                            <ShoppingCartIcon className="w-5 h-5" />
+                            <ShoppingCartIcon className="w-4 h-4" />
                             {bundle.cta_text || 'Add to Cart'}
                           </>
                         )}
@@ -450,7 +450,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                       <Link
                         to={`/bundle/${bundle.slug}`}
                         onClick={onClose}
-                        className="w-full flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 dark:border-dark-600 rounded-xl font-semibold text-dark-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 dark:border-dark-600 rounded-lg font-semibold text-sm text-dark-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors"
                       >
                         View Full Details
                         <ArrowTopRightOnSquareIcon className="w-4 h-4" />

@@ -34,7 +34,7 @@ export default function AdminCustomers() {
   const { data: dashboardData } = useQuery({
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
-      const response = await api.get('/admin/dashboard')
+      const response = await api.get('/api/admin/dashboard')
       return response.data.data
     },
   })

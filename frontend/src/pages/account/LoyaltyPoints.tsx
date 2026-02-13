@@ -24,7 +24,7 @@ export default function LoyaltyPoints() {
   const { data, isLoading, error } = useQuery<LoyaltyData>({
     queryKey: ['loyalty-points'],
     queryFn: async () => {
-      const response = await api.get('/account/loyalty-points')
+      const response = await api.get('/api/account/loyalty-points')
       return response.data.data
     },
   })

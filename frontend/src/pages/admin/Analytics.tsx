@@ -19,6 +19,7 @@ import {
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import { useTheme } from '@/contexts/ThemeContext'
 
 const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#722F37', '#8b5cf6', '#ec4899']
 
@@ -40,6 +41,17 @@ interface AnalyticsData {
 
 export default function AdminAnalytics() {
   const [period, setPeriod] = useState('30days')
+  const { resolvedTheme } = useTheme()
+
+  // Theme-aware colors for charts
+  const isDark = resolvedTheme === 'dark'
+  const tooltipStyle = {
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
+    border: isDark ? 'none' : '1px solid #e5e7eb',
+    borderRadius: '8px',
+    color: isDark ? '#fff' : '#111827',
+  }
+  const axisTickColor = isDark ? '#9ca3af' : '#6b7280'
 
   const { data, isLoading } = useQuery<AnalyticsData>({
     queryKey: ['admin-analytics', period],
@@ -164,17 +176,10 @@ export default function AdminAnalytics() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-              <XAxis dataKey="date" className="text-xs" tick={{ fill: '#6b7280' }} />
-              <YAxis yAxisId="left" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fill: '#6b7280' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#1f2937',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#fff',
-                }}
-              />
+              <XAxis dataKey="date" className="text-xs" tick={{ fill: axisTickColor }} />
+              <YAxis yAxisId="left" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fill: axisTickColor }} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Legend />
               <Area
                 yAxisId="left"
@@ -234,16 +239,9 @@ export default function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={250} minWidth={250}>
               <BarChart data={revenueByPayment} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-                <XAxis type="number" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-                <YAxis type="category" dataKey="method" tick={{ fill: '#6b7280' }} width={100} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
-                  }}
-                />
+                <XAxis type="number" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+                <YAxis type="category" dataKey="method" tick={{ fill: axisTickColor }} width={100} />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Bar dataKey="revenue" fill="#0ea5e9" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -257,16 +255,9 @@ export default function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={250} minWidth={250}>
               <BarChart data={topCategories}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
-                <XAxis dataKey="name" tick={{ fill: '#6b7280' }} />
-                <YAxis tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: '#6b7280' }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: 'none',
-                    borderRadius: '8px',
-                    color: '#fff',
-                  }}
-                />
+                <XAxis dataKey="name" tick={{ fill: axisTickColor }} />
+                <YAxis tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
+                <Tooltip contentStyle={tooltipStyle} />
                 <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]}>
                   {topCategories.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

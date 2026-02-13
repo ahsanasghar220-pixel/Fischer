@@ -79,7 +79,7 @@ class CategorySeeder extends Seeder
                     'Non-stick coating',
                     'Dual Heating element for Even temperature control',
                 ],
-                'image' => '/images/products/air-fryers/faf-801wd-backup.jpg',
+                'image' => '/images/products/air-fryers/faf-801wd.webp',
                 'icon' => 'air-fryer',
                 'is_active' => true,
                 'is_featured' => true,

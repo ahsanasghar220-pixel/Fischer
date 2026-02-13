@@ -28,14 +28,14 @@ export default function Wishlist() {
   const { data: items, isLoading } = useQuery<WishlistItem[]>({
     queryKey: ['wishlist'],
     queryFn: async () => {
-      const response = await api.get('/wishlist')
+      const response = await api.get('/api/wishlist')
       return response.data.data
     },
   })
 
   const removeMutation = useMutation({
     mutationFn: async (productId: number) => {
-      await api.post('/wishlist/toggle', { product_id: productId })
+      await api.post('/api/wishlist/toggle', { product_id: productId })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist'] })

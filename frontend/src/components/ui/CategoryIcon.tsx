@@ -426,12 +426,12 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
     return icons['air-fryers']
   }
   if (normalizedSlug.includes('kitchen') && normalizedSlug.includes('hood')) {
-    return icons['kitchen-hoods']
+    return icons['built-in-hoods']
+  }
+  if (normalizedSlug.includes('hood')) {
+    return icons['built-in-hoods']
   }
   if (normalizedSlug.includes('hob')) {
-    return icons['built-in-hobs']
-  }
-  if (normalizedSlug.includes('hood') && !normalizedSlug.includes('kitchen')) {
     return icons['built-in-hobs']
   }
   if (normalizedSlug.includes('geyser') || normalizedSlug.includes('heater')) {

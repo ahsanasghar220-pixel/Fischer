@@ -75,7 +75,7 @@ export default function Header() {
   const { data: categoriesData } = useQuery({
     queryKey: ['header-categories'],
     queryFn: async () => {
-      const response = await api.get('/categories')
+      const response = await api.get('/api/categories')
       return response.data.data
     },
     staleTime: 5 * 60 * 1000,

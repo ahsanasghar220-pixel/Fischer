@@ -194,7 +194,7 @@ export default function HomePageSettings() {
   const { data, isLoading, error } = useQuery<HomepageData>({
     queryKey: ['admin-homepage'],
     queryFn: async () => {
-      const response = await api.get('/admin/homepage')
+      const response = await api.get('/api/admin/homepage')
       return response.data.data
     },
   })
@@ -266,7 +266,7 @@ export default function HomePageSettings() {
 
   const updateStatsMutation = useMutation({
     mutationFn: async (statsData: Stat[]) => {
-      await api.put('/admin/homepage/stats', { stats: statsData })
+      await api.put('/api/admin/homepage/stats', { stats: statsData })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -277,7 +277,7 @@ export default function HomePageSettings() {
 
   const updateFeaturesMutation = useMutation({
     mutationFn: async (featuresData: Feature[]) => {
-      await api.put('/admin/homepage/features', { features: featuresData })
+      await api.put('/api/admin/homepage/features', { features: featuresData })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -288,7 +288,7 @@ export default function HomePageSettings() {
 
   const updateTrustBadgesMutation = useMutation({
     mutationFn: async (badgesData: TrustBadge[]) => {
-      await api.put('/admin/homepage/trust-badges', { badges: badgesData })
+      await api.put('/api/admin/homepage/trust-badges', { badges: badgesData })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -299,7 +299,7 @@ export default function HomePageSettings() {
 
   const updateNotableClientsMutation = useMutation({
     mutationFn: async (clientsData: NotableClient[]) => {
-      await api.put('/admin/homepage/notable-clients', { clients: clientsData })
+      await api.put('/api/admin/homepage/notable-clients', { clients: clientsData })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -312,7 +312,7 @@ export default function HomePageSettings() {
     mutationFn: async (file: File) => {
       const formData = new FormData()
       formData.append('logo', file)
-      const response = await api.post('/admin/homepage/notable-clients/upload', formData, {
+      const response = await api.post('/api/admin/homepage/notable-clients/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       return response.data.data
@@ -322,7 +322,7 @@ export default function HomePageSettings() {
 
   const updateCategoriesMutation = useMutation({
     mutationFn: async (categoryIds: number[]) => {
-      await api.put('/admin/homepage/categories', {
+      await api.put('/api/admin/homepage/categories', {
         categories: categoryIds.map((id, index) => ({
           category_id: id,
           sort_order: index,
@@ -357,7 +357,7 @@ export default function HomePageSettings() {
   // Banner mutations
   const createBannerMutation = useMutation({
     mutationFn: async (bannerData: Partial<Banner>) => {
-      await api.post('/admin/homepage/banners', bannerData)
+      await api.post('/api/admin/homepage/banners', bannerData)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -393,7 +393,7 @@ export default function HomePageSettings() {
   // Testimonial mutations
   const createTestimonialMutation = useMutation({
     mutationFn: async (testimonialData: Partial<Testimonial>) => {
-      await api.post('/admin/homepage/testimonials', testimonialData)
+      await api.post('/api/admin/homepage/testimonials', testimonialData)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })

@@ -426,7 +426,7 @@ export default function Home() {
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
     queryFn: async () => {
-      const response = await api.get('/home')
+      const response = await api.get('/api/home')
       return response.data.data
     },
   })
@@ -458,7 +458,7 @@ export default function Home() {
 
     setSubscribing(true)
     try {
-      await api.post('/newsletter/subscribe', { email: newsletterEmail })
+      await api.post('/api/newsletter/subscribe', { email: newsletterEmail })
       toast.success('Successfully subscribed to our newsletter!')
       setNewsletterEmail('')
     } catch (err: any) {
@@ -992,11 +992,11 @@ export default function Home() {
                         key={benefit.title}
                         className="p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
                                  hover:bg-white/15 hover:border-white/20 hover:-translate-y-1
-                                 transition-all duration-300"
+                                 transition-all duration-300 h-full flex flex-col"
                       >
                         <span className="text-4xl mb-4 block">{benefit.icon}</span>
                         <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
-                        <p className="text-dark-300">{benefit.desc}</p>
+                        <p className="text-dark-300 text-sm leading-relaxed">{benefit.desc}</p>
                       </div>
                     ))}
                   </StaggeredChildren>
