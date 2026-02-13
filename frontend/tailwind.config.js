@@ -8,19 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Fischer brand colors - Sophisticated Burgundy Wine
+        // Fischer brand colors - Deep Red
         primary: {
-          50: '#fdf2f4',
-          100: '#fce7eb',
-          200: '#f9d0d9',
-          300: '#f4a8b8',
-          400: '#ec7690',
-          500: '#722F37', // Main burgundy - sophisticated wine tone
-          600: '#5E2730',
-          700: '#4A1F27',
-          800: '#3D1920',
-          900: '#36171C',
-          950: '#1E0B0E',
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#951212', // Main deep red - bold and strong
+          600: '#7f1010',
+          700: '#6b0e0e',
+          800: '#570b0b',
+          900: '#430909',
+          950: '#2d0606',
         },
         dark: {
           50: '#fafafa',
@@ -156,8 +156,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 5px #722F37, 0 0 10px #722F37, 0 0 15px #722F37' },
-          '100%': { boxShadow: '0 0 10px #722F37, 0 0 20px #722F37, 0 0 30px #722F37' },
+          '0%': { boxShadow: '0 0 5px #951212, 0 0 10px #951212, 0 0 15px #951212' },
+          '100%': { boxShadow: '0 0 10px #951212, 0 0 20px #951212, 0 0 30px #951212' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
@@ -189,11 +189,11 @@ export default {
         pulseGlow: {
           '0%, 100%': {
             opacity: '0.6',
-            boxShadow: '0 0 20px rgba(114, 47, 55, 0.3)',
+            boxShadow: '0 0 20px rgba(149, 18, 18, 0.3)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 40px rgba(114, 47, 55, 0.6)',
+            boxShadow: '0 0 40px rgba(149, 18, 18, 0.6)',
           },
         },
         gradientShift: {
@@ -216,11 +216,11 @@ export default {
         },
         glowPulse: {
           '0%, 100%': {
-            boxShadow: '0 0 20px rgba(114, 47, 55, 0.4), 0 0 40px rgba(114, 47, 55, 0.2)',
+            boxShadow: '0 0 20px rgba(149, 18, 18, 0.4), 0 0 40px rgba(149, 18, 18, 0.2)',
             opacity: '1'
           },
           '50%': {
-            boxShadow: '0 0 40px rgba(114, 47, 55, 0.6), 0 0 60px rgba(114, 47, 55, 0.3)',
+            boxShadow: '0 0 40px rgba(149, 18, 18, 0.6), 0 0 60px rgba(149, 18, 18, 0.3)',
             opacity: '0.9'
           },
         },
@@ -261,8 +261,8 @@ export default {
       },
       boxShadow: {
         'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.1)',
-        'glow': '0 0 15px rgba(114, 47, 55, 0.5)',
-        'glow-lg': '0 0 30px rgba(114, 47, 55, 0.6)',
+        'glow': '0 0 15px rgba(149, 18, 18, 0.5)',
+        'glow-lg': '0 0 30px rgba(149, 18, 18, 0.6)',
         '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',

@@ -35,7 +35,7 @@ html.lenis, html.lenis body {
     --color-text-secondary: 55 55 62; /* Improved contrast: was 63 63 70 */
     --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
     --color-border: 228 228 231;
-    --color-accent: 114 47 55; /* Burgundy Wine #722F37 */
+    --color-accent: 149 18 18; /* Deep Red #951212 */
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(228, 228, 231, 0.5);
     --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -50,7 +50,7 @@ html.lenis, html.lenis body {
     --color-text-secondary: 220 220 224; /* Improved contrast: was 212 212 216 */
     --color-text-muted: 180 180 188; /* Improved contrast: was 161 161 170 (now 4.5:1 ratio) */
     --color-border: 63 63 70;
-    --color-accent: 180 80 95; /* Lighter burgundy for dark mode visibility */
+    --color-accent: 248 113 113; /* Lighter red for dark mode visibility #f87171 */
     --glass-bg: rgba(24, 24, 27, 0.8);
     --glass-border: rgba(255, 255, 255, 0.1);
   }
