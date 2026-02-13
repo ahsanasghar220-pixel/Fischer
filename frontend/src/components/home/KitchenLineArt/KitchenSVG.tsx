@@ -683,7 +683,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
         {/* Geyser heat indicator gradient */}
         <linearGradient id="geyserHeat" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style={{ stopColor: '#722F37', stopOpacity: 0.8 }}>
+          <stop offset="0%" style={{ stopColor: '#951212', stopOpacity: 0.8 }}>
             <animate attributeName="offset" values="0%;30%;0%" dur="3s" repeatCount="indefinite"/>
           </stop>
           <stop offset="50%" style={{ stopColor: '#f97316', stopOpacity: 0.5 }}>
@@ -1250,7 +1250,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
           </motion.g>
           <motion.circle
             cx="220" cy="330" r="5"
-            animate={{ fill: ['rgba(114,47,55,0.2)', 'rgba(114,47,55,0.5)', 'rgba(114,47,55,0.2)'] }}
+            animate={{ fill: ['rgba(149,18,18,0.2)', 'rgba(149,18,18,0.5)', 'rgba(149,18,18,0.2)'] }}
             transition={{ duration: 2, repeat: Infinity }}
             style={{ filter: 'url(#glow)' }}
           />
@@ -1378,7 +1378,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
             className="fill-primary-400/40"
             animate={{
               scale: [1, 1.1, 1],
-              fill: ['rgba(114,47,55,0.3)', 'rgba(114,47,55,0.5)', 'rgba(114,47,55,0.3)']
+              fill: ['rgba(149,18,18,0.3)', 'rgba(149,18,18,0.5)', 'rgba(149,18,18,0.3)']
             }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
             style={{ filter: 'url(#glow)' }}
@@ -1421,7 +1421,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
             strokeWidth="2"
             strokeLinecap="round"
             animate={{
-              stroke: ['rgba(114,47,55,0.6)', 'rgba(114,47,55,1)', 'rgba(114,47,55,0.6)'],
+              stroke: ['rgba(149,18,18,0.6)', 'rgba(149,18,18,1)', 'rgba(149,18,18,0.6)'],
               scale: [1, 1.1, 1]
             }}
             transition={{ duration: 2, repeat: Infinity }}

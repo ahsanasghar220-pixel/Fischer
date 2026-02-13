@@ -294,7 +294,7 @@ const colorMap: Record<string, { gradient: string; bg: string; text: string }> =
   emerald: { gradient: 'from-emerald-500 to-teal-400', bg: 'bg-emerald-500/10', text: '#10b981' },
   purple: { gradient: 'from-purple-500 to-pink-400', bg: 'bg-purple-500/10', text: '#a855f7' },
   orange: { gradient: 'from-orange-500 to-red-400', bg: 'bg-orange-500/10', text: '#f97316' },
-  primary: { gradient: 'from-primary-500 to-primary-400', bg: 'bg-primary-500/10', text: '#722F37' },
+  primary: { gradient: 'from-primary-500 to-primary-400', bg: 'bg-primary-500/10', text: '#951212' },
   red: { gradient: 'from-red-500 to-rose-400', bg: 'bg-red-500/10', text: '#ef4444' },
   green: { gradient: 'from-green-500 to-emerald-400', bg: 'bg-green-500/10', text: '#22c55e' },
   cyan: { gradient: 'from-cyan-500 to-blue-400', bg: 'bg-cyan-500/10', text: '#06b6d4' },

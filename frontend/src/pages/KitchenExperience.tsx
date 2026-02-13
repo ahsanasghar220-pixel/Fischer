@@ -237,8 +237,8 @@ function BlueprintFloorPlan() {
             transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 1.5 + i * 0.15 }}
             style={{ originX: `${zone.x}px`, originY: `${zone.y}px` }}
           >
-            <circle cx={zone.x} cy={zone.y} r={16} fill="rgba(114,47,55,0.15)" stroke="rgba(114,47,55,0.5)" strokeWidth={1} />
-            <circle cx={zone.x} cy={zone.y} r={4} fill="rgba(114,47,55,0.8)" />
+            <circle cx={zone.x} cy={zone.y} r={16} fill="rgba(149,18,18,0.15)" stroke="rgba(149,18,18,0.5)" strokeWidth={1} />
+            <circle cx={zone.x} cy={zone.y} r={4} fill="rgba(149,18,18,0.8)" />
             <text
               x={zone.x}
               y={zone.y + 28}
@@ -257,7 +257,7 @@ function BlueprintFloorPlan() {
         <motion.line
           x1={50}
           x2={550}
-          stroke="rgba(114,47,55,0.15)"
+          stroke="rgba(149,18,18,0.15)"
           strokeWidth={1}
           initial={{ y1: 30, y2: 30 }}
           animate={isInView ? { y1: [30, 270, 30], y2: [30, 270, 30] } : {}}
@@ -425,7 +425,7 @@ export default function KitchenExperience() {
         <div
           className="absolute inset-0 opacity-30"
           style={{
-            background: `radial-gradient(ellipse at 50% 50%, rgba(114,47,55,0.3) 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at 50% 50%, rgba(149,18,18,0.3) 0%, transparent 70%)`,
             transform: `rotate(${gradientAngle}deg)`,
           }}
         />

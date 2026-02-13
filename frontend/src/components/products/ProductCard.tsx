@@ -19,7 +19,7 @@ const shimmerStyle = `
   100% { transform: translateX(100%); }
 }
 @keyframes subtle-glow {
-  0%, 100% { box-shadow: 0 8px 32px rgba(114, 47, 55, 0.2); }
+  0%, 100% { box-shadow: 0 8px 32px rgba(149, 18, 18, 0.2); }
   50% { box-shadow: 0 12px 40px rgba(139, 64, 73, 0.3); }
 }
 `
@@ -450,7 +450,7 @@ const ProductCard = memo(function ProductCard({
             className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
                        ${isHovered ? 'opacity-100' : 'opacity-0'}`}
             style={{
-              boxShadow: '0 0 40px rgba(114, 47, 55, 0.25)',
+              boxShadow: '0 0 40px rgba(149, 18, 18, 0.25)',
               animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
             }}
           />
