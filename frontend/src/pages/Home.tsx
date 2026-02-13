@@ -22,7 +22,8 @@ import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import ProductCarousel from '@/components/products/ProductCarousel'
 import QuickViewModal from '@/components/products/QuickViewModal'
-import FullWidthBanner from '@/components/ui/FullWidthBanner'
+import BannerCarousel from '@/components/ui/BannerCarousel'
+import type { BannerSlide } from '@/components/ui/BannerCarousel'
 import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
 import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
@@ -414,6 +415,59 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
 }
 
 
+const bannerSlides: BannerSlide[] = [
+  {
+    image: '/images/banners/banner-geysers.webp',
+    imageAlt: 'Fischer Geysers',
+    title: 'Instant & Storage Geysers',
+    subtitle: 'Stay Warm This Winter',
+    description: 'Energy-efficient water heating solutions for every home',
+    ctaText: 'View Geysers',
+    ctaLink: '/shop?category=geysers',
+    textPosition: 'left',
+  },
+  {
+    image: '/images/banners/banner-hobs.webp',
+    imageAlt: 'Fischer Hoods & Hobs',
+    title: 'Built-in Hoods & Hobs',
+    subtitle: 'Kitchen Essentials',
+    description: 'German-engineered cooking appliances for the modern kitchen',
+    ctaText: 'Explore Range',
+    ctaLink: '/shop?category=built-in-hobs',
+    textPosition: 'left',
+  },
+  {
+    image: '/images/banners/banner-ovens.webp',
+    imageAlt: 'Fischer Ovens',
+    title: 'Ovens & Toasters',
+    subtitle: 'Bake Like a Pro',
+    description: 'Professional-grade ovens with precise temperature control',
+    ctaText: 'Shop Ovens',
+    ctaLink: '/shop?category=oven-toasters',
+    textPosition: 'left',
+  },
+  {
+    image: '/images/banners/banner-water-coolers.webp',
+    imageAlt: 'Fischer Water Coolers',
+    title: 'Water Coolers & Dispensers',
+    subtitle: 'Pure Refreshment',
+    description: 'Advanced filtration and cooling for clean, chilled water',
+    ctaText: 'View Coolers',
+    ctaLink: '/shop?category=water-coolers',
+    textPosition: 'left',
+  },
+  {
+    image: '/images/banners/banner-air-fryer.webp',
+    imageAlt: 'Fischer Air Fryers',
+    title: 'Digital Air Fryers',
+    subtitle: 'Healthy Cooking',
+    description: 'Crispy results with up to 80% less oil — smart & stylish',
+    ctaText: 'Shop Air Fryers',
+    ctaLink: '/shop?category=air-fryers',
+    textPosition: 'left',
+  },
+]
+
 export default function Home() {
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
@@ -782,17 +836,12 @@ export default function Home() {
         )}
 
         {/* ==========================================
-            FULL WIDTH BANNER - Premium Series
+            BANNER CAROUSEL - Product Categories
             ========================================== */}
-        <FullWidthBanner
-          title="Discover Fischer Premium Series"
-          subtitle="New Collection"
-          description="Experience the perfect blend of innovation and elegance in modern appliances"
-          image="/images/all-products.webp"
-          imageAlt="Fischer Premium Appliances"
-          ctaText="Explore Collection"
-          ctaLink="/shop"
-          textPosition="center"
+        <BannerCarousel
+          slides={bannerSlides}
+          autoPlay
+          autoPlayInterval={5000}
           height="lg"
         />
 

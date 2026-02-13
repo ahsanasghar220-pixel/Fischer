@@ -55,6 +55,16 @@ frontend/public/images/products/1 website data processed/
 INVOICE-FISCHER-PAKISTAN.html
 PRODUCT PORTFOLIO INFO.docx
 
+# Downloaded archives (Google Drive zips)
+*-20260213T*Z-*-001/
+
+# One-time reports
+IMAGE_CLEANUP_REPORT.md
+OPTIMIZATION_REPORT.md
+OPTIMIZATION_SUMMARY.md
+PRODUCT_CATALOG_REPORT.md
+AUDIT_REPORT.md
+
 # Backend uploaded storage (local only)
 /backend/public/storage/
 /backend/storage/app/

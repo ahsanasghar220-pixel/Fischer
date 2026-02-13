@@ -742,7 +742,7 @@ fischer/
 │   │   │   │       ├── OrderController.php
 │   │   │   │       └── ...
 │   │   │   └── Middleware/
-│   │   ├── Models/            # Eloquent Models (31 models)
+│   │   ├── Models/            # Eloquent Models (46 models)
 │   │   │   ├── User.php
 │   │   │   ├── Product.php
 │   │   │   ├── Category.php
@@ -1000,13 +1000,22 @@ All admin endpoints require authentication and admin role (`/api/admin/*`):
 
 ## Deployment
 
+### Hosting: Hostinger
+
+The platform is deployed on Hostinger shared hosting with the following setup:
+
+- **Domain:** fischer.codeformulator.com
+- **PHP Version:** 8.2+
+- **Database:** MySQL 8.0 (Hostinger managed)
+- **SSL:** Free SSL via Hostinger
+
 ### GitHub Actions CI/CD
 
 The project includes automated deployment via GitHub Actions:
 
 1. **Build:** React app built with Vite
 2. **Dependencies:** PHP dependencies installed via Composer
-3. **Deploy:** FTP deployment to hosting
+3. **Deploy:** FTP deployment to Hostinger
 4. **Migrate:** Database migrations via SSH
 5. **Cache:** Clear and rebuild caches
 
@@ -1014,14 +1023,14 @@ The project includes automated deployment via GitHub Actions:
 
 | Secret | Description |
 |--------|-------------|
-| `FTP_SERVER` | FTP server address |
+| `FTP_SERVER` | Hostinger FTP server address |
 | `FTP_USERNAME` | FTP username |
 | `FTP_PASSWORD` | FTP password |
 | `FTP_SERVER_DIR` | Target directory on server |
-| `SSH_HOST` | SSH hostname |
+| `SSH_HOST` | Hostinger SSH hostname |
 | `SSH_USERNAME` | SSH username |
 | `SSH_PASSWORD` | SSH password |
-| `SSH_PORT` | SSH port (usually 22 or custom) |
+| `SSH_PORT` | SSH port |
 | `SSH_SERVER_DIR` | Full server path |
 | `VITE_API_URL` | Production API URL |
 
@@ -1039,7 +1048,7 @@ php artisan migrate --force
 # Frontend
 cd frontend
 npm run build
-# Deploy dist/ folder to web server
+# Deploy dist/ folder to Hostinger public_html
 ```
 
 ---
@@ -1074,16 +1083,16 @@ npm run build
 
 | Element | Value |
 |---------|-------|
-| Primary Color (Maroon) | `#722f37` |
-| Primary Light | `#8b4049` |
-| Primary Dark | `#5a252c` |
+| Primary Color (Deep Red) | `#951212` |
+| Primary Light | `#b01515` |
+| Primary Dark | `#7a0f0f` |
 | Accent Color (Gold) | `#f4b42c` |
 | Dark Color | `#313131` |
 | Secondary Gray | `#8e8e8e` |
 | Font Family | Poppins |
 
 ### Color Usage
-- **Primary (Maroon)**: CTA buttons, links, active states, hover effects
+- **Primary (Deep Red)**: CTA buttons, links, active states, hover effects
 - **Accent (Gold)**: Highlights, badges, secondary actions
 - **Dark**: Text, headers, backgrounds
 - **Gray**: Secondary text, borders, disabled states
@@ -1092,9 +1101,9 @@ npm run build
 
 ## Summary Statistics
 
-- **Frontend Pages:** 35+ pages (public, auth, account, admin)
-- **API Controllers:** 21 public + 15+ admin controllers
-- **Database Models:** 35+ Eloquent models
+- **Frontend Pages:** 49+ pages (public, auth, account, admin)
+- **API Controllers:** 44 controllers (public + admin)
+- **Database Models:** 46 Eloquent models
 - **API Endpoints:** 110+ RESTful endpoints
 - **Admin Modules:** 15+ management sections
 - **Payment Methods:** 5 payment options
@@ -1116,7 +1125,7 @@ For detailed version history and updates, see [CHANGELOG.md](CHANGELOG.md)
 - Scroll reveal animations
 - Category-specific feature bullet points
 - Quick view modal for products
-- Maroon color scheme for CTAs
+- Deep Red color scheme for CTAs
 - Mobile responsiveness improvements
 - Description formatting fixes
 
@@ -1134,4 +1143,4 @@ Proprietary - Fischer Pakistan. All rights reserved.
 
 ---
 
-Built by the Fischer Pakistan Development Team with Claude Code
+Built by [CodeFormulator](https://codeformulator.com) with Claude Code
