@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -188,7 +189,7 @@ class OrderController extends Controller
             return $this->error('Order not found', 404);
         }
 
-        $pdf = \PDF::loadView('invoices.order', ['order' => $order]);
+        $pdf = Pdf::loadView('invoices.order', ['order' => $order]);
 
         return $pdf->download("Fischer-Invoice-{$order->order_number}.pdf");
     }

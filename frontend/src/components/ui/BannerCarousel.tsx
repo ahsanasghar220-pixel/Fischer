@@ -24,10 +24,10 @@ interface BannerCarouselProps {
 }
 
 const heightClasses = {
-  sm: 'h-[300px] md:h-[400px]',
-  md: 'h-[400px] md:h-[500px]',
-  lg: 'h-[500px] md:h-[600px]',
-  xl: 'h-[600px] md:h-[700px]',
+  sm: 'h-[220px] md:h-[400px]',
+  md: 'h-[260px] md:h-[500px]',
+  lg: 'h-[300px] md:h-[600px]',
+  xl: 'h-[360px] md:h-[700px]',
 }
 
 const positionClasses = {
@@ -107,10 +107,10 @@ const BannerCarousel = memo(function BannerCarousel({
           {(slide.title || slide.subtitle || slide.description) && (
             <div className="absolute inset-0 flex items-center">
               <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className={`flex flex-col ${positionClasses[textPos]} space-y-4 md:space-y-6`}>
+                <div className={`flex flex-col ${positionClasses[textPos]} space-y-2 md:space-y-6`}>
                   {slide.subtitle && (
                     <motion.p
-                      className="text-primary-400 text-sm md:text-base font-semibold tracking-wider uppercase"
+                      className="text-primary-400 text-xs md:text-base font-semibold tracking-wider uppercase"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
@@ -121,7 +121,7 @@ const BannerCarousel = memo(function BannerCarousel({
 
                   {slide.title && (
                     <motion.h2
-                      className="text-3xl md:text-5xl lg:text-6xl font-bold text-white max-w-4xl"
+                      className="text-xl md:text-5xl lg:text-6xl font-bold text-white max-w-4xl"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
@@ -132,7 +132,7 @@ const BannerCarousel = memo(function BannerCarousel({
 
                   {slide.description && (
                     <motion.p
-                      className="text-base md:text-xl text-white/90 max-w-2xl"
+                      className="text-sm md:text-xl text-white/90 max-w-2xl"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
@@ -143,19 +143,19 @@ const BannerCarousel = memo(function BannerCarousel({
 
                   {slide.ctaText && slide.ctaLink && (
                     <motion.div
-                      className="pt-2 md:pt-4"
+                      className="pt-1 md:pt-4"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
                     >
                       <Link
                         to={slide.ctaLink}
-                        className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-primary-500 hover:bg-primary-400
+                        className="inline-flex items-center gap-1.5 px-4 py-2 md:px-8 md:py-4 text-sm md:text-base bg-primary-500 hover:bg-primary-400
                                  text-dark-900 font-bold rounded-xl transition-all duration-300
                                  hover:scale-105 hover:shadow-xl hover:shadow-primary-500/50"
                       >
                         {slide.ctaText}
-                        <ArrowRightIcon className="w-5 h-5" />
+                        <ArrowRightIcon className="w-4 h-4 md:w-5 md:h-5" />
                       </Link>
                     </motion.div>
                   )}

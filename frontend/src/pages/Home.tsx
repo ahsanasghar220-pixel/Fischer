@@ -325,9 +325,28 @@ interface CategoryShowcaseProps {
 
 function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
   const ref = useRef(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const videoContainerRef = useRef<HTMLDivElement>(null)
+  const isVideoInView = useInView(videoContainerRef, { once: false, amount: 0.3 })
+  const [videoFailed, setVideoFailed] = useState(false)
   const isEven = index % 2 === 0
   const videoSrc = categoryVideos[category.slug]
+
+  // Explicitly call play/pause for mobile browsers (iOS Safari ignores autoPlay)
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !videoSrc || videoFailed) return
+
+    if (isVideoInView) {
+      video.play().catch(() => {
+        // If play fails (e.g. browser policy), fall back to image
+        setVideoFailed(true)
+      })
+    } else {
+      video.pause()
+    }
+  }, [isVideoInView, videoSrc, videoFailed])
 
   return (
     <motion.div
@@ -341,16 +360,19 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
       {/* Video / Image Side */}
-      <div className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
+      <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
-          {videoSrc ? (
+          {videoSrc && !videoFailed ? (
             <video
+              ref={videoRef}
               className="w-full h-full object-cover"
               autoPlay
               loop
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
+              poster={category.image || undefined}
+              onError={() => setVideoFailed(true)}
             >
               <source src={videoSrc} type="video/mp4" />
             </video>

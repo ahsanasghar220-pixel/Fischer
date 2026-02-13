@@ -293,7 +293,6 @@ html.lenis, html.lenis body {
            border border-dark-100 dark:border-dark-700/50
            shadow-lg hover:shadow-2xl
            transition-all duration-300 ease-out;
-    min-height: 420px;
     display: flex;
     flex-direction: column;
   }
@@ -1611,23 +1610,29 @@ html.lenis, html.lenis body {
     @apply text-xl font-bold;
   }
 
-  /* Larger touch targets on mobile */
+  /* Larger touch targets on mobile — exclude small UI controls */
   button, a[role="button"], input[type="button"], input[type="submit"] {
     min-height: 44px;
     min-width: 44px;
   }
 
+  /* Reset min-size for intentionally small buttons */
+  .product-card .product-actions button,
+  .product-card .product-wishlist,
+  [class*="banner"] button,
+  [class*="carousel"] button,
+  [aria-label="Previous slide"],
+  [aria-label="Next slide"],
+  [aria-label^="Go to slide"] {
+    min-height: 0;
+    min-width: 0;
+  }
+
   /* Product cards - simplified on mobile */
   .product-card {
     @apply shadow-sm hover:shadow-md;
-    min-height: 380px;
     display: flex;
     flex-direction: column;
-  }
-
-  .product-card .product-image {
-    flex-shrink: 0;
-    height: 200px;
   }
 
   .product-card .product-info {
