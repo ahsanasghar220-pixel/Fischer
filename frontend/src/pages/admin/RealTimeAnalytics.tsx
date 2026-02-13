@@ -38,7 +38,7 @@ const TRAFFIC_COLORS: Record<string, string> = {
   email: '#06b6d4',
 }
 
-const FUNNEL_COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444']
+const FUNNEL_COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#951212']
 
 interface OverviewData {
   active_visitors: number

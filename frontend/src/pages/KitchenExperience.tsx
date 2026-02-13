@@ -95,8 +95,8 @@ const kitchenZones = [
     tagline: 'Bake, Grill, Toast — All in One',
     description: 'Versatile countertop ovens with convection heating, rotisserie, and precise temperature control for every recipe in your repertoire.',
     features: ['Convection', 'Rotisserie', 'Timer Control', 'Multi-Rack'],
-    color: 'from-rose-400 to-pink-500',
-    accent: 'bg-rose-500/10',
+    color: 'from-primary-500 to-primary-600',
+    accent: 'bg-primary-500/10',
   },
 ]
 

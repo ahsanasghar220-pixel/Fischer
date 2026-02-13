@@ -10,12 +10,26 @@ export default {
       colors: {
         // Fischer brand colors - Deep Red
         primary: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#951212', // Main deep red - bold and strong
+          50: '#951212',  // All shades map to the brand deep red
+          100: '#951212',
+          200: '#951212',
+          300: '#951212',
+          400: '#951212',
+          500: '#951212', // Main deep red
+          600: '#7f1010', // Slightly darker for hover
+          700: '#6b0e0e', // Darker for active/pressed
+          800: '#570b0b',
+          900: '#430909',
+          950: '#2d0606',
+        },
+        // Override default red to match brand
+        red: {
+          50: '#951212',
+          100: '#951212',
+          200: '#951212',
+          300: '#951212',
+          400: '#951212',
+          500: '#951212',
           600: '#7f1010',
           700: '#6b0e0e',
           800: '#570b0b',
@@ -42,19 +56,19 @@ export default {
           emerald: '#10b981',
           orange: '#f97316',
           purple: '#8b5cf6',
-          // Full red palette for Fotile-inspired mobile design
+          // Red palette matching brand deep red
           red: {
-            50: '#fef2f2',
-            100: '#fee2e2',
-            200: '#fecaca',
-            300: '#fca5a5',
-            400: '#f87171',
-            500: '#ef4444', // Main mobile red
-            600: '#dc2626', // Darker for dark mode
-            700: '#b91c1c',
-            800: '#991b1b',
-            900: '#7f1d1d',
-            950: '#450a0a',
+            50: '#951212',
+            100: '#951212',
+            200: '#951212',
+            300: '#951212',
+            400: '#951212',
+            500: '#951212',
+            600: '#7f1010',
+            700: '#6b0e0e',
+            800: '#570b0b',
+            900: '#430909',
+            950: '#2d0606',
           },
         },
       },

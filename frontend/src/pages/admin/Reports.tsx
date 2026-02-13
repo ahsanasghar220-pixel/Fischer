@@ -21,7 +21,7 @@ import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { useTheme } from '@/contexts/ThemeContext'
 
-const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
+const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#951212', '#8b5cf6', '#ec4899']
 
 type ReportType = 'sales' | 'products' | 'customers' | 'inventory'
 
@@ -405,7 +405,7 @@ export default function AdminReports() {
                   >
                     <Cell fill="#10b981" />
                     <Cell fill="#f59e0b" />
-                    <Cell fill="#ef4444" />
+                    <Cell fill="#951212" />
                     <Cell fill="#6b7280" />
                   </Pie>
                   <Tooltip />

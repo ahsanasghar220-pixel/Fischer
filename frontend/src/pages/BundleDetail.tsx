@@ -269,7 +269,7 @@ export default function BundleDetail() {
                   {bundle.badge_label && (
                     <div className={`absolute top-4 left-4 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide text-white bg-gradient-to-r ${
                       bundle.badge_color === 'gold' ? 'from-primary-500 to-primary-400' :
-                      bundle.badge_color === 'red' ? 'from-red-500 to-rose-400' :
+                      bundle.badge_color === 'red' ? 'from-primary-500 to-primary-600' :
                       bundle.badge_color === 'blue' ? 'from-blue-500 to-cyan-400' :
                       'from-green-500 to-emerald-400'
                     } shadow-lg`}>

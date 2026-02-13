@@ -96,7 +96,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
             <stop offset="100%" stopColor="#fb923c" />
           </linearGradient>
           <linearGradient id={`${uid}FL`} x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stopColor="#dc2626" />
+            <stop offset="0%" stopColor="#951212" />
             <stop offset="50%" stopColor="#f97316" />
             <stop offset="100%" stopColor="#951212" />
           </linearGradient>
@@ -251,8 +251,8 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
         <line x1="40" y1="38" x2="40" y2="58" stroke={`url(#${uid}OT)`} strokeWidth="1" opacity="0.3" />
         <line x1="20" y1="48" x2="60" y2="48" stroke={`url(#${uid}OT)`} strokeWidth="1" opacity="0.3" />
         {/* Heating elements visible through window */}
-        <path d="M26 42 Q28 40 30 42 Q32 44 34 42" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
-        <path d="M26 54 Q28 52 30 54 Q32 56 34 54" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        <path d="M26 42 Q28 40 30 42 Q32 44 34 42" stroke="#951212" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        <path d="M26 54 Q28 52 30 54 Q32 56 34 54" stroke="#951212" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
         {/* Door handle */}
         <rect x="32" y="62" width="16" height="4" rx="2" fill={`url(#${uid}OT)`} />
       </svg>
