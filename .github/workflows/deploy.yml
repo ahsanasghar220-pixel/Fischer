@@ -131,17 +131,26 @@ jobs:
             echo "=== Running migrations ==="
             $PHP artisan migrate --force --verbose 2>&1
 
-            # Seed data (safe for production - uses updateOrCreate)
-            echo "=== Seeding data ==="
-            $PHP artisan db:seed --force --verbose 2>&1 || echo "Seeding completed or skipped"
+            # Seed all data (run each seeder explicitly for better error visibility)
+            echo "=== Seeding Categories ==="
+            $PHP artisan db:seed --class=CategorySeeder --force --verbose
 
-            # Explicitly run CategorySeeder to update category images
-            echo "=== Ensuring categories are seeded ==="
-            $PHP artisan db:seed --class=CategorySeeder --force --verbose 2>&1 || echo "CategorySeeder completed or skipped"
+            echo "=== Seeding Products ==="
+            $PHP artisan db:seed --class=ProductSeeder --force --verbose
 
-            # Explicitly run ProductSeeder to ensure products exist
-            echo "=== Ensuring products are seeded ==="
-            $PHP artisan db:seed --class=ProductSeeder --force --verbose 2>&1 || echo "ProductSeeder completed or skipped"
+            echo "=== Seeding Banners ==="
+            $PHP artisan db:seed --class=BannerSeeder --force --verbose
+
+            echo "=== Seeding Homepage Settings ==="
+            $PHP artisan db:seed --class=HomepageSeeder --force --verbose
+
+            echo "=== Seeding Settings ==="
+            $PHP artisan db:seed --class=SettingsSeeder --force --verbose || echo "SettingsSeeder skipped (may not exist)"
+
+            echo "=== Seeding Pages ==="
+            $PHP artisan db:seed --class=PageSeeder --force --verbose || echo "PageSeeder skipped (may not exist)"
+
+            echo "=== All seeders completed ==="
 
             # Clear all caches first
             $PHP artisan cache:clear || true
