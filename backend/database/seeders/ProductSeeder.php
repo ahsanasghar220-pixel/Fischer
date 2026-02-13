@@ -20,26 +20,26 @@ class ProductSeeder extends Seeder
         \Illuminate\Support\Facades\DB::table('products')->truncate();
         \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Seed all product categories
+        // Seed all product categories (order matches folder structure)
         $this->seedKitchenHoods($brand);
         $this->seedKitchenHobs($brand);
-        $this->seedGasWaterHeaters($brand);
-        $this->seedHybridGeysers($brand);
-        $this->seedFastElectricWaterHeaters($brand);
-        $this->seedInstantElectricWaterHeaters($brand);
-        $this->seedWaterCoolers($brand);
-        $this->seedSlimWaterCoolers($brand);
-        $this->seedWaterDispensers($brand);
-        $this->seedStorageCoolers($brand);
+        $this->seedCookingRanges($brand);
         $this->seedOvenToasters($brand);
         $this->seedAirFryers($brand);
-        $this->seedCookingRanges($brand);
+        $this->seedWaterCoolers($brand);
+        $this->seedSlimWaterCoolers($brand);
+        $this->seedStorageCoolers($brand);
+        $this->seedWaterDispensers($brand);
+        $this->seedWaterHeaters($brand);
+        $this->seedFastElectricWaterHeaters($brand);
+        $this->seedInstantElectricWaterHeaters($brand);
+        $this->seedHybridGeysers($brand);
         $this->seedAccessories($brand);
     }
 
     private function seedKitchenHoods(Brand $brand): void
     {
-        $category = Category::where('slug', 'built-in-hoods')->first();
+        $category = Category::where('slug', 'kitchen-hoods')->first();
 
         $products = [
             [
@@ -57,7 +57,7 @@ class ProductSeeder extends Seeder
                     'Control' => 'Touch/Gesture',
                     'Features' => 'Auto-Heating Clean',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-t90-05s.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-T90-05S/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -78,43 +78,43 @@ class ProductSeeder extends Seeder
                     'Features' => 'Heat Auto Clean',
                     'Lighting' => 'LED Lamp',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-h90-06s.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_new' => true,
             ],
             [
-                'name' => 'Kitchen Hood FKH-T90-03IN',
-                'sku' => 'FKH-T90-03IN',
-                'model_number' => 'FKH-T90-03IN',
+                'name' => 'Kitchen Hood FKH-T90-031N',
+                'sku' => 'FKH-T90-031N',
+                'model_number' => 'FKH-T90-031N',
                 'price' => 49375,
                 'short_description' => '3-Speed + Boost, Baffle Filters, Galvanized Sheet, Heavy Gauge Oil Cup',
                 'description' => 'Premium hood with 3 Speed + Boost. Baffle filters with galvanized sheet construction. Heavy gauge oil cup for easy maintenance.',
                 'specifications' => [
-                    'Model' => 'FKH-T90-03IN',
+                    'Model' => 'FKH-T90-031N',
                     'Control' => '3 Speed + Boost',
                     'Filters' => 'Baffle Filters',
                     'Construction' => 'Galvanized Sheet',
                     'Features' => 'Heavy Gauge Oil Cup',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-t90-03in.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-T90-031N/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
-                'name' => 'Kitchen Hood FKH-S90-02IN',
-                'sku' => 'FKH-S90-02IN',
-                'model_number' => 'FKH-S90-02IN',
+                'name' => 'Kitchen Hood FKH-S90-021N',
+                'sku' => 'FKH-S90-021N',
+                'model_number' => 'FKH-S90-021N',
                 'price' => 57500,
                 'short_description' => 'Slant Hood, 1200 m³/h Airflow, BLDC Motor, Filterless, Tempered Glass',
                 'description' => 'Elegant Slant Hood design with 1200 m³/h airflow. BLDC motor with filterless operation and tempered glass panel.',
                 'specifications' => [
-                    'Model' => 'FKH-S90-02IN',
+                    'Model' => 'FKH-S90-021N',
                     'Style' => 'Slant Hood',
                     'Airflow' => '1200 m³/h',
                     'Motor' => 'BLDC',
                     'Features' => 'Filterless, Tempered Glass',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-s90-02in.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-S90-021N/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -131,7 +131,7 @@ class ProductSeeder extends Seeder
                     'Noise' => '52 dB',
                     'Lighting' => 'LED Lamp',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-t90-04sc.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-T90-04SC/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -152,7 +152,7 @@ class ProductSeeder extends Seeder
                     'Lighting' => 'Dual LED Lamps',
                     'Special' => 'Zero Vibration',
                 ],
-                'image' => '/images/products/kitchen-hoods/fkh-l90-01in.webp',
+                'image' => '/images/products/kitchen-hoods/FKH-L90-01IN/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_bestseller' => true,
@@ -164,7 +164,7 @@ class ProductSeeder extends Seeder
 
     private function seedKitchenHobs(Brand $brand): void
     {
-        $category = Category::where('slug', 'built-in-hobs')->first();
+        $category = Category::where('slug', 'kitchen-hobs')->first();
 
         $products = [
             [
@@ -181,7 +181,7 @@ class ProductSeeder extends Seeder
                     'Ignition' => 'Battery Pulse',
                     'Gas Type' => '2000 Pa (NG)',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-ss76-3eps.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-SS76-3EPS/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -197,7 +197,7 @@ class ProductSeeder extends Seeder
                     'Burner' => 'SABAF',
                     'Features' => 'Dual Gas Compatibility',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-ss84-3sbf.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-SS84-3SBF/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -213,7 +213,7 @@ class ProductSeeder extends Seeder
                     'Pan Support' => 'Heavy Cast Iron',
                     'Burner' => 'Brass',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-ss76-3cb.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-SS76-3CB/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -231,7 +231,7 @@ class ProductSeeder extends Seeder
                     'Ignition' => 'Battery Pulse',
                     'Gas Type' => '2000 Pa (NG)',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-g78-3cb.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-G78-3CB/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -249,7 +249,7 @@ class ProductSeeder extends Seeder
                     'Burner' => '3-in-1 Aluminum',
                     'Knobs' => 'Zinc Alloy',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-g78-3cb-matte.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-G78-3CB-MATTE/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -268,7 +268,7 @@ class ProductSeeder extends Seeder
                     'Burner Count' => '5',
                     'Features' => 'Dual Gas Compatibility',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-g90-5sbf.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-G90-5SBF/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -286,7 +286,7 @@ class ProductSeeder extends Seeder
                     'Burner Count' => '5',
                     'Features' => 'Dual Gas Compatibility',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-ss90-5sbf.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -302,7 +302,7 @@ class ProductSeeder extends Seeder
                     'Burner' => 'Brass',
                     'Pan Support' => 'Heavy Iron',
                 ],
-                'image' => '/images/products/kitchen-hobs/fbh-ss86-3cb.webp',
+                'image' => '/images/products/kitchen-hobs/FBH-SS86-3CB/1.webp',
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -311,9 +311,9 @@ class ProductSeeder extends Seeder
         $this->createProducts($products, $category, $brand);
     }
 
-    private function seedGasWaterHeaters(Brand $brand): void
+    private function seedWaterHeaters(Brand $brand): void
     {
-        $category = Category::where('slug', 'gas-water-heaters')->first();
+        $category = Category::where('slug', 'water-heaters')->first();
 
         $products = [
             [
@@ -327,7 +327,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '6 Liter',
                     'Type' => 'Instant Gas',
                 ],
-                'image' => '/images/products/gas-water-heaters/figwh-6l.webp',
+                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -341,7 +341,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '8 Liter',
                     'Type' => 'Instant Gas',
                 ],
-                'image' => '/images/products/gas-water-heaters/figwh-8l.webp',
+                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -355,7 +355,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '10 Liter',
                     'Type' => 'Instant Gas',
                 ],
-                'image' => '/images/products/gas-water-heaters/figwh-10l.webp',
+                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -371,7 +371,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '35 Gallon',
                     'Type' => 'Gas Geyser',
                 ],
-                'image' => '/images/products/gas-water-heaters/fgg-35g.webp',
+                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -386,7 +386,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '55 Gallon',
                     'Type' => 'Gas Geyser',
                 ],
-                'image' => '/images/products/gas-water-heaters/fgg-55g.webp',
+                'image' => '/images/products/hybrid-geysers/fhg-55g.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -401,7 +401,7 @@ class ProductSeeder extends Seeder
                     'Capacity' => '65 Gallon',
                     'Type' => 'Gas Geyser',
                 ],
-                'image' => '/images/products/gas-water-heaters/fgg-65g.webp',
+                'image' => '/images/products/water-heaters/fgg-65g.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -418,7 +418,7 @@ class ProductSeeder extends Seeder
                     'Insulation' => 'Imported Glass Wool',
                     'Inner Tank' => '9/10 Gauge',
                 ],
-                'image' => '/images/products/gas-water-heaters/fgg-100g-hd.webp',
+                'image' => '/images/products/hybrid-geysers/fhg-100g-hd.webp',
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -786,7 +786,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-35ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-35ltr.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -805,7 +805,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-45ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-45ltr.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -824,7 +824,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-65ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-65ltr.webp',
                 'stock_status' => 'in_stock',
                 'average_rating' => 4.0,
             ],
@@ -843,7 +843,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-80ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-80ltr.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -861,7 +861,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-100ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-100ltr.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_bestseller' => true,
@@ -881,7 +881,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => '100% Pure Copper External',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/water-cooler-150ltr.webp',
+                'image' => '/images/products/water-coolers/water-cooler-150ltr.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -899,7 +899,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Stainless Steel',
                     'Coiling' => '100% Pure Copper',
                 ],
-                'image' => '/images/products/water-cooler-fe200ss.webp',
+                'image' => '/images/products/water-coolers/water-cooler-fe200ss.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -917,7 +917,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Stainless Steel',
                     'Coiling' => '100% Pure Copper',
                 ],
-                'image' => '/images/products/water-cooler-fe300ss.webp',
+                'image' => '/images/products/water-coolers/water-cooler-fe300ss.webp',
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
@@ -1023,7 +1023,7 @@ class ProductSeeder extends Seeder
                     'Features' => 'Hot & Cold Water',
                     'Material' => 'Food-grade Components',
                 ],
-                'image' => '/images/products/water-dispensers/fwd-bottle.webp',
+                'image' => '/images/products/water-dispensers/1.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -1039,7 +1039,7 @@ class ProductSeeder extends Seeder
                     'Tank' => 'Food-grade Stainless Steel',
                     'Coiling' => '100% Pure Copper',
                 ],
-                'image' => '/images/products/water-dispensers/fwd-fountain.webp',
+                'image' => '/images/products/water-dispensers/2.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -1056,7 +1056,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Food-grade Components',
                     'Certifications' => 'ISO, PSQCA Approved',
                 ],
-                'image' => '/images/products/water-dispensers/fwd-1150.webp',
+                'image' => '/images/products/water-dispensers/3.webp',
                 'stock_status' => 'in_stock',
             ],
         ];
@@ -1066,7 +1066,7 @@ class ProductSeeder extends Seeder
 
     private function seedStorageCoolers(Brand $brand): void
     {
-        $category = Category::where('slug', 'storage-type-water-coolers')->first();
+        $category = Category::where('slug', 'storage-coolers')->first();
 
         $products = [
             [
@@ -1217,7 +1217,7 @@ class ProductSeeder extends Seeder
                     'Functions' => '11-in-1',
                     'Timer' => '120 minutes',
                 ],
-                'image' => '/images/products/oven-toasters/fot-1901d.webp',
+                'image' => '/images/products/oven-toasters/FOT-1901D/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
                 'is_featured' => true,
@@ -1237,7 +1237,7 @@ class ProductSeeder extends Seeder
                     'Function' => 'Convection',
                     'Timer' => '60 minutes',
                 ],
-                'image' => '/images/products/oven-toasters/fot-2501c.webp',
+                'image' => '/images/products/oven-toasters/FOT-2501C/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -1265,7 +1265,7 @@ class ProductSeeder extends Seeder
                     'Programs' => '8 Cooking Programs',
                     'Technology' => 'Oil-free Frying',
                 ],
-                'image' => '/images/products/air-fryers/faf-401wd.webp',
+                'image' => '/images/products/air-fryers/FAF-401WD/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
             ],
@@ -1283,7 +1283,7 @@ class ProductSeeder extends Seeder
                     'Programs' => '8 Cooking Programs',
                     'Technology' => 'Oil-free Frying',
                 ],
-                'image' => '/images/products/air-fryers/faf-601wd.webp',
+                'image' => '/images/products/air-fryers/FAF-601WD/1.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
                 'is_new' => true,
@@ -1302,7 +1302,7 @@ class ProductSeeder extends Seeder
                     'Programs' => '8 Cooking Programs',
                     'Technology' => 'Oil-free Frying',
                 ],
-                'image' => '/images/products/air-fryers/faf-801wd.webp',
+                'image' => '/images/products/air-fryers/FAF-801WD/1.webp',
                 'stock_status' => 'in_stock',
                 'is_new' => true,
                 'is_bestseller' => true,
@@ -1526,7 +1526,7 @@ class ProductSeeder extends Seeder
 
     private function seedAccessories(Brand $brand): void
     {
-        $category = Category::where('slug', 'blenders-processors')->first();
+        $category = Category::where('slug', 'accessories')->first();
 
         $products = [
             [

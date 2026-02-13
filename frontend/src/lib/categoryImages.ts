@@ -5,44 +5,46 @@
  */
 
 const CATEGORY_IMAGE_MAP: Record<string, string> = {
-  'water-coolers': '/images/products/water-coolers/fe-150-ss.webp',
+  // Match paths from CategorySeeder.php
+  'kitchen-hoods': '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
+  'built-in-hoods': '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
+  'kitchen-hobs': '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp',
+  'built-in-hobs': '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp',
   'cooking-ranges': '/images/products/cooking-ranges/fcr-5bb.webp',
-  'geysers-heaters': '/images/products/hybrid-geysers/fhg-65g.webp',
-  'hobs-hoods': '/images/products/hob.webp',
-  'built-in-hobs': '/images/products/hob.webp',
-  'kitchen-hobs': '/images/products/kitchen-hobs/fbh-g90-5sbf.webp',
-  'water-dispensers': '/images/products/water-dispensers/fwd-fountain.webp',
-  'storage-coolers': '/images/products/storage-coolers/fst-200.webp',
-  'kitchen-hoods': '/images/products/kitchen-hoods/fkh-h90-06s.webp',
-  'built-in-hoods': '/images/products/kitchen-hoods/fkh-h90-06s.webp',
-  'oven-toasters': '/images/products/oven-toasters/fot-2501c-full.webp',
-  'air-fryers': '/images/products/air-fryers/faf-801wd.webp',
-  'blenders-processors': '/images/products/accessories/fac-bl3.webp',
-  'instant-electric-water-heaters': '/images/products/instant-electric-water-heaters/fiewhs-25l.webp',
-  'gas-water-heaters': '/images/products/gas-water-heaters/fgg-55g.webp',
-  'fast-electric-water-heaters': '/images/products/fast-electric-water-heaters/ffew-f50.webp',
-  'hybrid-geysers': '/images/products/hybrid-geysers/fhg-65g.webp',
+  'oven-toasters': '/images/products/oven-toasters/FOT-2501C/1.webp',
+  'air-fryers': '/images/products/air-fryers/FAF-801WD/1.webp',
+  'water-coolers': '/images/products/water-coolers/water-cooler-35ltr.webp',
   'slim-water-coolers': '/images/products/slim-water-coolers/fe-35-slim.webp',
-  'accessories': '/images/products/accessories/fac-irn.webp',
+  'storage-coolers': '/images/products/storage-coolers/fst-200.webp',
+  'water-dispensers': '/images/products/water-dispensers/1.webp',
+  'water-heaters': '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
+  'fast-electric-water-heaters': '/images/products/fast-electric-water-heaters/ffeg-f100.webp',
+  'instant-electric-water-heaters': '/images/products/instant-electric-water-heaters/fiewhs-25l.webp',
+  'hybrid-geysers': '/images/products/hybrid-geysers/fhg-65g.webp',
+  'accessories': '/images/products/accessories/fac-bl2.webp',
+  // Legacy aliases
+  'geysers-heaters': '/images/products/hybrid-geysers/fhg-65g.webp',
+  'hobs-hoods': '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp',
+  'blenders-processors': '/images/products/accessories/fac-bl3.webp',
 }
 
-// Keywords from slugs for fuzzy matching
+// Keywords from slugs for fuzzy matching - using correct paths from CategorySeeder
 const SLUG_KEYWORDS: Array<[string[], string]> = [
-  [['water', 'cooler'], '/images/products/water-coolers/fe-150-ss.webp'],
+  [['water', 'cooler'], '/images/products/water-coolers/water-cooler-35ltr.webp'],
   [['cooking', 'range'], '/images/products/cooking-ranges/fcr-5bb.webp'],
   [['geyser', 'heater'], '/images/products/hybrid-geysers/fhg-65g.webp'],
-  [['hob'], '/images/products/hob.webp'],
-  [['hood'], '/images/products/kitchen-hoods/fkh-h90-06s.webp'],
-  [['dispenser'], '/images/products/water-dispensers/fwd-fountain.webp'],
+  [['hob'], '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp'],
+  [['hood'], '/images/products/kitchen-hoods/FKH-H90-06S/1.webp'],
+  [['dispenser'], '/images/products/water-dispensers/1.webp'],
   [['storage', 'cooler'], '/images/products/storage-coolers/fst-200.webp'],
-  [['oven', 'toaster'], '/images/products/oven-toasters/fot-2501c-full.webp'],
-  [['air', 'fryer'], '/images/products/air-fryers/faf-801wd.webp'],
+  [['oven', 'toaster'], '/images/products/oven-toasters/FOT-2501C/1.webp'],
+  [['air', 'fryer'], '/images/products/air-fryers/FAF-801WD/1.webp'],
   [['blender'], '/images/products/accessories/fac-bl3.webp'],
   [['electric', 'water', 'heater'], '/images/products/instant-electric-water-heaters/fiewhs-25l.webp'],
-  [['gas', 'water', 'heater'], '/images/products/gas-water-heaters/fgg-55g.webp'],
+  [['hybrid'], '/images/products/hybrid-geysers/fhg-65g.webp'],
   [['freezer'], '/images/products/storage-coolers/fst-200.webp'],
   [['slim'], '/images/products/slim-water-coolers/fe-35-slim.webp'],
-  [['accessor'], '/images/products/accessories/fac-irn.webp'],
+  [['accessor'], '/images/products/accessories/fac-bl2.webp'],
 ]
 
 /**

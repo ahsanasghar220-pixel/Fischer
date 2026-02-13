@@ -98,7 +98,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
           <linearGradient id={`${uid}FL`} x1="0%" y1="100%" x2="0%" y2="0%">
             <stop offset="0%" stopColor="#dc2626" />
             <stop offset="50%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#8B4049" />
+            <stop offset="100%" stopColor="#951212" />
           </linearGradient>
         </defs>
         {/* Wall mount bracket */}
@@ -132,7 +132,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
           </linearGradient>
           <linearGradient id={`${uid}BF`} x1="0%" y1="100%" x2="0%" y2="0%">
             <stop offset="0%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#8B4049" />
+            <stop offset="100%" stopColor="#951212" />
           </linearGradient>
         </defs>
         {/* Cooktop surface */}
@@ -394,7 +394,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
         <defs>
           <linearGradient id={`${uid}AC`} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#951212" />
-            <stop offset="100%" stopColor="#8B4049" />
+            <stop offset="100%" stopColor="#951212" />
           </linearGradient>
         </defs>
         {/* Wrench */}
@@ -462,7 +462,7 @@ export default function CategoryIcon({ slug, className = "w-20 h-20" }: { slug: 
       <defs>
         <linearGradient id={`${uid}DF`} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#951212" />
-          <stop offset="100%" stopColor="#8B4049" />
+          <stop offset="100%" stopColor="#951212" />
         </linearGradient>
       </defs>
       <rect x="15" y="15" width="50" height="50" rx="8" stroke={`url(#${uid}DF)`} strokeWidth="2.5" fill={`url(#${uid}DF)`} opacity="0.15" />

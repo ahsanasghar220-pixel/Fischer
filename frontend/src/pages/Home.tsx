@@ -310,8 +310,8 @@ const getCategoryFeatures = (category: Category): string[] => {
 
 // Map category slugs to video files
 const categoryVideos: Record<string, string> = {
-  'built-in-hoods': '/videos/categories/built-in-hoods.mp4',
-  'built-in-hobs': '/videos/categories/built-in-hobs.mp4',
+  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
+  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
   'oven-toasters': '/videos/categories/oven-toasters.mp4',
   'air-fryers': '/videos/categories/air-fryers.mp4',
 }

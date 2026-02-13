@@ -1,0 +1,151 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches:
+      - main  # Change to your production branch if different
+  workflow_dispatch:  # Allows manual triggering from GitHub Actions tab
+
+env:
+  AZURE_WEBAPP_NAME: fischer-pakistan    # Replace with your Azure App Service name
+  PHP_VERSION: '8.2'
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ============================================
+      # Frontend Build
+      # ============================================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}  # Set this in GitHub Secrets
+
+      # ============================================
+      # Backend Setup
+      # ============================================
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, json, zip
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        working-directory: backend
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      # ============================================
+      # Create Deployment Package
+      # ============================================
+      - name: Create deployment package
+        run: |
+          # Create deployment directory
+          mkdir -p deploy
+
+          # Copy backend files (including vendor since we installed with composer)
+          cp -r backend/* deploy/
+
+          # Copy frontend build to public folder
+          mkdir -p deploy/public
+          cp -r frontend/dist/* deploy/public/
+
+          # Remove unnecessary files
+          rm -rf deploy/tests
+          rm -rf deploy/.env.example
+          rm -rf deploy/phpunit.xml
+          rm -rf deploy/.git
+
+          # Create required directories
+          mkdir -p deploy/storage/app/public
+          mkdir -p deploy/storage/framework/{cache,sessions,views}
+          mkdir -p deploy/storage/logs
+          mkdir -p deploy/bootstrap/cache
+
+          # Set proper permissions (Azure will handle this, but good practice)
+          chmod -R 755 deploy/storage
+          chmod -R 755 deploy/bootstrap/cache
+
+          echo "Deployment package created successfully"
+
+      - name: Create .deployment file for Azure
+        run: |
+          cat > deploy/.deployment << 'EOF'
+          [config]
+          project = .
+          EOF
+
+      # ============================================
+      # Deploy to Azure App Service
+      # ============================================
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Set this in GitHub Secrets
+          package: ./deploy
+
+      # ============================================
+      # Post-Deployment: Run Artisan Commands
+      # ============================================
+      - name: Run post-deployment commands
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            # Run Laravel commands via Azure CLI
+            # Note: These commands assume you have SSH/Kudu access configured
+
+            # Alternative: Use Azure's REST API to run commands
+            echo "Post-deployment tasks would run here"
+            echo "You may need to configure these manually in Azure Portal > App Service > SSH or Kudu"
+
+            # Commands to run on Azure (run these manually first time or via Kudu/SSH):
+            # php artisan storage:link
+            # php artisan migrate --force
+            # php artisan db:seed --class=CategorySeeder --force
+            # php artisan db:seed --class=ProductSeeder --force
+            # php artisan db:seed --class=BannerSeeder --force
+            # php artisan config:cache
+            # php artisan route:cache
+            # php artisan view:cache
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Deployment to Azure completed successfully!"
+          echo "Visit: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ Azure deployment failed. Check the logs above for details."

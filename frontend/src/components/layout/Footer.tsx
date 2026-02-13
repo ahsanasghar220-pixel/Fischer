@@ -21,6 +21,7 @@ const footerNavigation = {
   ],
   company: [
     { name: 'About Us', href: '/about' },
+    { name: 'Portfolio', href: '/portfolio' },
     { name: 'Experience Centers', href: '/experience' },
     { name: 'Become a Dealer', href: '/become-dealer' },
     { name: 'Find a Dealer', href: '/find-dealer' },

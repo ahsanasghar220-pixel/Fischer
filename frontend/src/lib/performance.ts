@@ -23,7 +23,7 @@ export function trackPageLoad() {
 // Preload critical resources
 export function preloadCriticalResources() {
   const heroImage = new Image()
-  heroImage.src = '/images/products/water-coolers/fe-150-ss.webp'
+  heroImage.src = '/images/products/water-coolers/water-cooler-35ltr.webp'
 
   const logoDark = new Image()
   logoDark.src = '/images/logo-dark.webp'
