@@ -49,14 +49,14 @@ export default function AdminServiceRequests() {
       params.set('page', page.toString())
       if (search) params.set('search', search)
       if (status) params.set('status', status)
-      const response = await api.get(`/admin/service-requests?${params.toString()}`)
+      const response = await api.get(`/api/admin/service-requests?${params.toString()}`)
       return response.data.data
     },
   })
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      await api.put(`/admin/service-requests/${id}`, { status })
+      await api.put(`/api/admin/service-requests/${id}`, { status })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-service-requests'] })

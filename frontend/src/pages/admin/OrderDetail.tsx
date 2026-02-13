@@ -118,16 +118,16 @@ export default function AdminOrderDetail() {
     queryFn: async () => {
       // First try by order_number, then by id
       try {
-        const response = await api.get(`/admin/orders/${orderNumber}`)
+        const response = await api.get(`/api/admin/orders/${orderNumber}`)
         return response.data.data.data || response.data.data
       } catch {
         // If that fails, try finding by order number in the list
-        const listResponse = await api.get(`/admin/orders?search=${orderNumber}`)
+        const listResponse = await api.get(`/api/admin/orders?search=${orderNumber}`)
         const orders = listResponse.data.data.data
         if (orders && orders.length > 0) {
           const matchingOrder = orders.find((o: Order) => o.order_number === orderNumber)
           if (matchingOrder) {
-            const detailResponse = await api.get(`/admin/orders/${matchingOrder.id}`)
+            const detailResponse = await api.get(`/api/admin/orders/${matchingOrder.id}`)
             return detailResponse.data.data.data || detailResponse.data.data
           }
         }
@@ -138,7 +138,7 @@ export default function AdminOrderDetail() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async (status: string) => {
-      await api.post(`/admin/orders/${order?.id}/status`, { status })
+      await api.post(`/api/admin/orders/${order?.id}/status`, { status })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-order', orderNumber] })
@@ -153,7 +153,7 @@ export default function AdminOrderDetail() {
 
   const updateTrackingMutation = useMutation({
     mutationFn: async (data: typeof trackingData) => {
-      await api.post(`/admin/orders/${order?.id}/tracking`, data)
+      await api.post(`/api/admin/orders/${order?.id}/tracking`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-order', orderNumber] })
@@ -167,7 +167,7 @@ export default function AdminOrderDetail() {
 
   const updateNotesMutation = useMutation({
     mutationFn: async (notes: string) => {
-      await api.put(`/admin/orders/${order?.id}`, { admin_notes: notes })
+      await api.put(`/api/admin/orders/${order?.id}`, { admin_notes: notes })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-order', orderNumber] })
@@ -181,7 +181,7 @@ export default function AdminOrderDetail() {
 
   const updatePaymentMutation = useMutation({
     mutationFn: async (payment_status: string) => {
-      await api.put(`/admin/orders/${order?.id}`, { payment_status })
+      await api.put(`/api/admin/orders/${order?.id}`, { payment_status })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-order', orderNumber] })

@@ -255,7 +255,7 @@ export default function HomePageSettings() {
   // Mutations
   const updateSectionMutation = useMutation({
     mutationFn: async ({ key, data }: { key: string; data: Partial<Section> }) => {
-      await api.put(`/admin/homepage/sections/${key}`, data)
+      await api.put(`/api/admin/homepage/sections/${key}`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -339,7 +339,7 @@ export default function HomePageSettings() {
 
   const updateProductsMutation = useMutation({
     mutationFn: async ({ section, productIds }: { section: string; productIds: number[] }) => {
-      await api.put(`/admin/homepage/products/${section}`, {
+      await api.put(`/api/admin/homepage/products/${section}`, {
         products: productIds.map((id, index) => ({
           product_id: id,
           sort_order: index,
@@ -369,7 +369,7 @@ export default function HomePageSettings() {
 
   const updateBannerMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Banner> }) => {
-      await api.put(`/admin/homepage/banners/${id}`, data)
+      await api.put(`/api/admin/homepage/banners/${id}`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -381,7 +381,7 @@ export default function HomePageSettings() {
 
   const deleteBannerMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/admin/homepage/banners/${id}`)
+      await api.delete(`/api/admin/homepage/banners/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -405,7 +405,7 @@ export default function HomePageSettings() {
 
   const updateTestimonialMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<Testimonial> }) => {
-      await api.put(`/admin/homepage/testimonials/${id}`, data)
+      await api.put(`/api/admin/homepage/testimonials/${id}`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
@@ -417,7 +417,7 @@ export default function HomePageSettings() {
 
   const deleteTestimonialMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/admin/homepage/testimonials/${id}`)
+      await api.delete(`/api/admin/homepage/testimonials/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })

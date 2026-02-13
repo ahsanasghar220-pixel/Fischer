@@ -45,7 +45,7 @@ export default function AdminCustomers() {
       const params = new URLSearchParams()
       params.set('page', page.toString())
       if (search) params.set('search', search)
-      const response = await api.get(`/admin/customers?${params.toString()}`)
+      const response = await api.get(`/api/admin/customers?${params.toString()}`)
       return response.data.data
     },
   })

@@ -19,7 +19,7 @@ export default function Page() {
   const { data: page, isLoading, error } = useQuery<PageData>({
     queryKey: ['page', slug],
     queryFn: async () => {
-      const response = await api.get(`/pages/${slug}`)
+      const response = await api.get(`/api/pages/${slug}`)
       return response.data.data
     },
   })

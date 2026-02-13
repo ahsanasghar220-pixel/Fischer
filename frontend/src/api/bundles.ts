@@ -168,7 +168,7 @@ export function useBundle(slug: string) {
   return useQuery({
     queryKey: ['bundle', slug],
     queryFn: async () => {
-      const { data } = await api.get(`/bundles/${slug}`)
+      const { data } = await api.get(`/api/bundles/${slug}`)
       return data.data as Bundle
     },
     enabled: !!slug,
@@ -189,7 +189,7 @@ export function useRelatedBundles(slug: string) {
   return useQuery({
     queryKey: ['bundles', 'related', slug],
     queryFn: async () => {
-      const { data } = await api.get(`/bundles/${slug}/related`)
+      const { data } = await api.get(`/api/bundles/${slug}/related`)
       return data.data as Bundle[]
     },
     enabled: !!slug,
@@ -199,7 +199,7 @@ export function useRelatedBundles(slug: string) {
 export function useCalculateBundlePrice() {
   return useMutation({
     mutationFn: async ({ slug, selections }: { slug: string; selections: SlotSelection[] }) => {
-      const { data } = await api.post(`/bundles/${slug}/calculate`, { selections })
+      const { data } = await api.post(`/api/bundles/${slug}/calculate`, { selections })
       return data.data as PricingBreakdown
     },
   })
@@ -253,7 +253,7 @@ export function useAdminBundle(id: number) {
   return useQuery({
     queryKey: ['admin', 'bundle', id],
     queryFn: async () => {
-      const { data } = await api.get(`/admin/bundles/${id}`)
+      const { data } = await api.get(`/api/admin/bundles/${id}`)
       return data.data as Bundle
     },
     enabled: !!id,
@@ -264,7 +264,7 @@ export function useBundleAnalytics(id: number) {
   return useQuery({
     queryKey: ['admin', 'bundle', id, 'analytics'],
     queryFn: async () => {
-      const { data } = await api.get(`/admin/bundles/${id}/analytics`)
+      const { data } = await api.get(`/api/admin/bundles/${id}/analytics`)
       return data.data
     },
     enabled: !!id,
@@ -310,7 +310,7 @@ export function useUpdateBundle() {
         products?: Array<{ product_id: number; price_override?: number }>
       }>
     }) => {
-      const { data } = await api.put(`/admin/bundles/${id}`, bundleData)
+      const { data } = await api.put(`/api/admin/bundles/${id}`, bundleData)
       return data.data as Bundle
     },
     onSuccess: (_, { id }) => {
@@ -326,7 +326,7 @@ export function useDeleteBundle() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/admin/bundles/${id}`)
+      await api.delete(`/api/admin/bundles/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundles'] })
@@ -339,7 +339,7 @@ export function useDuplicateBundle() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await api.post(`/admin/bundles/${id}/duplicate`)
+      const { data } = await api.post(`/api/admin/bundles/${id}/duplicate`)
       return data.data as Bundle
     },
     onSuccess: () => {
@@ -353,7 +353,7 @@ export function useToggleBundle() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const { data } = await api.put(`/admin/bundles/${id}/toggle`)
+      const { data } = await api.put(`/api/admin/bundles/${id}/toggle`)
       return data.data
     },
     onSuccess: (_, id) => {
@@ -380,7 +380,7 @@ export function useAddBundleSlot() {
       max_selections?: number
       products?: Array<{ product_id: number; price_override?: number }>
     }) => {
-      const { data } = await api.post(`/admin/bundles/${bundleId}/slots`, slotData)
+      const { data } = await api.post(`/api/admin/bundles/${bundleId}/slots`, slotData)
       return data.data as BundleSlot
     },
     onSuccess: (_, { bundleId }) => {
@@ -407,7 +407,7 @@ export function useUpdateBundleSlot() {
       max_selections?: number
       products?: Array<{ product_id: number; price_override?: number }>
     }) => {
-      const { data } = await api.put(`/admin/bundles/${bundleId}/slots/${slotId}`, slotData)
+      const { data } = await api.put(`/api/admin/bundles/${bundleId}/slots/${slotId}`, slotData)
       return data.data as BundleSlot
     },
     onSuccess: (_, { bundleId }) => {
@@ -421,7 +421,7 @@ export function useRemoveBundleSlot() {
 
   return useMutation({
     mutationFn: async ({ bundleId, slotId }: { bundleId: number; slotId: number }) => {
-      await api.delete(`/admin/bundles/${bundleId}/slots/${slotId}`)
+      await api.delete(`/api/admin/bundles/${bundleId}/slots/${slotId}`)
     },
     onSuccess: (_, { bundleId }) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundle', bundleId] })
@@ -443,7 +443,7 @@ export function useAddBundleItem() {
       quantity?: number
       price_override?: number
     }) => {
-      const { data } = await api.post(`/admin/bundles/${bundleId}/items`, itemData)
+      const { data } = await api.post(`/api/admin/bundles/${bundleId}/items`, itemData)
       return data.data as BundleItem
     },
     onSuccess: (_, { bundleId }) => {
@@ -466,7 +466,7 @@ export function useUpdateBundleItem() {
       quantity?: number
       price_override?: number
     }) => {
-      const { data } = await api.put(`/admin/bundles/${bundleId}/items/${itemId}`, itemData)
+      const { data } = await api.put(`/api/admin/bundles/${bundleId}/items/${itemId}`, itemData)
       return data.data as BundleItem
     },
     onSuccess: (_, { bundleId }) => {
@@ -480,7 +480,7 @@ export function useRemoveBundleItem() {
 
   return useMutation({
     mutationFn: async ({ bundleId, itemId }: { bundleId: number; itemId: number }) => {
-      await api.delete(`/admin/bundles/${bundleId}/items/${itemId}`)
+      await api.delete(`/api/admin/bundles/${bundleId}/items/${itemId}`)
     },
     onSuccess: (_, { bundleId }) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundle', bundleId] })
@@ -498,7 +498,7 @@ export function useUploadBundleImages() {
       images.forEach((image) => {
         formData.append('images[]', image)
       })
-      const { data } = await api.post(`/admin/bundles/${bundleId}/images`, formData, {
+      const { data } = await api.post(`/api/admin/bundles/${bundleId}/images`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       return data.data
@@ -514,7 +514,7 @@ export function useDeleteBundleImage() {
 
   return useMutation({
     mutationFn: async ({ bundleId, imageId }: { bundleId: number; imageId: number }) => {
-      await api.delete(`/admin/bundles/${bundleId}/images/${imageId}`)
+      await api.delete(`/api/admin/bundles/${bundleId}/images/${imageId}`)
     },
     onSuccess: (_, { bundleId }) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundle', bundleId] })
@@ -527,7 +527,7 @@ export function useSetPrimaryBundleImage() {
 
   return useMutation({
     mutationFn: async ({ bundleId, imageId }: { bundleId: number; imageId: number }) => {
-      await api.put(`/admin/bundles/${bundleId}/images/${imageId}/primary`)
+      await api.put(`/api/admin/bundles/${bundleId}/images/${imageId}/primary`)
     },
     onSuccess: (_, { bundleId }) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'bundle', bundleId] })

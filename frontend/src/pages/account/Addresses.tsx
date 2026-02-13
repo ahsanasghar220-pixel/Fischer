@@ -57,7 +57,7 @@ export default function Addresses() {
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
       if (editingId) {
-        await api.put(`/addresses/${editingId}`, data)
+        await api.put(`/api/addresses/${editingId}`, data)
       } else {
         await api.post('/api/addresses', data)
       }
@@ -74,7 +74,7 @@ export default function Addresses() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/addresses/${id}`)
+      await api.delete(`/api/addresses/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['addresses'] })
@@ -87,7 +87,7 @@ export default function Addresses() {
 
   const setDefaultMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.post(`/addresses/${id}/default-shipping`)
+      await api.post(`/api/addresses/${id}/default-shipping`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['addresses'] })

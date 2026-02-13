@@ -53,14 +53,14 @@ export default function OrderDetail() {
   const { data: order, isLoading, error } = useQuery<Order>({
     queryKey: ['order', orderNumber],
     queryFn: async () => {
-      const response = await api.get(`/orders/${orderNumber}`)
+      const response = await api.get(`/api/orders/${orderNumber}`)
       return response.data.data.order
     },
   })
 
   const cancelMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post(`/orders/${orderNumber}/cancel`)
+      const response = await api.post(`/api/orders/${orderNumber}/cancel`)
       return response.data
     },
     onSuccess: () => {

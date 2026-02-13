@@ -191,7 +191,7 @@ export default function OrderSuccess() {
     queryKey: ['order', orderNumber],
     queryFn: async () => {
       // Use public endpoint that works for guest checkout
-      const response = await api.get(`/orders/${orderNumber}/view`)
+      const response = await api.get(`/api/orders/${orderNumber}/view`)
       return response.data.data
     },
   })

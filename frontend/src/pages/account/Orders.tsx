@@ -72,7 +72,7 @@ export default function Orders() {
 
   const cancelMutation = useMutation({
     mutationFn: async (orderNumber: string) => {
-      const response = await api.post(`/orders/${orderNumber}/cancel`)
+      const response = await api.post(`/api/orders/${orderNumber}/cancel`)
       return response.data
     },
     onSuccess: () => {

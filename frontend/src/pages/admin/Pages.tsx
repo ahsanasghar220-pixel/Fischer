@@ -48,7 +48,7 @@ export default function AdminPages() {
       const params = new URLSearchParams()
       params.set('page', page.toString())
       if (search) params.set('search', search)
-      const response = await api.get(`/admin/pages?${params.toString()}`)
+      const response = await api.get(`/api/admin/pages?${params.toString()}`)
       return response.data.data
     },
   })
@@ -69,7 +69,7 @@ export default function AdminPages() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: typeof formData }) => {
-      await api.put(`/admin/pages/${id}`, data)
+      await api.put(`/api/admin/pages/${id}`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] })
@@ -83,7 +83,7 @@ export default function AdminPages() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/admin/pages/${id}`)
+      await api.delete(`/api/admin/pages/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] })
@@ -96,7 +96,7 @@ export default function AdminPages() {
 
   const toggleStatusMutation = useMutation({
     mutationFn: async ({ id, is_active }: { id: number; is_active: boolean }) => {
-      await api.put(`/admin/pages/${id}`, { is_active })
+      await api.put(`/api/admin/pages/${id}`, { is_active })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-pages'] })

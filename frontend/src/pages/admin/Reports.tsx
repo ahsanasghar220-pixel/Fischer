@@ -47,7 +47,7 @@ export default function AdminReports() {
   const { isLoading } = useQuery({
     queryKey: ['admin-reports', reportType, dateRange],
     queryFn: async () => {
-      const response = await api.get(`/admin/reports/${reportType}`, {
+      const response = await api.get(`/api/admin/reports/${reportType}`, {
         params: dateRange,
       })
       return response.data.data

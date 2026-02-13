@@ -90,7 +90,7 @@ export default function ProductEdit() {
   const { data: product, isLoading: productLoading } = useQuery<Product>({
     queryKey: ['admin-product', id],
     queryFn: async () => {
-      const response = await api.get(`/admin/products/${id}`)
+      const response = await api.get(`/api/admin/products/${id}`)
       return response.data.data
     },
     enabled: !isNew,
@@ -145,7 +145,7 @@ export default function ProductEdit() {
     if (files.length === 0) return
     const fd = new FormData()
     files.forEach(file => fd.append('images[]', file))
-    await api.post(`/admin/products/${productId}/images`, fd, {
+    await api.post(`/api/admin/products/${productId}/images`, fd, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
   }
@@ -174,7 +174,7 @@ export default function ProductEdit() {
         }
         return response
       } else {
-        const response = await api.put(`/admin/products/${id}`, payload)
+        const response = await api.put(`/api/admin/products/${id}`, payload)
         // Upload any pending images for existing product
         if (pendingFiles.length > 0) {
           await uploadImages(Number(id), pendingFiles.map(f => f.file))
@@ -205,7 +205,7 @@ export default function ProductEdit() {
   // Delete image mutation
   const deleteImageMutation = useMutation({
     mutationFn: async (imageId: number) => {
-      await api.delete(`/admin/products/${id}/images/${imageId}`)
+      await api.delete(`/api/admin/products/${id}/images/${imageId}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-product', id] })
@@ -219,7 +219,7 @@ export default function ProductEdit() {
   // Set primary image mutation
   const setPrimaryMutation = useMutation({
     mutationFn: async (imageId: number) => {
-      await api.put(`/admin/products/${id}/images/${imageId}/primary`)
+      await api.put(`/api/admin/products/${id}/images/${imageId}/primary`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-product', id] })

@@ -47,14 +47,14 @@ export default function AdminDealers() {
       params.set('page', page.toString())
       if (search) params.set('search', search)
       if (status) params.set('status', status)
-      const response = await api.get(`/admin/dealers?${params.toString()}`)
+      const response = await api.get(`/api/admin/dealers?${params.toString()}`)
       return response.data.data
     },
   })
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      await api.put(`/admin/dealers/${id}`, { status })
+      await api.put(`/api/admin/dealers/${id}`, { status })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })

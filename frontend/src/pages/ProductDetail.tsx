@@ -126,7 +126,7 @@ export default function ProductDetail() {
   const { data: productData, isLoading, error } = useQuery<{ product: Product; related_products: Product[] }>({
     queryKey: ['product', slug],
     queryFn: async () => {
-      const response = await api.get(`/products/${slug}`)
+      const response = await api.get(`/api/products/${slug}`)
       return response.data.data
     },
   })

@@ -56,7 +56,7 @@ export default function AdminAnalytics() {
   const { data, isLoading } = useQuery<AnalyticsData>({
     queryKey: ['admin-analytics', period],
     queryFn: async () => {
-      const response = await api.get(`/admin/analytics?period=${period}`)
+      const response = await api.get(`/api/admin/analytics?period=${period}`)
       return response.data.data
     },
   })

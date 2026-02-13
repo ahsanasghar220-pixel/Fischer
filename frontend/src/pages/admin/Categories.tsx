@@ -58,7 +58,7 @@ export default function AdminCategories() {
           : [],
       }
       if (editingId) {
-        await api.put(`/admin/categories/${editingId}`, payload)
+        await api.put(`/api/admin/categories/${editingId}`, payload)
       } else {
         await api.post('/api/admin/categories', payload)
       }
@@ -75,7 +75,7 @@ export default function AdminCategories() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/admin/categories/${id}`)
+      await api.delete(`/api/admin/categories/${id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
