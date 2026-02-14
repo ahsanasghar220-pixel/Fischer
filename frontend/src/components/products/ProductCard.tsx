@@ -254,7 +254,8 @@ const ProductCard = memo(function ProductCard({
                   width={300}
                   height={300}
                   className="absolute inset-0 w-full h-full object-contain p-2"
-                  loading={currentImageIndex === 0 ? 'eager' : 'lazy'}
+                  loading="lazy"
+                  decoding="async"
                   onLoad={currentImageIndex === 0 ? () => setImageLoaded(true) : undefined}
                   onError={currentImageIndex === 0 ? () => setImageError(true) : undefined}
                   initial={{

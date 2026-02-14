@@ -55,6 +55,11 @@ frontend/public/images/products/1 website data processed/
 INVOICE-FISCHER-PAKISTAN.*
 PRODUCT PORTFOLIO INFO.docx
 
+# Design source files (not for production)
+*.ai
+*.psd
+*.sketch
+
 # Downloaded archives (Google Drive zips)
 *-20260213T*Z-*-001/
 

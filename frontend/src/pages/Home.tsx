@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
@@ -318,7 +318,7 @@ interface CategoryShowcaseProps {
   categoryVideos: Record<string, string>
 }
 
-function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseProps) {
+const CategoryShowcase = memo(function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseProps) {
   const ref = useRef(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
@@ -424,7 +424,7 @@ function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseP
       </div>
     </motion.div>
   )
-}
+})
 
 
 // Default category videos mapping (fallback)
@@ -1167,6 +1167,8 @@ export default function Home() {
                             alt={testimonial.name}
                             width={40}
                             height={40}
+                            loading="lazy"
+                            decoding="async"
                             className="w-10 h-10 rounded-xl object-cover
                                      ring-2 ring-primary-100 dark:ring-primary-900/30"
                             onError={(e) => {
@@ -1225,6 +1227,8 @@ export default function Home() {
                             alt="Fischer Factory - Manufacturing Facility"
                             width={600}
                             height={450}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
                               const target = e.currentTarget

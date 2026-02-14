@@ -93,11 +93,21 @@ class DealerController extends Controller
         $user = $request->user();
         $dealer = Dealer::where('user_id', $user->id)->approved()->firstOrFail();
 
+        // Optimized: Single query instead of 4 separate queries
+        $orderStats = $dealer->orders()
+            ->selectRaw('
+                COUNT(*) as total_orders,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as pending_orders,
+                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as completed_orders,
+                SUM(total) as total_spent
+            ', ['pending', 'delivered'])
+            ->first();
+
         $stats = [
-            'total_orders' => $dealer->orders()->count(),
-            'pending_orders' => $dealer->orders()->where('status', 'pending')->count(),
-            'completed_orders' => $dealer->orders()->where('status', 'delivered')->count(),
-            'total_spent' => $dealer->orders()->sum('total'),
+            'total_orders' => $orderStats->total_orders ?? 0,
+            'pending_orders' => $orderStats->pending_orders ?? 0,
+            'completed_orders' => $orderStats->completed_orders ?? 0,
+            'total_spent' => $orderStats->total_spent ?? 0,
             'available_credit' => $dealer->available_credit,
             'discount_percentage' => $dealer->discount_percentage,
         ];
