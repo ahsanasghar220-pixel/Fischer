@@ -202,6 +202,7 @@ interface SectionSettings {
 interface HomeData {
   banners: Banner[]
   categories: Category[]
+  video_categories?: Category[]
   featured_products: Product[]
   new_arrivals: Product[]
   bestsellers: Product[]
@@ -708,10 +709,9 @@ export default function Home() {
                 </div>
               </AnimatedSection>
 
-              {/* Categories Detail - Split Screen Alternating (only show categories with videos) */}
+              {/* Categories Detail - Split Screen Alternating (use video_categories from API) */}
               <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
-                {[...categories]
-                  .filter((c) => categoryVideos[c.slug])
+                {(data?.video_categories?.length ? data.video_categories : categories.filter((c) => categoryVideos[c.slug]))
                   .slice(0, 4)
                   .map((category, index) => (
                     <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />

@@ -278,6 +278,29 @@ class HomeController extends Controller
             ];
         });
 
+        // Get video categories - categories that have video mappings, independent of homepage category selection
+        $categoryVideoSlugs = array_keys($categoriesSettings['category_videos'] ?? []);
+        $videoCategories = [];
+        if (!empty($categoryVideoSlugs)) {
+            $videoCategories = Category::withCount('products')
+                ->active()
+                ->whereIn('slug', $categoryVideoSlugs)
+                ->ordered()
+                ->get()
+                ->map(function ($cat) {
+                    return [
+                        'id' => $cat->id,
+                        'name' => $cat->name,
+                        'slug' => $cat->slug,
+                        'image' => $cat->image,
+                        'icon' => $cat->icon,
+                        'description' => $cat->description,
+                        'features' => $cat->features,
+                        'products_count' => $cat->products_count,
+                    ];
+                });
+        }
+
         // Get general settings
         $settings = [
             'phone' => Setting::get('phone', '+92 XXX XXXXXXX'),
@@ -292,6 +315,7 @@ class HomeController extends Controller
             'sections' => $sectionSettings,
             'banners' => $banners,
             'categories' => $categories,
+            'video_categories' => $videoCategories,
             'featured_products' => $featuredProducts,
             'new_arrivals' => $newArrivals,
             'bestsellers' => $bestsellers,
