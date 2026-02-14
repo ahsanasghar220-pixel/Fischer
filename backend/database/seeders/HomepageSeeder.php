@@ -29,6 +29,81 @@ class HomepageSeeder extends Seeder
                     'slide_interval' => 6000,
                     'show_navigation' => true,
                     'show_indicators' => true,
+                    'video_url' => '/videos/hero-video.mp4?v=4',
+                ]),
+            ],
+            [
+                'key' => 'brand_statement',
+                'title' => 'Premium Appliances',
+                'subtitle' => 'Crafted for Pakistan Since 1990',
+                'is_enabled' => true,
+                'sort_order' => 2,
+                'settings' => json_encode([]),
+            ],
+            [
+                'key' => 'hero_products',
+                'title' => 'Discover Fischer Essentials',
+                'subtitle' => 'Designed Appliances for Modern Living',
+                'is_enabled' => true,
+                'sort_order' => 3,
+                'settings' => json_encode([
+                    'badge_text' => 'Our Bestsellers',
+                    'products' => [
+                        [
+                            'name' => 'Built-in Hood',
+                            'category' => 'Ventilation Solutions',
+                            'images' => [
+                                '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
+                                '/images/products/kitchen-hoods/FKH-T90-04SC/1.webp',
+                            ],
+                            'href' => '/category/kitchen-hoods',
+                            'description' => 'Powerful airflow up to 1500 m³/h',
+                        ],
+                        [
+                            'name' => 'Built-in Hob',
+                            'category' => 'Cooking Solutions',
+                            'images' => [
+                                '/images/products/kitchen-hobs/FBH-G78-3CB/1.webp',
+                                '/images/products/kitchen-hobs/FBH-G90-5SBF/1.webp',
+                                '/images/products/kitchen-hobs/FBH-SS76-3CB/1.webp',
+                            ],
+                            'href' => '/category/kitchen-hobs',
+                            'description' => 'Premium brass burners with auto ignition',
+                        ],
+                        [
+                            'name' => 'Oven Toaster',
+                            'category' => 'Baking Excellence',
+                            'images' => [
+                                '/images/products/oven-toasters/FOT-2501C/1.webp',
+                                '/images/products/oven-toasters/FOT-2501C/2.webp',
+                                '/images/products/oven-toasters/FOT-1901D/1.webp',
+                            ],
+                            'href' => '/category/oven-toasters',
+                            'description' => 'Convection technology, 35L-48L capacity',
+                        ],
+                        [
+                            'name' => 'Air Fryer',
+                            'category' => 'Healthy Living',
+                            'images' => [
+                                '/images/products/air-fryers/FAF-801WD/1.webp',
+                                '/images/products/air-fryers/FAF-601WD/1.webp',
+                                '/images/products/air-fryers/FAF-401WD/1.webp',
+                            ],
+                            'href' => '/category/air-fryers',
+                            'description' => 'Oil-free frying with digital controls',
+                        ],
+                        [
+                            'name' => 'Water Dispenser',
+                            'category' => 'Water Solutions',
+                            'images' => [
+                                '/images/products/water-dispensers/1.webp',
+                                '/images/products/water-dispensers/2.webp',
+                                '/images/products/water-dispensers/3.webp',
+                            ],
+                            'href' => '/category/water-dispensers',
+                            'description' => 'Hot & cold, food-grade stainless steel',
+                        ],
+                    ],
                 ]),
             ],
             [
@@ -36,7 +111,7 @@ class HomepageSeeder extends Seeder
                 'title' => 'Statistics',
                 'subtitle' => null,
                 'is_enabled' => true,
-                'sort_order' => 2,
+                'sort_order' => 4,
                 'settings' => json_encode([
                     'background' => 'white',
                     'style' => 'cards',
@@ -44,10 +119,10 @@ class HomepageSeeder extends Seeder
             ],
             [
                 'key' => 'features',
-                'title' => 'Why Choose Us',
+                'title' => 'Why Choose Fischer',
                 'subtitle' => null,
                 'is_enabled' => true,
-                'sort_order' => 3,
+                'sort_order' => 5,
                 'settings' => json_encode([
                     'columns' => 4,
                     'style' => 'cards',
@@ -55,15 +130,21 @@ class HomepageSeeder extends Seeder
             ],
             [
                 'key' => 'categories',
-                'title' => 'Shop by Category',
-                'subtitle' => 'Explore our complete range of home and commercial appliances',
+                'title' => 'Explore Our Collections',
+                'subtitle' => 'Each category carefully curated with premium quality and innovative designs',
                 'is_enabled' => true,
-                'sort_order' => 4,
+                'sort_order' => 6,
                 'settings' => json_encode([
                     'display_count' => 10,
                     'show_product_count' => true,
                     'columns' => 5,
                     'style' => 'grid',
+                    'category_videos' => [
+                        'kitchen-hoods' => '/videos/categories/built-in-hoods.mp4',
+                        'kitchen-hobs' => '/videos/categories/built-in-hobs.mp4',
+                        'oven-toasters' => '/videos/categories/oven-toasters.mp4',
+                        'air-fryers' => '/videos/categories/air-fryers.mp4',
+                    ],
                 ]),
             ],
             [
@@ -71,7 +152,7 @@ class HomepageSeeder extends Seeder
                 'title' => 'Featured Products',
                 'subtitle' => 'Our most popular appliances loved by customers across Pakistan',
                 'is_enabled' => true,
-                'sort_order' => 5,
+                'sort_order' => 7,
                 'settings' => json_encode([
                     'display_count' => 10,
                     'source' => 'manual',
@@ -79,16 +160,34 @@ class HomepageSeeder extends Seeder
                 ]),
             ],
             [
+                'key' => 'bestsellers',
+                'title' => 'Best Sellers',
+                'subtitle' => 'Top-rated appliances trusted by thousands of Pakistani homes',
+                'is_enabled' => true,
+                'sort_order' => 8,
+                'settings' => json_encode([
+                    'display_count' => 10,
+                    'source' => 'auto',
+                ]),
+            ],
+            [
                 'key' => 'dealer_cta',
                 'title' => 'Become a Fischer Authorized Dealer',
-                'subtitle' => 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted home appliance brand.',
+                'subtitle' => 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted appliance brand.',
                 'is_enabled' => true,
-                'sort_order' => 6,
+                'sort_order' => 9,
                 'settings' => json_encode([
+                    'badge_text' => 'Partnership Opportunity',
                     'button_text' => 'Apply Now',
                     'button_link' => '/become-dealer',
                     'secondary_button_text' => 'Contact Sales',
                     'secondary_button_link' => '/contact',
+                    'benefits' => [
+                        ['title' => 'Exclusive Margins', 'description' => 'Competitive dealer margins & incentives', 'icon' => "\u{1F4B0}"],
+                        ['title' => 'Marketing Support', 'description' => 'Co-branded marketing materials', 'icon' => "\u{1F4E2}"],
+                        ['title' => 'Training Programs', 'description' => 'Product & sales training', 'icon' => "\u{1F393}"],
+                        ['title' => 'Priority Support', 'description' => 'Dedicated dealer support line', 'icon' => "\u{1F3AF}"],
+                    ],
                 ]),
             ],
             [
@@ -96,7 +195,7 @@ class HomepageSeeder extends Seeder
                 'title' => 'New Arrivals',
                 'subtitle' => 'Check out our latest additions to the catalog',
                 'is_enabled' => true,
-                'sort_order' => 7,
+                'sort_order' => 10,
                 'settings' => json_encode([
                     'display_count' => 8,
                     'days_threshold' => 30,
@@ -109,7 +208,7 @@ class HomepageSeeder extends Seeder
                 'title' => 'What Our Customers Say',
                 'subtitle' => 'Trusted by thousands of Pakistani households and businesses',
                 'is_enabled' => true,
-                'sort_order' => 8,
+                'sort_order' => 11,
                 'settings' => json_encode([
                     'display_count' => 5,
                     'auto_slide' => true,
@@ -121,10 +220,14 @@ class HomepageSeeder extends Seeder
                 'title' => 'Pakistan\'s Most Trusted Appliance Brand',
                 'subtitle' => null,
                 'is_enabled' => true,
-                'sort_order' => 9,
+                'sort_order' => 12,
                 'settings' => json_encode([
+                    'badge_text' => 'About Fischer',
                     'content' => 'Established in 1990, Fischer (Fatima Engineering Works) has been at the forefront of manufacturing high-quality home and commercial appliances. With over three decades of excellence, we\'ve become a household name trusted by millions across Pakistan.',
                     'image' => '/images/about-factory.webp',
+                    'fallback_image' => '/images/about-fischer.webp',
+                    'button_text' => 'Learn More About Us',
+                    'button_link' => '/about',
                     'show_badges' => true,
                     'features' => [
                         'ISO 9001:2015 & PSQCA Certified',
@@ -139,11 +242,11 @@ class HomepageSeeder extends Seeder
                 'title' => 'Get Exclusive Offers',
                 'subtitle' => 'Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.',
                 'is_enabled' => true,
-                'sort_order' => 10,
+                'sort_order' => 13,
                 'settings' => json_encode([
                     'placeholder' => 'Enter your email address',
                     'button_text' => 'Subscribe',
-                    'disclaimer' => 'No spam, unsubscribe anytime. Privacy policy applies.',
+                    'disclaimer' => 'No spam, unsubscribe anytime.',
                 ]),
             ],
         ];

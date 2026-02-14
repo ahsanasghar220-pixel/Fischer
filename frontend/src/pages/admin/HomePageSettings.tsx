@@ -177,6 +177,366 @@ const colorOptions = [
 
 const validTabs = ['sections', 'banners', 'categories', 'products', 'stats', 'features', 'testimonials', 'badges', 'clients']
 
+// Section-specific settings editor within the section modal
+function SectionSettingsModal({
+  section,
+  settingsForm,
+  onSettingsChange,
+  onClose,
+  onSave,
+}: {
+  section: Section
+  settingsForm: Record<string, any>
+  onSettingsChange: (s: Record<string, any>) => void
+  onClose: () => void
+  onSave: (title: string, subtitle: string, settings?: Record<string, any>) => void
+}) {
+  const [title, setTitle] = useState(section.title || '')
+  const [subtitle, setSubtitle] = useState(section.subtitle || '')
+
+  const updateSetting = (key: string, value: any) => {
+    onSettingsChange({ ...settingsForm, [key]: value })
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Only send settings if they were modified (section has known settings keys)
+    const hasSettingsFields = ['hero', 'brand_statement', 'hero_products', 'categories', 'dealer_cta', 'about', 'newsletter', 'bestsellers', 'featured_products', 'new_arrivals'].includes(section.key)
+    onSave(title, subtitle, hasSettingsFields ? settingsForm : undefined)
+  }
+
+  // Helper for editing a list of items (benefits, features, products)
+  const renderListEditor = (key: string, fields: { name: string; label: string; type?: string }[], itemLabel: string) => {
+    const items: any[] = settingsForm[key] || []
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300">{itemLabel}</label>
+          <button
+            type="button"
+            onClick={() => {
+              const newItem: Record<string, string> = {}
+              fields.forEach(f => { newItem[f.name] = '' })
+              updateSetting(key, [...items, newItem])
+            }}
+            className="flex items-center gap-1 px-3 py-1 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          >
+            <PlusIcon className="w-4 h-4" /> Add
+          </button>
+        </div>
+        {items.map((item: any, idx: number) => (
+          <div key={idx} className="p-3 border border-dark-200 dark:border-dark-700 rounded-lg space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-dark-500">#{idx + 1}</span>
+              <div className="flex gap-1">
+                {idx > 0 && (
+                  <button type="button" onClick={() => {
+                    const newItems = [...items]
+                    ;[newItems[idx - 1], newItems[idx]] = [newItems[idx], newItems[idx - 1]]
+                    updateSetting(key, newItems)
+                  }} className="p-1 text-dark-400 hover:text-dark-600"><ChevronUpIcon className="w-3 h-3" /></button>
+                )}
+                {idx < items.length - 1 && (
+                  <button type="button" onClick={() => {
+                    const newItems = [...items]
+                    ;[newItems[idx], newItems[idx + 1]] = [newItems[idx + 1], newItems[idx]]
+                    updateSetting(key, newItems)
+                  }} className="p-1 text-dark-400 hover:text-dark-600"><ChevronDownIcon className="w-3 h-3" /></button>
+                )}
+                <button type="button" onClick={() => updateSetting(key, items.filter((_: any, i: number) => i !== idx))} className="p-1 text-red-500 hover:text-red-600"><TrashIcon className="w-3 h-3" /></button>
+              </div>
+            </div>
+            {fields.map(field => (
+              <div key={field.name}>
+                <label className="block text-xs text-dark-500 dark:text-dark-400 mb-0.5">{field.label}</label>
+                {field.type === 'textarea' ? (
+                  <textarea
+                    value={item[field.name] || ''}
+                    onChange={(e) => {
+                      const newItems = [...items]
+                      newItems[idx] = { ...newItems[idx], [field.name]: e.target.value }
+                      updateSetting(key, newItems)
+                    }}
+                    rows={2}
+                    className="w-full px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm"
+                  />
+                ) : field.type === 'images' ? (
+                  <textarea
+                    value={(item[field.name] || []).join('\n')}
+                    onChange={(e) => {
+                      const newItems = [...items]
+                      newItems[idx] = { ...newItems[idx], [field.name]: e.target.value.split('\n').filter(Boolean) }
+                      updateSetting(key, newItems)
+                    }}
+                    rows={2}
+                    placeholder="One image path per line"
+                    className="w-full px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm font-mono"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={item[field.name] || ''}
+                    onChange={(e) => {
+                      const newItems = [...items]
+                      newItems[idx] = { ...newItems[idx], [field.name]: e.target.value }
+                      updateSetting(key, newItems)
+                    }}
+                    className="w-full px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Simple string list editor (for about features)
+  const renderStringListEditor = (key: string, label: string) => {
+    const items: string[] = settingsForm[key] || []
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300">{label}</label>
+          <button type="button" onClick={() => updateSetting(key, [...items, ''])}
+            className="flex items-center gap-1 px-3 py-1 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+            <PlusIcon className="w-4 h-4" /> Add
+          </button>
+        </div>
+        {items.map((item: string, idx: number) => (
+          <div key={idx} className="flex gap-2">
+            <input type="text" value={item} onChange={(e) => {
+              const newItems = [...items]
+              newItems[idx] = e.target.value
+              updateSetting(key, newItems)
+            }} className="flex-1 px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm" />
+            <button type="button" onClick={() => updateSetting(key, items.filter((_: string, i: number) => i !== idx))} className="p-1 text-red-500"><TrashIcon className="w-4 h-4" /></button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Key-value map editor (for category_videos)
+  const renderMapEditor = (key: string, label: string, keyLabel: string, valueLabel: string) => {
+    const map: Record<string, string> = settingsForm[key] || {}
+    const entries = Object.entries(map)
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300">{label}</label>
+          <button type="button" onClick={() => updateSetting(key, { ...map, '': '' })}
+            className="flex items-center gap-1 px-3 py-1 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+            <PlusIcon className="w-4 h-4" /> Add
+          </button>
+        </div>
+        {entries.map(([k, v], idx) => (
+          <div key={idx} className="flex gap-2">
+            <input type="text" value={k} placeholder={keyLabel} onChange={(e) => {
+              const newMap: Record<string, string> = {}
+              entries.forEach(([ek, ev], i) => {
+                newMap[i === idx ? e.target.value : ek] = ev
+              })
+              updateSetting(key, newMap)
+            }} className="w-1/3 px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm" />
+            <input type="text" value={v} placeholder={valueLabel} onChange={(e) => {
+              const newMap = { ...map, [k]: e.target.value }
+              updateSetting(key, newMap)
+            }} className="flex-1 px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm" />
+            <button type="button" onClick={() => {
+              const newMap = { ...map }
+              delete newMap[k]
+              updateSetting(key, newMap)
+            }} className="p-1 text-red-500"><TrashIcon className="w-4 h-4" /></button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const inputClass = "w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-dark-900 dark:text-white">
+              Edit: {section.title || section.key}
+            </h2>
+            <button onClick={onClose} className="p-2 text-dark-400 hover:text-dark-600">
+              <XMarkIcon className="w-5 h-5" />
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Common fields: title & subtitle */}
+            <div>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Title</label>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value)} className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Subtitle</label>
+              <textarea value={subtitle} onChange={e => setSubtitle(e.target.value)} rows={2} className={inputClass} />
+            </div>
+
+            {/* Section-specific settings */}
+            {section.key === 'hero' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Hero Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Video URL</label>
+                  <input type="text" value={settingsForm.video_url || ''} onChange={e => updateSetting('video_url', e.target.value)} placeholder="/videos/hero-video.mp4" className={inputClass} />
+                </div>
+              </div>
+            )}
+
+            {section.key === 'hero_products' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Hero Products Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Badge Text</label>
+                  <input type="text" value={settingsForm.badge_text || ''} onChange={e => updateSetting('badge_text', e.target.value)} placeholder="Our Bestsellers" className={inputClass} />
+                </div>
+                {renderListEditor('products', [
+                  { name: 'name', label: 'Product Name' },
+                  { name: 'category', label: 'Category Label' },
+                  { name: 'description', label: 'Description' },
+                  { name: 'href', label: 'Link (e.g. /category/kitchen-hoods)' },
+                  { name: 'images', label: 'Images (one path per line)', type: 'images' },
+                ], 'Products')}
+              </div>
+            )}
+
+            {section.key === 'categories' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Category Settings</h3>
+                {renderMapEditor('category_videos', 'Category Videos', 'Category Slug', 'Video URL')}
+              </div>
+            )}
+
+            {section.key === 'dealer_cta' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Dealer CTA Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Badge Text</label>
+                  <input type="text" value={settingsForm.badge_text || ''} onChange={e => updateSetting('badge_text', e.target.value)} placeholder="Partnership Opportunity" className={inputClass} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Primary Button Text</label>
+                    <input type="text" value={settingsForm.button_text || ''} onChange={e => updateSetting('button_text', e.target.value)} placeholder="Apply Now" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Primary Button Link</label>
+                    <input type="text" value={settingsForm.button_link || ''} onChange={e => updateSetting('button_link', e.target.value)} placeholder="/become-dealer" className={inputClass} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Secondary Button Text</label>
+                    <input type="text" value={settingsForm.secondary_button_text || ''} onChange={e => updateSetting('secondary_button_text', e.target.value)} placeholder="Contact Sales" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Secondary Button Link</label>
+                    <input type="text" value={settingsForm.secondary_button_link || ''} onChange={e => updateSetting('secondary_button_link', e.target.value)} placeholder="/contact" className={inputClass} />
+                  </div>
+                </div>
+                {renderListEditor('benefits', [
+                  { name: 'title', label: 'Title' },
+                  { name: 'description', label: 'Description' },
+                  { name: 'icon', label: 'Icon (emoji)' },
+                ], 'Benefits Cards')}
+              </div>
+            )}
+
+            {section.key === 'about' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">About Section Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Badge Text</label>
+                  <input type="text" value={settingsForm.badge_text || ''} onChange={e => updateSetting('badge_text', e.target.value)} placeholder="About Fischer" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Content</label>
+                  <textarea value={settingsForm.content || ''} onChange={e => updateSetting('content', e.target.value)} rows={4} className={inputClass} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Image URL</label>
+                    <input type="text" value={settingsForm.image || ''} onChange={e => updateSetting('image', e.target.value)} placeholder="/images/about-factory.webp" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Fallback Image</label>
+                    <input type="text" value={settingsForm.fallback_image || ''} onChange={e => updateSetting('fallback_image', e.target.value)} placeholder="/images/about-fischer.webp" className={inputClass} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Button Text</label>
+                    <input type="text" value={settingsForm.button_text || ''} onChange={e => updateSetting('button_text', e.target.value)} placeholder="Learn More About Us" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Button Link</label>
+                    <input type="text" value={settingsForm.button_link || ''} onChange={e => updateSetting('button_link', e.target.value)} placeholder="/about" className={inputClass} />
+                  </div>
+                </div>
+                {renderStringListEditor('features', 'Feature Bullet Points')}
+              </div>
+            )}
+
+            {section.key === 'newsletter' && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Newsletter Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Placeholder Text</label>
+                  <input type="text" value={settingsForm.placeholder || ''} onChange={e => updateSetting('placeholder', e.target.value)} placeholder="Enter your email address" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Button Text</label>
+                  <input type="text" value={settingsForm.button_text || ''} onChange={e => updateSetting('button_text', e.target.value)} placeholder="Subscribe" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Disclaimer Text</label>
+                  <input type="text" value={settingsForm.disclaimer || ''} onChange={e => updateSetting('disclaimer', e.target.value)} placeholder="No spam, unsubscribe anytime." className={inputClass} />
+                </div>
+              </div>
+            )}
+
+            {(section.key === 'featured_products' || section.key === 'new_arrivals' || section.key === 'bestsellers') && (
+              <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Display Settings</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Source</label>
+                    <select value={settingsForm.source || 'auto'} onChange={e => updateSetting('source', e.target.value)} className={inputClass}>
+                      <option value="auto">Automatic</option>
+                      <option value="manual">Manual Selection</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Display Count</label>
+                    <input type="number" value={settingsForm.display_count || 10} onChange={e => updateSetting('display_count', parseInt(e.target.value) || 10)} className={inputClass} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3 pt-4">
+              <button type="button" onClick={onClose} className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300">
+                Cancel
+              </button>
+              <button type="submit" className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function HomePageSettings() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -207,12 +567,14 @@ export default function HomePageSettings() {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<number[]>([])
   const [newArrivalsProducts, setNewArrivalsProducts] = useState<number[]>([])
+  const [bestsellersProducts, setBestsellersProducts] = useState<number[]>([])
   const [notableClients, setNotableClients] = useState<NotableClient[]>([])
 
   // Modal states
   const [bannerModal, setBannerModal] = useState<{ open: boolean; banner: Banner | null }>({ open: false, banner: null })
   const [testimonialModal, setTestimonialModal] = useState<{ open: boolean; testimonial: Testimonial | null }>({ open: false, testimonial: null })
   const [sectionModal, setSectionModal] = useState<{ open: boolean; section: Section | null }>({ open: false, section: null })
+  const [sectionSettingsForm, setSectionSettingsForm] = useState<Record<string, any>>({})
 
   // Form states
   const [bannerForm, setBannerForm] = useState<Partial<Banner>>({
@@ -247,8 +609,10 @@ export default function HomePageSettings() {
       // Initialize product selections
       const featured = data.homepage_products?.filter(hp => hp.section === 'featured').map(hp => hp.product_id) || []
       const newArrivals = data.homepage_products?.filter(hp => hp.section === 'new_arrivals').map(hp => hp.product_id) || []
+      const bestsellers = data.homepage_products?.filter(hp => hp.section === 'bestsellers').map(hp => hp.product_id) || []
       setFeaturedProducts(featured)
       setNewArrivalsProducts(newArrivals)
+      setBestsellersProducts(bestsellers)
     }
   }, [data])
 
@@ -349,7 +713,8 @@ export default function HomePageSettings() {
     },
     onSuccess: (_, { section }) => {
       queryClient.invalidateQueries({ queryKey: ['admin-homepage'] })
-      toast.success(`${section === 'featured' ? 'Featured products' : 'New arrivals'} saved`)
+      const labels: Record<string, string> = { featured: 'Featured products', new_arrivals: 'New arrivals', bestsellers: 'Best sellers' }
+      toast.success(`${labels[section] || section} saved`)
     },
     onError: () => toast.error('Failed to save products'),
   })
@@ -510,47 +875,34 @@ export default function HomePageSettings() {
   }
 
   // Product selection helpers
-  const toggleProduct = (productId: number, section: 'featured' | 'new_arrivals') => {
-    if (section === 'featured') {
-      setFeaturedProducts(prev =>
-        prev.includes(productId)
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
-      )
-    } else {
-      setNewArrivalsProducts(prev =>
-        prev.includes(productId)
-          ? prev.filter(id => id !== productId)
-          : [...prev, productId]
-      )
-    }
+  const getProductState = (section: string) => {
+    if (section === 'featured') return [featuredProducts, setFeaturedProducts] as const
+    if (section === 'bestsellers') return [bestsellersProducts, setBestsellersProducts] as const
+    return [newArrivalsProducts, setNewArrivalsProducts] as const
   }
 
-  const moveProductUp = (index: number, section: 'featured' | 'new_arrivals') => {
+  const toggleProduct = (productId: number, section: string) => {
+    const [products, setProducts] = getProductState(section)
+    setProducts(products.includes(productId)
+      ? products.filter(id => id !== productId)
+      : [...products, productId]
+    )
+  }
+
+  const moveProductUp = (index: number, section: string) => {
     if (index === 0) return
-    if (section === 'featured') {
-      const newProducts = [...featuredProducts]
-      ;[newProducts[index - 1], newProducts[index]] = [newProducts[index], newProducts[index - 1]]
-      setFeaturedProducts(newProducts)
-    } else {
-      const newProducts = [...newArrivalsProducts]
-      ;[newProducts[index - 1], newProducts[index]] = [newProducts[index], newProducts[index - 1]]
-      setNewArrivalsProducts(newProducts)
-    }
+    const [products, setProducts] = getProductState(section)
+    const newProducts = [...products]
+    ;[newProducts[index - 1], newProducts[index]] = [newProducts[index], newProducts[index - 1]]
+    setProducts(newProducts)
   }
 
-  const moveProductDown = (index: number, section: 'featured' | 'new_arrivals') => {
-    const products = section === 'featured' ? featuredProducts : newArrivalsProducts
+  const moveProductDown = (index: number, section: string) => {
+    const [products, setProducts] = getProductState(section)
     if (index === products.length - 1) return
-    if (section === 'featured') {
-      const newProducts = [...featuredProducts]
-      ;[newProducts[index], newProducts[index + 1]] = [newProducts[index + 1], newProducts[index]]
-      setFeaturedProducts(newProducts)
-    } else {
-      const newProducts = [...newArrivalsProducts]
-      ;[newProducts[index], newProducts[index + 1]] = [newProducts[index + 1], newProducts[index]]
-      setNewArrivalsProducts(newProducts)
-    }
+    const newProducts = [...products]
+    ;[newProducts[index], newProducts[index + 1]] = [newProducts[index + 1], newProducts[index]]
+    setProducts(newProducts)
   }
 
   const tabs = [
@@ -674,7 +1026,10 @@ export default function HomePageSettings() {
                     </div>
                     <div className="flex items-center gap-3">
                       <button
-                        onClick={() => setSectionModal({ open: true, section })}
+                        onClick={() => {
+                          setSectionSettingsForm(section.settings || {})
+                          setSectionModal({ open: true, section })
+                        }}
                         className="p-2 text-dark-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg"
                         title="Edit settings"
                       >
@@ -1092,6 +1447,119 @@ export default function HomePageSettings() {
                     >
                       {updateProductsMutation.isPending && <LoadingSpinner size="sm" />}
                       Save New Arrivals
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="border-dark-200 dark:border-dark-700" />
+
+              {/* Best Sellers */}
+              <div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium text-dark-900 dark:text-white">Best Sellers</h3>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">
+                    Select products to show in the Best Sellers section. Leave empty to use automatic selection (by sales count).
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Available Products</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg max-h-80 overflow-y-auto">
+                      {data?.all_products?.map((product) => (
+                        <label
+                          key={product.id}
+                          className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-dark-50 dark:hover:bg-dark-700 border-b border-dark-100 dark:border-dark-700 last:border-b-0 ${
+                            bestsellersProducts.includes(product.id) ? 'bg-primary-50 dark:bg-primary-900/20' : ''
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={bestsellersProducts.includes(product.id)}
+                            onChange={() => toggleProduct(product.id, 'bestsellers')}
+                            className="w-4 h-4 rounded text-primary-600"
+                          />
+                          <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                            {product.primary_image || product.images?.[0]?.image ? (
+                              <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <PhotoIcon className="w-5 h-5 text-dark-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-dark-900 dark:text-white block truncate">{product.name}</span>
+                            <span className="text-sm text-dark-500 dark:text-dark-400">PKR {product.price?.toLocaleString()}</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium text-dark-700 dark:text-dark-300 mb-3">Selected ({bestsellersProducts.length})</h4>
+                    <div className="border border-dark-200 dark:border-dark-700 rounded-lg">
+                      {bestsellersProducts.length > 0 ? (
+                        bestsellersProducts.map((productId, index) => {
+                          const product = data?.all_products?.find(p => p.id === productId)
+                          return product ? (
+                            <div
+                              key={productId}
+                              className="flex items-center gap-3 p-3 border-b border-dark-100 dark:border-dark-700 last:border-b-0"
+                            >
+                              <span className="w-6 h-6 flex items-center justify-center bg-dark-100 dark:bg-dark-700 rounded text-sm font-medium text-dark-600 dark:text-dark-400">
+                                {index + 1}
+                              </span>
+                              <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded overflow-hidden flex-shrink-0">
+                                {product.primary_image || product.images?.[0]?.image ? (
+                                  <img src={product.primary_image || product.images?.[0]?.image} alt={product.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <PhotoIcon className="w-5 h-5 text-dark-400" />
+                                  </div>
+                                )}
+                              </div>
+                              <span className="flex-1 font-medium text-dark-900 dark:text-white truncate">{product.name}</span>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() => moveProductUp(index, 'bestsellers')}
+                                  disabled={index === 0}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronUpIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => moveProductDown(index, 'bestsellers')}
+                                  disabled={index === bestsellersProducts.length - 1}
+                                  className="p-1 text-dark-400 hover:text-dark-600 disabled:opacity-30"
+                                >
+                                  <ChevronDownIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => toggleProduct(productId, 'bestsellers')}
+                                  className="p-1 text-dark-400 hover:text-red-600"
+                                >
+                                  <XMarkIcon className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ) : null
+                        })
+                      ) : (
+                        <div className="p-6 text-center text-dark-500 dark:text-dark-400">
+                          No products selected (using automatic best sellers)
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => updateProductsMutation.mutate({ section: 'bestsellers', productIds: bestsellersProducts })}
+                      disabled={updateProductsMutation.isPending}
+                      className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {updateProductsMutation.isPending && <LoadingSpinner size="sm" />}
+                      Save Best Sellers
                     </button>
                   </div>
                 </div>
@@ -1738,68 +2206,19 @@ export default function HomePageSettings() {
 
       {/* Section Settings Modal */}
       {sectionModal.open && sectionModal.section && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-dark-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-dark-900 dark:text-white">
-                  Edit: {sectionModal.section.title || sectionModal.section.key}
-                </h2>
-                <button onClick={() => setSectionModal({ open: false, section: null })} className="p-2 text-dark-400 hover:text-dark-600">
-                  <XMarkIcon className="w-5 h-5" />
-                </button>
-              </div>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  const formData = new FormData(e.currentTarget)
-                  const title = formData.get('title') as string
-                  const subtitle = formData.get('subtitle') as string
-                  updateSectionMutation.mutate({
-                    key: sectionModal.section!.key,
-                    data: { title, subtitle },
-                  })
-                  setSectionModal({ open: false, section: null })
-                }}
-                className="space-y-4"
-              >
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    defaultValue={sectionModal.section.title || ''}
-                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Section Subtitle</label>
-                  <textarea
-                    name="subtitle"
-                    defaultValue={sectionModal.section.subtitle || ''}
-                    rows={2}
-                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setSectionModal({ open: false, section: null })}
-                    className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg text-dark-700 dark:text-dark-300"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                  >
-                    Save
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        <SectionSettingsModal
+          section={sectionModal.section}
+          settingsForm={sectionSettingsForm}
+          onSettingsChange={setSectionSettingsForm}
+          onClose={() => setSectionModal({ open: false, section: null })}
+          onSave={(title, subtitle, settings) => {
+            updateSectionMutation.mutate({
+              key: sectionModal.section!.key,
+              data: { title, subtitle, settings },
+            })
+            setSectionModal({ open: false, section: null })
+          }}
+        />
       )}
     </div>
   )

@@ -55,32 +55,28 @@ export default function Footer() {
   return (
     <footer className="bg-dark-100 dark:bg-dark-900">
       {/* Newsletter Section */}
-      <div className="relative overflow-hidden bg-dark-900 dark:bg-dark-950">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 to-primary-400/10" />
-        <div className="absolute top-0 left-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary-400/5 rounded-full blur-3xl" />
-
+      <div className="relative overflow-hidden bg-primary-500">
         <div className="relative container-xl py-12 lg:py-16">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="text-center lg:text-left">
               <h3 className="text-2xl lg:text-3xl font-bold text-white font-display">
                 Stay in the Loop
               </h3>
-              <p className="text-dark-400 mt-2 max-w-md">
+              <p className="text-white/80 mt-2 max-w-md">
                 Get exclusive offers, new product announcements, and tips delivered to your inbox.
               </p>
             </div>
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row w-full max-w-md gap-3 sm:gap-0">
               <div className="relative flex-1">
-                <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-500" />
+                <EnvelopeIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-12 pr-4 py-3 sm:py-4 bg-dark-800/50 border border-dark-700
-                           rounded-xl sm:rounded-l-xl sm:rounded-r-none text-white placeholder:text-dark-500
-                           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                  className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/20 border border-white/30
+                           rounded-xl sm:rounded-l-xl sm:rounded-r-none text-white placeholder:text-white/60
+                           focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent
                            transition-all duration-200"
                   required
                 />
@@ -88,8 +84,8 @@ export default function Footer() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-3 sm:py-4 bg-primary-500 hover:bg-primary-400
-                         text-dark-900 font-semibold rounded-xl sm:rounded-l-none sm:rounded-r-xl
+                className="px-6 py-3 sm:py-4 bg-white hover:bg-white/90
+                         text-primary-500 font-semibold rounded-xl sm:rounded-l-none sm:rounded-r-xl
                          flex items-center justify-center gap-2 transition-all duration-200
                          disabled:opacity-50 disabled:cursor-not-allowed"
               >

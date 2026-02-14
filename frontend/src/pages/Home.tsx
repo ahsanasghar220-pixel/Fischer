@@ -309,21 +309,15 @@ const getCategoryFeatures = (category: Category): string[] => {
   return ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
 }
 
-// Map category slugs to video files
-const categoryVideos: Record<string, string> = {
-  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
-  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
-  'oven-toasters': '/videos/categories/oven-toasters.mp4',
-  'air-fryers': '/videos/categories/air-fryers.mp4',
-}
 
 // Fotile-Inspired Category Showcase - Clean Split-Screen Layout
 interface CategoryShowcaseProps {
   category: Category
   index: number
+  categoryVideos: Record<string, string>
 }
 
-function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
+function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseProps) {
   const ref = useRef(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
@@ -437,33 +431,13 @@ function CategoryShowcase({ category, index }: CategoryShowcaseProps) {
 }
 
 
-const bannerSlides: BannerSlide[] = [
-  {
-    image: '/images/banners/banner-geysers.webp',
-    imageAlt: 'Fischer Geysers',
-    overlay: false,
-  },
-  {
-    image: '/images/banners/banner-hobs.webp',
-    imageAlt: 'Fischer Hoods & Hobs',
-    overlay: false,
-  },
-  {
-    image: '/images/banners/banner-ovens.webp',
-    imageAlt: 'Fischer Ovens',
-    overlay: false,
-  },
-  {
-    image: '/images/banners/banner-water-coolers.webp',
-    imageAlt: 'Fischer Water Coolers',
-    overlay: false,
-  },
-  {
-    image: '/images/banners/banner-air-fryer.webp',
-    imageAlt: 'Fischer Air Fryers',
-    overlay: false,
-  },
-]
+// Default category videos mapping (fallback)
+const defaultCategoryVideos: Record<string, string> = {
+  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
+  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
+  'oven-toasters': '/videos/categories/oven-toasters.mp4',
+  'air-fryers': '/videos/categories/air-fryers.mp4',
+}
 
 export default function Home() {
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
@@ -531,6 +505,56 @@ export default function Home() {
   const isSectionEnabled = (key: string) => {
     return sections[key]?.is_enabled !== false
   }
+
+  // Dynamic banner slides from API
+  const bannerSlides: BannerSlide[] = (data?.banners || []).map((banner) => ({
+    image: banner.image,
+    imageAlt: banner.title || 'Fischer Banner',
+    title: banner.title,
+    subtitle: banner.subtitle,
+    ctaText: banner.button_text,
+    ctaLink: banner.button_link,
+    overlay: false,
+  }))
+
+  // Hero video URL from section settings
+  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=4'
+
+  // Brand statement from section data
+  const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
+  const brandSubtitle = sections.brand_statement?.subtitle || 'Crafted for Pakistan Since 1990'
+
+  // Category videos from section settings
+  const categoryVideos: Record<string, string> = sections.categories?.settings?.category_videos || defaultCategoryVideos
+
+  // Dealer CTA from section settings
+  const dealerSettings = sections.dealer_cta?.settings || {}
+  const dealerBenefits = dealerSettings.benefits || [
+    { title: 'Exclusive Margins', description: 'Competitive dealer margins & incentives', icon: '\u{1F4B0}' },
+    { title: 'Marketing Support', description: 'Co-branded marketing materials', icon: '\u{1F4E2}' },
+    { title: 'Training Programs', description: 'Product & sales training', icon: '\u{1F393}' },
+    { title: 'Priority Support', description: 'Dedicated dealer support line', icon: '\u{1F3AF}' },
+  ]
+
+  // About section from section settings
+  const aboutSettings = sections.about?.settings || {}
+  const aboutContent = aboutSettings.content || 'Established in 1990, Fischer (Fatima Engineering Works) has been at the forefront of manufacturing high-quality home and commercial appliances. With over three decades of excellence, we\'ve become a household name trusted by millions across Pakistan.'
+  const aboutImage = aboutSettings.image || '/images/about-factory.webp'
+  const aboutFallbackImage = aboutSettings.fallback_image || '/images/about-fischer.webp'
+  const aboutFeatures = aboutSettings.features || [
+    'ISO 9001:2015 & PSQCA Certified',
+    'Made in Pakistan with premium materials',
+    'Nationwide service & support network',
+    'Dedicated R&D for continuous innovation',
+  ]
+
+  // Newsletter from section settings
+  const newsletterSettings = sections.newsletter?.settings || {}
+  const newsletterTitle = sections.newsletter?.title || 'Get Exclusive Offers'
+  const newsletterSubtitle = sections.newsletter?.subtitle || 'Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.'
+  const newsletterPlaceholder = newsletterSettings.placeholder || 'Enter your email address'
+  const newsletterButtonText = newsletterSettings.button_text || 'Subscribe'
+  const newsletterDisclaimer = newsletterSettings.disclaimer || 'No spam, unsubscribe anytime.'
 
 
   // Use categories from API with centralized image fallback mapping
@@ -602,7 +626,7 @@ export default function Home() {
               setVideoLoaded(true)
             }}
           >
-            <source src="/videos/hero-video.mp4?v=4" type="video/mp4" />
+            <source src={heroVideoUrl} type="video/mp4" />
           </video>}
 
           {/* Subtle overlay for visual depth */}
@@ -632,23 +656,32 @@ export default function Home() {
         {/* ==========================================
             SECTION 2: BRAND STATEMENT - NEW
             ========================================== */}
+        {isSectionEnabled('brand_statement') && (
         <AnimatedSection animation="fade-up" duration={800} threshold={0.1} easing="gentle">
           <section className="section bg-white dark:bg-dark-900">
             <div className="container-xl text-center">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
-                Premium Appliances
+                {brandTitle}
               </h2>
               <p className="text-xl md:text-2xl text-dark-600 dark:text-dark-400 max-w-3xl mx-auto">
-                Crafted for Pakistan Since 1990
+                {brandSubtitle}
               </p>
             </div>
           </section>
         </AnimatedSection>
+        )}
 
         {/* ==========================================
             SECTION 2.5: HERO PRODUCT BANNER
             ========================================== */}
-        <HeroProductBanner />
+        {isSectionEnabled('hero_products') && (
+        <HeroProductBanner
+          products={sections.hero_products?.settings?.products}
+          title={sections.hero_products?.title}
+          subtitle={sections.hero_products?.subtitle}
+          badgeText={sections.hero_products?.settings?.badge_text}
+        />
+        )}
 
         {/* ==========================================
             SECTION 4: STATS SECTION - CLEAN PROFESSIONAL
@@ -686,17 +719,17 @@ export default function Home() {
         {/* ==========================================
             SECTION 6: CATEGORY SHOWCASE - FOTILE SPLIT SCREEN
             ========================================== */}
-        {categories.length > 0 && (
+        {isSectionEnabled('categories') && categories.length > 0 && (
           <section className="section bg-white dark:bg-dark-900">
             <div className="container-xl">
               {/* Section Header */}
               <AnimatedSection animation="fade-up" duration={800} easing="gentle">
                 <div className="text-center mb-10 sm:mb-12 md:mb-16">
                   <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
-                    Explore Our Collections
+                    {sections.categories?.title || 'Explore Our Collections'}
                   </h2>
                   <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-                    Each category carefully curated with premium quality and innovative designs
+                    {sections.categories?.subtitle || 'Each category carefully curated with premium quality and innovative designs'}
                   </p>
                 </div>
               </AnimatedSection>
@@ -707,7 +740,7 @@ export default function Home() {
                   .filter((c) => categoryVideos[c.slug])
                   .slice(0, 4)
                   .map((category, index) => (
-                    <CategoryShowcase key={category.id} category={category} index={index} />
+                    <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
                   ))}
               </div>
             </div>
@@ -724,7 +757,7 @@ export default function Home() {
                 {/* Section Header */}
                 <div className="text-center mb-8 sm:mb-10 md:mb-12">
                   <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
-                    Why Choose Fischer
+                    {sections.features?.title || 'Why Choose Fischer'}
                   </h2>
                 </div>
 
@@ -831,12 +864,14 @@ export default function Home() {
         {/* ==========================================
             BANNER CAROUSEL - Product Categories
             ========================================== */}
+        {bannerSlides.length > 0 && (
         <BannerCarousel
           slides={bannerSlides}
           autoPlay
           autoPlayInterval={5000}
           height="lg"
         />
+        )}
 
         {/* ==========================================
             FEATURED PRODUCTS - Carousel Showcase
@@ -901,7 +936,7 @@ export default function Home() {
         {/* ==========================================
             BEST SELLERS - Carousel Showcase
             ========================================== */}
-        {data?.bestsellers && data.bestsellers.length > 0 && (
+        {isSectionEnabled('bestsellers') && data?.bestsellers && data.bestsellers.length > 0 && (
           <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
             <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none">
@@ -979,37 +1014,33 @@ export default function Home() {
                                      bg-primary-500/20 backdrop-blur-sm text-primary-400
                                      text-sm font-bold mb-8">
                         <SparklesIcon className="w-5 h-5" />
-                        Partnership Opportunity
+                        {dealerSettings.badge_text || 'Partnership Opportunity'}
                       </span>
                       <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 sm:mb-8">
-                        Become a Fischer
-                        <span className="block text-primary-400">
-                          Authorized Dealer
-                        </span>
+                        {sections.dealer_cta?.title || 'Become a Fischer Authorized Dealer'}
                       </h2>
                       <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                        Join our nationwide network of 500+ dealers and grow your business with
-                        Pakistan's most trusted appliance brand.
+                        {sections.dealer_cta?.subtitle || 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted appliance brand.'}
                       </p>
                       <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
                         <Link
-                          to="/become-dealer"
+                          to={dealerSettings.button_link || '/become-dealer'}
                           className="group px-8 py-4 bg-primary-500 hover:bg-primary-600
                                    hover:-translate-y-0.5 active:scale-[0.98] rounded-xl font-semibold
                                    text-white transition-all duration-300
                                    flex items-center gap-2 hover:shadow-lg"
                         >
-                          Apply Now
+                          {dealerSettings.button_text || 'Apply Now'}
                           <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                         <Link
-                          to="/contact"
+                          to={dealerSettings.secondary_button_link || '/contact'}
                           className="px-8 py-4 bg-white/10 hover:bg-white/20 hover:-translate-y-0.5
                                    active:scale-[0.98] backdrop-blur-sm rounded-xl font-semibold
                                    text-white transition-all duration-300
                                    border border-white/20"
                         >
-                          Contact Sales
+                          {dealerSettings.secondary_button_text || 'Contact Sales'}
                         </Link>
                       </div>
                     </div>
@@ -1024,12 +1055,7 @@ export default function Home() {
                     easing="gentle"
                     once
                   >
-                    {[
-                      { title: 'Exclusive Margins', desc: 'Competitive dealer margins & incentives', icon: '💰' },
-                      { title: 'Marketing Support', desc: 'Co-branded marketing materials', icon: '📢' },
-                      { title: 'Training Programs', desc: 'Product & sales training', icon: '🎓' },
-                      { title: 'Priority Support', desc: 'Dedicated dealer support line', icon: '🎯' },
-                    ].map((benefit) => (
+                    {dealerBenefits.map((benefit: any) => (
                       <div
                         key={benefit.title}
                         className="p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
@@ -1038,7 +1064,7 @@ export default function Home() {
                       >
                         <span className="text-4xl mb-4 block">{benefit.icon}</span>
                         <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
-                        <p className="text-dark-300 text-sm leading-relaxed">{benefit.desc}</p>
+                        <p className="text-dark-300 text-sm leading-relaxed">{benefit.description || benefit.desc}</p>
                       </div>
                     ))}
                   </StaggeredChildren>
@@ -1225,7 +1251,7 @@ export default function Home() {
                       <div className="relative">
                         <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
                           <img
-                            src="/images/about-factory.webp"
+                            src={aboutImage}
                             alt="Fischer Factory - Manufacturing Facility"
                             width={600}
                             height={450}
@@ -1234,7 +1260,7 @@ export default function Home() {
                               const target = e.currentTarget
                               if (!target.dataset.fallback) {
                                 target.dataset.fallback = 'true'
-                                target.src = '/images/about-fischer.webp'
+                                target.src = aboutFallbackImage
                               }
                             }}
                           />
@@ -1272,28 +1298,18 @@ export default function Home() {
                                    text-primary-600 dark:text-primary-400
                                    text-sm font-semibold mb-6">
                       <SparklesIcon className="w-4 h-4" />
-                      About Fischer
+                      {aboutSettings.badge_text || 'About Fischer'}
                     </span>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-6 sm:mb-8 leading-tight">
-                      Pakistan's Most{' '}
-                      <span className="text-primary-600 dark:text-primary-400">Trusted</span>{' '}
-                      Appliance Brand
+                      {sections.about?.title || 'Pakistan\'s Most Trusted Appliance Brand'}
                     </h2>
                     <p className="text-xl text-dark-500 dark:text-dark-400 mb-10 leading-relaxed">
-                      Established in 1990, Fischer (Fatima Engineering Works) has been at the
-                      forefront of manufacturing high-quality home and commercial appliances.
-                      With over three decades of excellence, we've become a household name
-                      trusted by millions across Pakistan.
+                      {aboutContent}
                     </p>
 
                     {/* Feature list */}
                     <div className="grid sm:grid-cols-2 gap-6 mb-10">
-                      {[
-                        'ISO 9001:2015 & PSQCA Certified',
-                        'Made in Pakistan with premium materials',
-                        'Nationwide service & support network',
-                        'Dedicated R&D for continuous innovation',
-                      ].map((item, index) => (
+                      {aboutFeatures.map((item: string, index: number) => (
                         <div key={index} className="flex items-center gap-4 group">
                           <div className="w-10 h-10 rounded-xl
                                         bg-primary-100 dark:bg-primary-900/30
@@ -1308,14 +1324,14 @@ export default function Home() {
                     </div>
 
                     <Link
-                      to="/about"
+                      to={aboutSettings.button_link || '/about'}
                       className="group inline-flex items-center gap-2 px-6 py-3
                                bg-primary-500 dark:bg-primary-600 hover:bg-primary-600 dark:hover:bg-primary-700
                                rounded-xl font-semibold text-white
                                hover:shadow-lg hover:-translate-y-0.5
                                transition-all duration-300"
                     >
-                      Learn More About Us
+                      {aboutSettings.button_text || 'Learn More About Us'}
                       <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
@@ -1330,53 +1346,6 @@ export default function Home() {
             ========================================== */}
         {notableClients.length > 0 && (
           <NotableClients clients={notableClients} speed="fast" />
-        )}
-
-        {/* ==========================================
-            SECTION 9: NEWSLETTER - RED CTA
-            ========================================== */}
-        {isSectionEnabled('newsletter') && (
-          <AnimatedSection animation="fade-up" duration={800} threshold={0.1} easing="gentle">
-            <section className="section bg-dark-900 dark:bg-[#0A0A0A]">
-              <div className="container-xl">
-                <div className="max-w-2xl mx-auto text-center">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-                    Get Exclusive Offers
-                  </h2>
-                  <p className="text-lg text-dark-300 mb-8">
-                    Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.
-                  </p>
-
-                  <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={handleNewsletterSubmit}>
-                    <input
-                      type="email"
-                      placeholder="Enter your email address"
-                      value={newsletterEmail}
-                      onChange={(e) => setNewsletterEmail(e.target.value)}
-                      required
-                      className="flex-1 px-6 py-4 rounded-xl bg-white/10 border border-white/20
-                               text-white placeholder:text-dark-400
-                               focus:outline-none focus:border-primary-500
-                               transition-colors duration-300"
-                    />
-                    <button
-                      type="submit"
-                      disabled={subscribing}
-                      className="px-6 py-4 bg-primary-500 hover:bg-primary-600
-                               rounded-xl font-semibold text-white transition-colors
-                               disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {subscribing ? 'Subscribing...' : 'Subscribe'}
-                    </button>
-                  </form>
-
-                  <p className="text-sm text-dark-500 mt-4">
-                    No spam, unsubscribe anytime.
-                  </p>
-                </div>
-              </div>
-            </section>
-          </AnimatedSection>
         )}
 
         {/* ==========================================

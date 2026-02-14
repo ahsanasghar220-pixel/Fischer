@@ -176,13 +176,32 @@ class HomeController extends Controller
         }
 
         // Get bestsellers
-        $bestsellers = Product::with(['images', 'category'])
-            ->active()
-            ->bestseller()
-            ->orderByDesc('sales_count')
-            ->limit(10)
-            ->get()
-            ->map(fn($p) => $this->formatProduct($p));
+        $bestsellersSection = $sections->get('bestsellers');
+        $bestsellersSettings = $bestsellersSection?->settings ?? [];
+        $bestsellersCount = $bestsellersSettings['display_count'] ?? 10;
+        $bestsellersSource = $bestsellersSettings['source'] ?? 'auto';
+
+        if ($bestsellersSource === 'manual') {
+            $homepageBestsellers = HomepageProduct::visible()
+                ->section('bestsellers')
+                ->ordered()
+                ->with(['product.images', 'product.category'])
+                ->take($bestsellersCount)
+                ->get();
+
+            $bestsellers = $homepageBestsellers
+                ->map(fn($hp) => $hp->product)
+                ->filter()
+                ->map(fn($p) => $this->formatProduct($p));
+        } else {
+            $bestsellers = Product::with(['images', 'category'])
+                ->active()
+                ->bestseller()
+                ->orderByDesc('sales_count')
+                ->limit($bestsellersCount)
+                ->get()
+                ->map(fn($p) => $this->formatProduct($p));
+        }
 
         // Get banners
         $banners = Banner::active()
