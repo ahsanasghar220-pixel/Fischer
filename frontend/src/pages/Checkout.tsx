@@ -763,7 +763,7 @@ export default function Checkout() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{item.product?.name || 'Product'}</p>
+                        <p className="text-sm font-medium text-dark-900 dark:text-white break-words">{item.product?.name || 'Product'}</p>
                         {item.variant && (
                           <p className="text-xs text-dark-500 dark:text-dark-400">{item.variant.name}</p>
                         )}

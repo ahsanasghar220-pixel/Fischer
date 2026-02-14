@@ -345,9 +345,13 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-name {
-    @apply text-sm sm:text-base font-semibold text-dark-900 dark:text-white line-clamp-2
+    @apply text-sm sm:text-base font-semibold text-dark-900 dark:text-white
            group-hover:text-primary-600 dark:group-hover:text-primary-400
-           transition-colors duration-300 leading-snug;
+           transition-colors duration-300 leading-snug break-words;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .product-card .product-price {

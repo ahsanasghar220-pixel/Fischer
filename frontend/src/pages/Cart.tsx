@@ -201,10 +201,10 @@ export default function Cart() {
                                 )}
                               </motion.div>
                             </Link>
-                            <div>
+                            <div className="flex-1 min-w-0">
                               <Link
                                 to={`/product/${item.product?.slug || ''}`}
-                                className="font-medium text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                className="font-medium text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors break-words block"
                               >
                                 {item.product?.name || 'Product'}
                               </Link>

@@ -357,7 +357,7 @@ function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseP
       {/* Video Side - Videos Only (no backup image) */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
-          {videoSrc && (
+          {videoSrc ? (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -365,11 +365,20 @@ function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseP
               loop
               muted
               playsInline
-              preload="auto"
-              onError={() => setVideoFailed(true)}
+              preload="metadata"
+              poster=""
+              onError={() => {
+                console.error('Video failed to load:', videoSrc)
+                setVideoFailed(true)
+              }}
             >
               <source src={videoSrc} type="video/mp4" />
+              Your browser does not support the video tag.
             </video>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-white/50 text-sm">
+              Loading video...
+            </div>
           )}
         </div>
       </div>
