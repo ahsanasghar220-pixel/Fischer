@@ -254,7 +254,7 @@ export default function ServiceRequest() {
             </motion.div>
             <div>
               <motion.h1
-                className="text-3xl font-bold"
+                className="text-2xl sm:text-3xl font-bold"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.4 }}

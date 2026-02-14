@@ -354,10 +354,10 @@ function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseP
       }}
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
-      {/* Video / Image Side */}
+      {/* Video Side - Videos Only (no backup image) */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
-          {videoSrc && !videoFailed ? (
+          {videoSrc && (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -366,24 +366,10 @@ function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseP
               muted
               playsInline
               preload="auto"
-              poster={category.image || undefined}
               onError={() => setVideoFailed(true)}
             >
               <source src={videoSrc} type="video/mp4" />
             </video>
-          ) : category.image ? (
-            <img
-              src={category.image}
-              alt={category.name}
-              className="w-full h-full object-contain p-4 transition-transform duration-700 hover:scale-105"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none'
-              }}
-            />
-          ) : (
-            <div className="absolute inset-0 w-full h-full bg-dark-50 dark:bg-dark-800 flex items-center justify-center">
-              <span className="text-2xl font-semibold text-dark-400 dark:text-dark-500 text-center px-4">{category.name}</span>
-            </div>
           )}
         </div>
       </div>

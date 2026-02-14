@@ -70,7 +70,7 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-3xl font-bold text-dark-900 dark:text-white mb-6">Our Story</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white mb-4 sm:mb-6">Our Story</h2>
                 <div className="space-y-4 text-dark-600 dark:text-dark-400">
                   <p>
                     Founded in 1990, Fischer Pakistan (Fatima Engineering Works) started with a simple mission: to provide
@@ -141,7 +141,7 @@ export default function About() {
                   whileHover={{ scale: 1.05 }}
                 >
                   <motion.span
-                    className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-500 block"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary-500 block"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -161,7 +161,7 @@ export default function About() {
         <section className="py-16 bg-white dark:bg-dark-900 transition-colors">
           <div className="container mx-auto px-4">
             <motion.h2
-              className="text-3xl font-bold text-dark-900 dark:text-white text-center mb-12"
+              className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white text-center mb-8 sm:mb-12"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -223,7 +223,7 @@ export default function About() {
       <section className="bg-dark-900 dark:bg-dark-800 text-white py-16 overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.h2
-            className="text-3xl font-bold text-center mb-12"
+            className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

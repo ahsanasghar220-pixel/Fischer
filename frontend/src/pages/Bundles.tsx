@@ -60,13 +60,13 @@ export default function Bundles() {
               <GiftIcon className="w-4 h-4" />
               Special Offers
             </span>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 sm:mb-6">
               Bundle{' '}
               <span className="bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent">
                 Deals
               </span>
             </h1>
-            <p className="text-xl text-dark-300 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-dark-300 max-w-2xl mx-auto">
               Save more when you buy together. Explore our curated bundles featuring the best
               Fischer appliances at unbeatable prices.
             </p>

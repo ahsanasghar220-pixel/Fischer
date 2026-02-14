@@ -50,9 +50,9 @@ export default function Account() {
             <span>/</span>
             <span className="text-dark-900 dark:text-white">My Account</span>
           </div>
-          <h1 className="text-3xl font-bold text-dark-900 dark:text-white">My Account</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white">My Account</h1>
           {user && (
-            <p className="text-dark-500 dark:text-dark-400 mt-1">Welcome back, {user.name}</p>
+            <p className="text-sm sm:text-base text-dark-500 dark:text-dark-400 mt-1">Welcome back, {user.name}</p>
           )}
         </div>
       </div>

@@ -567,9 +567,9 @@ export default function ProductDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.45 }}
               >
-                <span className="text-3xl font-bold text-dark-900 dark:text-white">{formatPrice(currentPrice)}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white">{formatPrice(currentPrice)}</span>
                 {comparePrice && comparePrice > currentPrice && (
-                  <span className="text-xl text-dark-400 line-through">{formatPrice(comparePrice)}</span>
+                  <span className="text-base sm:text-lg md:text-xl text-dark-400 line-through">{formatPrice(comparePrice)}</span>
                 )}
               </motion.div>
 

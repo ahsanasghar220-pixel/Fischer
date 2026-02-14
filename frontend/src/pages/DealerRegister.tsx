@@ -146,8 +146,8 @@ export default function DealerRegister() {
               <BuildingStorefrontIcon className="w-7 h-7 text-dark-900" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Become a Dealer</h1>
-              <p className="text-dark-300 dark:text-dark-400">Partner with Fischer and grow your business</p>
+              <h1 className="text-2xl sm:text-3xl font-bold">Become a Dealer</h1>
+              <p className="text-sm sm:text-base text-dark-300 dark:text-dark-400">Partner with Fischer and grow your business</p>
             </div>
           </div>
         </div>

@@ -57,10 +57,10 @@ export default function Cart() {
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <ShoppingBagIcon className="w-24 h-24 mx-auto text-dark-300 dark:text-dark-600 mb-6" />
+              <ShoppingBagIcon className="w-16 h-16 sm:w-24 sm:h-24 mx-auto text-dark-300 dark:text-dark-600 mb-4 sm:mb-6" />
             </motion.div>
             <motion.h1
-              className="text-2xl font-bold text-dark-900 dark:text-white mb-2"
+              className="text-xl sm:text-2xl font-bold text-dark-900 dark:text-white mb-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -68,7 +68,7 @@ export default function Cart() {
               Your cart is empty
             </motion.h1>
             <motion.p
-              className="text-dark-500 dark:text-dark-400 mb-6"
+              className="text-sm sm:text-base text-dark-500 dark:text-dark-400 mb-4 sm:mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -112,7 +112,7 @@ export default function Cart() {
             <span className="text-dark-900 dark:text-white">Shopping Cart</span>
           </motion.div>
           <motion.h1
-            className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
+            className="text-xl sm:text-2xl md:text-3xl font-bold text-dark-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -120,7 +120,7 @@ export default function Cart() {
             Shopping Cart
           </motion.h1>
           <motion.p
-            className="text-dark-500 dark:text-dark-400 mt-1"
+            className="text-sm sm:text-base text-dark-500 dark:text-dark-400 mt-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -130,8 +130,8 @@ export default function Cart() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Cart Items */}
           <motion.div
             className="lg:col-span-2"
@@ -323,9 +323,9 @@ export default function Cart() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6 lg:sticky lg:top-4">
+            <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4 sm:p-6 lg:sticky lg:top-4">
               <motion.h2
-                className="text-lg font-semibold text-dark-900 dark:text-white mb-4"
+                className="text-base sm:text-lg font-semibold text-dark-900 dark:text-white mb-3 sm:mb-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
@@ -335,7 +335,7 @@ export default function Cart() {
 
               {/* Coupon */}
               <motion.div
-                className="mb-6"
+                className="mb-4 sm:mb-6"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -465,17 +465,17 @@ export default function Cart() {
 
               {/* Payment Methods */}
               <motion.div
-                className="mt-6 pt-6 border-t border-dark-200 dark:border-dark-700"
+                className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-dark-200 dark:border-dark-700"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.55 }}
               >
-                <p className="text-sm text-dark-500 dark:text-dark-400 text-center mb-3">Secure payment options</p>
-                <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-dark-400">
+                <p className="text-xs sm:text-sm text-dark-500 dark:text-dark-400 text-center mb-2 sm:mb-3">Secure payment options</p>
+                <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap text-dark-400">
                   {['COD', 'JazzCash', 'EasyPaisa', 'Cards'].map((method, index) => (
                     <motion.span
                       key={method}
-                      className="text-xs"
+                      className="text-[10px] sm:text-xs font-medium"
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 + index * 0.05 }}

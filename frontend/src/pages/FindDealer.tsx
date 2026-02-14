@@ -47,8 +47,8 @@ export default function FindDealer() {
       {/* Header */}
       <div className="bg-dark-900 dark:bg-dark-800 text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Find a Dealer</h1>
-          <p className="text-dark-300 dark:text-dark-400 max-w-2xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Find a Dealer</h1>
+          <p className="text-sm sm:text-base text-dark-300 dark:text-dark-400 max-w-2xl mx-auto">
             Locate an authorized Fischer dealer near you. Our network of dealers
             across Pakistan ensures quality products and service wherever you are.
           </p>

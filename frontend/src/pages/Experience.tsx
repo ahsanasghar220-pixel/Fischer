@@ -64,10 +64,10 @@ export default function Experience() {
               transition={{ duration: 0.6 }}
               className="text-center max-w-4xl mx-auto"
             >
-              <h1 className="text-4xl lg:text-6xl font-bold font-display mb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold font-display mb-4 sm:mb-6">
                 Experience Fischer
               </h1>
-              <p className="text-xl lg:text-2xl text-white/90 mb-8">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-6 sm:mb-8">
                 Visit our showrooms and discover why thousands of Pakistani families trust Fischer for their home appliances
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
