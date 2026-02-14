@@ -319,7 +319,7 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-actions {
-    @apply absolute bottom-4 left-4 right-4 flex gap-2
+    @apply absolute bottom-4 left-4 right-4 flex gap-2 justify-center
            translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
            transition-all duration-300 delay-100;
   }

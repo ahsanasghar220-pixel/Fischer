@@ -24,10 +24,10 @@ interface BannerCarouselProps {
 }
 
 const heightClasses = {
-  sm: 'h-[220px] md:h-[400px]',
-  md: 'h-[260px] md:h-[500px]',
-  lg: 'h-[300px] md:h-[600px]',
-  xl: 'h-[360px] md:h-[700px]',
+  sm: 'aspect-[16/5] md:aspect-auto md:h-[400px]',
+  md: 'aspect-[16/5] md:aspect-auto md:h-[500px]',
+  lg: 'aspect-[16/5] md:aspect-auto md:h-[600px]',
+  xl: 'aspect-[16/5] md:aspect-auto md:h-[700px]',
 }
 
 const positionClasses = {
@@ -77,7 +77,7 @@ const BannerCarousel = memo(function BannerCarousel({
 
   return (
     <div
-      className={`relative w-full ${heightClasses[height]} overflow-hidden`}
+      className={`relative w-full ${heightClasses[height]} overflow-hidden bg-dark-900`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -95,7 +95,7 @@ const BannerCarousel = memo(function BannerCarousel({
           <img
             src={slide.image}
             alt={slide.imageAlt ?? 'Banner'}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain md:object-cover"
           />
 
           {/* Overlay */}

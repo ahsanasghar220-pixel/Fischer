@@ -370,14 +370,15 @@ const ProductCard = memo(function ProductCard({
             <button
               onClick={handleAddToCart}
               disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-              className="flex-1 py-2 bg-primary-500 hover:bg-primary-400
-                        text-dark-900 text-xs font-semibold rounded-lg
-                        flex items-center justify-center gap-1.5
+              className="flex-1 py-2.5 px-5 bg-primary-500 hover:bg-primary-400
+                        text-white text-sm font-semibold rounded-lg
+                        flex items-center justify-center gap-2
+                        max-w-[200px]
                         disabled:opacity-50 disabled:cursor-not-allowed
                         transition-all duration-200 shadow-lg
                         hover:scale-[1.02] active:scale-[0.98]"
             >
-              <ShoppingCartIcon className="w-3.5 h-3.5" />
+              <ShoppingCartIcon className="w-4 h-4" />
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}
             </button>
             {/* Hide Quick View on touch - users can tap the card itself */}
