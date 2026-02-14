@@ -56,7 +56,18 @@ DirectoryIndex index.html index.php
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Compression
+# Brotli Compression (15-20% better than gzip, falls back to gzip if not available)
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
+    AddOutputFilterByType BROTLI_COMPRESS text/javascript application/javascript application/x-javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/json application/xml application/xhtml+xml
+    AddOutputFilterByType BROTLI_COMPRESS application/rss+xml application/atom+xml
+    AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+    # Don't compress images/videos (already compressed)
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|avif|mp4|webm|ogg)$ no-brotli
+</IfModule>
+
+# Gzip Compression (fallback for servers without Brotli)
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html
     AddOutputFilterByType DEFLATE text/css

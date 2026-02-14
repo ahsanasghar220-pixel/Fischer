@@ -25,11 +25,30 @@ jobs:
         working-directory: frontend
         run: npm install
 
+      - name: Cache frontend build
+        id: cache-build
+        uses: actions/cache@v3
+        with:
+          path: frontend/dist
+          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
       - name: Build frontend
+        if: steps.cache-build.outputs.cache-hit != 'true'
         working-directory: frontend
         run: npm run build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Verify build exists
+        run: |
+          if [ ! -d "frontend/dist" ]; then
+            echo "ERROR: frontend/dist directory not found!"
+            exit 1
+          fi
+          echo "✓ Build directory exists"
+          ls -lh frontend/dist/ | head -10
 
       - name: Create deployment package
         run: |
@@ -133,6 +152,12 @@ jobs:
             # Run migrations (preserves existing data)
             echo "=== Running migrations ==="
             $PHP artisan migrate --force 2>&1
+
+            # Check queue worker status (visitor tracking runs in background queue)
+            # IMPORTANT: Ensure queue worker is running: php artisan queue:work --tries=3 --daemon
+            # You can check with: ps aux | grep "queue:work"
+            echo "=== Queue Worker Status ==="
+            ps aux | grep "queue:work" | grep -v grep || echo "WARNING: Queue worker not running. Start with: php artisan queue:work --tries=3 --daemon &"
 
             # Only run seeders if SEED_ON_DEPLOY file exists (create this file manually when needed)
             if [ -f "SEED_ON_DEPLOY" ]; then

@@ -119,7 +119,24 @@
       "Bash(for img in about-factory about-fischer all-products banner-1 banner-2 banner-3 banner-4 bottom-banner-1 bottom-banner-2 category-water-cooler iso-certified logo-dark logo-light)",
       "Bash(do echo -n \"$img: \")",
       "Bash(done)",
-      "Bash(.github/workflows/deploy.yml << 'EOF'\n# Fischer E-commerce Auto-Deployment Workflow\n# Triggers on push to main branch\n\nname: Deploy to Hostinger\n\non:\n  push:\n    branches:\n      - main\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: 🚀 Deploy to Hostinger\n        uses: appleboy/ssh-action@master\n        with:\n          host: ${{ secrets.HOSTINGER_HOST }}\n          username: ${{ secrets.HOSTINGER_USERNAME }}\n          password: ${{ secrets.HOSTINGER_PASSWORD }}\n          port: ${{ secrets.HOSTINGER_PORT }}\n          script: |\n            cd ${{ secrets.HOSTINGER_PATH }}\n            git pull origin main\n            chmod +x deploy.sh\n            ./deploy.sh\nEOF)"
+      "Bash(.github/workflows/deploy.yml << 'EOF'\n# Fischer E-commerce Auto-Deployment Workflow\n# Triggers on push to main branch\n\nname: Deploy to Hostinger\n\non:\n  push:\n    branches:\n      - main\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: 🚀 Deploy to Hostinger\n        uses: appleboy/ssh-action@master\n        with:\n          host: ${{ secrets.HOSTINGER_HOST }}\n          username: ${{ secrets.HOSTINGER_USERNAME }}\n          password: ${{ secrets.HOSTINGER_PASSWORD }}\n          port: ${{ secrets.HOSTINGER_PORT }}\n          script: |\n            cd ${{ secrets.HOSTINGER_PATH }}\n            git pull origin main\n            chmod +x deploy.sh\n            ./deploy.sh\nEOF)",
+      "Bash(for:*)",
+      "Bash(do echo \"$f\")",
+      "Bash(git log:*)",
+      "Bash(do echo \"=== $comp ===\")",
+      "Bash(npx cwebp:*)",
+      "Bash(git rm:*)",
+      "Bash(git lfs:*)",
+      "Bash(cwebp:*)",
+      "WebFetch(domain:fischerpk.com)",
+      "Bash(del:*)",
+      "Bash(mysql:*)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-sandbox --print-to-pdf=\"/c/xampp/htdocs/fischer/INVOICE-FISCHER-PAKISTAN.pdf\" --print-to-pdf-no-header \"file:///C:/xampp/htdocs/fischer/INVOICE-FISCHER-PAKISTAN.html\")",
+      "Bash(git config:*)",
+      "Bash(git status:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(git restore:*)",
+      "Bash(wc:*)"
     ]
   }
 }

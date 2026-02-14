@@ -62,12 +62,16 @@ export default defineConfig({
     target: 'es2020',
     // Enable CSS code splitting
     cssCodeSplit: true,
+    // Skip compressed size reporting for faster builds
+    reportCompressedSize: false,
     rollupOptions: {
       output: {
         // Optimize chunk naming for better caching
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
         assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        // Prevent too many tiny chunks (better caching, fewer requests)
+        experimentalMinChunkSize: 20000,
         manualChunks: (id) => {
           // Critical path optimization - keep core small
           if (id.includes('node_modules')) {

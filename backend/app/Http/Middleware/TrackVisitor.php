@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\TrackVisitorJob;
 use App\Services\AnalyticsTrackingService;
 use Closure;
 use Illuminate\Http\Request;
@@ -40,17 +41,40 @@ class TrackVisitor
         }
 
         try {
-            // Get or create visitor session
-            $session = $this->trackingService->getOrCreateSession($request);
+            // Prepare request data for the job (avoid serializing full Request object)
+            $requestData = [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'headers' => [
+                    'User-Agent' => $request->userAgent(),
+                    'Referer' => $request->header('Referer'),
+                    'X-Visitor-Session' => $request->header('X-Visitor-Session'),
+                ],
+                'server' => [
+                    'REMOTE_ADDR' => $request->ip(),
+                    'HTTP_CF_CONNECTING_IP' => $request->server('HTTP_CF_CONNECTING_IP'),
+                    'HTTP_X_FORWARDED_FOR' => $request->server('HTTP_X_FORWARDED_FOR'),
+                    'HTTP_X_REAL_IP' => $request->server('HTTP_X_REAL_IP'),
+                    'REQUEST_URI' => $request->getRequestUri(),
+                ],
+                'query' => [
+                    'utm_source' => $request->input('utm_source'),
+                    'utm_medium' => $request->input('utm_medium'),
+                    'utm_campaign' => $request->input('utm_campaign'),
+                ],
+            ];
 
-            // Track page view for certain endpoints
+            // Determine page type if we should track
+            $pageType = null;
             if ($this->shouldTrackPageView($request)) {
                 $pageType = $this->determinePageType($request);
-                $this->trackingService->trackPageView($request, $pageType);
             }
+
+            // Dispatch tracking job to queue (non-blocking)
+            TrackVisitorJob::dispatch($requestData, $pageType);
         } catch (\Exception $e) {
             // Don't let tracking errors break the request
-            \Log::warning('Visitor tracking error: ' . $e->getMessage());
+            \Log::warning('Visitor tracking dispatch error: ' . $e->getMessage());
         }
 
         return $next($request);
