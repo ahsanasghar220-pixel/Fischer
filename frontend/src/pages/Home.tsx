@@ -701,14 +701,10 @@ export default function Home() {
                 </div>
               </AnimatedSection>
 
-              {/* Categories Detail - Split Screen Alternating (prioritize categories with videos) */}
+              {/* Categories Detail - Split Screen Alternating (only show categories with videos) */}
               <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
                 {[...categories]
-                  .sort((a, b) => {
-                    const aHasVideo = categoryVideos[a.slug] ? 1 : 0
-                    const bHasVideo = categoryVideos[b.slug] ? 1 : 0
-                    return bHasVideo - aHasVideo
-                  })
+                  .filter((c) => categoryVideos[c.slug])
                   .slice(0, 4)
                   .map((category, index) => (
                     <CategoryShowcase key={category.id} category={category} index={index} />
