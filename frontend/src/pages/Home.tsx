@@ -354,10 +354,10 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
       }}
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
-      {/* Video Side - Videos Only (no backup image) */}
+      {/* Video Side - Video with image fallback */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
-          {videoSrc ? (
+          {videoSrc && !videoFailed ? (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -376,9 +376,13 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
               Your browser does not support the video tag.
             </video>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white/50 text-sm">
-              Loading video...
-            </div>
+            <img
+              src={category.image || '/images/placeholder-category.jpg'}
+              alt={category.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           )}
         </div>
       </div>
@@ -428,11 +432,12 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
 
 
 // Default category videos mapping (fallback)
+// Note: Add video paths here when videos are available in backend/public/videos/categories/
 const defaultCategoryVideos: Record<string, string> = {
-  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
-  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
-  'oven-toasters': '/videos/categories/oven-toasters.mp4',
-  'air-fryers': '/videos/categories/air-fryers.mp4',
+  // 'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
+  // 'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
+  // 'oven-toasters': '/videos/categories/oven-toasters.mp4',
+  // 'air-fryers': '/videos/categories/air-fryers.mp4',
 }
 
 export default function Home() {
