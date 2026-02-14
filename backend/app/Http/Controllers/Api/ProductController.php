@@ -226,10 +226,16 @@ class ProductController extends Controller
             ->orderByDesc('created_at')
             ->paginate(10);
 
+        // Cache rating distribution for 1 hour - changes infrequently
+        $cacheKey = "product_{$product->id}_rating_distribution";
+        $ratingDistribution = Cache::remember($cacheKey, 3600, function () use ($product) {
+            return $this->getRatingDistribution($product);
+        });
+
         $stats = [
             'average_rating' => $product->average_rating,
             'review_count' => $product->review_count,
-            'rating_distribution' => $this->getRatingDistribution($product),
+            'rating_distribution' => $ratingDistribution,
         ];
 
         return response()->json([

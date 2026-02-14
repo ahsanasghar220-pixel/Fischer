@@ -5,32 +5,39 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::with(['children' => function ($query) {
-                $query->active()
-                    ->ordered()
-                    ->withCount(['products' => fn($q) => $q->active()]);
-            }])
-            ->active()
-            ->topLevel()
-            ->withCount(['products' => fn($q) => $q->active()])
-            ->ordered();
+        // Cache key includes 'featured' filter if present
+        $cacheKey = 'categories_index' . ($request->featured ? '_featured' : '');
 
-        if ($request->featured) {
-            $query->featured();
-        }
+        // Cache for 1 hour - categories don't change frequently
+        $categories = Cache::remember($cacheKey, 3600, function () use ($request) {
+            $query = Category::with(['children' => function ($query) {
+                    $query->active()
+                        ->ordered()
+                        ->withCount(['products' => fn($q) => $q->active()]);
+                }])
+                ->active()
+                ->topLevel()
+                ->withCount(['products' => fn($q) => $q->active()])
+                ->ordered();
 
-        // Get categories and ensure uniqueness by name (keep the one with highest products_count)
-        $categories = $query->get()
-            ->groupBy('name')
-            ->map(function ($group) {
-                return $group->sortByDesc('products_count')->first();
-            })
-            ->values();
+            if ($request->featured) {
+                $query->featured();
+            }
+
+            // Get categories and ensure uniqueness by name (keep the one with highest products_count)
+            return $query->get()
+                ->groupBy('name')
+                ->map(function ($group) {
+                    return $group->sortByDesc('products_count')->first();
+                })
+                ->values();
+        });
 
         return $this->success($categories);
     }
@@ -86,11 +93,14 @@ class CategoryController extends Controller
 
     public function featured()
     {
-        $categories = Category::active()
-            ->featured()
-            ->ordered()
-            ->limit(6)
-            ->get();
+        // Cache featured categories for 1 hour
+        $categories = Cache::remember('categories_featured', 3600, function () {
+            return Category::active()
+                ->featured()
+                ->ordered()
+                ->limit(6)
+                ->get();
+        });
 
         return $this->success($categories);
     }
@@ -110,17 +120,20 @@ class CategoryController extends Controller
 
     public function tree()
     {
-        $categories = Category::with(['children' => function ($query) {
-            $query->active()
-                ->ordered()
-                ->with(['children' => function ($q) {
-                    $q->active()->ordered();
-                }]);
-        }])
-        ->active()
-        ->topLevel()
-        ->ordered()
-        ->get();
+        // Cache category tree for 1 hour
+        $categories = Cache::remember('categories_tree', 3600, function () {
+            return Category::with(['children' => function ($query) {
+                $query->active()
+                    ->ordered()
+                    ->with(['children' => function ($q) {
+                        $q->active()->ordered();
+                    }]);
+            }])
+            ->active()
+            ->topLevel()
+            ->ordered()
+            ->get();
+        });
 
         return $this->success($categories);
     }
