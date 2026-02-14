@@ -1,0 +1,2702 @@
+{
+    "products": [
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-T90-05S",
+            "slug": "kitchen-hood-fkh-t90-05s",
+            "sku": "FKH-T90-05S",
+            "model_number": "FKH-T90-05S",
+            "short_description": "900mm T-Shape hood, 1000 m³/h airflow, touch/gesture control, auto-heating clean.",
+            "description": "900mm T-shape chimney hood with 1000 m³/h airflow. Features touch and gesture control with auto-heating clean technology. Black powder coating finish on both chimney and body. 200W metal blower motor, filterless design, dual LED lighting (2×1.5W), and 1.8m aluminum exhaust pipe included.",
+            "price": "44500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-T90-05S\",\"Style\":\"T-Shape Chimney Hood (no glass)\",\"Width\":\"900 mm\",\"Airflow\":\"1000 m\\u00b3\\/h\",\"Motor\":\"200W Metal Blower\",\"Voltage\":\"220-240V, 50Hz\",\"Controls\":\"3-Speed Touch + Gesture Control\",\"Features\":\"Heat Auto Clean\",\"Finish\":\"Black Powder Coating\",\"Filter\":\"Filterless\",\"Lighting\":\"2 \\u00d7 1.5W LED\",\"Oil Collector\":\"Black Powder Coating\",\"Exhaust Pipe\":\"1.8m Aluminium\",\"Power Cord\":\"1.5m VDE Plug\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-T90-05S/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-H90-06S",
+            "slug": "kitchen-hood-fkh-h90-06s",
+            "sku": "FKH-H90-06S",
+            "model_number": "FKH-H90-06S",
+            "short_description": "900mm glass panel hood, 1000 m³/h airflow, 270W motor, gesture control.",
+            "description": "900mm chimney hood with glass panel and black powder coating finish. High airflow 1000 m³/h with powerful 270W metal blower motor. 3-speed gesture and touch control with heat auto clean technology. Matt filter design with LED lighting.",
+            "price": "48825.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-H90-06S\",\"Style\":\"Chimney Hood with Glass Panel\",\"Width\":\"900 mm\",\"Airflow\":\"1000 m\\u00b3\\/h\",\"Motor\":\"270W Metal Blower\",\"Controls\":\"3-Speed Gesture + Touch Control\",\"Features\":\"Heat Auto Clean\",\"Finish\":\"Black Powder Coating (chimney + panel)\",\"Filter\":\"Matt Filter\",\"Lighting\":\"1 \\u00d7 2W LED Lamp\",\"Oil Collector\":\"Black Powder Coating\",\"Exhaust Pipe\":\"1.8m Aluminium\",\"Power Cord\":\"1.5m VDE Plug\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-H90-06S/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-T90-031N",
+            "slug": "kitchen-hood-fkh-t90-031n",
+            "sku": "FKH-T90-031N",
+            "model_number": "FKH-T90-031N",
+            "short_description": "900mm hood, BLDC copper motor, 3-speed + boost, baffle filters, auto-clean.",
+            "description": "Premium hood with BLDC copper motor, 3-speed + boost functionality and gesture/touch control. Equipped with 0.7mm baffle filters (3 pieces) and galvanized sheet construction. Heavy gauge 0.7mm painted oil cup for easy maintenance. Heat auto-clean technology.",
+            "price": "49375.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-T90-03IN\",\"Dimensions\":\"900 \\u00d7 450 \\u00d7 580 mm\",\"Motor\":\"BLDC Copper Motor\",\"Controls\":\"3-Speed + Boost, Gesture & Touch\",\"Features\":\"Heat Auto Clean\",\"Filters\":\"0.7mm Baffle Filters (3 pcs)\",\"Construction\":\"Galvanised Sheet (0.6\\/0.7mm)\",\"Oil Cup\":\"Heavy Gauge 0.7mm Painted\",\"Chimney Height\":\"500 mm\",\"Power Cord\":\"1.1m\",\"Aluminium Pipe\":\"1.5m\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-T90-031N/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-T90-031N/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-S90-021N",
+            "slug": "kitchen-hood-fkh-s90-021n",
+            "sku": "FKH-S90-021N",
+            "model_number": "FKH-S90-021N",
+            "short_description": "900mm slant hood, 1200 m³/h, BLDC motor, filterless, tempered glass.",
+            "description": "Elegant slant hood design with 1200 m³/h airflow and BLDC copper motor. Filterless operation with tempered glass panel. 3-speed with boost, gesture and touch control, 5-key operation system, and heat auto clean technology. Zero vibration design.",
+            "price": "57500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-S90-02IN\",\"Style\":\"Slant Hood\",\"Dimensions\":\"900 \\u00d7 350 \\u00d7 900 mm\",\"Airflow\":\"1200 m\\u00b3\\/h\",\"Motor\":\"BLDC Copper Motor\",\"Controls\":\"3-Speed + Boost, Gesture & Touch, 5-Key\",\"Features\":\"Heat Auto Clean, Filterless Operation\",\"Construction\":\"Galvanised Sheet + Stainless Steel (0.6\\/0.7mm)\",\"Glass\":\"Tempered Glass\",\"Chimney Height\":\"500 mm (extra length)\",\"Power Cord\":\"1.1m\",\"Aluminium Pipe\":\"1.5m\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-S90-021N/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-S90-021N/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-T90-04SC",
+            "slug": "kitchen-hood-fkh-t90-04sc",
+            "sku": "FKH-T90-04SC",
+            "model_number": "FKH-T90-04SC",
+            "short_description": "900mm hood, 1680 m³/h max airflow, AC copper motor, 52 dB, zero vibration.",
+            "description": "High performance T-shape hood with the highest airflow in the range at 1680 m³/h. Strong AC copper motor with 3-speed + boost, gesture and touch control, LED lamp, and remarkably low 52 dB noise level with zero vibration design. Obsidian black paint finish on galvanized sheet body.",
+            "price": "59500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-T90-04SC\",\"Width\":\"900 mm\",\"Airflow\":\"1680 m\\u00b3\\/h\",\"Motor\":\"Strong AC Copper Motor\",\"Noise Level\":\"52 dB\",\"Vibration\":\"Zero Vibration\",\"Controls\":\"3-Speed + Boost, Gesture & Touch, 5-Key\",\"Features\":\"Heat Auto Clean\",\"Construction\":\"Galvanized Sheet\",\"Finish\":\"Obsidian Black Paint\",\"Lighting\":\"LED Lamp\",\"Chimney Height\":\"520 mm\",\"Power Cord\":\"1.1m\",\"Aluminium Pipe\":\"1.5m\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-T90-04SC/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-T90-04SC/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hoods",
+            "name": "Kitchen Hood FKH-L90-01IN",
+            "slug": "kitchen-hood-fkh-l90-01in",
+            "sku": "FKH-L90-01IN",
+            "model_number": "FKH-L90-01IN",
+            "short_description": "900mm flagship hood, 1500 m³/h, BLDC motor, dual LED, 52 dB, zero vibration.",
+            "description": "Premium flagship hood with powerful 1500 m³/h airflow. BLDC copper motor delivering low noise (52 dB) and zero vibration. 3-speed + boost with heat auto clean. Double LED lamps for superior illumination. Galvanised sheet construction at 0.7mm thickness.",
+            "price": "62500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FKH-L90-01IN\",\"Dimensions\":\"900 \\u00d7 347 \\u00d7 860 mm\",\"Airflow\":\"1500 m\\u00b3\\/h\",\"Motor\":\"BLDC Copper Motor\",\"Noise Level\":\"52 dB\",\"Vibration\":\"Zero Vibration\",\"Controls\":\"3-Speed + Boost, Gesture & Touch, 5-Key\",\"Features\":\"Heat Auto Clean\",\"Construction\":\"Galvanised Sheet (0.7mm)\",\"Lighting\":\"Double LED Lamps\",\"Chimney Height\":\"450 mm\",\"Power Cord\":\"1.1m\",\"Aluminium Pipe\":\"1.5m\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-L90-01IN/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hoods/FKH-L90-01IN/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-SS76-3EPS",
+            "slug": "kitchen-hob-fbh-ss76-3eps",
+            "sku": "FBH-SS76-3EPS",
+            "model_number": "FBH-SS76-3EPS",
+            "short_description": "76cm stainless steel 3-burner EPS hob with dual 5.0kW triple-ring wok burners.",
+            "description": "76cm stainless steel built-in gas hob with EPS burner technology. Features 0.8mm stainless steel panel, heavy iron pan supports, metal knobs, and 2 triple-ring wok burners (5.0kW each, 120mm) plus 1 semi-rapid burner (1.75kW). 1.5V battery pulse ignition.",
+            "price": "38125.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-SS76-3EPS\",\"Surface\":\"0.8mm Stainless Steel Panel\",\"Burners\":\"2\\u00d7 Triple Ring Wok (5.0kW, \\u03c6120mm) + 1\\u00d7 Semi-rapid (1.75kW)\",\"Burner Type\":\"EPS\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Type\":\"2000 Pa Natural Gas\",\"Pan Support\":\"Heavy Iron\",\"Knobs\":\"Metal\",\"Panel Size\":\"760 \\u00d7 450 \\u00d7 120 mm\",\"Packing Size\":\"800 \\u00d7 490 \\u00d7 175 mm\",\"Weight\":\"11 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS76-3EPS/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS76-3EPS/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS76-3EPS/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-SS84-3SBF",
+            "slug": "kitchen-hob-fbh-ss84-3sbf",
+            "sku": "FBH-SS84-3SBF",
+            "model_number": "FBH-SS84-3SBF",
+            "short_description": "84cm stainless steel 3-burner SABAF hob with cast iron supports.",
+            "description": "84cm stainless steel built-in gas hob with SABAF burner system. Features 201 stainless steel panel (0.7mm), cast iron pan supports, metal knobs, and 2 triple-ring wok burners (3.3kW each) plus 1 semi-rapid burner (1.75kW). Compatible with both LPG and Natural Gas.",
+            "price": "38125.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-SS84-3SBF\",\"Surface\":\"201 Stainless Steel (0.7mm)\",\"Burners\":\"2\\u00d7 Triple Ring Wok (3.3kW) + 1\\u00d7 Semi-rapid (1.75kW)\",\"Burner Type\":\"SABAF\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Pressure\":\"LPG 2800 Pa \\/ Natural Gas 2000 Pa\",\"Pan Support\":\"Cast Iron\",\"Knobs\":\"Metal\",\"Panel Size\":\"840 \\u00d7 480 \\u00d7 120 mm\",\"Packing Size\":\"910 \\u00d7 560 \\u00d7 175 mm\",\"Weight\":\"11 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS84-3SBF/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS84-3SBF/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-SS76-3CB",
+            "slug": "kitchen-hob-fbh-ss76-3cb",
+            "sku": "FBH-SS76-3CB",
+            "model_number": "FBH-SS76-3CB",
+            "short_description": "76cm brushed S.S 3-burner hob with brass burners and flame failure safety.",
+            "description": "76cm stainless steel built-in gas hob with 0.8mm brushed panel and brass burners. Features heavy-duty metal steel matte enamel pan supports, zinc alloy knobs, 3-in-1 aluminum burner base with brass caps and rings, and flame failure safety device. Compatible with LPG and Natural Gas.",
+            "price": "39000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-SS76-3CB\",\"Surface\":\"0.8mm Stainless Steel Brushed Panel\",\"Burners\":\"2\\u00d7 High-power (5.0kW) + 1\\u00d7 Auxiliary (1.5kW)\",\"Burner Base\":\"3-in-1 Aluminium with Brass Caps & Rings\",\"Ignition\":\"1.5V DC Battery Pulse\",\"Safety\":\"Flame Failure Safety Device\",\"Gas Pressure\":\"LPG 2800 Pa \\/ Natural Gas 2000 Pa\",\"Pan Support\":\"Heavy-duty Metal Steel Matte Enamel\",\"Knobs\":\"Zinc Alloy\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS76-3CB/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-G78-3CB",
+            "slug": "kitchen-hob-fbh-g78-3cb",
+            "sku": "FBH-G78-3CB",
+            "model_number": "FBH-G78-3CB",
+            "short_description": "78cm tempered glass 3-burner hob with dual 5.0kW wok burners, 14kg.",
+            "description": "78cm tempered glass built-in gas hob with 3 brass burners including 2 triple-ring wok burners (5.0kW each, φ120mm) and 1 semi-rapid burner (1.75kW). Features cast iron corner pan supports, metal knobs, silver edge cover, and 1.5V battery pulse ignition. Panel size: 780×450×120mm, weight 14kg.",
+            "price": "40625.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-G78-3CB\",\"Surface\":\"780mm Tempered Glass\",\"Burners\":\"2\\u00d7 Triple Ring Wok (5.0kW, \\u03c6120mm) + 1\\u00d7 Semi-rapid (1.75kW)\",\"Burner Type\":\"Brass\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Type\":\"2000 Pa Natural Gas\",\"Pan Support\":\"Cast Iron (Corner)\",\"Knobs\":\"Metal\",\"Edge Cover\":\"Silver\",\"Panel Size\":\"780 \\u00d7 450 \\u00d7 120 mm\",\"Packing Size\":\"830 \\u00d7 510 \\u00d7 220 mm\",\"Weight\":\"14 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G78-3CB/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G78-3CB/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G78-3CB/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-G78-3CB (MATTE)",
+            "slug": "kitchen-hob-fbh-g78-3cb-matte",
+            "sku": "FBH-G78-3CB-MATTE",
+            "model_number": "FBH-G78-3CB (MATTE)",
+            "short_description": "78cm matte glass 3-burner hob with flame failure safety, zinc alloy knobs.",
+            "description": "78cm tempered glass built-in gas hob in premium matte finish. Features 8mm tempered glass with fine matte finish, zinc alloy knobs, 3-in-1 aluminium burner base with brass caps and rings. 2 high-power burners (5.0kW each) + 1 auxiliary (1.5kW). Includes flame failure safety device.",
+            "price": "40000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-G78-3CB (MATTE)\",\"Surface\":\"8mm Tempered Glass (Fine Matte Finish)\",\"Burners\":\"2\\u00d7 High-power (5.0kW) + 1\\u00d7 Auxiliary (1.5kW)\",\"Burner Base\":\"3-in-1 Aluminium with Brass Caps & Rings\",\"Ignition\":\"1.5V DC Battery Pulse\",\"Safety\":\"Flame Failure Safety Device\",\"Gas Pressure\":\"LPG 2800 Pa \\/ Natural Gas 2000 Pa\",\"Pan Support\":\"Metal Steel Matt Enamel\",\"Knobs\":\"Zinc Alloy\",\"Product Size\":\"780 \\u00d7 450 \\u00d7 150 mm\",\"Cut-out Size\":\"680 \\u00d7 380 mm (4-R-20)\",\"Packing Size\":\"880 \\u00d7 520 \\u00d7 210 mm\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G78-3CB-MATTE/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-G90-5SBF",
+            "slug": "kitchen-hob-fbh-g90-5sbf",
+            "sku": "FBH-G90-5SBF",
+            "model_number": "FBH-G90-5SBF",
+            "short_description": "90cm tempered glass 5-burner SABAF hob with cast iron supports, 20.3kg.",
+            "description": "90cm tempered glass built-in gas hob with 5 SABAF burners for maximum cooking flexibility. Features 8mm tempered glass panel, cast iron pan supports, and metal knobs. Burner config: 1 triple-ring wok (3.3kW), 1 rapid (2.75kW), 2 semi-rapid (1.75kW), 1 auxiliary (1.0kW). Weight 20.3kg.",
+            "price": "43125.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-G90-5SBF\",\"Surface\":\"8mm Tempered Glass\",\"Burners\":\"1\\u00d7 Triple Ring Wok (3.3kW) + 1\\u00d7 Rapid (2.75kW) + 2\\u00d7 Semi-rapid (1.75kW) + 1\\u00d7 Auxiliary (1.0kW)\",\"Burner Type\":\"SABAF\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Pressure\":\"LPG 2800 Pa \\/ Natural Gas 2000 Pa\",\"Pan Support\":\"Cast Iron\",\"Knobs\":\"Metal\",\"Panel Size\":\"870 \\u00d7 510 \\u00d7 120 mm\",\"Packing Size\":\"910 \\u00d7 560 \\u00d7 175 mm\",\"Weight\":\"20.3 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G90-5SBF/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G90-5SBF/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-G90-5SBF/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-SS90-5SBF",
+            "slug": "kitchen-hob-fbh-ss90-5sbf",
+            "sku": "FBH-SS90-5SBF",
+            "model_number": "FBH-SS90-5SBF",
+            "short_description": "90cm stainless steel 5-burner SABAF hob with heavy cast iron supports.",
+            "description": "90cm stainless steel built-in gas hob with 5 Chinese SABAF burners. Features 0.7mm stainless steel panel, heavy cast iron pan supports, and metal knobs. Burner config: 1 triple-ring wok (3.3kW), 1 rapid (3.0kW), 2 semi-rapid (1.75kW), 1 auxiliary (1.0kW). Weight 16.3kg.",
+            "price": "44375.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-SS90-5SBF\",\"Surface\":\"0.7mm Stainless Steel\",\"Burners\":\"1\\u00d7 Triple Ring Wok (3.3kW) + 1\\u00d7 Rapid (3.0kW) + 2\\u00d7 Semi-rapid (1.75kW) + 1\\u00d7 Auxiliary (1.0kW)\",\"Burner Type\":\"Chinese SABAF\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Pressure\":\"LPG 2800 Pa \\/ Natural Gas 2000 Pa\",\"Pan Support\":\"Heavy Cast Iron\",\"Knobs\":\"Metal\",\"Panel Size\":\"900 \\u00d7 510 \\u00d7 120 mm\",\"Packing Size\":\"960 \\u00d7 560 \\u00d7 175 mm\",\"Weight\":\"16.3 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "kitchen-hobs",
+            "name": "Kitchen Hob FBH-SS86-3CB",
+            "slug": "kitchen-hob-fbh-ss86-3cb",
+            "sku": "FBH-SS86-3CB",
+            "model_number": "FBH-SS86-3CB",
+            "short_description": "86cm premium 1.2mm S.S 3-burner hob with dual 5.0kW brass wok burners.",
+            "description": "86cm stainless steel built-in gas hob with premium 1.2mm stainless steel panel and brass burners. Features heavy iron pan supports, metal knobs, 2 triple-ring wok burners (5.0kW each, 120mm) plus 1 semi-rapid burner (1.75kW). Weight 13.2kg.",
+            "price": "46250.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FBH-SS86-3CB\",\"Surface\":\"1.2mm Stainless Steel Panel\",\"Burners\":\"2\\u00d7 Triple Ring Wok (5.0kW, \\u03c6120mm) + 1\\u00d7 Semi-rapid (1.75kW)\",\"Burner Type\":\"Brass\",\"Ignition\":\"1.5V Battery Pulse\",\"Gas Type\":\"2000 Pa Natural Gas\",\"Pan Support\":\"Heavy Iron\",\"Knobs\":\"Metal\",\"Panel Size\":\"860 \\u00d7 450 \\u00d7 120 mm\",\"Packing Size\":\"900 \\u00d7 560 \\u00d7 165 mm\",\"Weight\":\"13.2 kg\",\"Warranty\":\"1 year complete\"}",
+            "images": [
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS86-3CB/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS86-3CB/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/kitchen-hobs/FBH-SS86-3CB/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Cabinet 3 Burner",
+            "slug": "cooking-cabinet-3-burner",
+            "sku": "FCC-3B",
+            "model_number": "3 Burner Cabinet",
+            "short_description": "34\" cooking cabinet with 3 burners, double door, and stainless steel construction.",
+            "description": "34-inch cooking cabinet with 3 burners, double door design, and metal top. Stainless steel construction for durability and easy cleaning. Compact design perfect for everyday cooking needs.",
+            "price": "28500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"C 34-3\",\"Width\":\"34 inches\",\"Burners\":\"3\",\"Door\":\"Double Door\",\"Top\":\"Metal\",\"Material\":\"Stainless Steel\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcc-3b.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Cabinet 5 Burner",
+            "slug": "cooking-cabinet-5-burner",
+            "sku": "FCC-5B",
+            "model_number": "5 Burner Cabinet",
+            "short_description": "34\" cooking cabinet with 5 burners, double door, and stainless steel construction.",
+            "description": "34-inch cooking cabinet with 5 burners, double door design, and metal top. Stainless steel construction provides durability. Extra burners allow multiple dishes to be cooked simultaneously for larger families.",
+            "price": "29500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"C 34-5\",\"Width\":\"34 inches\",\"Burners\":\"5\",\"Door\":\"Double Door\",\"Top\":\"Metal\",\"Material\":\"Stainless Steel\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcc-5b.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Single Door Cooking Cabinet 3 Burner",
+            "slug": "single-door-cooking-cabinet-3-burner",
+            "sku": "FCC-3B-SD",
+            "model_number": "3 Burner Single Door",
+            "short_description": "27\" single door cooking cabinet with 3 burners, compact design.",
+            "description": "27-inch single door cooking cabinet with 3 burners and metal top. Compact design perfect for smaller kitchens. Stainless steel construction for durability.",
+            "price": "23500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"C 27-3\",\"Width\":\"27 inches\",\"Burners\":\"3\",\"Door\":\"Single Door\",\"Top\":\"Metal\",\"Material\":\"Stainless Steel\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcc-3b-sd.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 3 Brass Burner",
+            "slug": "cooking-range-3-brass-burner",
+            "sku": "FCR-3BB",
+            "model_number": "3 Brass Burner",
+            "short_description": "34\" auto ignition range, 3 brass burners, S.S body, mercury glass.",
+            "description": "34-inch auto ignition cooking range with 3 brass burners. Features outer body and base in stainless steel, double door design, auto ignition system, and mercury glass front and top for a premium look. Professional brass burners for superior flame control.",
+            "price": "42000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"34 S-3\",\"Width\":\"34 inches\",\"Burners\":\"3 (Brass)\",\"Door\":\"Double Door\",\"Ignition\":\"Auto Ignition\",\"Body\":\"Outer Body & Base Stainless Steel\",\"Top\":\"Mercury Glass Front & Top\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3bb.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 5 Brass Burner",
+            "slug": "cooking-range-5-brass-burner",
+            "sku": "FCR-5BB",
+            "model_number": "5 Brass Burner",
+            "short_description": "34\" auto ignition range, 5 brass burners, S.S body, mercury glass.",
+            "description": "34-inch auto ignition cooking range with 5 brass burners. Features outer body and base in stainless steel, double door design, auto ignition system, and mercury glass front and top. Five brass burners provide maximum cooking flexibility.",
+            "price": "43000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"34 S-5\",\"Width\":\"34 inches\",\"Burners\":\"5 (Brass)\",\"Door\":\"Double Door\",\"Ignition\":\"Auto Ignition\",\"Body\":\"Outer Body & Base Stainless Steel\",\"Top\":\"Mercury Glass Front & Top\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-5bb.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 3 Brass Burner + Deep Fryer",
+            "slug": "cooking-range-3-brass-burner-deep-fryer",
+            "sku": "FCR-3BB-DF",
+            "model_number": "3 Brass Burner + Deep Fryer",
+            "short_description": "34\" cooking range with 3 brass burners plus integrated deep fryer.",
+            "description": "34-inch cooking range with 3 brass burners plus integrated deep fryer. Double door design with stainless steel construction. The built-in deep fryer adds versatility for frying alongside regular stovetop cooking.",
+            "price": "55000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"34 M-3 Deep Fryer\",\"Width\":\"34 inches\",\"Burners\":\"3 (Brass)\",\"Special Feature\":\"Integrated Deep Fryer\",\"Door\":\"Double Door\",\"Panel\":\"Stainless Steel\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3bb-df.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 3 Burner + Deep Fryer",
+            "slug": "cooking-range-3-burner-deep-fryer",
+            "sku": "FCR-3B-DF",
+            "model_number": "3 Burner + Deep Fryer",
+            "short_description": "34\" cooking range with 3 burners plus integrated deep fryer.",
+            "description": "34-inch cooking range with 3 burners plus integrated deep fryer. Double door design with metal top. Combines regular cooking range with a dedicated deep frying section for versatile meal preparation.",
+            "price": "39000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Width\":\"34 inches\",\"Burners\":\"3\",\"Special Feature\":\"Integrated Deep Fryer\",\"Door\":\"Double Door\",\"Top\":\"Metal\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3b-df.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 3 Burner + Roasting Grill",
+            "slug": "cooking-range-3-burner-roasting-grill",
+            "sku": "FCR-3B-RG",
+            "model_number": "3 Burner + Roasting Grill",
+            "short_description": "34\" cooking range with 3 burners, double door, roasting grill, and S.S panels.",
+            "description": "34-inch cooking range with 3 burners plus roasting grill. Double door design with stainless steel panels on both sides and metal top. The built-in roasting grill adds a specialized cooking zone for grilling and roasting meats.",
+            "price": "47500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"34 M-3\",\"Width\":\"34 inches\",\"Burners\":\"3\",\"Special Feature\":\"Roasting Grill\",\"Door\":\"Double Door\",\"Panel\":\"Stainless Steel (Both Sides)\",\"Top\":\"Metal\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3b-rg.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 5 Burner + Pizza Baker",
+            "slug": "cooking-range-5-burner-pizza-baker",
+            "sku": "FCR-5B-PB",
+            "model_number": "5 Burner + Pizza Baker",
+            "short_description": "34\" cooking range with 5 burners plus dedicated pizza baker plate.",
+            "description": "34-inch cooking range with 5 burners plus pizza baker. Double door design with stainless steel construction. Features a dedicated pizza baking plate for making perfect homemade pizzas alongside regular cooking.",
+            "price": "56000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"34 M-5 Pizza+\",\"Width\":\"34 inches\",\"Burners\":\"5\",\"Special Feature\":\"Pizza Baker Plate\",\"Door\":\"Double Door\",\"Panel\":\"Stainless Steel\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-5b-pb.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 5 Burner + Roasting Grill",
+            "slug": "cooking-range-5-burner-roasting-grill",
+            "sku": "FCR-5B-RG",
+            "model_number": "5 Burner + Roasting Grill",
+            "short_description": "34\" cooking range with 5 burners, double door, roasting grill, and S.S panels.",
+            "description": "34-inch cooking range with 5 burners plus roasting grill. Double door design with stainless steel panels on both sides and metal top. Five burners provide maximum cooking flexibility with a dedicated roasting grill section.",
+            "price": "49000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Width\":\"34 inches\",\"Burners\":\"5\",\"Special Feature\":\"Roasting Grill\",\"Door\":\"Double Door\",\"Panel\":\"Stainless Steel (Both Sides)\",\"Top\":\"Metal\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-5b-rg.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Single Door Cooking Range 3 Brass Burner",
+            "slug": "single-door-cooking-range-3-brass-burner",
+            "sku": "FCR-3BB-SD",
+            "model_number": "3 Brass Burner Single Door",
+            "short_description": "27\" single door range, 3 brass burners, auto ignition, mercury glass.",
+            "description": "27-inch single door cooking range with 3 brass burners and auto ignition. Features outer body and base in stainless steel, mercury glass front and top, and compact single-door design for space-saving installation.",
+            "price": "35000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"27 S-3\",\"Width\":\"27 inches\",\"Burners\":\"3 (Brass)\",\"Door\":\"Single Door\",\"Ignition\":\"Auto Ignition\",\"Body\":\"Outer Body & Base Stainless Steel\",\"Top\":\"Mercury Glass Front & Top\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3bb-sd.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Single Door Cooking Range 3 Burner",
+            "slug": "single-door-cooking-range-3-burner",
+            "sku": "FCR-3B-SD",
+            "model_number": "3 Burner Single Door",
+            "short_description": "27\" single door range, 3 burners, metal top, S.S panels both sides.",
+            "description": "27-inch single door cooking range with 3 burners plus roasting grill. Features metal top, stainless steel panels on both sides, and compact single-door design. Ideal for smaller kitchens.",
+            "price": "37500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"27 M-3\",\"Width\":\"27 inches\",\"Burners\":\"3\",\"Door\":\"Single Door\",\"Top\":\"Metal\",\"Panel\":\"Stainless Steel (Both Sides)\"}",
+            "images": [
+                {
+                    "image": "/images/products/cooking-ranges/fcr-3b-sd.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "oven-toasters",
+            "name": "Oven Toaster FOT-1901D",
+            "slug": "oven-toaster-fot-1901d",
+            "sku": "FOT-1901D",
+            "model_number": "FOT-1901D",
+            "short_description": "35L digital 11-in-1 oven toaster, 1500W, convection, rotisserie.",
+            "description": "35-liter 11-in-1 oven toaster with digital controls and 1500W power. Functions include Pizza, Toast, Bagel, Bake, Roast, Broil, Cookies, Rotisserie, Dehydrate, Ferment, and Warm. Features 4 stainless steel heating elements, double-layer glass door, convection function, 120-minute timer, inner lamp, and rotisserie.",
+            "price": "28750.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FOT-1901D\",\"Capacity\":\"35 Litres\",\"Power\":\"1500W\",\"Voltage\":\"220-240V ~ 50\\/60Hz\",\"Controls\":\"Digital Display\",\"Functions\":\"Pizza, Toast, Bagel, Bake, Roast, Broil, Cookies, Rotisserie, Dehydrate, Ferment, Warm (11-in-1)\",\"Heating Elements\":\"4 Stainless Steel\",\"Door\":\"Double-layer Glass\",\"Timer\":\"120 minutes with bell\",\"Features\":\"Convection, Inner Lamp, Rotisserie\",\"Accessories\":\"Bake tray, Wire rack, Tray handle, Rotisserie fork set, Crumb tray\",\"Housing\":\"Black housing & panel\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/oven-toasters/FOT-1901D/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-1901D/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-1901D/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-1901D/4.webp",
+                    "is_primary": false,
+                    "sort_order": 4
+                }
+            ]
+        },
+        {
+            "category_slug": "oven-toasters",
+            "name": "Oven Toaster FOT-2501C",
+            "slug": "oven-toaster-fot-2501c",
+            "sku": "FOT-2501C",
+            "model_number": "FOT-2501C",
+            "short_description": "48L mechanical oven toaster, 1800W, convection, rotisserie, 100-250°C.",
+            "description": "48-liter oven toaster with mechanical controls and 1800W power. Extra-large capacity with 4 stainless steel heating elements, double-layer glass door, convection function, rotisserie, and 60-minute timer. Temperature range 100-250°C.",
+            "price": "31875.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FOT-2501C\",\"Capacity\":\"48 Litres\",\"Power\":\"1800W\",\"Voltage\":\"220-240V ~ 50\\/60Hz\",\"Controls\":\"Mechanical\",\"Temperature Range\":\"100-250\\u00b0C\",\"Heating Elements\":\"4 Stainless Steel\",\"Door\":\"Double-layer Glass\",\"Timer\":\"60 minutes with bell ring\",\"Features\":\"Convection, Inner Lamp, Rotisserie\",\"Accessories\":\"Bake tray, Wire rack, Tray handle, Rotisserie fork set, Crumb tray\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/oven-toasters/FOT-2501C/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-2501C/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-2501C/3.webp",
+                    "is_primary": false,
+                    "sort_order": 3
+                },
+                {
+                    "image": "/images/products/oven-toasters/FOT-2501C/4.webp",
+                    "is_primary": false,
+                    "sort_order": 4
+                }
+            ]
+        },
+        {
+            "category_slug": "air-fryers",
+            "name": "Fischer Digital Air Fryer 4L FAF-401WD",
+            "slug": "fischer-digital-air-fryer-4l-faf-401wd",
+            "sku": "FAF-401WD",
+            "model_number": "FAF-401WD",
+            "short_description": "Compact 4L digital air fryer with smart electronic controls, see-through window, and injection molding texture design.",
+            "description": "<h3>Fischer Digital Air Fryer 4L</h3>\n<p>A compact air fryer featuring smart electronic controls and a transparent window for monitoring cooking progress. Perfect for individuals and small families who want healthy, oil-free cooking.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Smart electronic knob control</li>\n<li>See-through window for easy monitoring</li>\n<li>Wide temperature range: 80-200°C</li>\n<li>Injection molding texture design</li>\n<li>Compact 4L capacity</li>\n<li>Non-stick coating</li>\n</ul>",
+            "price": "26500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FAF-401WD\",\"Capacity\":\"4 Litres\",\"Power\":\"1400W\",\"Voltage\":\"220V\",\"Frequency\":\"50\\/60Hz\",\"Temperature Range\":\"80-200\\u00b0C\",\"Control Type\":\"Touch Panel with Smart Electronic Knob\",\"Housing Material\":\"Plastic\",\"Product Dimensions\":\"335 \\u00d7 289 \\u00d7 246 mm\",\"Gift Box Dimensions\":\"381 \\u00d7 291 \\u00d7 364 mm\",\"Features\":\"See-through window, Injection molding texture\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/air-fryers/FAF-401WD/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/air-fryers/FAF-401WD/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "air-fryers",
+            "name": "Fischer Digital Air Fryer 6L FAF-601WD",
+            "slug": "fischer-digital-air-fryer-6l-faf-601wd",
+            "sku": "FAF-601WD",
+            "model_number": "FAF-601WD",
+            "short_description": "6L digital air fryer with touch control, metal cavity for odor reduction, see-through window, and elegant matt finish design.",
+            "description": "<h3>Fischer Digital Air Fryer 6L</h3>\n<p>A versatile 6-liter capacity air fryer designed for household cooking with modern conveniences and quality construction. Features a metal cavity instead of plastic for reduced odor during cooking.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Touch control panel for easy operation</li>\n<li>Non-stick coating for easy cleaning</li>\n<li>Elegant design with matt finish</li>\n<li>Metal cavity to reduce smelling</li>\n<li>Bottom heater for much even cooking result</li>\n<li>Large see-through window for easy observation</li>\n<li>Wide temperature range: 40-200°C</li>\n</ul>",
+            "price": "31000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FAF-601WD\",\"Capacity\":\"6 Litres\",\"Control Type\":\"Touch Panel (Digital)\",\"Coating\":\"Non-stick\",\"Cavity Material\":\"Metal (odor-reducing)\",\"Design\":\"Matte Finish\",\"Features\":\"Large transparent window, Bottom heater for even cooking\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/air-fryers/FAF-601WD/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/air-fryers/FAF-601WD/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "air-fryers",
+            "name": "Fischer Digital Air Fryer 8L FAF-801WD",
+            "slug": "fischer-digital-air-fryer-8l-faf-801wd",
+            "sku": "FAF-801WD",
+            "model_number": "FAF-801WD",
+            "short_description": "High-capacity 8L digital air fryer with touch panel, 6 preset cooking functions, and dual heating elements for family-size healthy cooking.",
+            "description": "<h3>Fischer Digital Air Fryer 8L</h3>\n<p>High-capacity air fryer designed for family-size cooking with digital controls and multiple preset cooking functions. The 8-liter capacity ensures you can prepare meals for the entire family in a single batch.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Digital touch control panel with 6 preset cooking functions</li>\n<li>Non-stick coating for simplified cleaning</li>\n<li>Large air frying basket suitable for family portions</li>\n<li>8-liter capacity</li>\n<li>Dual heating element for even temperature control</li>\n<li>Injection molding texture design</li>\n</ul>\n\n<h4>Included Accessories</h4>\n<ul>\n<li>1x Frying basket</li>\n<li>1x Baking tray</li>\n</ul>",
+            "price": "36000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Model\":\"FAF-801WD\",\"Capacity\":\"8 Litres\",\"Power\":\"1750W\",\"Voltage\":\"120-240V\",\"Frequency\":\"50\\/60Hz\",\"Temperature Range\":\"77-204\\u00b0C (170-400\\u00b0F)\",\"Control Type\":\"Touch Panel (Digital)\",\"Preset Functions\":\"6\",\"Housing Material\":\"Plastic\",\"Coating\":\"Non-stick\",\"Cavity Material\":\"Metal (odor-reducing)\",\"Product Dimensions\":\"210 \\u00d7 408 \\u00d7 296 mm\",\"Packaging Dimensions\":\"451 \\u00d7 254 \\u00d7 345 mm\",\"Included\":\"Air Frying Basket, Baking Tray\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/air-fryers/FAF-801WD/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                },
+                {
+                    "image": "/images/products/air-fryers/FAF-801WD/2.webp",
+                    "is_primary": false,
+                    "sort_order": 2
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 35 S.S",
+            "slug": "electric-water-cooler-fe-35-ss",
+            "sku": "FE-35-SS",
+            "model_number": "FE 35 S.S",
+            "short_description": "35 Ltr/Hr electric water cooler for 35-70 people with 2 taps.",
+            "description": "Commercial-grade electric water cooler with 35 litres/hour cooling capacity, suitable for 35-70 people. Features food-grade non-magnetic stainless steel water tank, 100% pure copper external coiling for clean fresh water, CFC-free R134a refrigerant, and brand new compressor. Perfect for outdoor placement in factories, schools, and mosques.",
+            "price": "59500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 35 S.S\",\"Cooling Capacity\":\"35 Litres\\/Hour\",\"User Capacity\":\"35-70 people\",\"Taps\":\"2\",\"Dimensions\":\"47\\\" \\u00d7 23\\\" \\u00d7 20\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Compressor\":\"Brand New\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-35ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 45 S.S",
+            "slug": "electric-water-cooler-fe-45-ss",
+            "sku": "FE-45-SS",
+            "model_number": "FE 45 S.S",
+            "short_description": "45 Ltr/Hr electric water cooler for 45-90 people with 2 taps.",
+            "description": "Commercial-grade electric water cooler with 45 litres/hour cooling capacity, suitable for 45-90 people. Features food-grade non-magnetic stainless steel water tank, 100% pure copper external coiling, CFC-free R134a refrigerant, and brand new compressor. Perfect for factories, schools, and mosques.",
+            "price": "64500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": true,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 45 S.S\",\"Cooling Capacity\":\"45 Litres\\/Hour\",\"User Capacity\":\"45-90 people\",\"Taps\":\"2\",\"Dimensions\":\"49\\\" \\u00d7 23\\\" \\u00d7 20\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Compressor\":\"Brand New\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-45ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 65 S.S",
+            "slug": "electric-water-cooler-fe-65-ss",
+            "sku": "FE-65-SS",
+            "model_number": "FE 65 S.S",
+            "short_description": "65 Ltr/Hr electric water cooler for 65-130 people with 2 taps.",
+            "description": "Commercial-grade electric water cooler with 65 litres/hour cooling capacity, suitable for 65-130 people. Consolidates multiple cooling systems into one device. Stainless steel construction with external copper coiling and dual water outlets, designed to eliminate redundant installations.",
+            "price": "72500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 65 S.S\",\"Cooling Capacity\":\"65 Litres\\/Hour\",\"User Capacity\":\"65-130 people\",\"Taps\":\"2\",\"Dimensions\":\"51\\\" \\u00d7 23\\\" \\u00d7 20\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Compressor\":\"Brand New\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-65ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 80 S.S",
+            "slug": "electric-water-cooler-fe-80-ss",
+            "sku": "FE-80-SS",
+            "model_number": "FE 80 S.S",
+            "short_description": "80 Ltr/Hr electric water cooler for 80-160 people with 3 taps.",
+            "description": "Heavy-duty electric water cooler with 80 litres/hour cooling capacity, suitable for 80-160 people. Offers clean and fresh drinking water 24/7 year-round. Features 3 taps, food-grade stainless steel tank, pure copper coiling, and brand new compressor. Ideal for schools, workshops, and moderate-usage areas.",
+            "price": "90000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 80 S.S\",\"Cooling Capacity\":\"80 Litres\\/Hour\",\"User Capacity\":\"80-160 people\",\"Taps\":\"3\",\"Dimensions\":\"53\\\" \\u00d7 23\\\" \\u00d7 20\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Compressor\":\"Brand New\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-80ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 100 S.S",
+            "slug": "electric-water-cooler-fe-100-ss",
+            "sku": "FE-100-SS",
+            "model_number": "FE 100 S.S",
+            "short_description": "100 Ltr/Hr electric water cooler for 100-200 people with 4 taps.",
+            "description": "Industrial-grade electric water cooler with 100 liters/hour cooling capacity, suitable for 100-200 people. Features 4 taps, food-grade non-magnetic stainless steel water tank, 100% pure copper coiling, CFC-free R134a refrigerant, and brand new compressors, condensers, and fan motors.",
+            "price": "115000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"100 Litres\\/Hour\",\"User Capacity\":\"100-200 people\",\"Taps\":\"4\",\"Dimensions\":\"54\\\" \\u00d7 28\\\" \\u00d7 19\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-100ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 150 S.S",
+            "slug": "electric-water-cooler-fe-150-ss",
+            "sku": "FE-150-SS",
+            "model_number": "FE 150 S.S",
+            "short_description": "150 Ltr/Hr electric water cooler for 150-300 people with 4 taps.",
+            "description": "Industrial-grade electric water cooler with 150 liters/hour cooling capacity, suitable for 150-300 people. Features 4 taps, food-grade non-magnetic stainless steel water tank, 100% pure copper coiling, CFC-free R134a refrigerant, and brand new compressors.",
+            "price": "145000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"150 Litres\\/Hour\",\"User Capacity\":\"150-300 people\",\"Taps\":\"4\",\"Dimensions\":\"58\\\" \\u00d7 32\\\" \\u00d7 21\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-150ltr.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 200 S.S",
+            "slug": "electric-water-cooler-fe-200-ss",
+            "sku": "FE-200-SS",
+            "model_number": "FE 200 S.S",
+            "short_description": "200 Ltr/Hr electric water cooler for 200-400 people with 4 taps.",
+            "description": "Heavy-duty industrial electric water cooler with 200 liters/hour cooling capacity, suitable for 200-400 people. Features 4 taps, food-grade non-magnetic stainless steel water tank, 100% pure copper coiling, CFC-free R134a refrigerant. Ideal for schools, mosques, and factories.",
+            "price": "270000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"200 Litres\\/Hour\",\"User Capacity\":\"200-400 people\",\"Taps\":\"4\",\"Dimensions\":\"63\\\" \\u00d7 32\\\" \\u00d7 33\\\" (H\\u00d7W\\u00d7D, incl. 6\\\" tray)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-fe200ss.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler FE 300 S.S",
+            "slug": "electric-water-cooler-fe-300-ss",
+            "sku": "FE-300-SS",
+            "model_number": "FE 300 S.S",
+            "short_description": "300 Ltr/Hr industrial water cooler for 300-600 people, dual compressors.",
+            "description": "Ultra heavy-duty industrial electric water cooler with 300 litres/hour cooling capacity, suitable for 300-600 people. Features dual brand new compressors, 4 taps plus extra point, food-grade stainless steel tank, and 100% pure copper external coiling. Designed for large institutions and factories.",
+            "price": "325000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 300 S.S\",\"Cooling Capacity\":\"300 Litres\\/Hour\",\"User Capacity\":\"300-600 people\",\"Taps\":\"4 + Extra Point\",\"Compressors\":\"Dual (Brand New)\",\"Dimensions\":\"65\\\" \\u00d7 40\\\" \\u00d7 35\\\" (H\\u00d7W\\u00d7D, incl. 8\\\" tray)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/water-cooler-fe300ss.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-coolers",
+            "name": "Electric Water Cooler 1000 Ltr/Hr",
+            "slug": "electric-water-cooler-1000-ltrhr",
+            "sku": "FE-1000-SS",
+            "model_number": "FE 1000 S.S",
+            "short_description": "1000 Ltr/Hr industrial water cooler for 1000-1400 people, double compressor.",
+            "description": "Maximum capacity industrial electric water cooler with 1000 litres/hour cooling, suitable for 1000-1400 people. The largest commercial water cooler available in Pakistan. Features double compressor, 4 taps plus extra point, 100% pure copper external coiling, and food-grade stainless steel tank.",
+            "price": "600000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FE 1000 S.S\",\"Cooling Capacity\":\"1000 Litres\\/Hour\",\"User Capacity\":\"1000-1400 people\",\"Taps\":\"4 + Extra Point\",\"Compressors\":\"Double (Brand New)\",\"Dimensions\":\"75\\\" \\u00d7 40\\\" \\u00d7 48\\\" (H\\u00d7W\\u00d7D, incl. 8\\\" tray)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper (External)\",\"Body Material\":\"Stainless Steel\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-coolers/fe-1000-ss.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "slim-water-coolers",
+            "name": "Slim Electric Water Cooler FE 35 Slim",
+            "slug": "slim-electric-water-cooler-fe-35-slim",
+            "sku": "FE-35-SLIM",
+            "model_number": "FE 35 Slim",
+            "short_description": "Slim 35 Ltr/Hr water cooler, space-saving design with full cooling performance.",
+            "description": "Space-saving slim electric water cooler with 35 liters/hour cooling capacity. Narrow-body design perfect for tight spaces while maintaining full cooling performance. Features stainless steel tank, copper coiling, and CFC-free refrigerant.",
+            "price": "52000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"35 Litres\\/Hour\",\"Design\":\"Slim\\/Narrow Body\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/slim-water-coolers/fe-35-slim.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "slim-water-coolers",
+            "name": "Slim Electric Water Cooler FE 45 Slim",
+            "slug": "slim-electric-water-cooler-fe-45-slim",
+            "sku": "FE-45-SLIM",
+            "model_number": "FE 45 Slim",
+            "short_description": "Slim 45 Ltr/Hr water cooler, space-saving design with reliable cooling.",
+            "description": "Space-saving slim electric water cooler with 45 liters/hour cooling capacity. Narrow-body design fits in tight spaces while delivering reliable cooling. Features stainless steel tank, copper coiling, and CFC-free refrigerant.",
+            "price": "58000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"45 Litres\\/Hour\",\"Design\":\"Slim\\/Narrow Body\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/slim-water-coolers/fe-45-slim.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "slim-water-coolers",
+            "name": "Slim Electric Water Cooler FE 65 Slim",
+            "slug": "slim-electric-water-cooler-fe-65-slim",
+            "sku": "FE-65-SLIM",
+            "model_number": "FE 65 Slim",
+            "short_description": "Slim 65 Ltr/Hr water cooler, largest slim model with space-saving design.",
+            "description": "Space-saving slim electric water cooler with 65 liters/hour cooling capacity. Largest in the slim range with narrow-body design. Features stainless steel tank, copper coiling, and CFC-free refrigerant.",
+            "price": "64000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Cooling Capacity\":\"65 Litres\\/Hour\",\"Design\":\"Slim\\/Narrow Body\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/slim-water-coolers/fe-65-slim.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 25",
+            "slug": "self-contained-storage-water-cooler-fst-25",
+            "sku": "FST-25",
+            "model_number": "FST 25",
+            "short_description": "25L storage water cooler with S.S tank, copper coiling, and 2 taps.",
+            "description": "Self-contained storage water cooler with 25 liters capacity. Features food-grade non-magnetic stainless steel water tank, brand new compressor with copper fan motor, 100% copper coiling, and CFC-free R134a gas. 2 taps for convenient dispensing.",
+            "price": "100000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FST 25 S.S\",\"Storage Capacity\":\"25 Litres\",\"Taps\":\"2\",\"Dimensions\":\"64\\\" \\u00d7 19.5\\\" \\u00d7 19.5\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-25.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 50",
+            "slug": "self-contained-storage-water-cooler-fst-50",
+            "sku": "FST-50",
+            "model_number": "FST 50",
+            "short_description": "50L storage water cooler with S.S tank, copper coiling, and 2 taps.",
+            "description": "Self-contained storage water cooler with 50 liters capacity. Features food-grade non-magnetic stainless steel water tank, brand new compressor with copper fan motor, 100% copper coiling, and CFC-free R134a gas. 2 taps for convenient dispensing.",
+            "price": "130000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FST 50 S.S\",\"Storage Capacity\":\"50 Litres\",\"Taps\":\"2\",\"Dimensions\":\"64\\\" \\u00d7 24\\\" \\u00d7 24\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-50.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 100",
+            "slug": "self-contained-storage-water-cooler-fst-100",
+            "sku": "FST-100",
+            "model_number": "FST 100",
+            "short_description": "100L storage water cooler with S.S tank, copper coiling, and 3 taps.",
+            "description": "Self-contained storage water cooler with 100 liters capacity. Features food-grade non-magnetic stainless steel water tank, brand new compressor with copper fan motor, 100% copper coiling, and CFC-free R134a gas. 3 taps for high-volume dispensing.",
+            "price": "220000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FST 100 S.S\",\"Storage Capacity\":\"100 Litres\",\"Taps\":\"3\",\"Dimensions\":\"70\\\" \\u00d7 28\\\" \\u00d7 27\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-100.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 200",
+            "slug": "self-contained-storage-water-cooler-fst-200",
+            "sku": "FST-200",
+            "model_number": "FST 200",
+            "short_description": "200L storage water cooler with S.S tank, copper coiling, and 4 taps.",
+            "description": "Self-contained storage water cooler with 200 liters capacity. Features food-grade non-magnetic stainless steel water tank, brand new compressor with copper fan motor, 100% copper coiling, and CFC-free R134a gas. 4 taps for commercial-scale dispensing.",
+            "price": "350000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FST 200 S.S\",\"Storage Capacity\":\"200 Litres\",\"Taps\":\"4\",\"Dimensions\":\"78\\\" \\u00d7 36\\\" \\u00d7 28\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-200.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 400",
+            "slug": "self-contained-storage-water-cooler-fst-400",
+            "sku": "FST-400",
+            "model_number": "FST 400",
+            "short_description": "400L storage water cooler for large commercial installations.",
+            "description": "Large self-contained storage water cooler with 400 liters capacity. Designed for large commercial installations. Features food-grade non-magnetic stainless steel water tank, 100% copper coiling, and CFC-free R134a refrigerant.",
+            "price": "485000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Storage Capacity\":\"400 Litres\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-400.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 600",
+            "slug": "self-contained-storage-water-cooler-fst-600",
+            "sku": "FST-600",
+            "model_number": "FST 600",
+            "short_description": "600L storage water cooler for industrial and large-scale use.",
+            "description": "Extra-large self-contained storage water cooler with 600 liters capacity. Engineered for industrial and large-scale commercial use. Features food-grade non-magnetic stainless steel water tank, 100% copper coiling, and CFC-free R134a refrigerant.",
+            "price": "650000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Storage Capacity\":\"600 Litres\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-600.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "storage-coolers",
+            "name": "Self-Contained Storage Water Cooler FST 1000",
+            "slug": "self-contained-storage-water-cooler-fst-1000",
+            "sku": "FST-1000",
+            "model_number": "FST 1000",
+            "short_description": "1000L storage water cooler, largest capacity for maximum-scale installations.",
+            "description": "Maximum capacity self-contained storage water cooler with 1000 liters. The largest in Fischer's storage cooler range, designed for the biggest commercial and industrial installations. Features food-grade stainless steel tank and 100% copper coiling.",
+            "price": "850000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Storage Capacity\":\"1000 Litres\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/storage-coolers/fst-1000.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-dispensers",
+            "name": "Water Dispenser Cooling Capacity 40 Liter",
+            "slug": "water-dispenser-cooling-capacity-40-liter",
+            "sku": "FB-40-SS",
+            "model_number": "Bottle Type",
+            "short_description": "40-liter cooling capacity water dispenser with food-grade stainless steel tank, brand new compressor, and 100% copper coiling.",
+            "description": "<h3>Fischer Water Dispenser 40 Liter</h3>\n<p>A high-capacity water dispenser with 40-liter cooling capacity, built with food-grade non-magnetic stainless steel for safe and hygienic water storage.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Food grade Non-Magnetic Stainless Steel Water Tank</li>\n<li>Brand New Compressor &amp; Copper Fan Motor</li>\n<li>100% Copper Coiling</li>\n<li>CFC-free 134a Gas refrigerant</li>\n<li>2 taps</li>\n<li>1 year warranty on compressor and other parts</li>\n</ul>",
+            "price": "55000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FB-40-SS\",\"Cooling Capacity\":\"40 Litres\",\"Taps\":\"2\",\"Dimensions\":\"46\\\" \\u00d7 16\\\" \\u00d7 15\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-dispensers/1.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-dispensers",
+            "name": "Water Dispenser Cooling Capacity 45 Liter",
+            "slug": "water-dispenser-cooling-capacity-45-liter",
+            "sku": "FFT-45-SS",
+            "model_number": "Fountain Type",
+            "short_description": "45-liter fountain-type water dispenser with food-grade stainless steel tank, 100% copper coiling, and CFC-free refrigerant.",
+            "description": "<h3>Fischer Water Dispenser 45 Liter</h3>\n<p>A premium fountain-type water dispenser with 45-liter cooling capacity. Built with food-grade non-magnetic stainless steel and 100% copper coiling for maximum efficiency.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Food grade Non-Magnetic Stainless Steel Water Tank</li>\n<li>Brand New Compressor &amp; Copper Fan Motor</li>\n<li>100% Copper Coiling</li>\n<li>CFC-free 134a Gas refrigerant</li>\n<li>2 taps</li>\n<li>1 year warranty on compressor and other parts</li>\n</ul>",
+            "price": "75000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FFT-45-SS\",\"Cooling Capacity\":\"45 Litres\\/Hour\",\"Taps\":\"2\",\"Dimensions\":\"42\\\" \\u00d7 18\\\" \\u00d7 16\\\" (H\\u00d7W\\u00d7D)\",\"Tank Material\":\"Food Grade Non-Magnetic Stainless Steel\",\"Coil Material\":\"100% Pure Copper\",\"Compressor\":\"Brand New with Copper Fan Motor\",\"Refrigerant\":\"R134a (CFC-free)\",\"Warranty\":\"1 year (compressor and parts)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-dispensers/2.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-dispensers",
+            "name": "Water Dispenser FWD-1150",
+            "slug": "water-dispenser-fwd-1150",
+            "sku": "FWD-1150",
+            "model_number": "WD 1150",
+            "short_description": "Compact water dispenser with 3.5L cold tank, 1L hot tank, 304 food-grade stainless steel, and 3-year compressor warranty.",
+            "description": "<h3>Fischer Water Dispenser FWD-1150</h3>\n<p>A sleek and compact water dispenser with both hot and cold water functionality. Built with 304 food-grade stainless steel tanks and eco-friendly R123A refrigerant.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>3.5L cold water tank capacity</li>\n<li>1L hot water tank capacity</li>\n<li>304 Food Grade Stainless Steel tank</li>\n<li>Eco-friendly R123A refrigerant</li>\n<li>2 taps (hot and cold)</li>\n<li>3-year compressor warranty</li>\n</ul>\n\n<h4>Available Colors</h4>\n<ul>\n<li>Red</li>\n<li>Black</li>\n<li>Golden</li>\n</ul>",
+            "price": "40000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FWD-1150\",\"Type\":\"Instant Electric Water Dispenser\",\"Cold Tank Capacity\":\"3.5 Litres\",\"Hot Tank Capacity\":\"1 Litre\",\"Taps\":\"2\",\"Tank Material\":\"304 Food Grade Stainless Steel\",\"Refrigerant\":\"R123A\",\"Cooling Power\":\"95W\",\"Heating Power\":\"400W\",\"Voltage\":\"220-240V, 50Hz\",\"Color Options\":\"Red \\/ Black \\/ Golden\",\"Warranty\":\"3 years (compressor)\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-dispensers/3.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Instant Gas Water Heater 6 Liter",
+            "slug": "instant-gas-water-heater-6-liter",
+            "sku": "FIGWH-6L",
+            "model_number": "6 Liter",
+            "short_description": "6L instant gas water heater with digital display, LPG/NG.",
+            "description": "Instant gas water heater with 6 liter (1 KG) capacity. Available in LPG and Natural Gas variants. Features digital \"Bultey Display\" for temperature monitoring. Compact design for bathroom installation. ISO and PSQCA approved.",
+            "price": "21250.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"6 Litres (1 KG)\",\"Fuel Types\":\"LPG \\/ Natural Gas\",\"Display\":\"Digital (Bultey Display)\",\"Certification\":\"ISO & PSQCA Approved\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Instant Gas Water Heater 8 Liter",
+            "slug": "instant-gas-water-heater-8-liter",
+            "sku": "FIGWH-8L",
+            "model_number": "8 Liter",
+            "short_description": "8L instant gas water heater with digital display, LPG/NG.",
+            "description": "Instant gas water heater with 8 liter (1.5 KG) capacity. Available in LPG and Natural Gas variants. Features digital display for temperature monitoring. Efficient gas-fired instant heating for medium-sized households.",
+            "price": "24500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"8 Litres (1.5 KG)\",\"Fuel Types\":\"LPG \\/ Natural Gas\",\"Display\":\"Digital (Bultey Display)\",\"Certification\":\"ISO & PSQCA Approved\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Instant Gas Water Heater 10 Liter",
+            "slug": "instant-gas-water-heater-10-liter",
+            "sku": "FIGWH-10L",
+            "model_number": "10 Liter",
+            "short_description": "10L instant gas water heater with digital display, largest in range.",
+            "description": "Instant gas water heater with 10 liter (2 KG) capacity - the largest in the instant gas range. Available in LPG and Natural Gas variants. Features digital display and powerful gas heating. Pakistan's leading instant water geyser brand.",
+            "price": "32500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"10 Litres (2 KG)\",\"Fuel Types\":\"LPG \\/ Natural Gas\",\"Display\":\"Digital (Bultey Display)\",\"Certification\":\"ISO & PSQCA Approved\",\"Warranty\":\"1 year\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Gas Geyser 35 Gallon",
+            "slug": "gas-geyser-35-gallon",
+            "sku": "FGG-35G",
+            "model_number": "35 Gallon",
+            "short_description": "35 gallon gas geyser, imported glass wool insulation, Deluxe/HD models.",
+            "description": "Gas geyser with 35 gallon capacity. Available in Deluxe and Heavy Duty models, and Beige or Red colors. Features imported glass wool insulation, thermostat-based temperature control. ISO and PSQCA approved. Heavy Duty model includes 3-year tank leakage warranty.",
+            "price": "47500.00",
+            "compare_price": "59000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"35 Gallon\",\"Capacity\":\"35 Gallons\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Colors\":\"Beige \\/ Red\",\"Insulation\":\"Imported Glass Wool\",\"Control\":\"Thermostat-based Temperature\",\"Certification\":\"ISO & PSQCA Approved\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Gas Geyser 55 Gallon",
+            "slug": "gas-geyser-55-gallon",
+            "sku": "FGG-55G",
+            "model_number": "55 Gallon",
+            "short_description": "55 gallon gas geyser in Deluxe/Heavy Duty models for larger households.",
+            "description": "Gas geyser with 55 gallon capacity for medium to large households. Available in Deluxe (Rs.72,000) and Heavy Duty (Rs.81,000) models. Features gas thermostat, insulated tank, and durable construction for years of reliable service.",
+            "price": "72000.00",
+            "compare_price": "81000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"55 Gallons\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Price (Deluxe)\":\"Rs.72,000\",\"Price (Heavy Duty)\":\"Rs.81,000\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-55g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Gas Geyser 65 Gallon",
+            "slug": "gas-geyser-65-gallon",
+            "sku": "FGG-65G",
+            "model_number": "65 Gallon",
+            "short_description": "65 gallon gas geyser for large households with Heavy Duty option.",
+            "description": "Large gas geyser with 65 gallon capacity for large households and small commercial use. Features gas thermostat control, heavy insulation for heat retention, and rugged construction. Available in Deluxe and Heavy Duty models.",
+            "price": "78000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"65 Gallons\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/water-heaters/fgg-65g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "water-heaters",
+            "name": "Gas Geyser Heavy Duty 100 Gallon",
+            "slug": "gas-geyser-heavy-duty-100-gallon",
+            "sku": "FGG-100G-HD",
+            "model_number": "100 Gallon HD",
+            "short_description": "100 gallon HD gas geyser with auto ignition and imported glass wool.",
+            "description": "Extra-large heavy duty gas geyser with 100 gallon capacity. Features imported gas thermostat with auto ignition, imported glass wool insulation, 9/10 inner tank construction. Designed for commercial and large-scale residential use with 3-year tank leakage warranty.",
+            "price": "130000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"100 Gallon\",\"Capacity\":\"100 Gallons\",\"Model\":\"Heavy Duty\",\"Thermostat\":\"Imported Gas Thermostat with Auto Ignition\",\"Insulation\":\"Imported Glass Wool\",\"Inner Tank\":\"9\\/10 Construction\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank Leakage)\":\"3 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-100g-hd.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Water Heater F-30 Liter",
+            "slug": "fischer-fast-electric-water-heater-f-30-liter",
+            "sku": "FFEW-F30",
+            "model_number": "F-30",
+            "short_description": "30L fast electric water heater with safety cutouts and full insulation.",
+            "description": "Fischer Fast Electric Water Heater with 30 liter capacity. Available in White/Black colors and Deluxe/Heavy Duty models. Features fast heating technology, single welded tank, thermal safety cutouts, and full insulation. Heavy Duty model includes 3-year tank leakage warranty.",
+            "price": "23000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"30 Litres\",\"SKU\":\"F-30\",\"Colors\":\"White \\/ Black\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffew-f30.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Water Heater F-40 Liter",
+            "slug": "fischer-fast-electric-water-heater-f-40-liter",
+            "sku": "FFEW-F40",
+            "model_number": "F-40",
+            "short_description": "40L fast electric water heater with safety cutouts and full insulation.",
+            "description": "Fischer Fast Electric Water Heater with 40 liter capacity. Available in White/Black colors and Deluxe/Heavy Duty models. Features fast heating technology, single welded tank, thermal safety cutouts, and full insulation.",
+            "price": "25000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"40 Litres\",\"SKU\":\"F-40\",\"Colors\":\"White \\/ Black\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffew-f40.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Water Heater F-50 Liter",
+            "slug": "fischer-fast-electric-water-heater-f-50-liter",
+            "sku": "FFEW-F50",
+            "model_number": "F-50",
+            "short_description": "50L fast electric water heater with safety cutouts and full insulation.",
+            "description": "Fischer Fast Electric Water Heater with 50 liter capacity. Available in White/Black colors and Deluxe/Heavy Duty models. Features fast heating technology, single welded tank, thermal safety cutouts, and full insulation.",
+            "price": "26500.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"50 Litres\",\"SKU\":\"F-50\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffew-f50.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Water Heater F-60 Liter",
+            "slug": "fischer-fast-electric-water-heater-f-60-liter",
+            "sku": "FFEW-F60",
+            "model_number": "F-60",
+            "short_description": "60L fast electric water heater for medium to large households.",
+            "description": "Fischer Fast Electric Water Heater with 60 liter capacity. Suitable for medium to large households. Features fast heating technology, single welded tank, thermal safety cutouts, and full insulation. Available in Deluxe and Heavy Duty models.",
+            "price": "29000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"60 Litres\",\"SKU\":\"F-60\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffew-f60.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Water Heater F-80 Liter",
+            "slug": "fischer-fast-electric-water-heater-f-80-liter",
+            "sku": "FFEW-F80",
+            "model_number": "F-80",
+            "short_description": "80L fast electric water heater, largest in the fast electric range.",
+            "description": "Fischer Fast Electric Water Heater with 80 liter capacity - the largest in the fast electric range. Ideal for large families. Features fast heating technology, single welded tank, thermal safety cutouts, and full insulation.",
+            "price": "34000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"80 Litres\",\"SKU\":\"F-80\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffew-f80.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Geyser F-100 Liter",
+            "slug": "fischer-fast-electric-geyser-f-100-liter",
+            "sku": "FFEG-F100",
+            "model_number": "F-100",
+            "short_description": "100L fast electric geyser in 4 colors, Deluxe/HD, safety cutouts.",
+            "description": "Fischer Fast Electric Geyser with 100 liter capacity. Available in Beige, Red, Silver, and White colors. Deluxe and Heavy Duty models with fast heating technology, single welded tank, thermal safety cutouts, and heavy insulation.",
+            "price": "48000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"F-100\",\"Capacity\":\"100 Litres\",\"Colors\":\"Beige \\/ Red \\/ Silver \\/ White\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffeg-f100.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Geyser F-140 Liter",
+            "slug": "fischer-fast-electric-geyser-f-140-liter",
+            "sku": "FFEG-F140",
+            "model_number": "F-140",
+            "short_description": "140L fast electric geyser in 4 colors for commercial use.",
+            "description": "Fischer Fast Electric Geyser with 140 liter capacity. Available in Beige, Red, Silver, and White colors. Extra-large capacity for commercial and large household use with fast heating, single welded tank, and thermal safety cutouts.",
+            "price": "57000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"F-140\",\"Capacity\":\"140 Litres\",\"Colors\":\"Beige \\/ Red \\/ Silver \\/ White\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffeg-f140.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Fischer Fast Electric Geyser F-200 Liter",
+            "slug": "fischer-fast-electric-geyser-f-200-liter",
+            "sku": "FFEG-F200",
+            "model_number": "F-200",
+            "short_description": "200L fast electric geyser, largest model, 4 colors, for commercial use.",
+            "description": "Fischer Fast Electric Geyser with 200 liter capacity - the largest in the electric geyser range. Available in Beige, Red, Silver, and White colors. Designed for commercial applications with fast heating, reinforced tank, and thermal safety cutouts.",
+            "price": "67000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"F-200\",\"Capacity\":\"200 Litres\",\"Colors\":\"Beige \\/ Red \\/ Silver \\/ White\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/ffeg-f200.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "fast-electric-water-heaters",
+            "name": "Eco Watt Series Electric Water Heater",
+            "slug": "eco-watt-series-electric-water-heater",
+            "sku": "FEW-ECOWATT",
+            "model_number": "Eco Watt",
+            "short_description": "Eco Watt electric water heater with adjustable wattage (800/1200/2000W).",
+            "description": "Eco Watt Series Electric Water Heater with adjustable wattage control (800W, 1200W, or 2000W) for customizable power consumption. Features single welded tank, thermal safety cutouts, full insulation with complete tank capacity, and imported major components. Available in 30L, 40L, 50L, and 60L capacities.",
+            "price": "26000.00",
+            "compare_price": "33500.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity Options\":\"30L \\/ 40L \\/ 50L \\/ 60L\",\"Wattage Options\":\"800W \\/ 1200W \\/ 2000W (adjustable)\",\"Price Range\":\"Rs.26,000 - Rs.33,500\",\"Tank\":\"Single Welded\",\"Safety\":\"Thermal Safety Cutouts\",\"Insulation\":\"Full Tank Insulation\",\"Components\":\"Imported Major Parts\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/fast-electric-water-heaters/few-ecowatt.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "instant-electric-water-heaters",
+            "name": "Instant Cum Storage Electric Water Heater 10L",
+            "slug": "instant-cum-storage-electric-water-heater-10l",
+            "sku": "FICS-10L",
+            "model_number": "10L",
+            "short_description": "10L instant cum storage heater, 1500W, ABS body, Incoloy element.",
+            "description": "Instant Cum Storage Electric Water Heater with 10 liter capacity. Features pure imported ABS material body, PP material construction, 1500W power rating, imported Incoloy heating element, and single joint welded inner tank. Compact design for bathroom and kitchen.",
+            "price": "17000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"ICS FE-10\",\"Capacity\":\"10 Litres\",\"Power\":\"1500W\",\"Body Material\":\"Pure Imported ABS\",\"Construction\":\"PP Material\",\"Heating Element\":\"Imported Incoloy\",\"Tank\":\"Single Joint Welded Inner Tank\",\"Warranty (Tank Leakage)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/instant-electric-water-heaters/fics-10l.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "instant-electric-water-heaters",
+            "name": "Instant Cum Storage Electric Water Heater 15L",
+            "slug": "instant-cum-storage-electric-water-heater-15l",
+            "sku": "FICS-15L",
+            "model_number": "15L",
+            "short_description": "15L instant cum storage heater, 2000W, ABS body, capillary thermostat.",
+            "description": "Instant Cum Storage Electric Water Heater with 15 liter capacity. Features pure ABS body, moulded single welded galvanized sheet water tank, imported Incoloy element, capillary thermostat temperature control, and 2000W element capacity.",
+            "price": "19000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"ICS FE-15\",\"Capacity\":\"15 Litres\",\"Power\":\"2000W\",\"Body Material\":\"Pure ABS\",\"Tank\":\"Moulded Single Welded Galvanized Sheet\",\"Heating Element\":\"Imported Incoloy\",\"Thermostat\":\"Capillary Thermostat\",\"Warranty (Tank Leakage)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/instant-electric-water-heaters/fics-15l.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "instant-electric-water-heaters",
+            "name": "Instant Cum Storage Electric Water Heater 30L",
+            "slug": "instant-cum-storage-electric-water-heater-30l",
+            "sku": "FICS-30L",
+            "model_number": "30L",
+            "short_description": "30L instant cum storage heater, 2000W, ABS body, capillary thermostat.",
+            "description": "Instant Cum Storage Electric Water Heater with 30 liter capacity - the largest in the ICS range. Features pure ABS body, moulded single welded galvanized sheet water tank, imported Incoloy element, capillary thermostat, and 2000W element capacity.",
+            "price": "24000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"ICS FE-30\",\"Capacity\":\"30 Litres\",\"Power\":\"2000W\",\"Body Material\":\"Pure ABS\",\"Tank\":\"Moulded Single Welded Galvanized Sheet\",\"Heating Element\":\"Imported Incoloy\",\"Thermostat\":\"Capillary Thermostat\",\"Warranty (Tank Leakage)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/instant-electric-water-heaters/fics-30l.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "instant-electric-water-heaters",
+            "name": "Instant Electric Water Heater with Storage 20L",
+            "slug": "instant-electric-water-heater-with-storage-20l",
+            "sku": "FIEWHS-20L",
+            "model_number": "20L",
+            "short_description": "20L instant electric heater with storage, silver panel, rectangular design.",
+            "description": "Instant Electric Water Heater with 20 liter storage. Silver panel front with attractive rectangular design. Premium instant heating system with built-in storage tank for consistent hot water delivery. Currently out of stock.",
+            "price": "30000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FWHE-20\",\"Capacity\":\"20 Litres\",\"Design\":\"Rectangle Shape\",\"Color\":\"Silver Panel Front\",\"Type\":\"Instant Electric + Storage\"}",
+            "images": [
+                {
+                    "image": "/images/products/instant-electric-water-heaters/fiewhs-20l.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "instant-electric-water-heaters",
+            "name": "Instant Electric Water Heater with Storage 25L",
+            "slug": "instant-electric-water-heater-with-storage-25l",
+            "sku": "FIEWHS-25L",
+            "model_number": "25L",
+            "short_description": "25L instant electric heater with storage, silver panel, square design.",
+            "description": "Instant Electric Water Heater with 25 liter storage. Silver panel front with attractive square design. Rated 4.5/5 by customers. Premium instant heating with larger storage tank. Currently out of stock.",
+            "price": "32000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"FWHE-25\",\"Capacity\":\"25 Litres\",\"Design\":\"Square Shape\",\"Color\":\"Silver Panel Front\",\"Type\":\"Instant Electric + Storage\",\"Rating\":\"4.5\\/5 (2 reviews)\"}",
+            "images": [
+                {
+                    "image": "/images/products/instant-electric-water-heaters/fiewhs-25l.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Electric + Gas Geyser 25 Gallon",
+            "slug": "hybrid-electric-gas-geyser-25-gallon",
+            "sku": "FHG-25G",
+            "model_number": "25 Gallon",
+            "short_description": "25 gallon hybrid electric+gas geyser with dual fuel flexibility.",
+            "description": "Hybrid Electric + Gas Geyser with 25 gallon capacity. Dual fuel capability allows operation on both gas and electricity for maximum flexibility. Available in Deluxe and Heavy Duty models with imported glass wool insulation.",
+            "price": "53000.00",
+            "compare_price": "58000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"25 Gallons\",\"Type\":\"Hybrid (Electric + Gas)\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Insulation\":\"Imported Glass Wool\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-25g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Electric + Gas Geyser 35 Gallon",
+            "slug": "hybrid-electric-gas-geyser-35-gallon",
+            "sku": "FHG-35G",
+            "model_number": "35 Gallon",
+            "short_description": "35 gallon hybrid electric+gas geyser in Deluxe/Heavy Duty models.",
+            "description": "Hybrid Electric + Gas Geyser with 35 gallon capacity. Dual fuel operation (electric and gas) for year-round flexibility. Available in Deluxe (Rs.61,000) and Heavy Duty (Rs.69,000) models with imported glass wool insulation.",
+            "price": "61000.00",
+            "compare_price": "69000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"35 Gallons\",\"SKU\":\"35 Gallon-H\",\"Type\":\"Hybrid (Electric + Gas)\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Price (Deluxe)\":\"Rs.61,000\",\"Price (Heavy Duty)\":\"Rs.69,000\",\"Insulation\":\"Imported Glass Wool\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-35g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Electric + Gas Geyser 55 Gallon",
+            "slug": "hybrid-electric-gas-geyser-55-gallon",
+            "sku": "FHG-55G",
+            "model_number": "55 Gallon",
+            "short_description": "55 gallon hybrid electric+gas geyser for larger households.",
+            "description": "Hybrid Electric + Gas Geyser with 55 gallon capacity. Dual fuel operation for maximum heating flexibility. Available in Deluxe (Rs.72,000) and Heavy Duty (Rs.81,000) models with imported glass wool insulation. Ideal for larger households.",
+            "price": "72000.00",
+            "compare_price": "81000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"55 Gallons\",\"SKU\":\"55 Gallon-H\",\"Type\":\"Hybrid (Electric + Gas)\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Price (Deluxe)\":\"Rs.72,000\",\"Price (Heavy Duty)\":\"Rs.81,000\",\"Insulation\":\"Imported Glass Wool\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-55g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Electric + Gas Geyser 65 Gallon",
+            "slug": "hybrid-electric-gas-geyser-65-gallon",
+            "sku": "FHG-65G",
+            "model_number": "65 Gallon",
+            "short_description": "65 gallon hybrid electric+gas geyser with Heavy Duty construction.",
+            "description": "Hybrid Electric + Gas Geyser with 65 gallon capacity. Largest standard hybrid model with dual fuel operation. Features imported glass wool insulation and Heavy Duty construction for reliable long-term performance.",
+            "price": "90000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Capacity\":\"65 Gallons\",\"SKU\":\"65 Gallon-H\",\"Type\":\"Hybrid (Electric + Gas)\",\"Model\":\"Heavy Duty\",\"Insulation\":\"Imported Glass Wool\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank Leakage)\":\"3 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-65g.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Gas Saver Water Heater Eco Model",
+            "slug": "hybrid-gas-saver-water-heater-eco-model",
+            "sku": "FHG-ECO",
+            "model_number": "Eco Model",
+            "short_description": "Eco model hybrid gas saver water heater (currently unavailable).",
+            "description": "Hybrid Gas Saver Water Heater Eco Model. Energy-efficient hybrid geyser designed to minimize gas consumption while maintaining reliable hot water delivery. Currently out of stock.",
+            "price": "58000.00",
+            "compare_price": "65000.00",
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Type\":\"Hybrid Gas Saver (Eco)\",\"Price Range\":\"Rs.58,000 - Rs.65,000\",\"Models\":\"Deluxe \\/ Heavy Duty\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank - Heavy Duty)\":\"3 years\",\"Warranty (Tank - Deluxe)\":\"2 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-eco.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "hybrid-geysers",
+            "name": "Hybrid Electric + Gas Geyser 100 Gallon Heavy Duty",
+            "slug": "hybrid-electric-gas-geyser-100-gallon-heavy-duty",
+            "sku": "FHG-100G-HD",
+            "model_number": "100 Gallon Heavy Duty",
+            "short_description": "100 gallon HD hybrid geyser, 8000W, Italian element, auto ignition.",
+            "description": "Hybrid Electric + Gas Geyser 100 gallon Heavy Duty model. The largest hybrid geyser in the range. Features imported gas thermostat with auto ignition, imported glass wool insulation, Italian electric element + thermostat, 9/10 inner tank, and massive 8000W total electric power (2000W × 4).",
+            "price": "150000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": true,
+            "warranty_period": "1 Year",
+            "specifications": "{\"SKU\":\"100 Gallon-H\",\"Capacity\":\"100 Gallons\",\"Type\":\"Hybrid (Electric + Gas) Heavy Duty\",\"Electric Power\":\"8000W (2000W \\u00d7 4)\",\"Electric Element\":\"Italian Electric Element + Thermostat\",\"Gas Thermostat\":\"Imported with Auto Ignition\",\"Insulation\":\"Imported Glass Wool\",\"Inner Tank\":\"9\\/10 Construction\",\"Warranty (Gas Thermostat)\":\"1 year\",\"Warranty (Tank Leakage)\":\"3 years\"}",
+            "images": [
+                {
+                    "image": "/images/products/hybrid-geysers/fhg-100g-hd.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "accessories",
+            "name": "Fischer Electric Iron",
+            "slug": "fischer-electric-iron",
+            "sku": "FAC-IRN",
+            "model_number": "Electric Iron",
+            "short_description": "1000W electric iron with steady grip design, temperature control, and heating indicator. Available in Black and Off White.",
+            "description": "<h3>Fischer Electric Iron</h3>\n<p>A reliable 1000-watt electric iron with steady grip design and precise temperature control for effortless ironing of all fabric types.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>1000 Watt power</li>\n<li>Steady grip design</li>\n<li>Temperature control functionality</li>\n<li>Heating indicator light</li>\n<li>2 years warranty</li>\n</ul>\n\n<h4>Available Colors</h4>\n<ul>\n<li>Black</li>\n<li>Off White</li>\n</ul>",
+            "price": "4800.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Power\":\"1000W\",\"Warranty\":\"2 Years\",\"Colors Available\":\"Black, Off White\",\"Grip\":\"Steady Grip Design\",\"Indicator\":\"Heating Indicator Light\"}",
+            "images": [
+                {
+                    "image": "/images/products/accessories/fac-irn.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "accessories",
+            "name": "Fischer 2 in 1 Blender",
+            "slug": "fischer-2-in-1-blender",
+            "sku": "FAC-BL2",
+            "model_number": "2 in 1 Blender",
+            "short_description": "1.5L blender with quadra blades, powerful motor, variable speed control, and interlocking base. Available in Red, Black, and Golden.",
+            "description": "<h3>Fischer 2 in 1 Blender</h3>\n<p>A versatile 2-in-1 blender with a powerful motor and quadra blades for efficient blending. The interlocking base design ensures safe and stable operation.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>1.5L jug capacity</li>\n<li>Quadra blades for efficient blending</li>\n<li>Powerful motor with variable speed control</li>\n<li>Interlocking base design for safety</li>\n<li>2 year warranty</li>\n</ul>\n\n<h4>Available Colors</h4>\n<ul>\n<li>Red</li>\n<li>Black</li>\n<li>Golden</li>\n</ul>",
+            "price": "6960.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Jug Capacity\":\"1.5 Liters\",\"Blade Type\":\"Quadra Blades\",\"Speed Control\":\"Variable Speed\",\"Base\":\"Interlocking Design\",\"Warranty\":\"2 Years\",\"Colors Available\":\"Red, Black, Golden\"}",
+            "images": [
+                {
+                    "image": "/images/products/accessories/fac-bl2.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "accessories",
+            "name": "Fischer 3 in 1 Blender Juicer",
+            "slug": "fischer-3-in-1-blender-juicer",
+            "sku": "FAC-BL3",
+            "model_number": "3 in 1 Blender",
+            "short_description": "3-in-1 blender juicer with 1.35L jug, double safety mechanism, powerful motor, and removable base. Available in Red, Black, and Golden.",
+            "description": "<h3>Fischer 3 in 1 Blender Juicer</h3>\n<p>A powerful 3-in-1 blender with three attachments for versatile food processing. Features a double safety mechanism and removable base for easy cleaning.</p>\n\n<h4>Key Features</h4>\n<ul>\n<li>Powerful motor with variable speeds</li>\n<li>Double safety mechanism</li>\n<li>3 attachments with 1.35L jug capacity</li>\n<li>Removable base for easy cleaning</li>\n<li>2 year warranty</li>\n</ul>\n\n<h4>Available Colors</h4>\n<ul>\n<li>Red</li>\n<li>Black</li>\n<li>Golden</li>\n</ul>",
+            "price": "13050.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 100,
+            "stock_status": "in_stock",
+            "is_active": true,
+            "is_featured": true,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": "1 Year",
+            "specifications": "{\"Jug Capacity\":\"1.35 Liters\",\"Attachments\":\"3 Attachments\",\"Safety\":\"Double Safety Mechanism\",\"Base\":\"Removable for Cleaning\",\"Warranty\":\"2 Years\",\"Colors Available\":\"Red, Black, Golden\"}",
+            "images": [
+                {
+                    "image": "/images/products/accessories/fac-bl3.webp",
+                    "is_primary": true,
+                    "sort_order": 0
+                }
+            ]
+        },
+        {
+            "category_slug": "cooking-ranges",
+            "name": "Cooking Range 5 Burner Plus Pizza Plate",
+            "slug": "cooking-range-5-burner-plus-pizza-plate",
+            "sku": "FCR-5B-PP",
+            "model_number": null,
+            "short_description": "34\" cooking range, 5 burners + pizza plate, auto ignition.",
+            "description": "34-inch cooking range with 5 burners plus pizza plate. Auto ignition system with stainless steel body. Features pizza plate for homemade pizza baking alongside regular cooking. Currently out of stock.",
+            "price": "44000.00",
+            "compare_price": null,
+            "cost_price": null,
+            "dealer_price": null,
+            "stock_quantity": 0,
+            "stock_status": "out_of_stock",
+            "is_active": true,
+            "is_featured": false,
+            "is_new": false,
+            "is_bestseller": false,
+            "warranty_period": null,
+            "specifications": "{\"SKU\":\"34 S 5 Pizza+\",\"Width\":\"34 inches\",\"Burners\":\"5\",\"Special Feature\":\"Pizza Plate\",\"Door\":\"Double Door\"}",
+            "images": []
+        }
+    ],
+    "categories": [
+        {
+            "name": "Kitchen Hoods",
+            "slug": "kitchen-hoods",
+            "description": "Premium built-in kitchen hoods with powerful airflow up to 1500 m³/h. Features include touch control, auto-clean, and energy-efficient BLDC motors.",
+            "features": [
+                "Premium Quality",
+                "BLDC Copper Motor",
+                "1 Year Warranty",
+                "Energy Efficient",
+                "Heat + Auto Clean",
+                "Gesture and Touch Control",
+                "Inverter Technology A+++ Rated",
+                "Low Noise Level"
+            ],
+            "image": "/images/products/kitchen-hoods/FKH-H90-06S/1.webp",
+            "icon": "kitchen-hood",
+            "is_active": true,
+            "sort_order": 1
+        },
+        {
+            "name": "Kitchen Hobs",
+            "slug": "kitchen-hobs",
+            "description": "Built-in kitchen hobs with tempered glass or stainless steel panels. Available in 3 to 5 burner configurations with brass burners and flame failure devices.",
+            "features": [
+                "Complete Brass Burners",
+                "Sabaf Burners",
+                "EPS Burners",
+                "Tempered Glass",
+                "Flame Failure Device",
+                "Stainless Steel Finish",
+                "5KW Powerful Burners",
+                "Immediate Auto Ignition"
+            ],
+            "image": "/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp",
+            "icon": "kitchen-hob",
+            "is_active": true,
+            "sort_order": 2
+        },
+        {
+            "name": "Cooking Ranges",
+            "slug": "cooking-ranges",
+            "description": "Professional cooking ranges with 3 to 5 burners. Perfect for modern kitchens with complete brass burners and stainless steel finish.",
+            "features": [
+                "Complete Brass Burners",
+                "Sabaf Burners",
+                "Tempered Glass",
+                "Flame Failure Device",
+                "Stainless Steel Finish",
+                "5KW Powerful Burners",
+                "Immediate Auto Ignition",
+                "Multiple Size Options"
+            ],
+            "image": "/images/products/cooking-ranges/fcr-5bb.webp",
+            "icon": "cooking-range",
+            "is_active": true,
+            "sort_order": 3
+        },
+        {
+            "name": "Oven Toasters",
+            "slug": "oven-toasters",
+            "description": "Digital and mechanical oven toasters with capacities from 35L to 48L. Features include rotisserie function and convection heating.",
+            "features": [
+                "Double Layered Glass Door",
+                "Inner Lamp",
+                "Rotisserie Function",
+                "Convection Function",
+                "Stainless Steel Elements",
+                "Digital Controls",
+                "Large Capacity"
+            ],
+            "image": "/images/products/oven-toasters/FOT-2501C/1.webp",
+            "icon": "oven",
+            "is_active": true,
+            "sort_order": 4
+        },
+        {
+            "name": "Air Fryers",
+            "slug": "air-fryers",
+            "description": "Digital air fryers with capacities from 4L to 8L for healthy oil-free cooking. Features dual heating elements for even temperature control.",
+            "features": [
+                "Oil-Free Cooking",
+                "Digital Touch Panel",
+                "Wide Temperature Control",
+                "Injection Molding Texture",
+                "Non-Stick Coating",
+                "Dual Heating Element",
+                "Large Capacity"
+            ],
+            "image": "/images/products/air-fryers/FAF-801WD/1.webp",
+            "icon": "air-fryer",
+            "is_active": true,
+            "sort_order": 5
+        },
+        {
+            "name": "Water Coolers",
+            "slug": "water-coolers",
+            "description": "Commercial and industrial electric water coolers with capacities from 35L to 300L. Made with food-grade stainless steel.",
+            "features": [
+                "Adjustable Thermostat",
+                "Food Grade Stainless Steel",
+                "High Back Pressure Compressor",
+                "Spring Loaded Push Button",
+                "Non-Magnetic Heavy Gauge",
+                "Brand New Compressor with Condenser"
+            ],
+            "image": "/images/products/water-coolers/water-cooler-35ltr.webp",
+            "icon": "water-cooler",
+            "is_active": true,
+            "sort_order": 6
+        },
+        {
+            "name": "Slim Water Coolers",
+            "slug": "slim-water-coolers",
+            "description": "Space-saving slim design water coolers perfect for compact spaces. Available in 35L, 45L, and 65L capacities.",
+            "features": [
+                "Space-Saving Design",
+                "Adjustable Thermostat",
+                "Food Grade Stainless Steel",
+                "High Back Pressure Compressor",
+                "Compact Footprint"
+            ],
+            "image": "/images/products/slim-water-coolers/fe-35-slim.webp",
+            "icon": "slim-cooler",
+            "is_active": true,
+            "sort_order": 7
+        },
+        {
+            "name": "Storage Coolers",
+            "slug": "storage-coolers",
+            "description": "Self-contained storage water coolers with large capacity from 25L to 1000L. Ideal for high-demand environments.",
+            "features": [
+                "Food Grade Stainless Steel Tanks",
+                "Brand New Compressors",
+                "Copper Fan Motors",
+                "Large Storage Capacity",
+                "Heavy Duty Construction"
+            ],
+            "image": "/images/products/storage-coolers/fst-200.webp",
+            "icon": "storage-cooler",
+            "is_active": true,
+            "sort_order": 8
+        },
+        {
+            "name": "Water Dispensers",
+            "slug": "water-dispensers",
+            "description": "Compact water dispensers for home and office use. Features food-grade stainless steel tanks and eco-friendly refrigerants.",
+            "features": [
+                "Food-Grade Stainless Steel Tanks",
+                "Eco-Friendly Refrigerants",
+                "100% Copper Coiling",
+                "Hot & Cold Functions",
+                "Compact Design"
+            ],
+            "image": "/images/products/water-dispensers/1.webp",
+            "icon": "dispenser",
+            "is_active": true,
+            "sort_order": 9
+        },
+        {
+            "name": "Water Heaters",
+            "slug": "water-heaters",
+            "description": "Electric water heaters with Eco Watt technology for energy-efficient water heating. Various capacities available.",
+            "features": [
+                "Eco Watt Technology",
+                "Energy Efficient",
+                "Overheating Protection",
+                "Fully Insulated",
+                "Incoloy 840 Heating Element"
+            ],
+            "image": "/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp",
+            "icon": "electric-geyser",
+            "is_active": true,
+            "sort_order": 10
+        },
+        {
+            "name": "Fast Electric Water Heaters",
+            "slug": "fast-electric-water-heaters",
+            "description": "Fast electric water heaters from 30 to 200 liters with adjustable wattage options and thermal safety cutouts.",
+            "features": [
+                "Single Welded Tanks",
+                "Adjustable Wattage Options",
+                "Thermal Safety Cutouts",
+                "Full Insulation",
+                "Incoloy 840 Heating Element",
+                "Fast Heating Technology"
+            ],
+            "image": "/images/products/fast-electric-water-heaters/ffeg-f100.webp",
+            "icon": "fast-geyser",
+            "is_active": true,
+            "sort_order": 11
+        },
+        {
+            "name": "Instant Electric Water Heaters",
+            "slug": "instant-electric-water-heaters",
+            "description": "Instant cum storage electric water heaters from 10 to 60 liters with quick heating technology and compact design.",
+            "features": [
+                "Quick Heating Technology",
+                "Compact Design",
+                "Overheating Protection",
+                "Wattage Control",
+                "Fully Insulated",
+                "Instant Hot Water"
+            ],
+            "image": "/images/products/instant-electric-water-heaters/fiewhs-25l.webp",
+            "icon": "instant-geyser",
+            "is_active": true,
+            "sort_order": 12
+        },
+        {
+            "name": "Hybrid Geysers",
+            "slug": "hybrid-geysers",
+            "description": "Hybrid water heaters with both electric and gas heating options for dual fuel flexibility. Capacities from 25 to 100 gallons.",
+            "features": [
+                "Dual Fuel Flexibility",
+                "Overheating Protection",
+                "Wattage Control",
+                "Fully Insulated",
+                "Accurate Volume Capacity",
+                "Incoloy 840 Heating Element"
+            ],
+            "image": "/images/products/hybrid-geysers/fhg-65g.webp",
+            "icon": "hybrid-geyser",
+            "is_active": true,
+            "sort_order": 13
+        },
+        {
+            "name": "Accessories",
+            "slug": "accessories",
+            "description": "Kitchen and appliance accessories including basket liners, iron racks, and replacement parts.",
+            "features": [
+                "Durable Materials",
+                "Compatible with Fischer Products",
+                "Affordable Prices",
+                "Easy Installation"
+            ],
+            "image": "/images/products/accessories/fac-bl2.webp",
+            "icon": "accessories",
+            "is_active": true,
+            "sort_order": 14
+        }
+    ]
+}

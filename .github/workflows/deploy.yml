@@ -138,6 +138,9 @@ jobs:
             echo "=== Seeding Products ==="
             $PHP artisan db:seed --class=ProductSeeder --force --verbose
 
+            echo "=== Syncing Product Data ==="
+            $PHP artisan db:seed --class=ProductDataSeeder --force --verbose
+
             echo "=== Seeding Banners ==="
             $PHP artisan db:seed --class=BannerSeeder --force --verbose
 
