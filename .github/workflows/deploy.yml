@@ -86,6 +86,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
+          command_timeout: 15m
           script: |
             cd ${{ secrets.SSH_SERVER_DIR }}
 
@@ -99,24 +100,26 @@ jobs:
             COMPOSER=$(which composer 2>/dev/null || echo "/usr/local/bin/composer")
             echo "=== Composer location: $COMPOSER ==="
 
-            # Remove old vendor to force fresh install with correct PHP
-            rm -rf vendor
-
-            # Install composer dependencies using PHP 8.2
-            $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-              echo "Trying alternative composer path..."
-              $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-                echo "Trying to download composer..."
-                curl -sS https://getcomposer.org/installer | $PHP
-                $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction
+            # Only reinstall vendor if composer.lock changed
+            if [ ! -d "vendor" ] || [ "composer.lock" -nt "vendor" ]; then
+              echo "=== Installing composer dependencies ==="
+              $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
+                echo "Trying alternative composer path..."
+                $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
+                  echo "Trying to download composer..."
+                  curl -sS https://getcomposer.org/installer | $PHP
+                  $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction
+                }
               }
-            }
+            else
+              echo "=== Vendor directory up to date, skipping composer install ==="
+            fi
 
             # Set permissions
             chmod -R 755 storage bootstrap/cache
 
-            # Ensure views directory exists
-            mkdir -p resources/views
+            # Ensure required directories exist
+            mkdir -p resources/views storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
             # Generate APP_KEY if not set
             if ! grep -q "APP_KEY=base64:" .env; then
@@ -129,53 +132,44 @@ jobs:
 
             # Run migrations (preserves existing data)
             echo "=== Running migrations ==="
-            $PHP artisan migrate --force --verbose 2>&1
+            $PHP artisan migrate --force 2>&1
 
-            # Seed all data (run each seeder explicitly for better error visibility)
-            echo "=== Seeding Categories ==="
-            $PHP artisan db:seed --class=CategorySeeder --force --verbose
+            # Only run seeders if SEED_ON_DEPLOY file exists (create this file manually when needed)
+            if [ -f "SEED_ON_DEPLOY" ]; then
+              echo "=== SEED_ON_DEPLOY detected, running seeders ==="
+              $PHP artisan db:seed --class=CategorySeeder --force || true
+              $PHP artisan db:seed --class=ProductSeeder --force || true
+              $PHP artisan db:seed --class=ProductDataSeeder --force || true
+              $PHP artisan db:seed --class=BannerSeeder --force || true
+              $PHP artisan db:seed --class=HomepageSeeder --force || true
+              $PHP artisan db:seed --class=SettingsSeeder --force || true
+              $PHP artisan db:seed --class=PageSeeder --force || true
+              rm -f SEED_ON_DEPLOY
+              echo "=== Seeders completed ==="
+            else
+              echo "=== Skipping seeders (create SEED_ON_DEPLOY file to run seeders) ==="
+            fi
 
-            echo "=== Seeding Products ==="
-            $PHP artisan db:seed --class=ProductSeeder --force --verbose
-
-            echo "=== Syncing Product Data ==="
-            $PHP artisan db:seed --class=ProductDataSeeder --force --verbose
-
-            echo "=== Seeding Banners ==="
-            $PHP artisan db:seed --class=BannerSeeder --force --verbose
-
-            echo "=== Seeding Homepage Settings ==="
-            $PHP artisan db:seed --class=HomepageSeeder --force --verbose
-
-            echo "=== Seeding Settings ==="
-            $PHP artisan db:seed --class=SettingsSeeder --force --verbose || echo "SettingsSeeder skipped (may not exist)"
-
-            echo "=== Seeding Pages ==="
-            $PHP artisan db:seed --class=PageSeeder --force --verbose || echo "PageSeeder skipped (may not exist)"
-
-            echo "=== All seeders completed ==="
-
-            # Clear all caches first
+            # Clear all caches
+            echo "=== Clearing caches ==="
             $PHP artisan cache:clear || true
             $PHP artisan config:clear
             $PHP artisan route:clear
             $PHP artisan view:clear || true
 
             # Rebuild caches for production performance
+            echo "=== Rebuilding caches ==="
             $PHP artisan config:cache
             $PHP artisan route:cache
             $PHP artisan view:cache
 
-            # Debug: Test if Laravel is working
-            echo "=== Testing Laravel ==="
-            $PHP artisan --version
-            echo "=== Available API routes ==="
-            $PHP artisan route:list --path=api | head -20 || echo "Route listing failed"
-
             # Create storage link manually (exec() is disabled on Hostinger)
             rm -rf public/storage
             ln -s ../storage/app/public public/storage
-            echo "Storage link created manually"
+            echo "=== Storage link created ==="
+
+            echo "=== Deployment completed successfully ==="
+            $PHP artisan --version
 
       - name: Notify on success
         if: success()
