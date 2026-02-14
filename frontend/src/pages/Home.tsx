@@ -432,12 +432,12 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
 
 
 // Default category videos mapping (fallback)
-// Note: Add video paths here when videos are available in backend/public/videos/categories/
+// Videos are in frontend/public/videos/categories/ and copied during build
 const defaultCategoryVideos: Record<string, string> = {
-  // 'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
-  // 'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
-  // 'oven-toasters': '/videos/categories/oven-toasters.mp4',
-  // 'air-fryers': '/videos/categories/air-fryers.mp4',
+  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
+  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
+  'oven-toasters': '/videos/categories/oven-toasters.mp4',
+  'air-fryers': '/videos/categories/air-fryers.mp4',
 }
 
 export default function Home() {
