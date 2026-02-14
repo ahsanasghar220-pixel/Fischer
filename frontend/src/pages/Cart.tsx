@@ -180,22 +180,20 @@ export default function Cart() {
                       >
                         <div className="md:grid md:grid-cols-12 md:gap-4 md:items-center">
                           {/* Product */}
-                          <div className="col-span-6 flex gap-4">
+                          <div className="md:col-span-6 flex gap-3 sm:gap-4">
                             <Link
                               to={`/product/${item.product?.slug || ''}`}
-                              className="w-20 h-20 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0"
+                              className="w-16 h-16 sm:w-20 sm:h-20 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0"
                             >
                               <motion.div whileHover={{ scale: 1.05 }}>
                                 {(item.product?.image || item.product?.primary_image) ? (
                                   <img
                                     src={item.product?.image ?? item.product?.primary_image ?? ''}
                                     alt={item.product?.name || 'Product'}
-                                    width={80}
-                                    height={80}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-dark-400 dark:text-dark-500 text-sm">
+                                  <div className="w-full h-full flex items-center justify-center text-dark-400 dark:text-dark-500 text-xs">
                                     No image
                                   </div>
                                 )}
@@ -204,47 +202,44 @@ export default function Cart() {
                             <div className="flex-1 min-w-0">
                               <Link
                                 to={`/product/${item.product?.slug || ''}`}
-                                className="font-medium text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors break-words block"
+                                className="text-sm sm:text-base font-medium text-dark-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors break-words block line-clamp-2"
                               >
                                 {item.product?.name || 'Product'}
                               </Link>
                               {item.variant && (
-                                <p className="text-sm text-dark-500 dark:text-dark-400 mt-0.5">{item.variant.name}</p>
+                                <p className="text-xs sm:text-sm text-dark-500 dark:text-dark-400 mt-0.5">{item.variant.name}</p>
                               )}
-                              <motion.button
-                                onClick={() => removeItem(item.id)}
-                                className="text-sm text-red-500 hover:text-red-600 mt-2 flex items-center gap-1 md:hidden"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                              >
-                                <TrashIcon className="w-4 h-4" />
-                                Remove
-                              </motion.button>
+                              {/* Mobile: Show price below product name */}
+                              <div className="mt-1 md:hidden">
+                                <span className="text-xs text-dark-500 dark:text-dark-400">
+                                  {formatPrice(item.unit_price || item.variant?.price || item.product?.price || 0)} each
+                                </span>
+                              </div>
                             </div>
                           </div>
 
-                          {/* Price */}
-                          <div className="col-span-2 text-center hidden md:block">
+                          {/* Price - Desktop Only */}
+                          <div className="md:col-span-2 text-center hidden md:block">
                             <span className="text-dark-900 dark:text-white font-medium">
                               {formatPrice(item.unit_price || item.variant?.price || item.product?.price || 0)}
                             </span>
                           </div>
 
-                          {/* Quantity */}
-                          <div className="col-span-2 flex items-center justify-center mt-4 md:mt-0">
+                          {/* Quantity & Actions - Mobile & Desktop */}
+                          <div className="md:col-span-2 flex items-center justify-between md:justify-center mt-3 md:mt-0">
                             <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-lg">
                               <motion.button
                                 onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
+                                className="p-1.5 sm:p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
                                 disabled={item.quantity <= 1}
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                               >
-                                <MinusIcon className="w-4 h-4" />
+                                <MinusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                               </motion.button>
                               <motion.span
                                 key={item.quantity}
-                                className="w-10 text-center font-medium text-dark-900 dark:text-white"
+                                className="w-8 sm:w-10 text-center text-sm sm:text-base font-medium text-dark-900 dark:text-white"
                                 initial={{ scale: 1.2 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: 'spring', stiffness: 400 }}
@@ -254,17 +249,26 @@ export default function Cart() {
                               <motion.button
                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                 disabled={item.quantity >= (item.product?.stock_quantity || 99)}
-                                className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="p-1.5 sm:p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                               >
-                                <PlusIcon className="w-4 h-4" />
+                                <PlusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                               </motion.button>
                             </div>
+                            {/* Mobile: Remove button next to quantity */}
+                            <motion.button
+                              onClick={() => removeItem(item.id)}
+                              className="md:hidden p-2 text-dark-400 hover:text-red-500 transition-colors"
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <TrashIcon className="w-5 h-5" />
+                            </motion.button>
                           </div>
 
-                          {/* Total */}
-                          <div className="col-span-2 text-right hidden md:flex md:items-center md:justify-end md:gap-4">
+                          {/* Total - Desktop */}
+                          <div className="md:col-span-2 text-right hidden md:flex md:items-center md:justify-end md:gap-4">
                             <motion.span
                               key={item.total_price}
                               className="font-semibold text-dark-900 dark:text-white"
@@ -283,14 +287,19 @@ export default function Cart() {
                             </motion.button>
                           </div>
 
-                          {/* Mobile Price & Total */}
-                          <div className="flex items-center justify-between mt-4 md:hidden">
-                            <span className="text-dark-500 dark:text-dark-400">
-                              {formatPrice(item.unit_price || item.variant?.price || item.product?.price || 0)} × {item.quantity}
+                          {/* Total - Mobile Only */}
+                          <div className="flex items-center justify-between mt-3 pt-3 border-t border-dark-100 dark:border-dark-700 md:hidden">
+                            <span className="text-sm font-medium text-dark-600 dark:text-dark-400">
+                              Subtotal:
                             </span>
-                            <span className="font-semibold text-dark-900 dark:text-white">
+                            <motion.span
+                              key={item.total_price}
+                              className="text-base font-bold text-dark-900 dark:text-white"
+                              initial={{ scale: 1.1 }}
+                              animate={{ scale: 1 }}
+                            >
                               {formatPrice(item.total_price || (item.unit_price || item.variant?.price || item.product?.price || 0) * item.quantity)}
-                            </span>
+                            </motion.span>
                           </div>
                         </div>
                       </motion.div>
@@ -380,11 +389,11 @@ export default function Cart() {
                         type="text"
                         name="coupon"
                         placeholder="Coupon code"
-                        className="flex-1 px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow"
+                        className="flex-1 px-3 py-2 text-sm border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow"
                       />
                       <motion.button
                         type="submit"
-                        className="btn btn-dark dark:bg-dark-600 dark:hover:bg-dark-500 px-4"
+                        className="btn btn-dark dark:bg-dark-600 dark:hover:bg-dark-500 px-3 sm:px-4 text-sm"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -403,10 +412,10 @@ export default function Cart() {
                 transition={{ delay: 0.45 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-dark-600 dark:text-dark-400">Subtotal</span>
+                  <span className="text-sm sm:text-base text-dark-600 dark:text-dark-400">Subtotal</span>
                   <motion.span
                     key={subtotal}
-                    className="font-medium text-dark-900 dark:text-white"
+                    className="text-sm sm:text-base font-medium text-dark-900 dark:text-white"
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                   >
@@ -427,14 +436,14 @@ export default function Cart() {
                   )}
                 </AnimatePresence>
                 <div className="flex items-center justify-between">
-                  <span className="text-dark-600 dark:text-dark-400">Shipping</span>
-                  <span className="text-dark-500 dark:text-dark-400">Calculated at checkout</span>
+                  <span className="text-sm sm:text-base text-dark-600 dark:text-dark-400">Shipping</span>
+                  <span className="text-xs sm:text-sm text-dark-500 dark:text-dark-400">Calculated at checkout</span>
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-dark-200 dark:border-dark-700">
-                  <span className="text-lg font-semibold text-dark-900 dark:text-white">Total</span>
+                  <span className="text-base sm:text-lg font-semibold text-dark-900 dark:text-white">Total</span>
                   <motion.span
                     key={total}
-                    className="text-xl font-bold text-dark-900 dark:text-white"
+                    className="text-lg sm:text-xl font-bold text-dark-900 dark:text-white"
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 400 }}
