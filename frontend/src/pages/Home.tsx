@@ -327,6 +327,9 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
   const isEven = index % 2 === 0
   const videoSrc = categoryVideos[category.slug]
 
+  // Debug: Log category and video mapping
+  console.log(`Category: ${category.name}, Slug: ${category.slug}, Video: ${videoSrc || 'NOT FOUND'}`)
+
   // Explicitly call play/pause for mobile browsers (iOS Safari ignores autoPlay)
   useEffect(() => {
     const video = videoRef.current
@@ -420,10 +423,26 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
 // Default category videos mapping (fallback)
 // Videos are in frontend/public/videos/categories/ and copied during build
 const defaultCategoryVideos: Record<string, string> = {
+  // Kitchen Hoods variations
   'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
+  'built-in-hoods': '/videos/categories/built-in-hoods.mp4',
+  'hoods': '/videos/categories/built-in-hoods.mp4',
+
+  // Kitchen Hobs variations
   'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
+  'built-in-hobs': '/videos/categories/built-in-hobs.mp4',
+  'hobs': '/videos/categories/built-in-hobs.mp4',
+
+  // Oven Toasters variations
   'oven-toasters': '/videos/categories/oven-toasters.mp4',
+  'oven-toaster': '/videos/categories/oven-toasters.mp4',
+  'toaster-ovens': '/videos/categories/oven-toasters.mp4',
+  'toasters': '/videos/categories/oven-toasters.mp4',
+
+  // Air Fryers variations
   'air-fryers': '/videos/categories/air-fryers.mp4',
+  'air-fryer': '/videos/categories/air-fryers.mp4',
+  'fryers': '/videos/categories/air-fryers.mp4',
 }
 
 export default function Home() {
