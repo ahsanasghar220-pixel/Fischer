@@ -445,8 +445,6 @@ export default function Home() {
   const [introComplete, setIntroComplete] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [subscribing, setSubscribing] = useState(false)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -476,23 +474,6 @@ export default function Home() {
     }
   }
 
-  // Handle newsletter subscription
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newsletterEmail || subscribing) return
-
-    setSubscribing(true)
-    try {
-      await api.post('/api/newsletter/subscribe', { email: newsletterEmail })
-      toast.success('Successfully subscribed to our newsletter!')
-      setNewsletterEmail('')
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to subscribe. Please try again.'
-      toast.error(errorMessage)
-    } finally {
-      setSubscribing(false)
-    }
-  }
 
   // Extract dynamic data with fallbacks
   const stats = data?.stats?.length ? data.stats : defaultStats
@@ -548,13 +529,6 @@ export default function Home() {
     'Dedicated R&D for continuous innovation',
   ]
 
-  // Newsletter from section settings
-  const newsletterSettings = sections.newsletter?.settings || {}
-  const newsletterTitle = sections.newsletter?.title || 'Get Exclusive Offers'
-  const newsletterSubtitle = sections.newsletter?.subtitle || 'Subscribe to get exclusive offers, new product announcements, and tips for your home appliances.'
-  const newsletterPlaceholder = newsletterSettings.placeholder || 'Enter your email address'
-  const newsletterButtonText = newsletterSettings.button_text || 'Subscribe'
-  const newsletterDisclaimer = newsletterSettings.disclaimer || 'No spam, unsubscribe anytime.'
 
 
   // Use categories from API with centralized image fallback mapping
