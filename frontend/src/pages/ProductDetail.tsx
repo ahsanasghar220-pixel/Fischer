@@ -391,7 +391,7 @@ export default function ProductDetail() {
               {/* Thumbnails */}
               {product.images && product.images.length > 1 && (
                 <motion.div
-                  className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
+                  className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 }}
@@ -529,7 +529,7 @@ export default function ProductDetail() {
               )}
 
               <motion.h1
-                className="text-2xl md:text-3xl font-bold text-dark-900 dark:text-white mt-1 mb-2"
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-dark-900 dark:text-white mt-1 mb-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
@@ -735,7 +735,7 @@ export default function ProductDetail() {
 
               {/* Features */}
               <motion.div
-                className="grid grid-cols-3 gap-4 py-6 border-t border-b border-dark-200 dark:border-dark-700"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-6 border-t border-b border-dark-200 dark:border-dark-700"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
@@ -789,7 +789,7 @@ export default function ProductDetail() {
                   <motion.button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-4 px-2 sm:px-6 text-center font-medium transition-colors relative text-sm sm:text-base ${
+                    className={`flex-1 py-4 px-2 sm:px-6 text-center font-medium transition-colors relative text-xs sm:text-sm md:text-base whitespace-nowrap ${
                       activeTab === tab
                         ? 'text-primary-600 dark:text-primary-400'
                         : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'
@@ -970,7 +970,7 @@ export default function ProductDetail() {
                 Related Products
               </motion.h2>
               <StaggerContainer
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 md:gap-6"
                 staggerDelay={0.08}
               >
                 {relatedProducts.slice(0, 5).map((relatedProduct) => (

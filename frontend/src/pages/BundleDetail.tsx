@@ -239,10 +239,10 @@ export default function BundleDetail() {
 
         {/* Main Content */}
         <div className="container mx-auto px-4 pb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 xl:gap-12">
             {/* Left - Gallery */}
             <ScrollReveal animation="fadeUp">
-              <div className="sticky top-24">
+              <div className="lg:sticky lg:top-24">
                 {/* Main Image */}
                 <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 mb-4">
                   {isVideoPlaying && bundle.video_url ? (
@@ -352,7 +352,7 @@ export default function BundleDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl lg:text-4xl font-bold text-dark-900 dark:text-white">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-dark-900 dark:text-white">
                   {bundle.name}
                 </h1>
 
@@ -538,7 +538,7 @@ export default function BundleDetail() {
                 </div>
 
                 {/* Trust Badges */}
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t dark:border-dark-700">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 pt-4 border-t dark:border-dark-700">
                   <div className="text-center">
                     <TruckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
                     <p className="text-xs text-dark-600 dark:text-dark-400">Free Delivery</p>

@@ -297,7 +297,7 @@ export default function ServiceRequest() {
                 transition={{ delay: 0.4 + i * 0.1 }}
               >
                 <motion.div
-                  className={`flex items-center justify-center w-8 h-8 rounded-full font-medium transition-all duration-300 ${
+                  className={`flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full text-xs md:text-sm font-medium transition-all duration-300 ${
                     step > s.num
                       ? 'bg-green-500 text-white'
                       : step === s.num
@@ -315,18 +315,18 @@ export default function ServiceRequest() {
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 300 }}
                     >
-                      <CheckCircleIcon className="w-5 h-5" />
+                      <CheckCircleIcon className="w-4 h-4 md:w-5 md:h-5" />
                     </motion.div>
                   ) : (
                     s.num
                   )}
                 </motion.div>
-                <span className={`ml-2 hidden sm:inline transition-colors duration-300 ${step >= s.num ? 'text-dark-900 dark:text-white' : 'text-dark-400 dark:text-dark-500'}`}>
+                <span className={`ml-2 hidden sm:inline text-sm md:text-base transition-colors duration-300 ${step >= s.num ? 'text-dark-900 dark:text-white' : 'text-dark-400 dark:text-dark-500'}`}>
                   {s.label}
                 </span>
                 {i < 3 && (
                   <motion.div
-                    className="w-8 md:w-16 h-0.5 mx-2 bg-dark-200 dark:bg-dark-600 overflow-hidden"
+                    className="w-6 md:w-16 h-0.5 mx-1 md:mx-2 bg-dark-200 dark:bg-dark-600 overflow-hidden"
                   >
                     <motion.div
                       className="h-full bg-green-500"
@@ -375,7 +375,7 @@ export default function ServiceRequest() {
                       onClick={() => setFormData({ ...formData, service_type: type.value })}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      className={`p-3 md:p-4 border rounded-lg cursor-pointer transition-colors ${
                         formData.service_type === type.value
                           ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                           : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'

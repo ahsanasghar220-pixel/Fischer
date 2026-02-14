@@ -39,7 +39,7 @@ export default function About() {
             transition={{ delay: 0.1, duration: 0.6 }}
           >
             <motion.h1
-              className="text-4xl md:text-5xl font-bold mb-6"
+              className="text-2xl md:text-4xl lg:text-5xl font-bold mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -47,7 +47,7 @@ export default function About() {
               About Fischer Pakistan
             </motion.h1>
             <motion.p
-              className="text-xl text-dark-300 dark:text-dark-400 leading-relaxed"
+              className="text-base md:text-xl text-dark-300 dark:text-dark-400 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -63,7 +63,7 @@ export default function About() {
       <ScrollReveal animation="fadeUp">
         <section className="py-16 bg-white dark:bg-dark-900">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -128,7 +128,7 @@ export default function About() {
       {/* Stats */}
       <section className="bg-dark-50 dark:bg-dark-800 py-16 transition-colors overflow-hidden">
         <div className="container mx-auto px-4">
-          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8" staggerDelay={0.1}>
+          <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8" staggerDelay={0.1}>
             {[
               { value: '500+', label: 'Dealers Nationwide' },
               { value: '1M+', label: 'Happy Customers' },
@@ -141,7 +141,7 @@ export default function About() {
                   whileHover={{ scale: 1.05 }}
                 >
                   <motion.span
-                    className="text-4xl md:text-5xl font-bold text-primary-500 block"
+                    className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-500 block"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

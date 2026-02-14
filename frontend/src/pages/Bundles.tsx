@@ -60,7 +60,7 @@ export default function Bundles() {
               <GiftIcon className="w-4 h-4" />
               Special Offers
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
               Bundle{' '}
               <span className="bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent">
                 Deals
@@ -203,8 +203,8 @@ export default function Bundles() {
             <StaggerContainer
               className={
                 viewMode === 'grid'
-                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                  : 'flex flex-col gap-4'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6'
+                  : 'flex flex-col gap-3 md:gap-4'
               }
               staggerDelay={0.1}
             >
@@ -218,12 +218,12 @@ export default function Bundles() {
                   ) : (
                     <Link
                       to={`/bundle/${bundle.slug}`}
-                      className="flex items-center gap-6 p-4 bg-white dark:bg-dark-800 rounded-2xl border border-dark-100 dark:border-dark-700 hover:border-primary-500 hover:shadow-lg transition-all"
+                      className="flex items-center gap-3 md:gap-6 p-4 bg-white dark:bg-dark-800 rounded-2xl border border-dark-100 dark:border-dark-700 hover:border-primary-500 hover:shadow-lg transition-all"
                     >
                       <img
                         src={bundle.featured_image || '/images/all-products.webp'}
                         alt={bundle.name}
-                        className="w-32 h-32 object-cover rounded-xl"
+                        className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl"
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">

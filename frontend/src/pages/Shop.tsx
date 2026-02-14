@@ -242,7 +242,7 @@ export default function Shop() {
             <span className="text-dark-900 dark:text-white">Shop</span>
           </motion.div>
           <motion.h1
-            className="text-3xl font-bold text-dark-900 dark:text-white"
+            className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -586,7 +586,7 @@ export default function Shop() {
             ) : productsData?.data && productsData.data.length > 0 ? (
               <>
                 <StaggerContainer
-                  className={`grid gap-4 md:gap-6 ${
+                  className={`grid gap-2 sm:gap-4 md:gap-6 ${
                     viewMode === 'grid'
                       ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
                       : 'grid-cols-1'
@@ -638,7 +638,7 @@ export default function Shop() {
                           <button
                             key={page}
                             onClick={() => updateFilter('page', page.toString())}
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                            className={`px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                               currentPage === page
                                 ? 'bg-primary-600 text-white shadow-md'
                                 : 'text-dark-600 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-700'

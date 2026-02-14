@@ -95,7 +95,7 @@ export default function Contact() {
       <div className="bg-dark-900 dark:bg-dark-950 text-white py-16 transition-colors overflow-hidden">
         <div className="container mx-auto px-4 text-center">
           <motion.h1
-            className="text-4xl font-bold mb-4"
+            className="text-2xl md:text-4xl font-bold mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -115,7 +115,7 @@ export default function Contact() {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-4 lg:gap-8">
           {/* Contact Info */}
           <motion.div
             className="lg:col-span-1"
@@ -337,7 +337,8 @@ export default function Contact() {
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d435519.22741290905!2d74.00471872499997!3d31.483103600000006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23abe6ccc7e2462!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1234567890"
                 width="100%"
-                height="400"
+                height="300"
+                className="w-full h-[250px] sm:h-[300px] md:h-[400px]"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"

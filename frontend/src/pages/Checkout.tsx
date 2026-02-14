@@ -303,7 +303,7 @@ export default function Checkout() {
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
           <motion.h1
-            className="text-3xl font-bold text-dark-900 dark:text-white"
+            className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -335,7 +335,7 @@ export default function Checkout() {
                 transition={{ delay: 0.2 + i * 0.1 }}
               >
                 <motion.div
-                  className={`flex items-center justify-center w-8 h-8 rounded-full font-medium ${
+                  className={`flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full text-xs md:text-sm font-medium ${
                     step > s.num
                       ? 'bg-green-500 text-white'
                       : step === s.num
@@ -347,14 +347,14 @@ export default function Checkout() {
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  {step > s.num ? <CheckCircleIcon className="w-5 h-5" /> : s.num}
+                  {step > s.num ? <CheckCircleIcon className="w-4 h-4 md:w-5 md:h-5" /> : s.num}
                 </motion.div>
-                <span className={`ml-2 ${step >= s.num ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
+                <span className={`ml-2 hidden sm:inline ${step >= s.num ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
                   {s.label}
                 </span>
                 {i < 2 && (
                   <motion.div
-                    className={`w-16 h-0.5 mx-4 ${step > s.num ? 'bg-green-500' : 'bg-dark-200 dark:bg-dark-700'}`}
+                    className={`w-8 sm:w-16 h-0.5 mx-2 sm:mx-4 ${step > s.num ? 'bg-green-500' : 'bg-dark-200 dark:bg-dark-700'}`}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
@@ -368,7 +368,7 @@ export default function Checkout() {
 
       <div className="container mx-auto px-4 py-8">
         <form onSubmit={handleSubmit}>
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-4 lg:gap-8">
             {/* Main Content */}
             <motion.div
               className="lg:col-span-2"

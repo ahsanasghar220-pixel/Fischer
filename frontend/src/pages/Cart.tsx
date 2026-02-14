@@ -112,7 +112,7 @@ export default function Cart() {
             <span className="text-dark-900 dark:text-white">Shopping Cart</span>
           </motion.div>
           <motion.h1
-            className="text-3xl font-bold text-dark-900 dark:text-white"
+            className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
@@ -323,7 +323,7 @@ export default function Cart() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6 sticky top-4">
+            <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6 lg:sticky lg:top-4">
               <motion.h2
                 className="text-lg font-semibold text-dark-900 dark:text-white mb-4"
                 initial={{ opacity: 0 }}
@@ -471,7 +471,7 @@ export default function Cart() {
                 transition={{ delay: 0.55 }}
               >
                 <p className="text-sm text-dark-500 dark:text-dark-400 text-center mb-3">Secure payment options</p>
-                <div className="flex items-center justify-center gap-4 text-dark-400">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-dark-400">
                   {['COD', 'JazzCash', 'EasyPaisa', 'Cards'].map((method, index) => (
                     <motion.span
                       key={method}

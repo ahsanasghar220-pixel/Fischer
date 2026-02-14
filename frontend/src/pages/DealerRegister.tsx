@@ -156,21 +156,21 @@ export default function DealerRegister() {
       {/* Benefits */}
       <div className="bg-primary-500 py-8">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 text-center">
             <div>
-              <span className="text-3xl font-bold text-dark-900">Up to 30%</span>
+              <span className="text-2xl md:text-3xl font-bold text-dark-900">Up to 30%</span>
               <p className="text-dark-700">Dealer Discount</p>
             </div>
             <div>
-              <span className="text-3xl font-bold text-dark-900">Marketing</span>
+              <span className="text-2xl md:text-3xl font-bold text-dark-900">Marketing</span>
               <p className="text-dark-700">Support & Materials</p>
             </div>
             <div>
-              <span className="text-3xl font-bold text-dark-900">Credit</span>
+              <span className="text-2xl md:text-3xl font-bold text-dark-900">Credit</span>
               <p className="text-dark-700">Facility Available</p>
             </div>
             <div>
-              <span className="text-3xl font-bold text-dark-900">Priority</span>
+              <span className="text-2xl md:text-3xl font-bold text-dark-900">Priority</span>
               <p className="text-dark-700">Technical Support</p>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function DealerRegister() {
             ].map((s, i) => (
               <div key={s.num} className="flex items-center">
                 <div
-                  className={`flex items-center justify-center w-8 h-8 rounded-full font-medium transition-colors ${
+                  className={`flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full text-xs md:text-sm font-medium transition-colors ${
                     step > s.num
                       ? 'bg-green-500 text-white'
                       : step === s.num
@@ -197,12 +197,12 @@ export default function DealerRegister() {
                       : 'bg-dark-200 dark:bg-dark-600 text-dark-500 dark:text-dark-400'
                   }`}
                 >
-                  {step > s.num ? <CheckCircleIcon className="w-5 h-5" /> : s.num}
+                  {step > s.num ? <CheckCircleIcon className="w-4 h-4 md:w-5 md:h-5" /> : s.num}
                 </div>
-                <span className={`ml-2 hidden sm:inline ${step >= s.num ? 'text-dark-900 dark:text-white' : 'text-dark-400'}`}>
+                <span className={`ml-2 hidden sm:inline text-sm md:text-base ${step >= s.num ? 'text-dark-900 dark:text-white' : 'text-dark-400'}`}>
                   {s.label}
                 </span>
-                {i < 3 && <div className="w-8 md:w-16 h-0.5 mx-2 bg-dark-200 dark:bg-dark-600" />}
+                {i < 3 && <div className="w-6 md:w-16 h-0.5 mx-1 md:mx-2 bg-dark-200 dark:bg-dark-600" />}
               </div>
             ))}
           </div>

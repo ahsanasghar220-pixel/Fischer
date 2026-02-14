@@ -363,7 +363,7 @@ export default function Category() {
       <div className="container mx-auto px-4 py-4 md:py-8">
         {products && products.length > 0 ? (
           <StaggerContainer
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4 lg:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 lg:gap-6"
             staggerDelay={0.05}
           >
             {products.map((product) => (

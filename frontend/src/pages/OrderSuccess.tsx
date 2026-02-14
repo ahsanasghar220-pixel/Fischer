@@ -133,7 +133,7 @@ function Confetti() {
 // Animated check mark
 function AnimatedCheckmark() {
   return (
-    <div className="relative w-28 h-28 mx-auto mb-8">
+    <div className="relative w-20 h-20 md:w-28 md:h-28 mx-auto mb-8">
       {/* Outer glow rings */}
       <div className="absolute inset-0 animate-ping rounded-full bg-green-400/20" style={{ animationDuration: '2s' }} />
       <div className="absolute inset-2 animate-ping rounded-full bg-green-400/30" style={{ animationDuration: '2s', animationDelay: '0.2s' }} />
@@ -251,12 +251,12 @@ export default function OrderSuccess() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto">
           {/* Success Header */}
-          <div className="bg-white/80 dark:bg-dark-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 text-center mb-8 border border-white/20 dark:border-dark-700/50">
+          <div className="bg-white/80 dark:bg-dark-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-4 md:p-8 lg:p-12 text-center mb-8 border border-white/20 dark:border-dark-700/50">
             {/* Animated Checkmark */}
             <AnimatedCheckmark />
 
             {/* Animated Title */}
-            <h1 className="text-3xl md:text-4xl font-black text-dark-900 dark:text-white mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-dark-900 dark:text-white mb-4">
               <AnimatedText delay={0.4}>Thank You for Your Order!</AnimatedText>
             </h1>
 
@@ -266,11 +266,11 @@ export default function OrderSuccess() {
 
             {/* Order Number Badge */}
             <div
-              className="inline-block bg-gradient-to-r from-dark-100 to-dark-50 dark:from-dark-700 dark:to-dark-800 rounded-2xl px-8 py-4 animate-scale-in opacity-0 border border-dark-200/50 dark:border-dark-600/50"
+              className="inline-block bg-gradient-to-r from-dark-100 to-dark-50 dark:from-dark-700 dark:to-dark-800 rounded-2xl px-4 py-2 md:px-8 md:py-4 animate-scale-in opacity-0 border border-dark-200/50 dark:border-dark-600/50"
               style={{ animationDelay: '1s', animationFillMode: 'forwards' }}
             >
               <p className="text-sm text-dark-500 dark:text-dark-400 mb-1">Order Number</p>
-              <p className="text-3xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
+              <p className="text-xl md:text-3xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
                 {order.order_number}
               </p>
             </div>
@@ -374,7 +374,7 @@ export default function OrderSuccess() {
 
           {/* Shipping & Payment Info */}
           <div
-            className="grid md:grid-cols-2 gap-6 mb-8 animate-fade-in-up opacity-0"
+            className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8 animate-fade-in-up opacity-0"
             style={{ animationDelay: '1s', animationFillMode: 'forwards' }}
           >
             <div className="bg-white/80 dark:bg-dark-800/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-dark-700/50">
