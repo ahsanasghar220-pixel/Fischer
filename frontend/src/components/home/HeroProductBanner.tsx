@@ -149,7 +149,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                     idx === currentImageIndex
                       ? 'bg-primary-500 w-4'
-                      : 'bg-gray-400 dark:bg-dark-400'
+                      : 'bg-gray-500 dark:bg-dark-400'
                   }`}
                 />
               ))}
@@ -199,7 +199,7 @@ export default function HeroProductBanner({ products: propProducts, title, subti
           transition={{ duration: 0.6 }}
           className="text-center mb-6 md:mb-12 lg:mb-16 px-4"
         >
-          <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
+          <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-primary-500/20 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400 rounded-full text-xs md:text-sm font-semibold mb-3 md:mb-4">
             {badgeText || 'Our Bestsellers'}
           </span>
           <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-dark-900 dark:text-white font-display mb-2 md:mb-4">

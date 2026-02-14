@@ -167,6 +167,8 @@ jobs:
               $PHP artisan db:seed --class=HomepageSeeder --force || true
               $PHP artisan db:seed --class=SettingsSeeder --force || true
               $PHP artisan db:seed --class=PageSeeder --force || true
+              $PHP artisan db:seed --class=ShippingZoneSeeder --force || true
+              $PHP artisan db:seed --class=ShippingMethodSeeder --force || true
               rm -f SEED_ON_DEPLOY
               echo "=== Seeders completed ==="
             else

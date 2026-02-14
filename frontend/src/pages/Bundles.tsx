@@ -56,7 +56,7 @@ export default function Bundles() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/25 text-primary-300 text-sm font-semibold mb-6">
               <GiftIcon className="w-4 h-4" />
               Special Offers
             </span>

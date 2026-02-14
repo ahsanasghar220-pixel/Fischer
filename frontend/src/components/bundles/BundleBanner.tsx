@@ -278,8 +278,8 @@ const BundleBanner = memo(function BundleBanner({
                   )}
                 </div>
                 {bundle.show_savings && bundle.savings > 0 && (
-                  <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/20 backdrop-blur-sm rounded-full">
-                    <span className="text-sm font-semibold text-green-400">
+                  <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/30 backdrop-blur-sm rounded-full">
+                    <span className="text-sm font-semibold text-green-300">
                       You save {formatPrice(bundle.savings)} ({bundle.savings_percentage.toFixed(0)}% off)
                     </span>
                   </div>

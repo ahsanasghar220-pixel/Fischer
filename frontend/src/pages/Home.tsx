@@ -805,9 +805,8 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-gradient-to-r from-primary-100 to-primary-50
-                                     dark:from-primary-900/30 dark:to-primary-800/30
-                                     text-primary-700 dark:text-primary-400 text-sm font-semibold mb-4">
+                                     bg-primary-500/20 dark:bg-primary-900/30
+                                     text-primary-800 dark:text-primary-400 text-sm font-semibold mb-4">
                         <GiftIcon className="w-4 h-4" />
                         Special Bundles
                       </span>
@@ -875,7 +874,7 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-primary-500/20 text-primary-600 dark:text-primary-400
+                                     bg-primary-500/20 text-primary-800 dark:text-primary-400
                                      text-sm font-semibold mb-4">
                         <FireIcon className="w-4 h-4" />
                         Hand-picked for you
@@ -933,10 +932,10 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-amber-500/15 dark:bg-amber-900/30
-                                     text-amber-700 dark:text-amber-400
+                                     bg-amber-500/25 dark:bg-amber-900/30
+                                     text-amber-800 dark:text-amber-400
                                      text-sm font-semibold mb-4">
-                        <StarIcon className="w-4 h-4 fill-amber-600 dark:fill-amber-500" />
+                        <StarIcon className="w-4 h-4 fill-amber-700 dark:fill-amber-500" />
                         Customer Favorites
                       </span>
                       <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
@@ -995,7 +994,7 @@ export default function Home() {
                   <AnimatedSection animation="fade-right" delay={200} distance={60} duration={1100} easing="gentle">
                     <div className="text-center lg:text-left">
                       <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-                                     bg-primary-500/20 backdrop-blur-sm text-primary-400
+                                     bg-primary-500/25 backdrop-blur-sm text-primary-100
                                      text-sm font-bold mb-8">
                         <SparklesIcon className="w-5 h-5" />
                         {dealerSettings.badge_text || 'Partnership Opportunity'}
@@ -1069,8 +1068,8 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-emerald-100 dark:bg-emerald-900/30
-                                     text-emerald-600 dark:text-emerald-400
+                                     bg-emerald-500/20 dark:bg-emerald-900/30
+                                     text-emerald-800 dark:text-emerald-400
                                      text-sm font-semibold mb-4">
                         <BoltIcon className="w-4 h-4" />
                         Just Arrived
@@ -1124,8 +1123,8 @@ export default function Home() {
                 <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
                   <div className="text-center mb-16">
                     <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                   bg-primary-100 dark:bg-primary-900/30
-                                   text-primary-600 dark:text-primary-400
+                                   bg-primary-500/20 dark:bg-primary-900/30
+                                   text-primary-800 dark:text-primary-400
                                    text-sm font-semibold mb-4">
                       <StarIcon className="w-4 h-4" />
                       {sections.testimonials?.title || 'Customer Reviews'}
@@ -1282,8 +1281,8 @@ export default function Home() {
                   {/* Right - Content */}
                   <div>
                     <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                   bg-primary-100 dark:bg-primary-900/30
-                                   text-primary-600 dark:text-primary-400
+                                   bg-primary-500/20 dark:bg-primary-900/30
+                                   text-primary-800 dark:text-primary-400
                                    text-sm font-semibold mb-6">
                       <SparklesIcon className="w-4 h-4" />
                       {aboutSettings.badge_text || 'About Fischer'}

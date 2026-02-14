@@ -122,14 +122,14 @@ const BundleCarousel = memo(function BundleCarousel({
             <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={goToPrev}
-                className="p-3 rounded-full bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 hover:bg-primary-500 hover:text-white transition-all duration-300"
+                className="p-3 rounded-full bg-dark-200 dark:bg-dark-700 text-dark-700 dark:text-dark-300 hover:bg-primary-500 hover:text-white transition-all duration-300"
                 aria-label="Previous"
               >
                 <ChevronLeftIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={goToNext}
-                className="p-3 rounded-full bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 hover:bg-primary-500 hover:text-white transition-all duration-300"
+                className="p-3 rounded-full bg-dark-200 dark:bg-dark-700 text-dark-700 dark:text-dark-300 hover:bg-primary-500 hover:text-white transition-all duration-300"
                 aria-label="Next"
               >
                 <ChevronRightIcon className="w-5 h-5" />
@@ -182,7 +182,7 @@ const BundleCarousel = memo(function BundleCarousel({
               className={`transition-all duration-300 ${
                 index === currentIndex
                   ? 'w-8 h-2 bg-primary-500 rounded-full'
-                  : 'w-2 h-2 bg-dark-300 dark:bg-dark-600 rounded-full hover:bg-primary-300'
+                  : 'w-2 h-2 bg-dark-400 dark:bg-dark-600 rounded-full hover:bg-primary-300'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

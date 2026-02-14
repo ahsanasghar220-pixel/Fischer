@@ -398,7 +398,7 @@ export default function Header() {
                         <p className="text-sm text-dark-500 dark:text-dark-400 truncate">{user?.email}</p>
                         {user?.loyalty_points !== undefined && (
                           <div className="mt-2 flex items-center gap-2">
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-primary-500/20 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300">
                               {user.loyalty_points} Points
                             </span>
                           </div>
