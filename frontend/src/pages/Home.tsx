@@ -357,8 +357,8 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
     >
       {/* Video Side - Videos Only */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-900">
-          {videoSrc && (
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-100 dark:bg-dark-900">
+          {videoSrc ? (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -366,12 +366,16 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
               loop
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               poster=""
             >
               <source src={videoSrc} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-800 dark:to-dark-900">
+              <div className="text-dark-400 dark:text-dark-600 text-sm">No video available</div>
+            </div>
           )}
         </div>
       </div>
@@ -929,17 +933,17 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
                       <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-amber-100 dark:bg-amber-900/30
-                                     text-amber-600 dark:text-amber-400
+                                     bg-amber-500/15 dark:bg-amber-900/30
+                                     text-amber-700 dark:text-amber-400
                                      text-sm font-semibold mb-4">
-                        <StarIcon className="w-4 h-4" />
+                        <StarIcon className="w-4 h-4 fill-amber-600 dark:fill-amber-500" />
                         Customer Favorites
                       </span>
                       <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
                         Best{' '}
-                        <span className="text-primary-600 dark:text-primary-400">Sellers</span>
+                        <span className="text-primary-600 dark:text-primary-500">Sellers</span>
                       </h2>
-                      <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
+                      <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
                         Top-rated appliances trusted by thousands of Pakistani homes
                       </p>
                     </div>
