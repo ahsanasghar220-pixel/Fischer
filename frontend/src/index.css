@@ -325,7 +325,7 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-info {
-    @apply p-5;
+    @apply p-3 sm:p-4 md:p-5;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -341,21 +341,21 @@ html.lenis, html.lenis body {
   }
 
   .product-card .product-category {
-    @apply text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-2;
+    @apply text-[10px] sm:text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-1.5 sm:mb-2;
   }
 
   .product-card .product-name {
-    @apply font-semibold text-dark-900 dark:text-white line-clamp-2
+    @apply text-sm sm:text-base font-semibold text-dark-900 dark:text-white line-clamp-2
            group-hover:text-primary-600 dark:group-hover:text-primary-400
-           transition-colors duration-300;
+           transition-colors duration-300 leading-snug;
   }
 
   .product-card .product-price {
-    @apply text-xl font-bold text-dark-900 dark:text-white mt-3 flex items-baseline gap-2;
+    @apply text-lg sm:text-xl font-bold text-dark-900 dark:text-white mt-2 sm:mt-3 flex items-baseline gap-1.5 sm:gap-2;
   }
 
   .product-card .product-price-old {
-    @apply text-sm font-normal text-dark-400 line-through;
+    @apply text-xs sm:text-sm font-normal text-dark-400 line-through;
   }
 
   .product-card .product-badge {

@@ -697,11 +697,12 @@ export default function Home() {
 
               {/* Categories Detail - Split Screen Alternating (use video_categories from API) */}
               <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
-                {(data?.video_categories?.length ? data.video_categories : categories.filter((c) => categoryVideos[c.slug]))
-                  .slice(0, 4)
-                  .map((category, index) => (
-                    <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
-                  ))}
+                {(data?.video_categories?.length
+                  ? data.video_categories
+                  : categories.filter((c) => categoryVideos[c.slug])
+                ).map((category, index) => (
+                  <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
+                ))}
               </div>
             </div>
           </section>
