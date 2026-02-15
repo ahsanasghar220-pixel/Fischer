@@ -226,6 +226,13 @@ export default function Checkout() {
         toast.error('Please enter your email address')
         return false
       }
+      if (!isAuthenticated && form.email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(form.email)) {
+          toast.error('Please enter a valid email address')
+          return false
+        }
+      }
     }
     if (stepNum === 2) {
       if (!form.shipping_method_id) {
@@ -234,9 +241,17 @@ export default function Checkout() {
       }
     }
     if (stepNum === 3) {
-      if (form.payment_method === 'bank_transfer' && !form.transaction_id.trim()) {
-        toast.error('Please enter your bank transfer transaction ID')
-        return false
+      if (form.payment_method === 'bank_transfer') {
+        if (!form.transaction_id.trim()) {
+          toast.error('Please enter your bank transfer transaction ID')
+          return false
+        }
+        // Validate transaction ID format (alphanumeric, 8-30 characters)
+        const transactionIdRegex = /^[A-Z0-9]{8,30}$/i
+        if (!transactionIdRegex.test(form.transaction_id.trim())) {
+          toast.error('Transaction ID must be 8-30 alphanumeric characters')
+          return false
+        }
       }
     }
     return true
@@ -251,7 +266,15 @@ export default function Checkout() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!validateStep(3)) return
-    placeOrderMutation.mutate(form)
+
+    // Normalize phone numbers (remove hyphens and spaces)
+    const normalizedForm = {
+      ...form,
+      shipping_phone: form.shipping_phone.replace(/[-\s]/g, ''),
+      billing_phone: form.billing_phone.replace(/[-\s]/g, ''),
+    }
+
+    placeOrderMutation.mutate(normalizedForm)
   }
 
   const selectedShippingMethod = shippingMethods?.find(m => m.id === form.shipping_method_id)
@@ -480,9 +503,9 @@ export default function Checkout() {
                         name="shipping_phone"
                         value={form.shipping_phone}
                         onChange={handleInputChange}
-                        placeholder="03XX-XXXXXXX"
-                        pattern="^03[0-9]{2}[0-9]{7}$"
-                        title="Please enter a valid Pakistani phone number (e.g., 03001234567)"
+                        placeholder="03XX-XXXXXXX or 03XX XXXXXXX"
+                        pattern="^03[0-9]{2}[-\s]?[0-9]{7}$"
+                        title="Please enter a valid Pakistani phone number (e.g., 03001234567, 0300-1234567, or 0300 1234567)"
                         className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         required
                       />

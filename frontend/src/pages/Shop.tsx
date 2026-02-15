@@ -132,7 +132,7 @@ export default function Shop() {
   }, [brandsRaw])
 
   // Fetch products
-  const { data: productsData, isLoading } = useQuery<PaginatedProducts>({
+  const { data: productsData, isLoading, error, refetch } = useQuery<PaginatedProducts>({
     queryKey: ['products', page, sort, category, brand, minPrice, maxPrice, search, inStock, onSale, isNew, isBestseller, isFeatured],
     queryFn: async () => {
       const params = new URLSearchParams()
@@ -152,6 +152,7 @@ export default function Shop() {
       const response = await api.get(`/api/products?${params.toString()}`)
       return response.data
     },
+    retry: 2,
   })
 
   // Memoized filter update functions to prevent unnecessary re-renders
@@ -575,7 +576,27 @@ export default function Shop() {
             </AnimatePresence>
 
             {/* Products Grid */}
-            {isLoading ? (
+            {error ? (
+              <motion.div
+                className="flex flex-col items-center justify-center py-20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="text-center">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">Failed to Load Products</h3>
+                  <p className="text-dark-600 dark:text-dark-400 mb-4">We couldn't load the products. Please try again.</p>
+                  <button
+                    onClick={() => refetch()}
+                    className="btn btn-primary"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              </motion.div>
+            ) : isLoading ? (
               <motion.div
                 className="flex items-center justify-center py-20"
                 initial={{ opacity: 0 }}

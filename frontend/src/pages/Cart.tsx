@@ -186,11 +186,12 @@ export default function Cart() {
                               className="w-16 h-16 sm:w-20 sm:h-20 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0"
                             >
                               <motion.div whileHover={{ scale: 1.05 }}>
-                                {(item.product?.image || item.product?.primary_image) ? (
+                                {(item.product?.primary_image || item.product?.image) ? (
                                   <img
-                                    src={item.product?.image ?? item.product?.primary_image ?? ''}
+                                    src={item.product?.primary_image || item.product?.image || '/placeholder.png'}
                                     alt={item.product?.name || 'Product'}
                                     className="w-full h-full object-cover"
+                                    loading="lazy"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-dark-400 dark:text-dark-500 text-xs">
