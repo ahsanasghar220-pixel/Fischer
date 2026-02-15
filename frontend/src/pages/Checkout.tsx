@@ -590,23 +590,32 @@ export default function Checkout() {
                         <div
                           key={method.id}
                           onClick={() => setForm(prev => ({ ...prev, shipping_method_id: method.id }))}
-                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                          className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
                             form.shipping_method_id === method.id
-                              ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                              : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'
+                              ? 'border-primary-500 bg-primary-500/10 dark:bg-primary-900/20 shadow-md'
+                              : 'border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-800 hover:border-primary-300 dark:hover:border-dark-500 hover:shadow-sm'
                           }`}
                         >
                           <div className="flex items-center justify-between">
-                            <div>
-                              <span className="font-medium text-dark-900 dark:text-white">{method.name}</span>
-                              <p className="text-sm text-dark-500 dark:text-dark-400">{method.description}</p>
-                              <p className="text-sm text-dark-500 dark:text-dark-400">Delivery in {method.estimated_delivery}</p>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-dark-900 dark:text-white">{method.name}</span>
+                                {method.cost === 0 && (
+                                  <span className="px-2 py-0.5 bg-green-500/15 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">
+                                    FREE
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-dark-600 dark:text-dark-400">{method.description}</p>
+                              <p className="text-sm text-dark-500 dark:text-dark-500 mt-0.5">Delivery in {method.estimated_delivery}</p>
                             </div>
-                            <div className="text-right">
-                              <span className="font-semibold text-dark-900 dark:text-white">
-                                {method.cost === 0 ? 'FREE' : formatPrice(method.cost)}
-                              </span>
-                            </div>
+                            {method.cost > 0 && (
+                              <div className="text-right ml-4">
+                                <span className="font-bold text-lg text-primary-600 dark:text-primary-400">
+                                  {formatPrice(method.cost)}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
