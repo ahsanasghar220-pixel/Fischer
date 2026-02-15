@@ -52,15 +52,16 @@ interface CheckoutForm {
   billing_postal_code: string
   shipping_method_id: number | null
   payment_method: string
+  transaction_id: string
   notes: string
 }
 
 const paymentMethods = [
-  { id: 'cod', name: 'Cash on Delivery', description: 'Pay when you receive your order', icon: '💵' },
-  { id: 'jazzcash', name: 'JazzCash', description: 'Pay with JazzCash mobile wallet', icon: '📱' },
-  { id: 'easypaisa', name: 'EasyPaisa', description: 'Pay with EasyPaisa mobile wallet', icon: '📱' },
-  { id: 'card', name: 'Credit/Debit Card', description: 'Pay with Visa, Mastercard', icon: '💳' },
-  { id: 'bank_transfer', name: 'Bank Transfer', description: 'Direct bank transfer', icon: '🏦' },
+  { id: 'cod', name: 'Cash on Delivery', description: 'Pay cash when your order is delivered (Recommended)', icon: '💵' },
+  { id: 'jazzcash', name: 'JazzCash', description: 'Instant payment via JazzCash mobile wallet', icon: '📱' },
+  { id: 'easypaisa', name: 'EasyPaisa', description: 'Instant payment via EasyPaisa mobile wallet', icon: '📱' },
+  { id: 'bank_transfer', name: 'Bank Transfer', description: 'Transfer to our bank account (Requires verification)', icon: '🏦' },
+  { id: 'card', name: 'Credit/Debit Card', description: 'Pay securely with Visa or Mastercard', icon: '💳' },
 ]
 
 const pakistanCities = [
@@ -101,6 +102,7 @@ export default function Checkout() {
     billing_postal_code: '',
     shipping_method_id: null,
     payment_method: 'cod',
+    transaction_id: '',
     notes: '',
   })
 
@@ -228,6 +230,12 @@ export default function Checkout() {
     if (stepNum === 2) {
       if (!form.shipping_method_id) {
         toast.error('Please select a shipping method')
+        return false
+      }
+    }
+    if (stepNum === 3) {
+      if (form.payment_method === 'bank_transfer' && !form.transaction_id.trim()) {
+        toast.error('Please enter your bank transfer transaction ID')
         return false
       }
     }
@@ -687,6 +695,47 @@ export default function Checkout() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Bank Transfer Instructions & Transaction ID */}
+                  {form.payment_method === 'bank_transfer' && (
+                    <div className="mt-6 p-6 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-200 dark:border-blue-800 rounded-lg">
+                      <h3 className="font-semibold text-dark-900 dark:text-white mb-3 flex items-center gap-2">
+                        <span className="text-2xl">🏦</span>
+                        Bank Transfer Details
+                      </h3>
+                      <div className="space-y-2 text-sm text-dark-700 dark:text-dark-300 mb-4">
+                        <p><strong>Bank Name:</strong> HBL - Habib Bank Limited</p>
+                        <p><strong>Account Title:</strong> Fischer Pakistan</p>
+                        <p><strong>Account Number:</strong> Contact: 0321-1234567</p>
+                        <p className="text-xs text-dark-500 dark:text-dark-400 mt-3">
+                          ⚠️ After transferring, enter your transaction ID below. Your order will be confirmed after admin verification.
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
+                          Transaction ID / Reference Number <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="transaction_id"
+                          value={form.transaction_id}
+                          onChange={handleInputChange}
+                          required
+                          placeholder="Enter your transaction ID or reference number"
+                          className="w-full px-4 py-3 border-2 border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* JazzCash/EasyPaisa Notice */}
+                  {(form.payment_method === 'jazzcash' || form.payment_method === 'easypaisa') && (
+                    <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 rounded-lg">
+                      <p className="text-sm text-green-800 dark:text-green-300">
+                        ✓ You will be redirected to {form.payment_method === 'jazzcash' ? 'JazzCash' : 'EasyPaisa'} secure payment gateway after placing your order.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Order Notes */}
                   <div className="mt-6">
