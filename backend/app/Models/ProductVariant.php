@@ -80,6 +80,12 @@ class ProductVariant extends Model
     public function updateStock(int $quantity, string $operation = 'decrement'): void
     {
         if ($operation === 'decrement') {
+            // Prevent negative stock if inventory tracking is enabled and backorders not allowed
+            if ($this->product->track_inventory && !$this->product->allow_backorders) {
+                if ($this->stock_quantity < $quantity) {
+                    throw new \Exception("Insufficient stock for variant '{$this->name}' of '{$this->product->name}'. Available: {$this->stock_quantity}, Requested: {$quantity}");
+                }
+            }
             $this->decrement('stock_quantity', $quantity);
         } else {
             $this->increment('stock_quantity', $quantity);

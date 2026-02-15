@@ -37,32 +37,45 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1|max:100',
         ]);
 
-        $product = Product::findOrFail($validated['product_id']);
+        return \DB::transaction(function () use ($request, $validated) {
+            // Lock product/variant to prevent race conditions
+            $product = Product::lockForUpdate()->findOrFail($validated['product_id']);
 
-        if (!$product->is_active) {
-            return $this->error('This product is not available', 400);
-        }
-
-        $variant = null;
-        if ($validated['variant_id']) {
-            $variant = ProductVariant::find($validated['variant_id']);
-            if (!$variant || !$variant->is_active || $variant->product_id !== $product->id) {
-                return $this->error('Invalid product variant', 400);
+            if (!$product->is_active) {
+                return $this->error('This product is not available', 400);
             }
-        }
 
-        // Check stock
-        $availableStock = $variant ? $variant->stock_quantity : $product->stock_quantity;
-        if ($product->track_inventory && !$product->allow_backorders && $validated['quantity'] > $availableStock) {
-            return $this->error("Only {$availableStock} items available in stock", 400);
-        }
+            $variant = null;
+            if ($validated['variant_id']) {
+                $variant = ProductVariant::lockForUpdate()->find($validated['variant_id']);
+                if (!$variant || !$variant->is_active || $variant->product_id !== $product->id) {
+                    return $this->error('Invalid product variant', 400);
+                }
+            }
 
-        $cart = $this->getOrCreateCart($request);
-        $item = $cart->addItem($product, $validated['quantity'], $variant);
+            $cart = $this->getOrCreateCart($request);
 
-        $cart->load(['items.product.images', 'items.productVariant.attributeValues.attribute']);
+            // Check existing cart quantity for this product/variant
+            $existingCartItem = $cart->items()
+                ->where('product_id', $product->id)
+                ->where('product_variant_id', $variant?->id)
+                ->first();
 
-        return $this->success($this->formatCart($cart), 'Item added to cart');
+            $existingQuantity = $existingCartItem ? $existingCartItem->quantity : 0;
+            $newTotalQuantity = $existingQuantity + $validated['quantity'];
+
+            // Check stock availability (including existing cart items)
+            $availableStock = $variant ? $variant->stock_quantity : $product->stock_quantity;
+            if ($product->track_inventory && !$product->allow_backorders && $newTotalQuantity > $availableStock) {
+                return $this->error("Only {$availableStock} items available in stock (you have {$existingQuantity} in cart)", 400);
+            }
+
+            $item = $cart->addItem($product, $validated['quantity'], $variant);
+
+            $cart->load(['items.product.images', 'items.productVariant.attributeValues.attribute']);
+
+            return $this->success($this->formatCart($cart), 'Item added to cart');
+        });
     }
 
     public function update(Request $request, int $itemId)
@@ -71,32 +84,40 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:0|max:100',
         ]);
 
-        $cart = $this->getCart($request);
+        return \DB::transaction(function () use ($request, $itemId, $validated) {
+            $cart = $this->getCart($request);
 
-        if (!$cart) {
-            return $this->error('Cart not found', 404);
-        }
+            if (!$cart) {
+                return $this->error('Cart not found', 404);
+            }
 
-        $item = $cart->items()->find($itemId);
+            $item = $cart->items()->find($itemId);
 
-        if (!$item) {
-            return $this->error('Item not found in cart', 404);
-        }
+            if (!$item) {
+                return $this->error('Item not found in cart', 404);
+            }
 
-        // Check stock
-        $product = $item->product;
-        $variant = $item->productVariant;
-        $availableStock = $variant ? $variant->stock_quantity : $product->stock_quantity;
+            // Lock product/variant to prevent race conditions
+            if ($item->product_variant_id) {
+                $variant = ProductVariant::lockForUpdate()->find($item->product_variant_id);
+                $product = $item->product;
+                $availableStock = $variant ? $variant->stock_quantity : 0;
+            } else {
+                $product = Product::lockForUpdate()->find($item->product_id);
+                $availableStock = $product->stock_quantity;
+            }
 
-        if ($product->track_inventory && !$product->allow_backorders && $validated['quantity'] > $availableStock) {
-            return $this->error("Only {$availableStock} items available in stock", 400);
-        }
+            // Check stock availability
+            if ($product->track_inventory && !$product->allow_backorders && $validated['quantity'] > $availableStock) {
+                return $this->error("Only {$availableStock} items available in stock", 400);
+            }
 
-        $cart->updateItemQuantity($itemId, $validated['quantity']);
+            $cart->updateItemQuantity($itemId, $validated['quantity']);
 
-        $cart->load(['items.product.images', 'items.productVariant.attributeValues.attribute']);
+            $cart->load(['items.product.images', 'items.productVariant.attributeValues.attribute']);
 
-        return $this->success($this->formatCart($cart), 'Cart updated');
+            return $this->success($this->formatCart($cart), 'Cart updated');
+        });
     }
 
     public function remove(Request $request, int $itemId)

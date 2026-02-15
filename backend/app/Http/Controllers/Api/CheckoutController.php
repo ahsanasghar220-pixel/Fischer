@@ -156,16 +156,34 @@ class CheckoutController extends Controller
             return $this->error('Your cart is empty', 400);
         }
 
-        // Validate stock availability
-        foreach ($cart->items as $item) {
-            if (!$item->is_available) {
-                return $this->error("Product '{$item->product->name}' is no longer available", 400);
-            }
-        }
-
         return DB::transaction(function () use ($validated, $cart, $request) {
             // Try to get authenticated user (works even without auth:sanctum middleware)
             $user = auth('sanctum')->user();
+
+            // Re-validate stock availability INSIDE transaction with row-level locks to prevent race conditions
+            foreach ($cart->items as $item) {
+                if ($item->product_variant_id) {
+                    $variant = \App\Models\ProductVariant::lockForUpdate()->find($item->product_variant_id);
+                    if (!$variant) {
+                        throw new \Exception("Product variant no longer exists");
+                    }
+                    if ($variant->product->track_inventory && !$variant->product->allow_backorders) {
+                        if ($variant->stock_quantity < $item->quantity) {
+                            throw new \Exception("'{$item->product->name}' only has {$variant->stock_quantity} items available, but you requested {$item->quantity}");
+                        }
+                    }
+                } else {
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if (!$product || !$product->is_active) {
+                        throw new \Exception("Product '{$item->product->name}' is no longer available");
+                    }
+                    if ($product->track_inventory && !$product->allow_backorders) {
+                        if ($product->stock_quantity < $item->quantity) {
+                            throw new \Exception("'{$product->name}' only has {$product->stock_quantity} items available, but you requested {$item->quantity}");
+                        }
+                    }
+                }
+            }
 
             // Calculate amounts
             $subtotal = $cart->subtotal;

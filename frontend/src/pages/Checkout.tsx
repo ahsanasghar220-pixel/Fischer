@@ -679,10 +679,10 @@ export default function Checkout() {
                       <div
                         key={method.id}
                         onClick={() => setForm(prev => ({ ...prev, payment_method: method.id }))}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all active:scale-[0.98] ${
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all active:scale-[0.98] ${
                           form.payment_method === method.id
-                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                            : 'border-dark-200 dark:border-dark-600 hover:border-dark-400 dark:hover:border-dark-500'
+                            ? 'border-primary-500 bg-primary-500/10 dark:bg-primary-900/20 shadow-md'
+                            : 'border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-800 hover:border-primary-300 dark:hover:border-dark-500 hover:shadow-sm'
                         }`}
                       >
                         <div className="flex items-center gap-4">
