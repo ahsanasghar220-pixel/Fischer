@@ -157,9 +157,15 @@ jobs:
             echo "=== Queue Worker Status ==="
             ps aux | grep "queue:work" | grep -v grep || echo "WARNING: Queue worker not running. Start with: php artisan queue:work --tries=3 --daemon &"
 
-            # Only run seeders if SEED_ON_DEPLOY file exists (create this file manually when needed)
+            # Always run shipping seeders (safe with firstOrCreate)
+            echo "=== Running shipping seeders ==="
+            $PHP artisan db:seed --class=ShippingZoneSeeder --force || true
+            $PHP artisan db:seed --class=ShippingMethodSeeder --force || true
+            echo "=== Shipping seeders completed ==="
+
+            # Only run other seeders if SEED_ON_DEPLOY file exists (create this file manually when needed)
             if [ -f "SEED_ON_DEPLOY" ]; then
-              echo "=== SEED_ON_DEPLOY detected, running seeders ==="
+              echo "=== SEED_ON_DEPLOY detected, running additional seeders ==="
               $PHP artisan db:seed --class=CategorySeeder --force || true
               $PHP artisan db:seed --class=ProductSeeder --force || true
               $PHP artisan db:seed --class=ProductDataSeeder --force || true
@@ -167,12 +173,10 @@ jobs:
               $PHP artisan db:seed --class=HomepageSeeder --force || true
               $PHP artisan db:seed --class=SettingsSeeder --force || true
               $PHP artisan db:seed --class=PageSeeder --force || true
-              $PHP artisan db:seed --class=ShippingZoneSeeder --force || true
-              $PHP artisan db:seed --class=ShippingMethodSeeder --force || true
               rm -f SEED_ON_DEPLOY
-              echo "=== Seeders completed ==="
+              echo "=== Additional seeders completed ==="
             else
-              echo "=== Skipping seeders (create SEED_ON_DEPLOY file to run seeders) ==="
+              echo "=== Skipping additional seeders (create SEED_ON_DEPLOY file to run) ==="
             fi
 
             # Clear all caches
