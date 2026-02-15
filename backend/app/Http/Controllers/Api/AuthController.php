@@ -17,13 +17,17 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', PasswordRule::defaults()],
             'phone' => 'nullable|string|max:20',
             'referral_code' => 'nullable|string|exists:users,referral_code',
         ]);
+
+        // Split name into first and last name
+        $nameParts = explode(' ', trim($validated['name']), 2);
+        $firstName = $nameParts[0];
+        $lastName = $nameParts[1] ?? '';
 
         $referrer = null;
         if (!empty($validated['referral_code'])) {
@@ -31,8 +35,8 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'phone' => $validated['phone'] ?? null,
