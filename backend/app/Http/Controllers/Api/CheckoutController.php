@@ -120,6 +120,8 @@ class CheckoutController extends Controller
 
             // Payment
             'payment_method' => 'required|in:cod,bank_transfer,jazzcash,easypaisa,card',
+            'transaction_id' => 'required_if:payment_method,bank_transfer|nullable|string|max:255',
+            'payment_proof' => 'nullable|string', // Base64 image or URL
 
             // Shipping method
             'shipping_method_id' => 'required|exists:shipping_methods,id',
@@ -201,6 +203,7 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $validated['payment_method'],
+                'transaction_id' => $validated['transaction_id'] ?? null,
 
                 'subtotal' => $subtotal,
                 'discount_amount' => $discount,
@@ -309,13 +312,20 @@ class CheckoutController extends Controller
                 ];
 
             case 'bank_transfer':
+                // Mark order as pending payment verification
+                $order->update([
+                    'status' => 'pending_payment',
+                    'payment_status' => 'pending',
+                ]);
+
                 return [
                     'method' => 'bank_transfer',
-                    'message' => 'Please transfer the amount to our bank account.',
+                    'message' => 'Order received. Payment verification pending.',
+                    'instructions' => 'Your transaction ID has been recorded. Admin will verify your payment and confirm your order.',
                     'bank_details' => [
-                        'bank_name' => Setting::get('bank.bank_name', 'Contact us for bank details'),
+                        'bank_name' => Setting::get('bank.bank_name', 'HBL - Habib Bank Limited'),
                         'account_title' => Setting::get('bank.account_title', 'Fischer Pakistan'),
-                        'account_number' => Setting::get('bank.account_number', ''),
+                        'account_number' => Setting::get('bank.account_number', 'Contact us for details'),
                         'iban' => Setting::get('bank.iban', ''),
                     ],
                 ];
