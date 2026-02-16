@@ -198,7 +198,7 @@ export default function ProductDetail() {
       setAddedProduct({
         id: product.id,
         name: product.name,
-        primary_image: product.primary_image || undefined,
+        primary_image: product.images?.find(img => img.is_primary)?.image || product.images?.[0]?.image || undefined,
         price: selectedVariant?.price || product.price,
         quantity: quantity
       })
