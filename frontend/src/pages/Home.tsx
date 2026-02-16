@@ -499,7 +499,7 @@ export default function Home() {
   }))
 
   // Hero video URL from section settings
-  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=4'
+  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=5'
 
   // Brand statement from section data
   const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
