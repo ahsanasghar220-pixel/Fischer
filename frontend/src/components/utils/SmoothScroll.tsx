@@ -25,10 +25,20 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   const rafRef = useRef<number | null>(null)
   const isMobileRef = useRef(typeof window !== 'undefined' && window.innerWidth < 768)
 
-  // Initialize Lenis smooth scrolling - DISABLED on mobile for better performance
+  const isAdminRoute = location.pathname.startsWith('/admin')
+
+  // Initialize Lenis smooth scrolling - DISABLED on mobile and admin pages
   useEffect(() => {
     // Skip Lenis on mobile - native scroll is more performant
     if (isMobileRef.current || window.innerWidth < 768) {
+      return
+    }
+
+    // Skip Lenis on admin pages - admin has nested scrollable areas (sidebar, tabs)
+    // that conflict with Lenis intercepting scroll events
+    if (isAdminRoute) {
+      // Make sure Lenis classes are removed
+      document.documentElement.classList.remove('lenis', 'lenis-smooth')
       return
     }
 
@@ -63,7 +73,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       lenisRef.current = null
       document.documentElement.classList.remove('lenis', 'lenis-smooth')
     }
-  }, [])
+  }, [isAdminRoute])
 
   // Scroll to function using Lenis
   const scrollTo = useCallback((
