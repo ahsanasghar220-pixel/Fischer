@@ -418,25 +418,25 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
 // Videos are in frontend/public/videos/categories/ and copied during build
 const defaultCategoryVideos: Record<string, string> = {
   // Kitchen Hoods variations
-  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4',
-  'built-in-hoods': '/videos/categories/built-in-hoods.mp4',
-  'hoods': '/videos/categories/built-in-hoods.mp4',
+  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4?v=2',
+  'built-in-hoods': '/videos/categories/built-in-hoods.mp4?v=2',
+  'hoods': '/videos/categories/built-in-hoods.mp4?v=2',
 
   // Kitchen Hobs variations
-  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4',
-  'built-in-hobs': '/videos/categories/built-in-hobs.mp4',
-  'hobs': '/videos/categories/built-in-hobs.mp4',
+  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4?v=2',
+  'built-in-hobs': '/videos/categories/built-in-hobs.mp4?v=2',
+  'hobs': '/videos/categories/built-in-hobs.mp4?v=2',
 
   // Oven Toasters variations
-  'oven-toasters': '/videos/categories/oven-toasters.mp4',
-  'oven-toaster': '/videos/categories/oven-toasters.mp4',
-  'toaster-ovens': '/videos/categories/oven-toasters.mp4',
-  'toasters': '/videos/categories/oven-toasters.mp4',
+  'oven-toasters': '/videos/categories/oven-toasters.mp4?v=2',
+  'oven-toaster': '/videos/categories/oven-toasters.mp4?v=2',
+  'toaster-ovens': '/videos/categories/oven-toasters.mp4?v=2',
+  'toasters': '/videos/categories/oven-toasters.mp4?v=2',
 
   // Air Fryers variations
-  'air-fryers': '/videos/categories/air-fryers.mp4',
-  'air-fryer': '/videos/categories/air-fryers.mp4',
-  'fryers': '/videos/categories/air-fryers.mp4',
+  'air-fryers': '/videos/categories/air-fryers.mp4?v=2',
+  'air-fryer': '/videos/categories/air-fryers.mp4?v=2',
+  'fryers': '/videos/categories/air-fryers.mp4?v=2',
 }
 
 export default function Home() {
@@ -996,7 +996,6 @@ export default function Home() {
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
             style={{ objectPosition: 'center center' }}
             autoPlay loop muted playsInline preload="metadata"
-            poster="/images/hero-poster.jpg"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => { setVideoError(true); setVideoLoaded(true) }}
