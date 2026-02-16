@@ -105,6 +105,9 @@ Route::get('/banners/{position}', [HomeController::class, 'banners']);
 Route::get('/faqs', [PageController::class, 'faqs']);
 Route::get('/testimonials', [HomeController::class, 'testimonials']);
 
+// Portfolio
+Route::get('/portfolio/videos', [App\Http\Controllers\Api\PortfolioController::class, 'index']);
+
 // Contact
 Route::post('/contact', [ContactController::class, 'submit']);
 Route::post('/newsletter/subscribe', [ContactController::class, 'subscribeNewsletter']);
@@ -361,6 +364,19 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
         // Notable Clients
         Route::put('/notable-clients', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateNotableClients']);
         Route::post('/notable-clients/upload', [App\Http\Controllers\Api\Admin\HomepageController::class, 'uploadClientLogo']);
+
+        // Video upload
+        Route::post('/upload-video', [App\Http\Controllers\Api\Admin\HomepageController::class, 'uploadVideo']);
+    });
+
+    // Portfolio Videos
+    Route::prefix('portfolio-videos')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'destroy']);
+        Route::post('/upload-video', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'uploadVideo']);
+        Route::post('/upload-thumbnail', [App\Http\Controllers\Api\Admin\PortfolioVideoController::class, 'uploadThumbnail']);
     });
 
     // Sales

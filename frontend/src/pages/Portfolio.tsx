@@ -1,34 +1,20 @@
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
 import { PlayCircleIcon } from '@heroicons/react/24/solid'
 import { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
+import api from '@/lib/api'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 interface Video {
   id: number
   title: string
   description: string
-  videoUrl: string
+  video_url: string
   thumbnail?: string
   category: string
 }
-
-const videos: Video[] = [
-  {
-    id: 1,
-    title: 'Fischer Water Cooler - Product Showcase',
-    description: 'Premium water cooling solutions for homes and offices. Experience the quality and innovation of Fischer water coolers.',
-    videoUrl: '/videos/portfolio/fischer-water-cooler-updated.mp4',
-    category: 'Product Marketing',
-  },
-  {
-    id: 2,
-    title: 'LinkedIn Brand Story',
-    description: 'Fischer Pakistan brand journey and values. Discover our commitment to excellence and innovation.',
-    videoUrl: '/videos/portfolio/linkedin-story.mp4',
-    category: 'Brand Story',
-  },
-]
 
 function VideoCard({ video }: { video: Video }) {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -63,7 +49,7 @@ function VideoCard({ video }: { video: Video }) {
           </>
         ) : (
           <video
-            src={video.videoUrl}
+            src={video.video_url}
             controls
             autoPlay
             className="w-full h-full"
@@ -75,21 +61,33 @@ function VideoCard({ video }: { video: Video }) {
       </div>
 
       <div className="p-6">
-        <span className="inline-block px-3 py-1 text-xs font-semibold bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full mb-3">
-          {video.category}
-        </span>
+        {video.category && (
+          <span className="inline-block px-3 py-1 text-xs font-semibold bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full mb-3">
+            {video.category}
+          </span>
+        )}
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
           {video.title}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-          {video.description}
-        </p>
+        {video.description && (
+          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+            {video.description}
+          </p>
+        )}
       </div>
     </motion.div>
   )
 }
 
 export default function Portfolio() {
+  const { data: videos, isLoading } = useQuery<Video[]>({
+    queryKey: ['portfolio-videos'],
+    queryFn: async () => {
+      const response = await api.get('/api/portfolio/videos')
+      return response.data.data
+    },
+  })
+
   return (
     <>
       <Helmet>
@@ -123,31 +121,34 @@ export default function Portfolio() {
         {/* Video Gallery */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <StaggerContainer>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {videos.map((video) => (
-                  <StaggerItem key={video.id}>
-                    <VideoCard video={video} />
-                  </StaggerItem>
-                ))}
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <LoadingSpinner size="lg" />
               </div>
-            </StaggerContainer>
-
-            {/* Placeholder for Future Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-16 text-center"
-            >
-              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
-                More Coming Soon
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                Stay tuned for more exciting content including influencer collaborations, store displays, and project installations
-              </p>
-            </motion.div>
+            ) : videos && videos.length > 0 ? (
+              <StaggerContainer>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {videos.map((video) => (
+                    <StaggerItem key={video.id}>
+                      <VideoCard video={video} />
+                    </StaggerItem>
+                  ))}
+                </div>
+              </StaggerContainer>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center py-12"
+              >
+                <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                  Coming Soon
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                  Stay tuned for exciting content including product showcases, brand stories, and promotional videos
+                </p>
+              </motion.div>
+            )}
           </div>
         </section>
       </div>

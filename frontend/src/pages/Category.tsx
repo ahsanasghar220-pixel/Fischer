@@ -20,136 +20,7 @@ interface Category {
   children?: Category[]
 }
 
-// Category-specific features based on client requirements
-const categoryFeatures: Record<string, string[]> = {
-  'kitchen-hoods': [
-    'Premium Quality',
-    'BLDC copper motor',
-    '1 Year Warranty',
-    'Energy Efficient',
-    'Heat + Auto clean',
-    'Gesture and Touch Control',
-    'Inverter Technology A+++ rated',
-    'Low noise level',
-  ],
-  'hobs-hoods': [
-    'Complete Brass Burners',
-    'Sabaf Burners',
-    'EPS Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Immediate Auto Ignition',
-  ],
-  'built-in-hobs': [
-    'Complete Brass Burners',
-    'Sabaf Burners',
-    'EPS Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Immediate Auto Ignition',
-  ],
-  'geysers-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'hybrid-geysers': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'gas-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'instant-electric-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'fast-electric-water-heaters': [
-    'Overheating Protection',
-    'Wattage Control',
-    'Fully Insulated',
-    'Accurate Volume Capacity',
-    'Incoloy 840 heating element',
-    'Imported Brass safety Valves',
-  ],
-  'oven-toasters': [
-    'Double Layered Glass door',
-    'Inner lamp',
-    'Rotisserie Function',
-    'Convection Function',
-    'Stainless steel elements',
-  ],
-  'water-dispensers': [
-    'Food-grade stainless steel tanks',
-    'Eco-friendly refrigerants',
-    '100% copper coiling',
-  ],
-  'air-fryers': [
-    'Digital Touch panel',
-    'Wide Temperature Control',
-    'Injection molding texture',
-    'Non-stick coating',
-    'Bottom heater for Even temperature control',
-  ],
-  'water-coolers': [
-    'Adjustable Thermostat',
-    'Food Grade Non Magnetic stainless steel',
-    'High back pressure compressor',
-    'Spring loaded push button',
-  ],
-  'storage-coolers': [
-    'Adjustable Thermostat',
-    'Food Grade Non Magnetic stainless steel',
-    'High back pressure compressor',
-    'Spring loaded push button',
-  ],
-  'cooking-ranges': [
-    'Complete Brass Burners',
-    'Tempered Glass',
-    'Flame Failure Device',
-    'Stainless steel finish',
-    '5KW powerful burners',
-    'Auto Ignition',
-  ],
-  'blenders-processors': [
-    'Multi-Function Food processing',
-    'Precision stainless steel blades & Discs',
-    'Pulse & Speed control',
-    'Generous Capacity',
-  ],
-  'room-coolers': [
-    'High Air Delivery',
-    'Large Water Tank',
-    'Honeycomb Cooling Pads',
-    'Inverter Compatible',
-    'Low Power Consumption',
-  ],
-}
-
-// Get features for a category by slug
-const getCategoryFeatures = (slug: string): string[] => {
-  return categoryFeatures[slug] || ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
-}
+const DEFAULT_FEATURES = ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
 
 interface Product {
   id: number
@@ -305,9 +176,7 @@ export default function Category() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                {(category.features && category.features.length > 0
-                  ? category.features
-                  : getCategoryFeatures(category.slug)
+                {(category.features?.length ? category.features : DEFAULT_FEATURES
                 ).map((feature, index) => (
                   <motion.span
                     key={index}

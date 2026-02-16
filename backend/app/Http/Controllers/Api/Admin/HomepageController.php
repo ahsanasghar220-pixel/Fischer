@@ -561,6 +561,25 @@ class HomepageController extends Controller
     }
 
     /**
+     * Upload video file (hero, category, etc.)
+     */
+    public function uploadVideo(Request $request)
+    {
+        $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov|max:102400',
+            'type' => 'required|string|in:hero,category,general',
+        ]);
+
+        $type = $request->input('type', 'general');
+        $path = $request->file('video')->store("videos/{$type}", 'public');
+
+        return $this->success([
+            'path' => '/storage/' . $path,
+            'url' => asset('storage/' . $path),
+        ], 'Video uploaded successfully');
+    }
+
+    /**
      * Clear homepage cache
      */
     protected function clearCache()

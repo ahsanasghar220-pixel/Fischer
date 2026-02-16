@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import VideoUpload from '@/components/admin/VideoUpload'
 import toast from 'react-hot-toast'
 
 interface Section {
@@ -318,10 +319,33 @@ function SectionSettingsModal({
     )
   }
 
+  // Track which map entry is uploading
+  const [mapUploadingIdx, setMapUploadingIdx] = useState<number | null>(null)
+
   // Key-value map editor (for category_videos)
-  const renderMapEditor = (key: string, label: string, keyLabel: string, valueLabel: string) => {
+  const renderMapEditor = (key: string, label: string, keyLabel: string, valueLabel: string, videoUploadType?: 'hero' | 'category' | 'general') => {
     const map: Record<string, string> = settingsForm[key] || {}
     const entries = Object.entries(map)
+
+    const handleVideoUpload = async (file: File, mapKey: string, idx: number) => {
+      setMapUploadingIdx(idx)
+      const fd = new FormData()
+      fd.append('video', file)
+      fd.append('type', videoUploadType || 'general')
+      try {
+        const response = await api.post('/api/admin/homepage/upload-video', fd, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 300000,
+        })
+        updateSetting(key, { ...map, [mapKey]: response.data.data.path })
+        toast.success('Video uploaded')
+      } catch {
+        toast.error('Upload failed')
+      } finally {
+        setMapUploadingIdx(null)
+      }
+    }
+
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -344,6 +368,15 @@ function SectionSettingsModal({
               const newMap = { ...map, [k]: e.target.value }
               updateSetting(key, newMap)
             }} className="flex-1 px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white text-sm" />
+            {videoUploadType && (
+              <label className={`flex items-center px-2 py-1.5 rounded-lg cursor-pointer text-sm ${
+                mapUploadingIdx === idx ? 'bg-dark-200 dark:bg-dark-600 text-dark-500' : 'bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 hover:bg-dark-200 dark:hover:bg-dark-600'
+              }`}>
+                {mapUploadingIdx === idx ? '...' : '↑'}
+                <input type="file" accept="video/mp4,video/webm,video/quicktime" className="hidden" disabled={mapUploadingIdx === idx}
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f && k) handleVideoUpload(f, k, idx); e.target.value = '' }} />
+              </label>
+            )}
             <button type="button" onClick={() => {
               const newMap = { ...map }
               delete newMap[k]
@@ -384,10 +417,13 @@ function SectionSettingsModal({
             {section.key === 'hero' && (
               <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
                 <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Hero Settings</h3>
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Video URL</label>
-                  <input type="text" value={settingsForm.video_url || ''} onChange={e => updateSetting('video_url', e.target.value)} placeholder="/videos/hero-video.mp4" className={inputClass} />
-                </div>
+                <VideoUpload
+                  currentUrl={settingsForm.video_url || ''}
+                  onUrlChange={(url) => updateSetting('video_url', url)}
+                  uploadType="hero"
+                  label="Video URL"
+                  placeholder="/videos/hero-video.mp4"
+                />
               </div>
             )}
 
@@ -411,7 +447,7 @@ function SectionSettingsModal({
             {section.key === 'categories' && (
               <div className="border-t border-dark-200 dark:border-dark-700 pt-4 space-y-4">
                 <h3 className="text-sm font-semibold text-dark-900 dark:text-white uppercase tracking-wider">Category Settings</h3>
-                {renderMapEditor('category_videos', 'Category Videos', 'Category Slug', 'Video URL')}
+                {renderMapEditor('category_videos', 'Category Videos', 'Category Slug', 'Video URL', 'category')}
               </div>
             )}
 

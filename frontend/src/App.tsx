@@ -122,6 +122,7 @@ const AdminBundleForm = lazy(() => import('./pages/admin/BundleForm'))
 const AdminReviews = lazy(() => import('./pages/admin/Reviews'))
 const AdminShipping = lazy(() => import('./pages/admin/Shipping'))
 const AdminCoupons = lazy(() => import('./pages/admin/Coupons'))
+const AdminPortfolioVideos = lazy(() => import('./pages/admin/PortfolioVideos'))
 const AdminSales = lazy(() => import('./pages/admin/Sales'))
 const AdminUsers = lazy(() => import('./pages/admin/Users'))
 const Sale = lazy(() => import('./pages/Sale'))
@@ -199,6 +200,7 @@ function App() {
           <Route path="analytics/realtime" element={<AdminRealTimeAnalytics />} />
           <Route path="reports" element={<AdminReports />} />
           <Route path="homepage" element={<AdminHomePageSettings />} />
+          <Route path="portfolio" element={<AdminPortfolioVideos />} />
           <Route path="bundles" element={<AdminBundles />} />
           <Route path="bundles/new" element={<AdminBundleForm />} />
           <Route path="bundles/:id" element={<AdminBundleForm />} />

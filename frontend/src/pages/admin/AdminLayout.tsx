@@ -23,6 +23,7 @@ import {
   UserGroupIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  VideoCameraIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -74,6 +75,7 @@ const menuItems: MenuItem[] = [
     children: [
       { path: '/admin/pages', label: 'Pages', icon: DocumentTextIcon, permission: 'manage-pages' },
       { path: '/admin/homepage', label: 'Homepage', icon: PaintBrushIcon, permission: 'manage-homepage' },
+      { path: '/admin/portfolio', label: 'Portfolio Videos', icon: VideoCameraIcon, permission: 'manage-pages' },
     ]
   },
   { path: '/admin/service-requests', label: 'Service Requests', icon: WrenchScrewdriverIcon, permission: 'manage-service-requests' },
