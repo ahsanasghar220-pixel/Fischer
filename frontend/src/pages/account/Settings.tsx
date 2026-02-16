@@ -12,7 +12,8 @@ export default function Settings() {
   const [showNewPassword, setShowNewPassword] = useState(false)
 
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
     email: user?.email || '',
     phone: user?.phone || '',
   })
@@ -78,13 +79,22 @@ export default function Settings() {
         <form onSubmit={handleProfileSubmit} className="p-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">First Name</label>
               <input
                 type="text"
-                value={profileData.name}
-                onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                value={profileData.first_name}
+                onChange={(e) => setProfileData({ ...profileData, first_name: e.target.value })}
                 className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Last Name</label>
+              <input
+                type="text"
+                value={profileData.last_name}
+                onChange={(e) => setProfileData({ ...profileData, last_name: e.target.value })}
+                className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
             <div>

@@ -104,6 +104,15 @@ class SettingController extends Controller
                     'linkedin_url' => '',
                     'tiktok_url' => '',
                 ],
+                'loyalty' => [
+                    'enabled' => true,
+                    'points_per_amount' => 100,
+                    'point_value' => 1,
+                    'review_bonus' => 10,
+                    'referral_bonus' => 50,
+                    'birthday_bonus' => 100,
+                    'min_redeem_points' => 0,
+                ],
             ];
 
             // Merge database settings with defaults

@@ -17,6 +17,11 @@ interface LoyaltyData {
   total_earned: number
   total_redeemed: number
   points_value: number
+  points_per_amount: number
+  review_bonus: number
+  referral_bonus: number
+  birthday_bonus: number
+  enabled: boolean
   transactions: LoyaltyTransaction[]
 }
 
@@ -106,21 +111,27 @@ export default function LoyaltyPoints() {
         </div>
         <div className="p-4 space-y-3">
           <div className="flex items-center justify-between py-2">
-            <span className="text-dark-600 dark:text-dark-400">Every Rs. 100 spent</span>
+            <span className="text-dark-600 dark:text-dark-400">Every Rs. {data?.points_per_amount?.toLocaleString() || 100} spent</span>
             <span className="font-semibold text-primary-600 dark:text-primary-400">+1 Point</span>
           </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-dark-600 dark:text-dark-400">Write a product review</span>
-            <span className="font-semibold text-primary-600 dark:text-primary-400">+10 Points</span>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-dark-600 dark:text-dark-400">Refer a friend</span>
-            <span className="font-semibold text-primary-600 dark:text-primary-400">+50 Points</span>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-dark-600 dark:text-dark-400">Birthday bonus</span>
-            <span className="font-semibold text-primary-600 dark:text-primary-400">+100 Points</span>
-          </div>
+          {(data?.review_bonus ?? 10) > 0 && (
+            <div className="flex items-center justify-between py-2">
+              <span className="text-dark-600 dark:text-dark-400">Write a product review</span>
+              <span className="font-semibold text-primary-600 dark:text-primary-400">+{data?.review_bonus || 10} Points</span>
+            </div>
+          )}
+          {(data?.referral_bonus ?? 50) > 0 && (
+            <div className="flex items-center justify-between py-2">
+              <span className="text-dark-600 dark:text-dark-400">Refer a friend</span>
+              <span className="font-semibold text-primary-600 dark:text-primary-400">+{data?.referral_bonus || 50} Points</span>
+            </div>
+          )}
+          {(data?.birthday_bonus ?? 100) > 0 && (
+            <div className="flex items-center justify-between py-2">
+              <span className="text-dark-600 dark:text-dark-400">Birthday bonus</span>
+              <span className="font-semibold text-primary-600 dark:text-primary-400">+{data?.birthday_bonus || 100} Points</span>
+            </div>
+          )}
         </div>
       </div>
 

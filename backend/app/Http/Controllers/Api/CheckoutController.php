@@ -79,9 +79,10 @@ class CheckoutController extends Controller
         $loyaltyDiscount = 0;
         $loyaltyPoints = $request->loyalty_points ?? 0;
         $user = auth('sanctum')->user();
+        $pointValue = (int) Setting::get('loyalty.point_value', 1);
         if ($loyaltyPoints > 0 && $user) {
             $maxPoints = min($loyaltyPoints, $user->loyalty_points);
-            $loyaltyDiscount = $maxPoints * 1; // 1 point = Rs. 1
+            $loyaltyDiscount = $maxPoints * $pointValue;
             $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount); // Can't exceed order total
         }
 
@@ -209,9 +210,11 @@ class CheckoutController extends Controller
             // Loyalty points
             $loyaltyPointsUsed = 0;
             $loyaltyDiscount = 0;
-            if ($user && ($validated['loyalty_points'] ?? 0) > 0) {
+            $pointValue = (int) Setting::get('loyalty.point_value', 1);
+            $loyaltyEnabled = Setting::get('loyalty.enabled', true);
+            if ($loyaltyEnabled && $user && ($validated['loyalty_points'] ?? 0) > 0) {
                 $loyaltyPointsUsed = min($validated['loyalty_points'], $user->loyalty_points);
-                $loyaltyDiscount = $loyaltyPointsUsed * 1; // 1 point = Rs. 1
+                $loyaltyDiscount = $loyaltyPointsUsed * $pointValue;
                 $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount);
             }
 
@@ -307,7 +310,9 @@ class CheckoutController extends Controller
             }
 
             // Calculate loyalty points earned
-            $pointsEarned = floor($total / 100); // 1 point per Rs. 100
+            $pointsPerAmount = (int) Setting::get('loyalty.points_per_amount', 100);
+            $pointsEarned = $pointsPerAmount > 0 ? floor($total / $pointsPerAmount) : 0;
+            if (!$loyaltyEnabled) $pointsEarned = 0;
             $order->update(['loyalty_points_earned' => $pointsEarned]);
 
             // Clear cart

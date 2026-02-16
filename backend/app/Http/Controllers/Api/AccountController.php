@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -69,7 +70,12 @@ class AccountController extends Controller
             'balance' => $user->loyalty_points,
             'total_earned' => $totalEarned,
             'total_redeemed' => $totalRedeemed,
-            'points_value' => 1, // 1 point = Rs. 1
+            'points_value' => (int) Setting::get('loyalty.point_value', 1),
+            'points_per_amount' => (int) Setting::get('loyalty.points_per_amount', 100),
+            'review_bonus' => (int) Setting::get('loyalty.review_bonus', 10),
+            'referral_bonus' => (int) Setting::get('loyalty.referral_bonus', 50),
+            'birthday_bonus' => (int) Setting::get('loyalty.birthday_bonus', 100),
+            'enabled' => (bool) Setting::get('loyalty.enabled', true),
             'transactions' => $transactions,
         ]);
     }
