@@ -151,7 +151,7 @@ const ProductCarousel = memo(function ProductCarousel({
         className="flex-shrink-0"
         style={{
           width: cardWidth || undefined,
-          marginRight: i < children.length - 1 ? gap : 0
+          marginRight: gap
         }}
       >
         {child}

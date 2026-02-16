@@ -189,9 +189,9 @@ export default function HeroProductBanner({ products: propProducts, title, subti
   const products = propProducts?.length ? propProducts : defaultProducts
 
   return (
-    <section className="py-10 md:py-16 lg:py-24 bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-900 dark:via-dark-900 dark:to-dark-800">
+    <section className="py-10 md:py-16 lg:py-24 bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-900 dark:via-dark-900 dark:to-dark-800 overflow-hidden">
+      {/* Section Header */}
       <div className="container-xl">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -209,15 +209,17 @@ export default function HeroProductBanner({ products: propProducts, title, subti
             {subtitle || 'Designed Appliances for Modern Living'}
           </p>
         </motion.div>
+      </div>
 
-        {/* Products Carousel - same marquee as Featured Products / New Arrivals */}
-        <ProductCarousel speed={60} fadeClass="from-dark-50 dark:from-dark-900">
-          {products.map((product) => (
-            <ProductCard key={product.name} product={product} />
-          ))}
-        </ProductCarousel>
+      {/* Products Carousel - full-width edge-to-edge, outside container */}
+      <ProductCarousel speed={60} fadeClass="from-dark-50 dark:from-dark-900">
+        {products.map((product) => (
+          <ProductCard key={product.name} product={product} />
+        ))}
+      </ProductCarousel>
 
-        {/* CTA Button */}
+      {/* CTA Button */}
+      <div className="container-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

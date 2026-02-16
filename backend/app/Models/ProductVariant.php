@@ -29,7 +29,7 @@ class ProductVariant extends Model
         'is_active' => 'boolean',
     ];
 
-    protected $appends = ['attribute_values_formatted'];
+    protected $appends = ['attribute_values_formatted', 'stock'];
 
     public function product(): BelongsTo
     {
@@ -65,6 +65,11 @@ class ProductVariant extends Model
                 'color_code' => $value->color_code,
             ];
         })->toArray();
+    }
+
+    public function getStockAttribute(): int
+    {
+        return $this->stock_quantity ?? 0;
     }
 
     public function getEffectivePrice(): float

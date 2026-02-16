@@ -242,6 +242,7 @@ class AuthController extends Controller
             'loyalty_points' => $user->loyalty_points,
             'referral_code' => $user->referral_code,
             'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
             'is_admin' => $user->isAdmin(),
             'is_dealer' => $user->isDealer(),
             'created_at' => $user->created_at,

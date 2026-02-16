@@ -68,7 +68,7 @@ class Product extends Model
         'average_rating' => 'decimal:2',
     ];
 
-    protected $appends = ['primary_image', 'discount_percentage', 'is_in_stock'];
+    protected $appends = ['primary_image', 'discount_percentage', 'is_in_stock', 'stock'];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -206,6 +206,11 @@ class Product extends Model
         }
 
         return $this->stock_status === 'in_stock' || ($this->allow_backorders && $this->stock_status === 'on_backorder');
+    }
+
+    public function getStockAttribute(): int
+    {
+        return $this->stock_quantity ?? 0;
     }
 
     public function getEffectivePrice(?int $variantId = null): float

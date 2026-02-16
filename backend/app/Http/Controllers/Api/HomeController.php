@@ -52,18 +52,22 @@ class HomeController extends Controller
 
     protected function getDynamicHomePageData(): array
     {
-        // Get enabled sections ordered
-        $sections = HomepageSection::enabled()->ordered()->get()->keyBy('key');
+        // Get ALL sections ordered (include disabled so frontend knows sort_order)
+        $allSections = HomepageSection::ordered()->get()->keyBy('key');
 
-        // Get section settings
-        $sectionSettings = $sections->mapWithKeys(function ($section) {
+        // Get section settings with sort_order for dynamic rendering
+        $sectionSettings = $allSections->mapWithKeys(function ($section) {
             return [$section->key => [
                 'title' => $section->title,
                 'subtitle' => $section->subtitle,
                 'is_enabled' => $section->is_enabled,
+                'sort_order' => $section->sort_order,
                 'settings' => is_string($section->settings) ? json_decode($section->settings, true) : $section->settings,
             ]];
         });
+
+        // Filter to enabled sections for data fetching
+        $sections = $allSections->filter(fn($s) => $s->is_enabled);
 
         // Get categories - from homepage_categories if available, otherwise auto
         $categoriesSection = $sections->get('categories');

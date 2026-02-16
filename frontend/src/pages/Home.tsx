@@ -203,15 +203,13 @@ interface HomeData {
   banners: Banner[]
   categories: Category[]
   video_categories?: Category[]
-  featured_products: Product[]
-  new_arrivals: Product[]
   bestsellers: Product[]
   testimonials: Testimonial[]
   stats: Stat[]
   features: Feature[]
   trust_badges: TrustBadge[]
   notable_clients: NotableClient[]
-  sections: Record<string, SectionSettings>
+  sections: Record<string, SectionSettings & { sort_order?: number }>
   settings: Record<string, string>
 }
 
@@ -226,8 +224,8 @@ const defaultStats = [
 // Fallback Features for the USP section
 const defaultFeatures = [
   {
-    title: 'Free Nationwide Delivery',
-    description: 'Free shipping on orders above PKR 10,000 across Pakistan',
+    title: 'Free Delivery in Lahore',
+    description: 'Standard delivery charges apply for other cities',
     icon: 'TruckIcon',
     color: 'blue',
   },
@@ -550,245 +548,164 @@ export default function Home() {
     return colorMap[colorName || 'primary'] || colorMap.primary
   }
 
-  return (
-    <>
-      <Helmet>
-        <title>Fischer Pakistan - Premium Home Appliances</title>
-        <meta name="description" content="Discover premium home appliances by Fischer Pakistan. Shop kitchen appliances, air fryers, geysers, and more." />
-      </Helmet>
-
-      {/* Logo Split Intro Animation */}
-      {!introComplete && (
-        <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
-      )}
-
-      <div className="bg-white dark:bg-dark-950">
-        {/* ==========================================
-            SECTION 1: VIDEO HERO SECTION - MINIMAL
-            ========================================== */}
-        <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
-          {/* Loading placeholder - shows gradient while video loads */}
-          <div
-            className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
-              videoLoaded ? 'opacity-0' : 'opacity-100'
-            }`}
-          >
-            {/* Animated gradient shimmer while loading */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+  // ========== SECTION REGISTRY ==========
+  // Maps section keys to their render functions for dynamic ordering
+  const sectionRegistry: Record<string, () => React.ReactNode> = {
+    brand_statement: () => (
+      <AnimatedSection key="brand_statement" animation="fade-up" duration={800} threshold={0.1} easing="gentle">
+        <section className="section bg-white dark:bg-dark-900">
+          <div className="container-xl text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
+              {brandTitle}
+            </h2>
+            <p className="text-xl md:text-2xl text-dark-600 dark:text-dark-400 max-w-3xl mx-auto">
+              {brandSubtitle}
+            </p>
           </div>
+        </section>
+      </AnimatedSection>
+    ),
 
-          {/* Video Error Fallback */}
-          {videoError && (
-            <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
-          )}
+    hero_products: () => (
+      <HeroProductBanner
+        key="hero_products"
+        products={sections.hero_products?.settings?.products}
+        title={sections.hero_products?.title}
+        subtitle={sections.hero_products?.subtitle}
+        badgeText={sections.hero_products?.settings?.badge_text}
+      />
+    ),
 
-          {/* Video Background - zoomed out on mobile, cover on desktop */}
-          {!videoError && <video
-            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
-              videoLoaded ? 'opacity-100' : 'opacity-0'
-            } object-contain sm:object-cover object-center`}
-            style={{
-              objectPosition: 'center center',
-            }}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            onCanPlayThrough={() => setVideoLoaded(true)}
-            onLoadedData={() => setVideoLoaded(true)}
-            onError={() => {
-              setVideoError(true)
-              setVideoLoaded(true)
-            }}
-          >
-            <source src={heroVideoUrl} type="video/mp4" />
-          </video>}
-
-          {/* Subtle overlay for visual depth */}
-          <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
-
-          {/* Scroll Indicator - Hidden on mobile to save space */}
-          <div className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
-            <div className="flex flex-col items-center gap-2 text-white">
-              <span className="text-sm font-medium tracking-wider opacity-80">Scroll</span>
-              <svg
-                className="w-6 h-6 animate-bounce"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+    stats: () => (
+      <AnimatedSection key="stats" animation="fade-up" duration={800} threshold={0.15} easing="gentle">
+        <section className="section bg-white dark:bg-dark-950">
+          <div className="container-xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-500 dark:text-primary-600 mb-3">
+                    <AnimatedCounter value={stat.value} />
+                  </div>
+                  <div className="text-sm md:text-base text-dark-600 dark:text-dark-400 font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
+      </AnimatedSection>
+    ),
 
-        {/* ==========================================
-            SECTION 2: BRAND STATEMENT - NEW
-            ========================================== */}
-        {isSectionEnabled('brand_statement') && (
-        <AnimatedSection animation="fade-up" duration={800} threshold={0.1} easing="gentle">
-          <section className="section bg-white dark:bg-dark-900">
-            <div className="container-xl text-center">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-6">
-                {brandTitle}
+    categories: () => categories.length > 0 ? (
+      <section key="categories" className="section bg-white dark:bg-dark-900">
+        <div className="container-xl">
+          <AnimatedSection animation="fade-up" duration={800} easing="gentle">
+            <div className="text-center mb-10 sm:mb-12 md:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
+                {sections.categories?.title || 'Explore Our Collections'}
               </h2>
-              <p className="text-xl md:text-2xl text-dark-600 dark:text-dark-400 max-w-3xl mx-auto">
-                {brandSubtitle}
+              <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
+                {sections.categories?.subtitle || 'Each category carefully curated with premium quality and innovative designs'}
               </p>
             </div>
-          </section>
-        </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            SECTION 2.5: HERO PRODUCT BANNER
-            ========================================== */}
-        {isSectionEnabled('hero_products') && (
-        <HeroProductBanner
-          products={sections.hero_products?.settings?.products}
-          title={sections.hero_products?.title}
-          subtitle={sections.hero_products?.subtitle}
-          badgeText={sections.hero_products?.settings?.badge_text}
-        />
-        )}
-
-        {/* ==========================================
-            SECTION 4: STATS SECTION - CLEAN PROFESSIONAL
-            ========================================== */}
-        {isSectionEnabled('stats') && (
-          <AnimatedSection animation="fade-up" duration={800} threshold={0.15} easing="gentle">
-            <section className="section bg-white dark:bg-dark-950">
-              <div className="container-xl">
-                {/* Stats Grid - More whitespace */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
-                  {stats.map((stat) => {
-                    return (
-                      <div
-                        key={stat.label}
-                        className="text-center"
-                      >
-                        {/* Value - Red Accent */}
-                        <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-500 dark:text-primary-600 mb-3">
-                          <AnimatedCounter value={stat.value} />
-                        </div>
-
-                        {/* Label */}
-                        <div className="text-sm md:text-base text-dark-600 dark:text-dark-400 font-medium">
-                          {stat.label}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </section>
           </AnimatedSection>
-        )}
+          <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
+            {(data?.video_categories?.length
+              ? data.video_categories
+              : categories.filter((c) => categoryVideos[c.slug])
+            ).map((category, index) => (
+              <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : null,
 
-        {/* ==========================================
-            SECTION 6: CATEGORY SHOWCASE - SPLIT SCREEN
-            ========================================== */}
-        {isSectionEnabled('categories') && categories.length > 0 && (
-          <section className="section bg-white dark:bg-dark-900">
-            <div className="container-xl">
-              {/* Section Header */}
-              <AnimatedSection animation="fade-up" duration={800} easing="gentle">
-                <div className="text-center mb-10 sm:mb-12 md:mb-16">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
-                    {sections.categories?.title || 'Explore Our Collections'}
+    features: () => (
+      <AnimatedSection key="features" animation="fade-up" duration={800} threshold={0.08} easing="gentle">
+        <section className="section bg-dark-50 dark:bg-dark-950">
+          <div className="container-xl">
+            <div className="text-center mb-8 sm:mb-10 md:mb-12">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
+                {sections.features?.title || 'Why Choose Fischer'}
+              </h2>
+            </div>
+            <StaggeredChildren
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+              staggerDelay={100} duration={600} animation="fade-up" easing="gentle" once
+            >
+              {features.map((feature) => {
+                const Icon = getIcon(feature.icon)
+                const colors = getColorClasses(feature.color)
+                return (
+                  <div key={feature.title} className="text-center p-4 sm:p-6 hover-lift">
+                    <div className={`inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 ${colors.bg} rounded-2xl mb-4`}>
+                      <Icon className="w-6 h-6 md:w-8 md:h-8" style={{ color: colors.text }} />
+                    </div>
+                    <h3 className="text-lg font-bold text-dark-900 dark:text-white mb-2">{feature.title}</h3>
+                    <p className="text-sm text-dark-600 dark:text-dark-400 leading-relaxed">{feature.description}</p>
+                  </div>
+                )
+              })}
+            </StaggeredChildren>
+          </div>
+        </section>
+      </AnimatedSection>
+    ),
+
+    bestsellers: () => data?.bestsellers && data.bestsellers.length > 0 ? (
+      <AnimatedSection key="bestsellers" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+        <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px]" />
+            <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-primary-500/6 rounded-full blur-[100px]" />
+          </div>
+          <div className="container-xl relative">
+            <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/25 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-sm font-semibold mb-4">
+                    <StarIcon className="w-4 h-4 fill-amber-700 dark:fill-amber-500" />
+                    Customer Favorites
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                    Best <span className="text-primary-600 dark:text-primary-500">Sellers</span>
                   </h2>
-                  <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
-                    {sections.categories?.subtitle || 'Each category carefully curated with premium quality and innovative designs'}
+                  <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
+                    Top-rated appliances trusted by thousands of Pakistani homes
                   </p>
                 </div>
-              </AnimatedSection>
-
-              {/* Categories Detail - Split Screen Alternating */}
-              <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
-                {(data?.video_categories?.length
-                  ? data.video_categories
-                  : categories.filter((c) => categoryVideos[c.slug])
-                ).map((category, index) => (
-                  <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ==========================================
-            SECTION 7: WHY CHOOSE FISCHER - CLEAN 4-COLUMN
-            ========================================== */}
-        {isSectionEnabled('features') && (
-          <AnimatedSection animation="fade-up" duration={800} threshold={0.08} easing="gentle">
-            <section className="section bg-dark-50 dark:bg-dark-950">
-              <div className="container-xl">
-                {/* Section Header */}
-                <div className="text-center mb-8 sm:mb-10 md:mb-12">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
-                    {sections.features?.title || 'Why Choose Fischer'}
-                  </h2>
-                </div>
-
-                <StaggeredChildren
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
-                  staggerDelay={100}
-                  duration={600}
-                  animation="fade-up"
-                  easing="gentle"
-                  once
+                <Link
+                  to="/shop?bestseller=1"
+                  className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary-500 dark:bg-primary-600 text-white font-semibold text-sm sm:text-base hover:bg-primary-600 dark:hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 hover:scale-105 active:scale-95 transition-all duration-300"
                 >
-                  {features.map((feature) => {
-                    const Icon = getIcon(feature.icon)
-                    const colors = getColorClasses(feature.color)
-                    return (
-                      <div
-                        key={feature.title}
-                        className="text-center p-4 sm:p-6 hover-lift"
-                      >
-                        {/* Icon */}
-                        <div className={`inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 ${colors.bg} rounded-2xl mb-4`}>
-                          <Icon className="w-6 h-6 md:w-8 md:h-8" style={{ color: colors.text }} />
-                        </div>
-
-                        <h3 className="text-lg font-bold text-dark-900 dark:text-white mb-2">
-                          {feature.title}
-                        </h3>
-                        <p className="text-sm text-dark-600 dark:text-dark-400 leading-relaxed">
-                          {feature.description}
-                        </p>
-                      </div>
-                    )
-                  })}
-                </StaggeredChildren>
+                  View All Best Sellers
+                  <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
-            </section>
-          </AnimatedSection>
-        )}
+            </AnimatedSection>
+          </div>
+          <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+            <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+              <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
+                {data.bestsellers.slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+                ))}
+              </ProductCarousel>
+            </AnimatedSection>
+          </div>
+        </section>
+      </AnimatedSection>
+    ) : null,
 
-        {/* ==========================================
-            BUNDLE BANNER - Featured Bundle Hero
-            ========================================== */}
+    bundles: () => (
+      <div key="bundles">
         {homepageBundles?.banner && homepageBundles.banner.length > 0 && (
           <section className="bg-dark-100 dark:bg-dark-950">
-            <BundleBanner
-              bundle={homepageBundles.banner[0]}
-              onAddToCart={handleAddBundleToCart}
-              variant="hero"
-            />
+            <BundleBanner bundle={homepageBundles.banner[0]} onAddToCart={handleAddBundleToCart} variant="hero" />
           </section>
         )}
-
-        {/* ==========================================
-            BUNDLE CAROUSEL - Featured Bundles Slider
-            ========================================== */}
         {homepageBundles?.carousel && homepageBundles.carousel.length > 0 && (
           <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
             <section className="section bg-white dark:bg-dark-900">
@@ -796,15 +713,12 @@ export default function Home() {
                 <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-primary-500/20 dark:bg-primary-900/30
-                                     text-primary-800 dark:text-primary-400 text-sm font-semibold mb-4">
+                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400 text-sm font-semibold mb-4">
                         <GiftIcon className="w-4 h-4" />
                         Special Bundles
                       </span>
                       <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                        Save More with{' '}
-                        <span className="text-primary-600 dark:text-primary-400">Bundles</span>
+                        Save More with <span className="text-primary-600 dark:text-primary-400">Bundles</span>
                       </h2>
                       <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
                         Get the best value with our curated product bundles
@@ -812,12 +726,7 @@ export default function Home() {
                     </div>
                     <Link
                       to="/bundles"
-                      className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl
-                               bg-primary-500 dark:bg-primary-600
-                               text-white font-semibold
-                               hover:bg-primary-600 dark:hover:bg-primary-700
-                               hover:shadow-lg hover:-translate-y-0.5
-                               transition-all duration-300"
+                      className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 dark:bg-primary-600 text-white font-semibold hover:bg-primary-600 dark:hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                     >
                       View All Bundles
                       <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -825,519 +734,12 @@ export default function Home() {
                   </div>
                 </AnimatedSection>
                 <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                  <BundleCarousel
-                    bundles={homepageBundles.carousel}
-                    onQuickView={setQuickViewBundle}
-                    onAddToCart={handleAddBundleToCart}
-                  />
+                  <BundleCarousel bundles={homepageBundles.carousel} onQuickView={setQuickViewBundle} onAddToCart={handleAddBundleToCart} />
                 </AnimatedSection>
               </div>
             </section>
           </AnimatedSection>
         )}
-
-        {/* ==========================================
-            BANNER CAROUSEL - Product Categories
-            ========================================== */}
-        {bannerSlides.length > 0 && (
-        <BannerCarousel
-          slides={bannerSlides}
-          autoPlay
-          autoPlayInterval={5000}
-          height="lg"
-        />
-        )}
-
-        {/* ==========================================
-            FEATURED PRODUCTS - Carousel Showcase
-            ========================================== */}
-        {isSectionEnabled('featured_products') && data?.featured_products && data.featured_products.length > 0 && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
-            <section className="section bg-dark-100 dark:bg-dark-950 relative overflow-hidden">
-              {/* Static Background Gradients */}
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-500/8 rounded-full blur-[120px]" />
-                <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
-              </div>
-
-              <div className="container-xl relative">
-                {/* Section Header */}
-                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-primary-500/20 text-primary-800 dark:text-primary-400
-                                     text-sm font-semibold mb-4">
-                        <FireIcon className="w-4 h-4" />
-                        Hand-picked for you
-                      </span>
-                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                        Featured{' '}
-                        <span className="text-primary-600 dark:text-primary-400">Products</span>
-                      </h2>
-                      <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-xl">
-                        Our most popular appliances loved by customers across Pakistan
-                      </p>
-                    </div>
-                    <Link
-                      to="/shop?featured=1"
-                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-primary-600
-                               text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-primary-700
-                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
-                               active:scale-95 transition-all duration-300"
-                    >
-                      View All Products
-                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </AnimatedSection>
-
-              </div>
-
-              {/* Products Carousel — full-bleed */}
-              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                <ProductCarousel speed={100} fadeClass="from-dark-100 dark:from-dark-950">
-                  {data.featured_products.slice(0, 12).map((product) => (
-                    <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
-                  ))}
-                </ProductCarousel>
-              </AnimatedSection>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            BEST SELLERS - Carousel Showcase
-            ========================================== */}
-        {isSectionEnabled('bestsellers') && data?.bestsellers && data.bestsellers.length > 0 && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
-            <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px]" />
-                <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-primary-500/6 rounded-full blur-[100px]" />
-              </div>
-
-              <div className="container-xl relative">
-                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-amber-500/25 dark:bg-amber-900/30
-                                     text-amber-800 dark:text-amber-400
-                                     text-sm font-semibold mb-4">
-                        <StarIcon className="w-4 h-4 fill-amber-700 dark:fill-amber-500" />
-                        Customer Favorites
-                      </span>
-                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                        Best{' '}
-                        <span className="text-primary-600 dark:text-primary-500">Sellers</span>
-                      </h2>
-                      <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
-                        Top-rated appliances trusted by thousands of Pakistani homes
-                      </p>
-                    </div>
-                    <Link
-                      to="/shop?bestseller=1"
-                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-primary-600
-                               text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-primary-700
-                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
-                               active:scale-95 transition-all duration-300"
-                    >
-                      View All Best Sellers
-                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </AnimatedSection>
-
-              </div>
-
-              {/* Full-bleed carousel - edge to edge */}
-              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
-                <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                  <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
-                    {data.bestsellers.slice(0, 12).map((product) => (
-                      <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
-                    ))}
-                  </ProductCarousel>
-                </AnimatedSection>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            CTA BANNER - Become a Dealer
-            ========================================== */}
-        {isSectionEnabled('dealer_cta') && (
-          <AnimatedSection animation="fade" duration={1200} threshold={0.1} easing="gentle">
-            <section className="relative py-24 overflow-hidden">
-              {/* Muted, sophisticated background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
-                {/* Subtle accent orbs */}
-                <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary-600/8 rounded-full blur-3xl" />
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
-              </div>
-
-              <div className="relative container-xl">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                  {/* Content */}
-                  <AnimatedSection animation="fade-right" delay={200} distance={60} duration={1100} easing="gentle">
-                    <div className="text-center lg:text-left">
-                      <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-                                     bg-primary-500/25 backdrop-blur-sm text-primary-100
-                                     text-sm font-bold mb-8">
-                        <SparklesIcon className="w-5 h-5" />
-                        {dealerSettings.badge_text || 'Partnership Opportunity'}
-                      </span>
-                      <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 sm:mb-8">
-                        {sections.dealer_cta?.title || 'Become a Fischer Authorized Dealer'}
-                      </h2>
-                      <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                        {sections.dealer_cta?.subtitle || 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted appliance brand.'}
-                      </p>
-                      <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                        <Link
-                          to={dealerSettings.button_link || '/become-dealer'}
-                          className="group px-8 py-4 bg-primary-500 hover:bg-primary-600
-                                   hover:-translate-y-0.5 active:scale-[0.98] rounded-xl font-semibold
-                                   text-white transition-all duration-300
-                                   flex items-center gap-2 hover:shadow-lg"
-                        >
-                          {dealerSettings.button_text || 'Apply Now'}
-                          <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                        <Link
-                          to={dealerSettings.secondary_button_link || '/contact'}
-                          className="px-8 py-4 bg-white/10 hover:bg-white/20 hover:-translate-y-0.5
-                                   active:scale-[0.98] backdrop-blur-sm rounded-xl font-semibold
-                                   text-white transition-all duration-300
-                                   border border-white/20"
-                        >
-                          {dealerSettings.secondary_button_text || 'Contact Sales'}
-                        </Link>
-                      </div>
-                    </div>
-                  </AnimatedSection>
-
-                  {/* Benefits Cards - Staggered grid */}
-                  <StaggeredChildren
-                    className="grid sm:grid-cols-2 gap-5"
-                    staggerDelay={150}
-                    duration={900}
-                    animation="fade-up"
-                    easing="gentle"
-                    once
-                  >
-                    {dealerBenefits.map((benefit: any) => (
-                      <div
-                        key={benefit.title}
-                        className="p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10
-                                 hover:bg-white/15 hover:border-white/20 hover:-translate-y-1
-                                 transition-all duration-300 h-full flex flex-col"
-                      >
-                        <span className="text-4xl mb-4 block">{benefit.icon}</span>
-                        <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
-                        <p className="text-dark-300 text-sm leading-relaxed">{benefit.description || benefit.desc}</p>
-                      </div>
-                    ))}
-                  </StaggeredChildren>
-                </div>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            NEW ARRIVALS - Carousel Showcase
-            ========================================== */}
-        {isSectionEnabled('new_arrivals') && data?.new_arrivals && data.new_arrivals.length > 0 && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
-            <section className="section bg-dark-50 dark:bg-dark-950 overflow-hidden">
-              <div className="container-xl">
-                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-emerald-500/20 dark:bg-emerald-900/30
-                                     text-emerald-800 dark:text-emerald-400
-                                     text-sm font-semibold mb-4">
-                        <BoltIcon className="w-4 h-4" />
-                        Just Arrived
-                      </span>
-                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                        New{' '}
-                        <span className="text-primary-600 dark:text-primary-400">Arrivals</span>
-                      </h2>
-                      <p className="text-xl text-dark-500 dark:text-dark-400 mt-4">
-                        Check out our latest additions to the catalog
-                      </p>
-                    </div>
-                    <Link
-                      to="/shop?new=1"
-                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-primary-600
-                               text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-primary-700
-                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
-                               active:scale-95 transition-all duration-300"
-                    >
-                      View All New
-                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </AnimatedSection>
-
-              </div>
-
-              {/* Full-bleed carousel - edge to edge */}
-              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
-                <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                  <ProductCarousel speed={110} direction="right" fadeClass="from-dark-50 dark:from-dark-950">
-                    {data.new_arrivals.slice(0, 12).map((product) => (
-                      <ProductCard key={product.id} product={product} showNew onQuickView={setQuickViewProduct} />
-                    ))}
-                  </ProductCarousel>
-                </AnimatedSection>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            TESTIMONIALS - Continuous Marquee Strip
-            ========================================== */}
-        {isSectionEnabled('testimonials') && testimonials.length > 0 && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
-            <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
-              {/* Static Background */}
-              <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white dark:from-dark-900 to-transparent pointer-events-none" />
-
-              <div className="container-xl relative">
-                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="text-center mb-16">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                   bg-primary-500/20 dark:bg-primary-900/30
-                                   text-primary-800 dark:text-primary-400
-                                   text-sm font-semibold mb-4">
-                      <StarIcon className="w-4 h-4" />
-                      {sections.testimonials?.title || 'Customer Reviews'}
-                    </span>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                      What Our{' '}
-                      <span className="text-primary-600 dark:text-primary-400">Customers</span>{' '}
-                      Say
-                    </h2>
-                    <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
-                      {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
-                    </p>
-                  </div>
-                </AnimatedSection>
-              </div>
-
-              {/* Full-bleed testimonial marquee - edge to edge */}
-              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
-                <ProductCarousel speed={70} gap={24} fixedCardWidth={400} fadeClass="from-dark-50 dark:from-dark-950">
-                {testimonials.map((testimonial) => {
-                  const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-                  return (
-                    <div
-                      key={testimonial.name}
-                      className="bg-white dark:bg-dark-800 rounded-2xl p-6 sm:p-8
-                                shadow-lg border border-dark-100 dark:border-dark-700
-                                h-full"
-                    >
-                      {/* Stars */}
-                      <div className="flex gap-0.5 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <StarSolidIcon
-                            key={i}
-                            className={`w-5 h-5 ${
-                              i < testimonial.rating
-                                ? 'text-primary-500'
-                                : 'text-dark-200 dark:text-dark-700'
-                            }`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Quote */}
-                      <p className="text-base sm:text-lg text-dark-700 dark:text-dark-200
-                                  leading-relaxed mb-6 line-clamp-4">
-                        "{testimonial.content}"
-                      </p>
-
-                      {/* Author */}
-                      <div className="flex items-center gap-3 mt-auto">
-                        {testimonial.image ? (
-                          <img
-                            src={testimonial.image}
-                            alt={testimonial.name}
-                            width={40}
-                            height={40}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-10 h-10 rounded-xl object-cover
-                                     ring-2 ring-primary-100 dark:ring-primary-900/30"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none'
-                              const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                              if (fallback) fallback.classList.remove('hidden')
-                            }}
-                          />
-                        ) : null}
-                        <div className={`w-10 h-10 rounded-xl
-                                       bg-primary-100 dark:bg-primary-900/30
-                                       ${testimonial.image ? 'hidden' : 'flex'}
-                                       items-center justify-center`}>
-                          <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
-                            {initials}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-dark-900 dark:text-white text-sm">
-                            {testimonial.name}
-                          </p>
-                          <p className="text-xs text-dark-500 dark:text-dark-400">
-                            {testimonial.role}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-                </ProductCarousel>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            WHY FISCHER - Elegant Animated Section
-            ========================================== */}
-        {isSectionEnabled('about') && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
-            <section className="section bg-white dark:bg-dark-900 overflow-hidden">
-              <div className="container-xl">
-                <div className="grid lg:grid-cols-2 gap-20 items-center">
-                  {/* Left - Image */}
-                  <div className="relative">
-                    <div className="relative">
-                      {/* Background decoration */}
-                      <div className="absolute -inset-10 pointer-events-none">
-                        <div className="w-full h-full bg-gradient-to-r from-primary-500/20 to-primary-500/20
-                                      rounded-[4rem] blur-3xl opacity-50" />
-                      </div>
-
-                      <div className="relative">
-                        <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
-                          <img
-                            src={aboutImage}
-                            alt="Fischer Factory - Manufacturing Facility"
-                            width={600}
-                            height={450}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              const target = e.currentTarget
-                              if (!target.dataset.fallback) {
-                                target.dataset.fallback = 'true'
-                                target.src = aboutFallbackImage
-                              }
-                            }}
-                          />
-                        </div>
-
-                        {/* ISO Badge */}
-                        <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl
-                                      bg-white dark:bg-dark-800 shadow-2xl
-                                      border border-dark-100 dark:border-dark-700">
-                          <div className="text-center">
-                            <div className="text-5xl font-black text-primary-600 dark:text-primary-400">
-                              ISO
-                            </div>
-                            <div className="text-lg font-bold text-dark-500 dark:text-dark-400">
-                              9001:2015
-                            </div>
-                            <div className="text-sm text-dark-400 dark:text-dark-500">Certified</div>
-                          </div>
-                        </div>
-
-                        {/* Years badge */}
-                        <div className="absolute -top-6 -left-6 px-6 py-4 rounded-2xl
-                                      bg-dark-900 text-white shadow-xl">
-                          <span className="text-3xl font-black">35+</span>
-                          <span className="block text-sm text-dark-300">Years</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right - Content */}
-                  <div>
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                   bg-primary-500/20 dark:bg-primary-900/30
-                                   text-primary-800 dark:text-primary-400
-                                   text-sm font-semibold mb-6">
-                      <SparklesIcon className="w-4 h-4" />
-                      {aboutSettings.badge_text || 'About Fischer'}
-                    </span>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-6 sm:mb-8 leading-tight">
-                      {sections.about?.title || 'Pakistan\'s Most Trusted Appliance Brand'}
-                    </h2>
-                    <p className="text-xl text-dark-500 dark:text-dark-400 mb-10 leading-relaxed">
-                      {aboutContent}
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="grid sm:grid-cols-2 gap-6 mb-10">
-                      {aboutFeatures.map((item: string, index: number) => (
-                        <div key={index} className="flex items-center gap-4 group">
-                          <div className="w-10 h-10 rounded-xl
-                                        bg-primary-100 dark:bg-primary-900/30
-                                        flex items-center justify-center flex-shrink-0
-                                        group-hover:bg-primary-500 transition-colors duration-300">
-                            <CheckCircleIcon className="w-5 h-5 text-primary-600 dark:text-primary-400
-                                                      group-hover:text-white transition-colors" />
-                          </div>
-                          <span className="text-dark-700 dark:text-dark-200 font-medium">{item}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Link
-                      to={aboutSettings.button_link || '/about'}
-                      className="group inline-flex items-center gap-2 px-6 py-3
-                               bg-primary-500 dark:bg-primary-600 hover:bg-primary-600 dark:hover:bg-primary-700
-                               rounded-xl font-semibold text-white
-                               hover:shadow-lg hover:-translate-y-0.5
-                               transition-all duration-300"
-                    >
-                      {aboutSettings.button_text || 'Learn More About Us'}
-                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </AnimatedSection>
-        )}
-
-        {/* ==========================================
-            NOTABLE CLIENTS - Trust Section
-            ========================================== */}
-        {notableClients.length > 0 && (
-          <NotableClients clients={notableClients} speed="fast" />
-        )}
-
-        {/* ==========================================
-            BUNDLE GRID - More Bundles Section
-            ========================================== */}
         {homepageBundles?.grid && homepageBundles.grid.length > 0 && (
           <BundleGrid
             bundles={homepageBundles.grid}
@@ -1348,21 +750,283 @@ export default function Home() {
             onAddToCart={handleAddBundleToCart}
           />
         )}
+      </div>
+    ),
 
-        {/* Bundle Quick View Modal */}
-        <BundleQuickView
-          bundle={quickViewBundle}
-          isOpen={!!quickViewBundle}
-          onClose={() => setQuickViewBundle(null)}
-        />
+    banner_carousel: () => bannerSlides.length > 0 ? (
+      <BannerCarousel
+        key="banner_carousel"
+        slides={bannerSlides}
+        autoPlay
+        autoPlayInterval={5000}
+        height="lg"
+      />
+    ) : null,
 
-        {/* Product Quick View Modal */}
+    dealer_cta: () => (
+      <AnimatedSection key="dealer_cta" animation="fade" duration={1200} threshold={0.1} easing="gentle">
+        <section className="relative py-24 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-dark-800 via-dark-900 to-dark-950">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary-600/8 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+          </div>
+          <div className="relative container-xl">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <AnimatedSection animation="fade-right" delay={200} distance={60} duration={1100} easing="gentle">
+                <div className="text-center lg:text-left">
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-500/25 backdrop-blur-sm text-primary-100 text-sm font-bold mb-8">
+                    <SparklesIcon className="w-5 h-5" />
+                    {dealerSettings.badge_text || 'Partnership Opportunity'}
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 sm:mb-8">
+                    {sections.dealer_cta?.title || 'Become a Fischer Authorized Dealer'}
+                  </h2>
+                  <p className="text-xl text-dark-300 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    {sections.dealer_cta?.subtitle || 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted appliance brand.'}
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <Link
+                      to={dealerSettings.button_link || '/become-dealer'}
+                      className="group px-8 py-4 bg-primary-500 hover:bg-primary-600 hover:-translate-y-0.5 active:scale-[0.98] rounded-xl font-semibold text-white transition-all duration-300 flex items-center gap-2 hover:shadow-lg"
+                    >
+                      {dealerSettings.button_text || 'Apply Now'}
+                      <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                    <Link
+                      to={dealerSettings.secondary_button_link || '/contact'}
+                      className="px-8 py-4 bg-white/10 hover:bg-white/20 hover:-translate-y-0.5 active:scale-[0.98] backdrop-blur-sm rounded-xl font-semibold text-white transition-all duration-300 border border-white/20"
+                    >
+                      {dealerSettings.secondary_button_text || 'Contact Sales'}
+                    </Link>
+                  </div>
+                </div>
+              </AnimatedSection>
+              <StaggeredChildren className="grid sm:grid-cols-2 gap-5" staggerDelay={150} duration={900} animation="fade-up" easing="gentle" once>
+                {dealerBenefits.map((benefit: any) => (
+                  <div
+                    key={benefit.title}
+                    className="p-6 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/15 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 h-full flex flex-col"
+                  >
+                    <span className="text-4xl mb-4 block">{benefit.icon}</span>
+                    <h3 className="text-xl font-bold text-white mb-2">{benefit.title}</h3>
+                    <p className="text-dark-300 text-sm leading-relaxed">{benefit.description || benefit.desc}</p>
+                  </div>
+                ))}
+              </StaggeredChildren>
+            </div>
+          </div>
+        </section>
+      </AnimatedSection>
+    ),
+
+    testimonials: () => testimonials.length > 0 ? (
+      <AnimatedSection key="testimonials" animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
+        <section className="section bg-dark-50 dark:bg-dark-950 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white dark:from-dark-900 to-transparent pointer-events-none" />
+          <div className="container-xl relative">
+            <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+              <div className="text-center mb-16">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400 text-sm font-semibold mb-4">
+                  <StarIcon className="w-4 h-4" />
+                  {sections.testimonials?.title || 'Customer Reviews'}
+                </span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                  What Our <span className="text-primary-600 dark:text-primary-400">Customers</span> Say
+                </h2>
+                <p className="text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl mx-auto">
+                  {sections.testimonials?.subtitle || 'Trusted by thousands of Pakistani households and businesses'}
+                </p>
+              </div>
+            </AnimatedSection>
+          </div>
+          <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+            <ProductCarousel speed={70} gap={24} fixedCardWidth={400} fadeClass="from-dark-50 dark:from-dark-950">
+              {testimonials.map((testimonial) => {
+                const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                return (
+                  <div
+                    key={testimonial.name}
+                    className="bg-white dark:bg-dark-800 rounded-2xl p-6 sm:p-8 shadow-lg border border-dark-100 dark:border-dark-700 h-full"
+                  >
+                    <div className="flex gap-0.5 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <StarSolidIcon key={i} className={`w-5 h-5 ${i < testimonial.rating ? 'text-primary-500' : 'text-dark-200 dark:text-dark-700'}`} />
+                      ))}
+                    </div>
+                    <p className="text-base sm:text-lg text-dark-700 dark:text-dark-200 leading-relaxed mb-6 line-clamp-4">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="flex items-center gap-3 mt-auto">
+                      {testimonial.image ? (
+                        <img
+                          src={testimonial.image} alt={testimonial.name} width={40} height={40} loading="lazy" decoding="async"
+                          className="w-10 h-10 rounded-xl object-cover ring-2 ring-primary-100 dark:ring-primary-900/30"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                            const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                            if (fallback) fallback.classList.remove('hidden')
+                          }}
+                        />
+                      ) : null}
+                      <div className={`w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 ${testimonial.image ? 'hidden' : 'flex'} items-center justify-center`}>
+                        <span className="text-sm font-bold text-primary-600 dark:text-primary-400">{initials}</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-dark-900 dark:text-white text-sm">{testimonial.name}</p>
+                        <p className="text-xs text-dark-500 dark:text-dark-400">{testimonial.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </ProductCarousel>
+          </div>
+        </section>
+      </AnimatedSection>
+    ) : null,
+
+    about: () => (
+      <AnimatedSection key="about" animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
+        <section className="section bg-white dark:bg-dark-900 overflow-hidden">
+          <div className="container-xl">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div className="relative">
+                <div className="relative">
+                  <div className="absolute -inset-10 pointer-events-none">
+                    <div className="w-full h-full bg-gradient-to-r from-primary-500/20 to-primary-500/20 rounded-[4rem] blur-3xl opacity-50" />
+                  </div>
+                  <div className="relative">
+                    <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
+                      <img
+                        src={aboutImage} alt="Fischer Factory - Manufacturing Facility" width={600} height={450} loading="lazy" decoding="async"
+                        className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-300"
+                        onError={(e) => { const target = e.currentTarget; if (!target.dataset.fallback) { target.dataset.fallback = 'true'; target.src = aboutFallbackImage } }}
+                      />
+                    </div>
+                    <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl bg-white dark:bg-dark-800 shadow-2xl border border-dark-100 dark:border-dark-700">
+                      <div className="text-center">
+                        <div className="text-5xl font-black text-primary-600 dark:text-primary-400">ISO</div>
+                        <div className="text-lg font-bold text-dark-500 dark:text-dark-400">9001:2015</div>
+                        <div className="text-sm text-dark-400 dark:text-dark-500">Certified</div>
+                      </div>
+                    </div>
+                    <div className="absolute -top-6 -left-6 px-6 py-4 rounded-2xl bg-dark-900 text-white shadow-xl">
+                      <span className="text-3xl font-black">35+</span>
+                      <span className="block text-sm text-dark-300">Years</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/20 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400 text-sm font-semibold mb-6">
+                  <SparklesIcon className="w-4 h-4" />
+                  {aboutSettings.badge_text || 'About Fischer'}
+                </span>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white mb-6 sm:mb-8 leading-tight">
+                  {sections.about?.title || 'Pakistan\'s Most Trusted Appliance Brand'}
+                </h2>
+                <p className="text-xl text-dark-500 dark:text-dark-400 mb-10 leading-relaxed">{aboutContent}</p>
+                <div className="grid sm:grid-cols-2 gap-6 mb-10">
+                  {aboutFeatures.map((item: string, index: number) => (
+                    <div key={index} className="flex items-center gap-4 group">
+                      <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-500 transition-colors duration-300">
+                        <CheckCircleIcon className="w-5 h-5 text-primary-600 dark:text-primary-400 group-hover:text-white transition-colors" />
+                      </div>
+                      <span className="text-dark-700 dark:text-dark-200 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  to={aboutSettings.button_link || '/about'}
+                  className="group inline-flex items-center gap-2 px-6 py-3 bg-primary-500 dark:bg-primary-600 hover:bg-primary-600 dark:hover:bg-primary-700 rounded-xl font-semibold text-white hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  {aboutSettings.button_text || 'Learn More About Us'}
+                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </AnimatedSection>
+    ),
+
+    notable_clients: () => notableClients.length > 0 ? (
+      <NotableClients key="notable_clients" clients={notableClients} speed="fast" />
+    ) : null,
+  }
+
+  // Default section order (used when sort_order not available from API)
+  const defaultOrder: string[] = [
+    'brand_statement', 'hero_products', 'stats', 'categories', 'features',
+    'bestsellers', 'bundles', 'banner_carousel',
+    'dealer_cta', 'testimonials', 'about', 'notable_clients',
+  ]
+
+  // Build sorted section keys from API sort_order, falling back to default
+  const sortedSectionKeys = Object.keys(sections).length > 0
+    ? Object.entries(sections)
+        .sort((a, b) => (a[1].sort_order ?? 999) - (b[1].sort_order ?? 999))
+        .map(([key]) => key)
+        // Include any registry keys not in the API (e.g., bundles, banner_carousel may not have DB entries)
+        .concat(defaultOrder.filter(k => !sections[k]))
+    : defaultOrder
+
+  return (
+    <>
+      <Helmet>
+        <title>Fischer Pakistan - Premium Home Appliances</title>
+        <meta name="description" content="Discover premium home appliances by Fischer Pakistan. Shop kitchen appliances, air fryers, geysers, and more." />
+      </Helmet>
+
+      {!introComplete && (
+        <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
+      )}
+
+      <div className="bg-white dark:bg-dark-950">
+        {/* Hero is always first */}
+        <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
+          <div className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+          </div>
+          {videoError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
+          )}
+          {!videoError && <video
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
+            style={{ objectPosition: 'center center' }}
+            autoPlay loop muted playsInline preload="metadata"
+            poster="/images/hero-poster.jpg"
+            onCanPlayThrough={() => setVideoLoaded(true)}
+            onLoadedData={() => setVideoLoaded(true)}
+            onError={() => { setVideoError(true); setVideoLoaded(true) }}
+          >
+            <source src={heroVideoUrl} type="video/mp4" />
+          </video>}
+          <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
+          <div className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
+            <div className="flex flex-col items-center gap-2 text-white">
+              <span className="text-sm font-medium tracking-wider opacity-80">Scroll</span>
+              <svg className="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        {/* Dynamic sections rendered in sort_order from admin */}
+        {sortedSectionKeys.map((key) => {
+          // Skip hero (rendered above) and sections without a renderer
+          if (key === 'hero' || !sectionRegistry[key]) return null
+          // Check if section is enabled (default to enabled if not in sections data)
+          if (!isSectionEnabled(key)) return null
+          return sectionRegistry[key]()
+        })}
+
+        {/* Modals */}
+        <BundleQuickView bundle={quickViewBundle} isOpen={!!quickViewBundle} onClose={() => setQuickViewBundle(null)} />
         {quickViewProduct && (
-          <QuickViewModal
-            isOpen={!!quickViewProduct}
-            onClose={() => setQuickViewProduct(null)}
-            product={quickViewProduct}
-          />
+          <QuickViewModal isOpen={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} product={quickViewProduct} />
         )}
       </div>
     </>

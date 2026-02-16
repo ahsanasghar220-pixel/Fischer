@@ -541,7 +541,7 @@ export default function BundleDetail() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 pt-4 border-t dark:border-dark-700">
                   <div className="text-center">
                     <TruckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
-                    <p className="text-xs text-dark-600 dark:text-dark-400">Free Delivery</p>
+                    <p className="text-xs text-dark-600 dark:text-dark-400">Free Delivery in Lahore</p>
                   </div>
                   <div className="text-center">
                     <ShieldCheckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />

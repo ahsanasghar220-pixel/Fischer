@@ -4,6 +4,8 @@ import type { ErrorInfo, ReactNode } from 'react'
 import Layout from './components/layout/Layout'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import ScrollToTop from './components/utils/ScrollToTop'
+import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 
 // Error Boundary component
 interface ErrorBoundaryProps {
@@ -75,6 +77,7 @@ const OrderSuccess = lazy(() => import('./pages/OrderSuccess'))
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const Account = lazy(() => import('./pages/Account'))
 const Dashboard = lazy(() => import('./pages/account/Dashboard'))
 const Orders = lazy(() => import('./pages/account/Orders'))
@@ -116,6 +119,12 @@ const AdminReports = lazy(() => import('./pages/admin/Reports'))
 const AdminHomePageSettings = lazy(() => import('./pages/admin/HomePageSettings'))
 const AdminBundles = lazy(() => import('./pages/admin/Bundles'))
 const AdminBundleForm = lazy(() => import('./pages/admin/BundleForm'))
+const AdminReviews = lazy(() => import('./pages/admin/Reviews'))
+const AdminShipping = lazy(() => import('./pages/admin/Shipping'))
+const AdminCoupons = lazy(() => import('./pages/admin/Coupons'))
+const AdminSales = lazy(() => import('./pages/admin/Sales'))
+const AdminUsers = lazy(() => import('./pages/admin/Users'))
+const Sale = lazy(() => import('./pages/Sale'))
 
 function App() {
   return (
@@ -139,9 +148,10 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
-          {/* Account routes */}
-          <Route path="account" element={<Account />}>
+          {/* Account routes (protected) */}
+          <Route path="account" element={<ProtectedRoute><Account /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
             <Route path="orders" element={<Orders />} />
             <Route path="orders/:orderNumber" element={<OrderDetail />} />
@@ -166,14 +176,15 @@ function App() {
           <Route path="experience" element={<Experience />} />
           <Route path="kitchen-experience" element={<KitchenExperience />} />
           <Route path="portfolio" element={<Portfolio />} />
+          <Route path="sale/:slug" element={<Sale />} />
           <Route path="page/:slug" element={<Page />} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Route>
 
-        {/* Admin routes */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Admin routes (protected) */}
+        <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/:id" element={<AdminProductEdit />} />
@@ -191,6 +202,11 @@ function App() {
           <Route path="bundles" element={<AdminBundles />} />
           <Route path="bundles/new" element={<AdminBundleForm />} />
           <Route path="bundles/:id" element={<AdminBundleForm />} />
+          <Route path="reviews" element={<AdminReviews />} />
+          <Route path="shipping" element={<AdminShipping />} />
+          <Route path="coupons" element={<AdminCoupons />} />
+          <Route path="sales" element={<AdminSales />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="*" element={<NotFound />} />
         </Route>

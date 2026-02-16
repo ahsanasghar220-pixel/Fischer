@@ -42,6 +42,7 @@ const staticPages = [
   { name: 'About', href: '/about' },
   // { name: 'Kitchen Experience', href: '/kitchen-experience' },
   { name: 'Portfolio', href: '/portfolio' },
+  { name: 'Sale', href: '/shop?sale=1' },
   { name: 'Contact', href: '/contact' },
   { name: 'Service Request', href: '/service-request' },
   { name: 'Find Dealer', href: '/find-dealer' },

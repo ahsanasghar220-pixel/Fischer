@@ -24,7 +24,7 @@ class ReviewController extends Controller
                 'reviews.id',
                 'reviews.rating',
                 'reviews.title',
-                'reviews.comment',
+                'reviews.content',
                 'reviews.status',
                 'reviews.created_at',
                 'users.id as user_id',
@@ -45,7 +45,7 @@ class ReviewController extends Controller
                 $q->where('users.first_name', 'like', "%{$search}%")
                   ->orWhere('users.last_name', 'like', "%{$search}%")
                   ->orWhere('products.name', 'like', "%{$search}%")
-                  ->orWhere('reviews.comment', 'like', "%{$search}%");
+                  ->orWhere('reviews.content', 'like', "%{$search}%");
             });
         }
 
@@ -64,7 +64,7 @@ class ReviewController extends Controller
                 'id' => $review->id,
                 'rating' => (int) $review->rating,
                 'title' => $review->title,
-                'comment' => $review->comment,
+                'content' => $review->content,
                 'status' => $review->status ?? 'pending',
                 'created_at' => $review->created_at,
                 'user' => $review->user_id ? [
@@ -123,7 +123,7 @@ class ReviewController extends Controller
     public function approve($id)
     {
         $review = Review::findOrFail($id);
-        $review->update(['status' => 'approved']);
+        $review->approve();
 
         return $this->success(['data' => $review->fresh()], 'Review approved successfully');
     }
@@ -131,7 +131,7 @@ class ReviewController extends Controller
     public function reject($id)
     {
         $review = Review::findOrFail($id);
-        $review->update(['status' => 'rejected']);
+        $review->reject();
 
         return $this->success(['data' => $review->fresh()], 'Review rejected successfully');
     }

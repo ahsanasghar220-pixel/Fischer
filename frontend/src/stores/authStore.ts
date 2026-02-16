@@ -26,6 +26,7 @@ interface User {
   loyalty_points: number
   referral_code: string
   roles: string[]
+  permissions: string[]
   is_admin: boolean
   is_dealer: boolean
   default_address?: Address | null

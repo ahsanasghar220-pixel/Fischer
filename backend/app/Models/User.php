@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -168,6 +169,25 @@ class User extends Authenticatable
         } while (self::where('referral_code', $code)->exists());
 
         return $code;
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+        $url = "{$frontendUrl}/reset-password?token={$token}&email={$this->email}";
+
+        $this->notify(new ResetPasswordNotification($token));
+
+        // Override the notification URL
+        ResetPasswordNotification::createUrlUsing(function ($notifiable, $token) use ($frontendUrl) {
+            return "{$frontendUrl}/reset-password?token={$token}&email={$notifiable->email}";
+        });
     }
 
     protected static function boot()

@@ -555,6 +555,17 @@ export default function Checkout() {
                         </select>
                         <ChevronDownIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-dark-400" />
                       </div>
+                      {form.shipping_city.toLowerCase() === 'lahore' && (
+                        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400 font-medium">
+                          <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                          Free Delivery in Lahore!
+                        </p>
+                      )}
+                      {form.shipping_city && form.shipping_city.toLowerCase() !== 'lahore' && (
+                        <p className="mt-1.5 text-xs text-dark-500 dark:text-dark-400">
+                          Standard delivery charges apply
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">State/Province *</label>

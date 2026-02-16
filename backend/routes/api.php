@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\BundleController;
+use App\Http\Controllers\Api\SaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -117,6 +118,12 @@ Route::prefix('bundles')->group(function () {
     Route::get('/{slug}/related', [BundleController::class, 'related']);
 });
 Route::post('/cart/bundle', [BundleController::class, 'addToCart']);
+
+// Sales (public)
+Route::prefix('sales')->group(function () {
+    Route::get('/', [SaleController::class, 'index']);
+    Route::get('/{slug}', [SaleController::class, 'show']);
+});
 
 // Authentication
 Route::prefix('auth')->group(function () {
@@ -220,7 +227,7 @@ Route::middleware('auth:sanctum')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|order-manager|content-manager'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
     Route::get('/analytics', [App\Http\Controllers\Api\Admin\DashboardController::class, 'analytics']);
@@ -354,6 +361,24 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin'])->
         // Notable Clients
         Route::put('/notable-clients', [App\Http\Controllers\Api\Admin\HomepageController::class, 'updateNotableClients']);
         Route::post('/notable-clients/upload', [App\Http\Controllers\Api\Admin\HomepageController::class, 'uploadClientLogo']);
+    });
+
+    // Sales
+    Route::prefix('sales')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\SaleController::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\SaleController::class, 'store']);
+        Route::get('/{id}', [App\Http\Controllers\Api\Admin\SaleController::class, 'show']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\SaleController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\SaleController::class, 'destroy']);
+        Route::put('/{id}/toggle', [App\Http\Controllers\Api\Admin\SaleController::class, 'toggle']);
+    });
+
+    // User Management
+    Route::prefix('users')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\UserManagementController::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Api\Admin\UserManagementController::class, 'store']);
+        Route::put('/{id}', [App\Http\Controllers\Api\Admin\UserManagementController::class, 'update']);
+        Route::delete('/{id}', [App\Http\Controllers\Api\Admin\UserManagementController::class, 'destroy']);
     });
 
     // Real-time Analytics

@@ -39,7 +39,7 @@ class ReviewController extends Controller
 
         // Check if it's a verified purchase
         $isVerified = false;
-        if ($validated['order_id']) {
+        if (!empty($validated['order_id'])) {
             $order = Order::where('id', $validated['order_id'])
                 ->where('user_id', $user->id)
                 ->whereIn('status', ['delivered'])

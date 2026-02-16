@@ -25,9 +25,12 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ProductCard from '@/components/products/ProductCard'
 import QuickViewModal from '@/components/products/QuickViewModal'
 import AuthModal from '@/components/ui/AuthModal'
+import AddToCartModal from '@/components/cart/AddToCartModal'
 import ScrollReveal, { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
+import ReviewForm from '@/components/products/ReviewForm'
 import { formatPrice, formatDate, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { CheckBadgeIcon, HandThumbUpIcon } from '@heroicons/react/24/solid'
 
 interface ProductImage {
   id: number
@@ -71,8 +74,9 @@ interface Review {
   id: number
   rating: number
   title?: string
-  comment: string
+  content: string
   created_at: string
+  is_verified_purchase?: boolean
   user: {
     name: string
   }
@@ -121,9 +125,13 @@ export default function ProductDetail() {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
   const [isInWishlist, setIsInWishlist] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
-  const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description')
+  const [showCartModal, setShowCartModal] = useState(false)
+  const [addedProduct, setAddedProduct] = useState<{id: number, name: string, primary_image?: string, price: number, quantity: number} | null>(null)
+  const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null)
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [canReview, setCanReview] = useState<boolean | null>(null)
 
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -163,10 +171,21 @@ export default function ProductDetail() {
     }
   }, [product?.id, isAuthenticated])
 
+  // Check if user can review this product
+  useEffect(() => {
+    if (isAuthenticated && product) {
+      api.get(`/api/reviews/can-review/${product.id}`)
+        .then(res => setCanReview(res.data.data?.can_review || false))
+        .catch(() => setCanReview(false))
+    } else {
+      setCanReview(null)
+    }
+  }, [product?.id, isAuthenticated])
+
   const handleAddToCart = async () => {
     if (!product) return
 
-    if (product.stock_status === 'out_of_stock') {
+    if (currentStock === 0 || product.stock_status === 'out_of_stock') {
       toast.error('This product is out of stock')
       return
     }
@@ -174,6 +193,21 @@ export default function ProductDetail() {
     setIsAddingToCart(true)
     try {
       await addItem(product.id, quantity, selectedVariant?.id)
+
+      // Show success modal with product details
+      setAddedProduct({
+        id: product.id,
+        name: product.name,
+        primary_image: product.primary_image || undefined,
+        price: selectedVariant?.price || product.price,
+        quantity: quantity
+      })
+      setShowCartModal(true)
+
+      // Reset quantity to 1 after adding
+      setQuantity(1)
+    } catch (error) {
+      // Error already handled by cartStore with toast
     } finally {
       setIsAddingToCart(false)
     }
@@ -632,9 +666,9 @@ export default function ProductDetail() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                {product.stock_status === 'in_stock' ? (
-                  <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock ({currentStock} available)</span>
-                ) : product.stock_status === 'low_stock' ? (
+                {currentStock === 0 || product.stock_status === 'out_of_stock' ? (
+                  <span className="text-red-600 dark:text-red-400 font-bold text-lg">✕ Out of Stock</span>
+                ) : currentStock <= 10 ? (
                   <motion.span
                     className="text-orange-600 dark:text-orange-400 font-medium"
                     animate={{ opacity: [1, 0.5, 1] }}
@@ -643,7 +677,7 @@ export default function ProductDetail() {
                     ⚠ Low Stock - Only {currentStock} left
                   </motion.span>
                 ) : (
-                  <span className="text-red-600 dark:text-red-400 font-medium">✕ Out of Stock</span>
+                  <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock ({currentStock} available)</span>
                 )}
               </motion.div>
 
@@ -657,10 +691,14 @@ export default function ProductDetail() {
                 <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-lg">
                   <motion.button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-3 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
-                    disabled={quantity <= 1}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    className={`p-3 transition-colors ${
+                      quantity <= 1
+                        ? 'opacity-40 cursor-not-allowed text-dark-400 dark:text-dark-600'
+                        : 'hover:bg-dark-50 dark:hover:bg-dark-700 text-dark-600 dark:text-dark-300'
+                    }`}
+                    disabled={quantity <= 1 || currentStock === 0}
+                    whileHover={quantity > 1 && currentStock > 0 ? { scale: 1.1 } : {}}
+                    whileTap={quantity > 1 && currentStock > 0 ? { scale: 0.9 } : {}}
                   >
                     <MinusIcon className="w-5 h-5" />
                   </motion.button>
@@ -675,10 +713,14 @@ export default function ProductDetail() {
                   </motion.span>
                   <motion.button
                     onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
-                    className="p-3 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
-                    disabled={quantity >= currentStock}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    className={`p-3 transition-colors ${
+                      quantity >= currentStock || currentStock === 0
+                        ? 'opacity-40 cursor-not-allowed text-dark-400 dark:text-dark-600'
+                        : 'hover:bg-dark-50 dark:hover:bg-dark-700 text-dark-600 dark:text-dark-300'
+                    }`}
+                    disabled={quantity >= currentStock || currentStock === 0}
+                    whileHover={quantity < currentStock && currentStock > 0 ? { scale: 1.1 } : {}}
+                    whileTap={quantity < currentStock && currentStock > 0 ? { scale: 0.9 } : {}}
                   >
                     <PlusIcon className="w-5 h-5" />
                   </motion.button>
@@ -686,12 +728,21 @@ export default function ProductDetail() {
 
                 <motion.button
                   onClick={handleAddToCart}
-                  disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-                  className="flex-1 btn btn-primary py-2.5"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={isAddingToCart || currentStock === 0 || product.stock_status === 'out_of_stock'}
+                  className={`flex-1 py-2.5 px-6 rounded-lg font-semibold text-white transition-colors duration-200 ${
+                    currentStock === 0 || product.stock_status === 'out_of_stock'
+                      ? 'bg-dark-400 dark:bg-dark-600 cursor-not-allowed'
+                      : 'bg-primary-600 hover:bg-primary-700'
+                  } ${isAddingToCart ? 'opacity-70' : ''}`}
+                  whileHover={currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 1.02 } : {}}
+                  whileTap={currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 0.98 } : {}}
                 >
-                  {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+                  {currentStock === 0 || product.stock_status === 'out_of_stock'
+                    ? '✕ Out of Stock'
+                    : isAddingToCart
+                      ? 'Adding...'
+                      : 'Add to Cart'
+                  }
                 </motion.button>
 
                 <motion.button
@@ -741,7 +792,7 @@ export default function ProductDetail() {
                 transition={{ delay: 0.7 }}
               >
                 {[
-                  { icon: TruckIcon, label: 'Free Delivery' },
+                  { icon: TruckIcon, label: 'Free Delivery in Lahore' },
                   { icon: ShieldCheckIcon, label: '1 Year Warranty' },
                   { icon: ArrowPathIcon, label: 'Easy Returns' },
                 ].map((feature, index) => (
@@ -785,7 +836,7 @@ export default function ProductDetail() {
             >
               {/* Tab Headers */}
               <div className="flex border-b border-dark-200 dark:border-dark-700">
-                {(['description', 'specifications', 'reviews'] as const).map((tab) => (
+                {(['description', 'reviews'] as const).map((tab) => (
                   <motion.button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -797,7 +848,6 @@ export default function ProductDetail() {
                     whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
                   >
                     {tab === 'description' && 'Description'}
-                    {tab === 'specifications' && 'Specifications'}
                     {tab === 'reviews' && `Reviews (${product.review_count || 0})`}
                     {activeTab === tab && (
                       <motion.div
@@ -822,7 +872,17 @@ export default function ProductDetail() {
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="text-dark-700 dark:text-dark-300" dangerouslySetInnerHTML={{ __html: (product.description || 'No description available.').replace(/\\n/g, '<br>').replace(/\n/g, '<br>') }} />
+                      <div
+                        className="text-dark-700 dark:text-dark-300 leading-relaxed space-y-4"
+                        dangerouslySetInnerHTML={{
+                          __html: (product.description || 'No description available.')
+                            .replace(/\n\n/g, '</p><p class="mt-4">')
+                            .replace(/\n/g, '<br>')
+                            .replace(/^/, '<p>')
+                            .replace(/$/, '</p>')
+                            .replace(/\. /g, '. ')
+                        }}
+                      />
                       {product.warranty_info && (
                         <motion.div
                           className="mt-6 p-4 bg-dark-50 dark:bg-dark-800 rounded-lg"
@@ -837,37 +897,6 @@ export default function ProductDetail() {
                     </motion.div>
                   )}
 
-                  {activeTab === 'specifications' && (
-                    <motion.div
-                      key="specifications"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {product.specifications && Object.keys(product.specifications).length > 0 ? (
-                        <table className="w-full">
-                          <tbody>
-                            {Object.entries(product.specifications).map(([key, value], index) => (
-                              <motion.tr
-                                key={key}
-                                className="border-b border-dark-200 dark:border-dark-700 last:border-0"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <td className="py-3 font-medium text-dark-900 dark:text-white w-1/3">{key}</td>
-                                <td className="py-3 text-dark-600 dark:text-dark-400">{value}</td>
-                              </motion.tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <p className="text-dark-500 dark:text-dark-400">No specifications available.</p>
-                      )}
-                    </motion.div>
-                  )}
-
                   {activeTab === 'reviews' && (
                     <motion.div
                       key="reviews"
@@ -876,6 +905,42 @@ export default function ProductDetail() {
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
                     >
+                      {/* Write a Review Button / Form */}
+                      <div className="mb-8">
+                        {showReviewForm ? (
+                          <div className="p-6 bg-dark-50 dark:bg-dark-800 rounded-xl border border-dark-200 dark:border-dark-700">
+                            <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-6">Write a Review</h3>
+                            <ReviewForm
+                              productId={product.id}
+                              onSuccess={() => {
+                                setShowReviewForm(false)
+                                setCanReview(false)
+                              }}
+                              onCancel={() => setShowReviewForm(false)}
+                            />
+                          </div>
+                        ) : (
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full sm:w-auto px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-lg transition-colors duration-200"
+                            onClick={() => {
+                              if (!isAuthenticated) {
+                                setShowAuthModal(true)
+                                return
+                              }
+                              if (canReview === false) {
+                                toast.error('Purchase this product to leave a review')
+                                return
+                              }
+                              setShowReviewForm(true)
+                            }}
+                          >
+                            ✍ Write a Review
+                          </motion.button>
+                        )}
+                      </div>
+
                       {product.reviews && product.reviews.length > 0 ? (
                         <div className="space-y-6">
                           {product.reviews.map((review, index) => (
@@ -886,7 +951,7 @@ export default function ProductDetail() {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 }}
                             >
-                              <div className="flex items-center gap-2 mb-2">
+                              <div className="flex items-center flex-wrap gap-2 mb-2">
                                 <div className="flex">
                                   {[1, 2, 3, 4, 5].map((star) => (
                                     star <= review.rating ? (
@@ -897,13 +962,19 @@ export default function ProductDetail() {
                                   ))}
                                 </div>
                                 <span className="font-medium text-dark-900 dark:text-white">{review.user.name}</span>
+                                {review.is_verified_purchase && (
+                                  <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
+                                    <CheckBadgeIcon className="w-4 h-4" />
+                                    Verified Purchase
+                                  </span>
+                                )}
                                 <span className="text-dark-400">•</span>
                                 <span className="text-sm text-dark-500 dark:text-dark-400">{formatDate(review.created_at)}</span>
                               </div>
                               {review.title && (
                                 <h4 className="font-medium text-dark-900 dark:text-white mb-1">{review.title}</h4>
                               )}
-                              <p className="text-dark-600 dark:text-dark-400">{review.comment}</p>
+                              <p className="text-dark-600 dark:text-dark-400">{review.content}</p>
                               {review.images && review.images.length > 0 && (
                                 <div className="flex gap-2 mt-3">
                                   {review.images.map((img, i) => (
@@ -919,34 +990,35 @@ export default function ProductDetail() {
                                   ))}
                                 </div>
                               )}
+                              {review.helpful_count > 0 && (
+                                <div className="flex items-center gap-1 mt-3 text-xs text-dark-400">
+                                  <HandThumbUpIcon className="w-3.5 h-3.5" />
+                                  {review.helpful_count} found this helpful
+                                </div>
+                              )}
+                              <button
+                                className="mt-2 text-xs text-dark-400 hover:text-primary-500 transition-colors inline-flex items-center gap-1"
+                                onClick={async () => {
+                                  if (!isAuthenticated) { setShowAuthModal(true); return }
+                                  try {
+                                    await api.post(`/api/reviews/${review.id}/helpful`)
+                                    toast.success('Thanks for your feedback!')
+                                  } catch {
+                                    toast.error('Could not mark as helpful')
+                                  }
+                                }}
+                              >
+                                <HandThumbUpIcon className="w-3.5 h-3.5" />
+                                Helpful
+                              </button>
                             </motion.div>
                           ))}
                         </div>
-                      ) : (
-                        <div className="text-center py-8">
-                          <motion.p
-                            className="text-dark-500 dark:text-dark-400 mb-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                          >
-                            No reviews yet. Be the first to review this product!
-                          </motion.p>
-                          <motion.button
-                            className="btn btn-primary"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => {
-                              if (!isAuthenticated) {
-                                setShowAuthModal(true)
-                                return
-                              }
-                              toast('Review submission coming soon!', { icon: '📝' })
-                            }}
-                          >
-                            Write a Review
-                          </motion.button>
-                        </div>
-                      )}
+                      ) : !showReviewForm ? (
+                        <p className="text-dark-500 dark:text-dark-400 text-center py-4">
+                          No reviews yet. Be the first to review this product!
+                        </p>
+                      ) : null}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -1004,6 +1076,13 @@ export default function ProductDetail() {
           />
         )}
       </AnimatePresence>
+
+      {/* Add to Cart Success Modal */}
+      <AddToCartModal
+        isOpen={showCartModal}
+        onClose={() => setShowCartModal(false)}
+        product={addedProduct}
+      />
     </motion.div>
   )
 }

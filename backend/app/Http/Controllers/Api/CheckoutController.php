@@ -11,8 +11,12 @@ use App\Models\ShippingZone;
 use App\Models\ShippingMethod;
 use App\Models\Setting;
 use App\Services\PaymentService;
+use App\Mail\OrderPlacedNotification;
+use App\Mail\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -309,6 +313,28 @@ class CheckoutController extends Controller
             // Clear cart
             $cart->clear();
 
+            // Send email notifications
+            try {
+                $notificationEnabled = Setting::get('notifications.order_notification_enabled', true);
+                if ($notificationEnabled) {
+                    $recipientEmails = Setting::get('notifications.order_notification_emails', 'fischer.few@gmail.com');
+                    $emails = array_filter(array_map('trim', explode(',', $recipientEmails)));
+                    foreach ($emails as $email) {
+                        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                            Mail::to($email)->queue(new OrderPlacedNotification($order));
+                        }
+                    }
+                }
+
+                $customerConfirmation = Setting::get('notifications.order_confirmation_to_customer', true);
+                $customerEmail = $order->shipping_email ?? $user?->email;
+                if ($customerConfirmation && $customerEmail) {
+                    Mail::to($customerEmail)->queue(new OrderConfirmation($order));
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to send order notification emails: ' . $e->getMessage());
+            }
+
             // Handle payment
             $paymentResult = $this->handlePayment($order, $validated['payment_method'], $request);
 
@@ -373,7 +399,22 @@ class CheckoutController extends Controller
         $sessionId = $request->header('X-Session-ID') ?? $request->session_id;
 
         if ($userId) {
-            return Cart::with(['items.product', 'items.productVariant'])->where('user_id', $userId)->first();
+            $userCart = Cart::with(['items.product', 'items.productVariant'])->where('user_id', $userId)->first();
+
+            // If user cart exists and has items, use it
+            if ($userCart && $userCart->items->isNotEmpty()) {
+                return $userCart;
+            }
+
+            // If user cart is empty but session cart exists with items, use session cart as fallback
+            if ($sessionId) {
+                $sessionCart = Cart::with(['items.product', 'items.productVariant'])->where('session_id', $sessionId)->first();
+                if ($sessionCart && $sessionCart->items->isNotEmpty()) {
+                    return $sessionCart;
+                }
+            }
+
+            return $userCart; // Return user cart even if empty
         }
 
         if ($sessionId) {

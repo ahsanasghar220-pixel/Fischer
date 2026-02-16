@@ -19,9 +19,10 @@ class CouponController extends Controller
         // Raw query for maximum speed
         $query = DB::table('coupons')
             ->select([
-                'id', 'code', 'type', 'value', 'min_order_amount',
-                'max_discount', 'usage_limit', 'used_count',
-                'starts_at', 'expires_at', 'is_active', 'created_at',
+                'id', 'code', 'type', 'value', 'minimum_order_amount',
+                'maximum_discount', 'usage_limit', 'usage_limit_per_user',
+                'times_used', 'is_active', 'first_order_only',
+                'starts_at', 'expires_at', 'created_at',
             ])
             ->whereNull('deleted_at');
 
@@ -52,11 +53,13 @@ class CouponController extends Controller
     {
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:coupons,code',
-            'type' => 'required|string|in:fixed,percentage',
+            'type' => 'required|string|in:fixed,percentage,free_shipping',
             'value' => 'required|numeric|min:0',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'max_discount' => 'nullable|numeric|min:0',
+            'minimum_order_amount' => 'nullable|numeric|min:0',
+            'maximum_discount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
+            'usage_limit_per_user' => 'nullable|integer|min:1',
+            'first_order_only' => 'boolean',
             'starts_at' => 'nullable|date',
             'expires_at' => 'nullable|date|after:starts_at',
             'is_active' => 'boolean',
@@ -87,11 +90,13 @@ class CouponController extends Controller
 
         $validated = $request->validate([
             'code' => 'sometimes|string|max:50|unique:coupons,code,' . $id,
-            'type' => 'sometimes|string|in:fixed,percentage',
+            'type' => 'sometimes|string|in:fixed,percentage,free_shipping',
             'value' => 'sometimes|numeric|min:0',
-            'min_order_amount' => 'nullable|numeric|min:0',
-            'max_discount' => 'nullable|numeric|min:0',
+            'minimum_order_amount' => 'nullable|numeric|min:0',
+            'maximum_discount' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
+            'usage_limit_per_user' => 'nullable|integer|min:1',
+            'first_order_only' => 'boolean',
             'starts_at' => 'nullable|date',
             'expires_at' => 'nullable|date',
             'is_active' => 'boolean',

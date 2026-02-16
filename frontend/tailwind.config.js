@@ -10,11 +10,11 @@ export default {
       colors: {
         // Fischer brand colors - Deep Red
         primary: {
-          50: '#FEE2E2',  // Very light pink/red for light mode backgrounds
-          100: '#FECACA', // Light pink for badges/containers
-          200: '#FCA5A5', // Lighter red
-          300: '#F87171', // Light red
-          400: '#EF4444', // Medium red
+          50: '#fdf2f2',  // Very light tint of #951212
+          100: '#f9dede', // Light tint
+          200: '#f0b4b4', // Lighter tint
+          300: '#d97272', // Light mid-tone
+          400: '#c23030', // Medium approaching brand
           500: '#951212', // Main brand deep red
           600: '#7f1010', // Slightly darker for hover
           700: '#6b0e0e', // Darker for active/pressed
@@ -301,5 +301,32 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Custom scrollbar plugin
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.scrollbar-thin': {
+          'scrollbar-width': 'thin',
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+        },
+        '.scrollbar-thumb-dark-700': {
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#3f3f46',
+            borderRadius: '3px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#52525b',
+          },
+        },
+        '.scrollbar-track-dark-900': {
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#18181b',
+          },
+        },
+      }
+      addUtilities(newUtilities)
+    },
+  ],
 }

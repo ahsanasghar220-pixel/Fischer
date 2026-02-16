@@ -357,8 +357,8 @@ const QuickViewModal = memo(function QuickViewModal({
                           <TruckIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-dark-900 dark:text-white">Free Delivery</p>
-                          <p className="text-xs text-dark-500 dark:text-dark-400">Orders over PKR 10k</p>
+                          <p className="text-sm font-medium text-dark-900 dark:text-white">Free Delivery in Lahore</p>
+                          <p className="text-xs text-dark-500 dark:text-dark-400">Standard delivery charges apply for other cities</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">

@@ -91,6 +91,11 @@ class SettingController extends Controller
                     'og_image' => '',
                     'sitemap_enabled' => true,
                 ],
+                'notifications' => [
+                    'order_notification_emails' => 'fischer.few@gmail.com',
+                    'order_notification_enabled' => true,
+                    'order_confirmation_to_customer' => true,
+                ],
                 'social' => [
                     'facebook_url' => '',
                     'instagram_url' => '',

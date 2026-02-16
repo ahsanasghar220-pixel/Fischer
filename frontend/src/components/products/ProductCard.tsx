@@ -11,6 +11,7 @@ import api from '@/lib/api'
 import toast from 'react-hot-toast'
 import { formatPrice } from '@/lib/utils'
 import AuthModal from '@/components/ui/AuthModal'
+import AddToCartModal from '@/components/cart/AddToCartModal'
 
 // CSS for shimmer effect - using CSS animations for GPU acceleration
 const shimmerStyle = `
@@ -68,6 +69,8 @@ const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [isInWishlist, setIsInWishlist] = useState(inWishlist)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
+  const [showCartModal, setShowCartModal] = useState(false)
+  const [addedProduct, setAddedProduct] = useState<{id: number, name: string, primary_image?: string, price: number, quantity: number} | null>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
@@ -167,10 +170,22 @@ const ProductCard = memo(function ProductCard({
     setIsAddingToCart(true)
     try {
       await addItem(product.id)
+
+      // Show success modal with product details
+      setAddedProduct({
+        id: product.id,
+        name: product.name,
+        primary_image: product.primary_image || undefined,
+        price: product.price,
+        quantity: 1
+      })
+      setShowCartModal(true)
+    } catch (error) {
+      // Error already handled by cartStore with toast
     } finally {
       setIsAddingToCart(false)
     }
-  }, [product.id, product.stock_status, addItem])
+  }, [product.id, product.name, product.primary_image, product.price, product.stock_status, addItem])
 
   const handleToggleWishlist = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -345,12 +360,27 @@ const ProductCard = memo(function ProductCard({
 
           {/* Out of Stock Overlay */}
           {product.stock_status === 'out_of_stock' && (
-            <div className="absolute inset-0 bg-dark-900/60 flex items-center justify-center">
-              <span className="px-4 py-2 bg-white/90 dark:bg-dark-800/90 rounded-lg text-sm font-semibold
-                             text-dark-900 dark:text-white backdrop-blur-sm">
-                Out of Stock
-              </span>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 bg-dark-900/70 backdrop-blur-sm flex items-center justify-center z-20"
+            >
+              <div className="text-center px-4">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="px-6 py-3 bg-red-600 dark:bg-red-500 rounded-xl shadow-lg"
+                >
+                  <span className="text-base font-bold text-white uppercase tracking-wide">
+                    Out of Stock
+                  </span>
+                </motion.div>
+                <p className="mt-2 text-xs text-white/90 font-medium">
+                  Currently unavailable
+                </p>
+              </div>
+            </motion.div>
           )}
 
           {/* Wishlist Button */}
@@ -371,16 +401,24 @@ const ProductCard = memo(function ProductCard({
             <button
               onClick={handleAddToCart}
               disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-              className="flex-1 py-2.5 px-5 bg-primary-500 hover:bg-primary-400
-                        text-white text-sm font-semibold rounded-lg
+              className={`flex-1 py-2.5 px-5 rounded-lg
+                        text-white text-sm font-semibold
                         flex items-center justify-center gap-2
                         max-w-[200px]
-                        disabled:opacity-50 disabled:cursor-not-allowed
                         transition-all duration-200 shadow-lg
-                        hover:scale-[1.02] active:scale-[0.98]"
+                        ${product.stock_status === 'out_of_stock'
+                          ? 'bg-dark-400 dark:bg-dark-600 cursor-not-allowed'
+                          : 'bg-primary-500 hover:bg-primary-400 hover:scale-[1.02] active:scale-[0.98]'
+                        }
+                        ${isAddingToCart ? 'opacity-70' : ''}`}
             >
               <ShoppingCartIcon className="w-4 h-4" />
-              {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+              {product.stock_status === 'out_of_stock'
+                ? 'Out of Stock'
+                : isAddingToCart
+                  ? 'Adding...'
+                  : 'Add to Cart'
+              }
             </button>
             {/* Hide Quick View on touch - users can tap the card itself */}
             {!isTouchDevice && (
@@ -444,6 +482,23 @@ const ProductCard = memo(function ProductCard({
               <span className="product-price-old">{formatPrice(product.compare_price)}</span>
             )}
           </div>
+
+          {/* Low Stock Warning */}
+          {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-md"
+            >
+              <motion.span
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-xs font-semibold text-orange-700 dark:text-orange-300"
+              >
+                ⚠ Only {product.stock} left!
+              </motion.span>
+            </motion.div>
+          )}
         </div>
 
         {/* Subtle glow effect on hover - CSS only, skip on touch */}
@@ -480,6 +535,13 @@ const ProductCard = memo(function ProductCard({
         }}
         onSuccess={handleAuthSuccess}
         message="Sign in to add items to your wishlist"
+      />
+
+      {/* Add to Cart Success Modal */}
+      <AddToCartModal
+        isOpen={showCartModal}
+        onClose={() => setShowCartModal(false)}
+        product={addedProduct}
       />
     </Link>
   )
