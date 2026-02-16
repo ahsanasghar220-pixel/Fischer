@@ -22,9 +22,7 @@ export function trackPageLoad() {
 
 // Preload critical resources
 export function preloadCriticalResources() {
-  const heroImage = new Image()
-  heroImage.src = '/images/products/water-coolers/water-cooler-35ltr.webp'
-
+  // Preload logos needed for header
   const logoDark = new Image()
   logoDark.src = '/images/logo-dark.webp'
   const logoLight = new Image()

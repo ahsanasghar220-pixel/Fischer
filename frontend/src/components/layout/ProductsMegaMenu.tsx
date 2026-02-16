@@ -163,6 +163,10 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                             <img
                               src={category.image}
                               alt={category.name}
+                              width={150}
+                              height={150}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
                                 // Fallback to icon if image fails

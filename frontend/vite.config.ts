@@ -106,6 +106,10 @@ export default defineConfig({
             if (id.includes('zustand')) {
               return 'state'
             }
+            // Charts - only used in admin, keep separate
+            if (id.includes('recharts') || id.includes('d3-') || id.includes('victory')) {
+              return 'charts'
+            }
             // Other node_modules
             return 'vendor-misc'
           }

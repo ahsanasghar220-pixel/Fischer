@@ -65,11 +65,58 @@ export default defineConfig({
         target: 'es2020',
         // Enable CSS code splitting
         cssCodeSplit: true,
+        // Skip compressed size reporting for faster builds
+        reportCompressedSize: false,
         rollupOptions: {
             output: {
+                // Optimize chunk naming for better caching
                 chunkFileNames: 'assets/js/[name]-[hash].js',
                 entryFileNames: 'assets/js/[name]-[hash].js',
                 assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+                // Prevent too many tiny chunks (better caching, fewer requests)
+                experimentalMinChunkSize: 20000,
+                manualChunks: function (id) {
+                    // Critical path optimization - keep core small
+                    if (id.includes('node_modules')) {
+                        // Core React libraries - highest priority
+                        if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                            return 'vendor-core';
+                        }
+                        // Framer Motion - lazy load this
+                        if (id.includes('framer-motion')) {
+                            return 'animations';
+                        }
+                        // Headless UI - used in header/modals
+                        if (id.includes('@headlessui')) {
+                            return 'ui-components';
+                        }
+                        // Icons - split by type for better caching
+                        if (id.includes('@heroicons/react/24/outline')) {
+                            return 'icons-outline';
+                        }
+                        if (id.includes('@heroicons/react/24/solid')) {
+                            return 'icons-solid';
+                        }
+                        // Data fetching
+                        if (id.includes('@tanstack/react-query')) {
+                            return 'data-query';
+                        }
+                        // Toast
+                        if (id.includes('react-hot-toast')) {
+                            return 'toast';
+                        }
+                        // State management
+                        if (id.includes('zustand')) {
+                            return 'state';
+                        }
+                        // Charts - only used in admin, keep separate
+                        if (id.includes('recharts') || id.includes('d3-') || id.includes('victory')) {
+                            return 'charts';
+                        }
+                        // Other node_modules
+                        return 'vendor-misc';
+                    }
+                },
             },
         },
         chunkSizeWarningLimit: 1000,

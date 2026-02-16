@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from 'react'
+import { useState, useEffect, useRef, memo, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
@@ -19,19 +19,24 @@ import {
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarSolidIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
 import api from '@/lib/api'
-import ProductCard from '@/components/products/ProductCard'
-import ProductCarousel from '@/components/products/ProductCarousel'
-import QuickViewModal from '@/components/products/QuickViewModal'
-import BannerCarousel from '@/components/ui/BannerCarousel'
-import type { BannerSlide } from '@/components/ui/BannerCarousel'
 import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
-import { BundleCarousel, BundleGrid, BundleBanner, BundleQuickView } from '@/components/bundles'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
 import type { Bundle } from '@/api/bundles'
+import type { BannerSlide } from '@/components/ui/BannerCarousel'
 import toast from 'react-hot-toast'
-import LogoSplitIntro from '@/components/home/LogoSplitIntro'
-import NotableClients from '@/components/home/NotableClients'
-import HeroProductBanner from '@/components/home/HeroProductBanner'
+
+// Lazy-load below-the-fold components to reduce initial bundle size
+const ProductCard = lazy(() => import('@/components/products/ProductCard'))
+const ProductCarousel = lazy(() => import('@/components/products/ProductCarousel'))
+const QuickViewModal = lazy(() => import('@/components/products/QuickViewModal'))
+const BannerCarousel = lazy(() => import('@/components/ui/BannerCarousel'))
+const BundleCarousel = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleCarousel })))
+const BundleGrid = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleGrid })))
+const BundleBanner = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleBanner })))
+const BundleQuickView = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleQuickView })))
+const LogoSplitIntro = lazy(() => import('@/components/home/LogoSplitIntro'))
+const NotableClients = lazy(() => import('@/components/home/NotableClients'))
+const HeroProductBanner = lazy(() => import('@/components/home/HeroProductBanner'))
 
 // Animated Counter component for stats
 function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
@@ -320,6 +325,8 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
   const videoContainerRef = useRef<HTMLDivElement>(null)
+  // Load video when it's near the viewport (once), play/pause as it enters/exits
+  const isNearViewport = useInView(videoContainerRef, { once: true, margin: '200px 0px' })
   const isVideoInView = useInView(videoContainerRef, { once: false, amount: 0.3 })
   const isEven = index % 2 === 0
   const videoSrc = categoryVideos[category.slug]
@@ -349,10 +356,10 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
       }}
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
-      {/* Video Side */}
+      {/* Video Side - only load video when near viewport */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-100 dark:bg-dark-900">
-          {videoSrc ? (
+          {videoSrc && isNearViewport ? (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -360,13 +367,13 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
               loop
               muted
               playsInline
-              preload="auto"
+              preload="metadata"
             >
               <source src={videoSrc} type="video/mp4" />
             </video>
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-800 dark:to-dark-900">
-              <div className="text-dark-400 dark:text-dark-600 text-sm">No video available</div>
+              <div className="text-dark-400 dark:text-dark-600 text-sm">{videoSrc ? '' : 'No video available'}</div>
             </div>
           )}
         </div>
@@ -980,7 +987,9 @@ export default function Home() {
       </Helmet>
 
       {!introComplete && (
-        <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
+        <Suspense fallback={null}>
+          <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
+        </Suspense>
       )}
 
       <div className="bg-white dark:bg-dark-950">
@@ -995,7 +1004,9 @@ export default function Home() {
           {!videoError && <video
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
             style={{ objectPosition: 'center center' }}
-            autoPlay loop muted playsInline preload="metadata"
+            autoPlay loop muted playsInline preload="auto"
+            // @ts-ignore - fetchpriority is valid HTML but not yet in React types
+            fetchpriority="high"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => { setVideoError(true); setVideoLoaded(true) }}
@@ -1014,19 +1025,23 @@ export default function Home() {
         </section>
 
         {/* Dynamic sections rendered in sort_order from admin */}
-        {sortedSectionKeys.map((key) => {
-          // Skip hero (rendered above) and sections without a renderer
-          if (key === 'hero' || !sectionRegistry[key]) return null
-          // Check if section is enabled (default to enabled if not in sections data)
-          if (!isSectionEnabled(key)) return null
-          return sectionRegistry[key]()
-        })}
+        <Suspense fallback={null}>
+          {sortedSectionKeys.map((key) => {
+            // Skip hero (rendered above) and sections without a renderer
+            if (key === 'hero' || !sectionRegistry[key]) return null
+            // Check if section is enabled (default to enabled if not in sections data)
+            if (!isSectionEnabled(key)) return null
+            return sectionRegistry[key]()
+          })}
+        </Suspense>
 
         {/* Modals */}
-        <BundleQuickView bundle={quickViewBundle} isOpen={!!quickViewBundle} onClose={() => setQuickViewBundle(null)} />
-        {quickViewProduct && (
-          <QuickViewModal isOpen={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} product={quickViewProduct} />
-        )}
+        <Suspense fallback={null}>
+          <BundleQuickView bundle={quickViewBundle} isOpen={!!quickViewBundle} onClose={() => setQuickViewBundle(null)} />
+          {quickViewProduct && (
+            <QuickViewModal isOpen={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} product={quickViewProduct} />
+          )}
+        </Suspense>
       </div>
     </>
   )

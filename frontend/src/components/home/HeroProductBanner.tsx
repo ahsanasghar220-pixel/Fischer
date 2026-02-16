@@ -129,6 +129,10 @@ function ProductCard({ product }: { product: ProductHighlight }) {
               key={currentImageIndex}
               src={product.images[currentImageIndex]}
               alt={`${product.name} - Image ${currentImageIndex + 1}`}
+              width={220}
+              height={220}
+              loading="lazy"
+              decoding="async"
               className="max-w-full max-h-full object-contain"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
