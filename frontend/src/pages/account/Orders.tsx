@@ -65,7 +65,7 @@ export default function Orders() {
       params.set('page', page.toString())
       if (status) params.set('status', status)
       if (searchQuery) params.set('search', searchQuery)
-      const response = await api.get(`/orders?${params.toString()}`)
+      const response = await api.get(`/api/orders?${params.toString()}`)
       return response.data
     },
   })
