@@ -955,13 +955,16 @@ export default function Home() {
 
               </div>
 
-              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
-                  {data.bestsellers.slice(0, 12).map((product) => (
-                    <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
-                  ))}
-                </ProductCarousel>
-              </AnimatedSection>
+              {/* Full-bleed carousel - edge to edge */}
+              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+                <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                  <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
+                    {data.bestsellers.slice(0, 12).map((product) => (
+                      <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+                    ))}
+                  </ProductCarousel>
+                </AnimatedSection>
+              </div>
             </section>
           </AnimatedSection>
         )}
@@ -1091,13 +1094,16 @@ export default function Home() {
 
               </div>
 
-              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                <ProductCarousel speed={110} direction="right" fadeClass="from-dark-50 dark:from-dark-950">
-                  {data.new_arrivals.slice(0, 12).map((product) => (
-                    <ProductCard key={product.id} product={product} showNew onQuickView={setQuickViewProduct} />
-                  ))}
-                </ProductCarousel>
-              </AnimatedSection>
+              {/* Full-bleed carousel - edge to edge */}
+              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+                <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+                  <ProductCarousel speed={110} direction="right" fadeClass="from-dark-50 dark:from-dark-950">
+                    {data.new_arrivals.slice(0, 12).map((product) => (
+                      <ProductCard key={product.id} product={product} showNew onQuickView={setQuickViewProduct} />
+                    ))}
+                  </ProductCarousel>
+                </AnimatedSection>
+              </div>
             </section>
           </AnimatedSection>
         )}
@@ -1133,8 +1139,9 @@ export default function Home() {
                 </AnimatedSection>
               </div>
 
-              {/* Full-bleed testimonial marquee */}
-              <ProductCarousel speed={70} gap={24} fixedCardWidth={400} fadeClass="from-dark-50 dark:from-dark-950">
+              {/* Full-bleed testimonial marquee - edge to edge */}
+              <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+                <ProductCarousel speed={70} gap={24} fixedCardWidth={400} fadeClass="from-dark-50 dark:from-dark-950">
                 {testimonials.map((testimonial) => {
                   const initials = testimonial.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                   return (
@@ -1203,7 +1210,8 @@ export default function Home() {
                     </div>
                   )
                 })}
-              </ProductCarousel>
+                </ProductCarousel>
+              </div>
             </section>
           </AnimatedSection>
         )}
