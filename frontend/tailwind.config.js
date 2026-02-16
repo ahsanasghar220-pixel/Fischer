@@ -10,12 +10,12 @@ export default {
       colors: {
         // Fischer brand colors - Deep Red
         primary: {
-          50: '#951212',  // All shades map to the brand deep red
-          100: '#951212',
-          200: '#951212',
-          300: '#951212',
-          400: '#951212',
-          500: '#951212', // Main deep red
+          50: '#FEE2E2',  // Very light pink/red for light mode backgrounds
+          100: '#FECACA', // Light pink for badges/containers
+          200: '#FCA5A5', // Lighter red
+          300: '#F87171', // Light red
+          400: '#EF4444', // Medium red
+          500: '#951212', // Main brand deep red
           600: '#7f1010', // Slightly darker for hover
           700: '#6b0e0e', // Darker for active/pressed
           800: '#570b0b',

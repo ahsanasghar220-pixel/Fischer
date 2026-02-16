@@ -149,7 +149,10 @@ const ProductCarousel = memo(function ProductCarousel({
       <div
         key={`${keyPrefix}-${i}`}
         className="flex-shrink-0"
-        style={{ width: cardWidth || undefined, marginRight: gap }}
+        style={{
+          width: cardWidth || undefined,
+          marginRight: i < children.length - 1 ? gap : 0
+        }}
       >
         {child}
       </div>
@@ -158,7 +161,7 @@ const ProductCarousel = memo(function ProductCarousel({
   return (
     <div
       ref={containerRef}
-      className="relative group/carousel overflow-hidden"
+      className="relative group/carousel overflow-x-clip overflow-y-visible"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={() => setIsHovered(true)}
@@ -167,8 +170,8 @@ const ProductCarousel = memo(function ProductCarousel({
       {/* Fade edges */}
       {fadeClass !== undefined && (
         <>
-          <div className={`pointer-events-none absolute left-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-r to-transparent ${fadeClass}`} />
-          <div className={`pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-l to-transparent ${fadeClass}`} />
+          <div className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-r to-transparent ${fadeClass}`} />
+          <div className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-l to-transparent ${fadeClass}`} />
         </>
       )}
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
-import { useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { getCategoryProductImage } from '@/lib/categoryImages'
 import {
   ArrowRightIcon,
@@ -302,16 +302,28 @@ const colorMap: Record<string, { gradient: string; bg: string; text: string }> =
   cyan: { gradient: 'from-cyan-500 to-blue-400', bg: 'bg-cyan-500/10', text: '#06b6d4' },
 }
 
-// Category Card for Carousel
-interface CategoryCardProps {
+// Get features for a category - prefer API data, fallback to defaults
+const getCategoryFeatures = (category: Category): string[] => {
+  if (category.features && category.features.length > 0) {
+    return category.features
+  }
+  return ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
+}
+
+// Category Showcase - Clean Split-Screen Layout
+interface CategoryShowcaseProps {
   category: Category
+  index: number
   categoryVideos: Record<string, string>
 }
 
-const CategoryCard = memo(function CategoryCard({ category, categoryVideos }: CategoryCardProps) {
+const CategoryShowcase = memo(function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseProps) {
+  const ref = useRef(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(cardRef, { once: false, amount: 0.5 })
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const videoContainerRef = useRef<HTMLDivElement>(null)
+  const isVideoInView = useInView(videoContainerRef, { once: false, amount: 0.3 })
+  const isEven = index % 2 === 0
   const videoSrc = categoryVideos[category.slug]
 
   // Auto-play video when in view
@@ -319,69 +331,88 @@ const CategoryCard = memo(function CategoryCard({ category, categoryVideos }: Ca
     const video = videoRef.current
     if (!video || !videoSrc) return
 
-    if (isInView) {
+    if (isVideoInView) {
       video.play().catch(() => {
-        // Video autoplay prevented
+        // Video autoplay prevented - user interaction required
       })
     } else {
       video.pause()
     }
-  }, [isInView, videoSrc])
-
-  // Determine category label/tag
-  const categoryTag = category.name.includes('Hood') ? 'VENTILATION SOLUTIONS' :
-                      category.name.includes('Hob') ? 'COOKING SOLUTIONS' :
-                      category.name.includes('Water') || category.name.includes('Dispenser') ? 'WATER SOLUTIONS' :
-                      category.name.includes('Oven') || category.name.includes('Toaster') ? 'BAKING EXCELLENCE' :
-                      category.name.includes('Fryer') ? 'COOKING EXCELLENCE' :
-                      'PREMIUM APPLIANCES'
+  }, [isVideoInView, videoSrc])
 
   return (
-    <div ref={cardRef} className="group relative h-[400px] md:h-[450px] rounded-2xl overflow-hidden bg-dark-800">
-      {/* Video Background */}
-      {videoSrc ? (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      ) : (
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-dark-700 to-dark-900" />
-      )}
-
-      {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-950/95 via-dark-950/50 to-transparent" />
-
-      {/* Content */}
-      <div className="relative h-full flex flex-col justify-end p-6 md:p-8">
-        {/* Category Tag */}
-        <span className="inline-block w-fit px-3 py-1.5 mb-3 rounded-full text-xs font-bold tracking-wide
-                       bg-primary-500/20 text-primary-300 border border-primary-500/30">
-          {categoryTag}
-        </span>
-
-        {/* Category Name */}
-        <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-          {category.name}
-        </h3>
-
-        {/* Explore Link */}
-        <Link
-          to={`/category/${category.slug}`}
-          className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300
-                   font-semibold text-sm group-hover:translate-x-1 transition-all duration-300"
-        >
-          Explore
-          <ArrowRightIcon className="w-4 h-4" />
-        </Link>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
+    >
+      {/* Video Side */}
+      <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-100 dark:bg-dark-900">
+          {videoSrc ? (
+            <video
+              ref={videoRef}
+              className="w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-800 dark:to-dark-900">
+              <div className="text-dark-400 dark:text-dark-600 text-sm">No video available</div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Content Side */}
+      <div className={`${!isEven ? 'lg:order-1' : ''}`}>
+        <div className="space-y-6">
+          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white">
+            {category.name}
+          </h3>
+
+          {/* Features list */}
+          <div className="grid sm:grid-cols-2 gap-3">
+            {getCategoryFeatures(category).slice(0, 6).map(
+              (feature, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                    <CheckCircleIcon className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="text-dark-700 dark:text-dark-300 text-sm font-medium">{feature}</span>
+                </div>
+              )
+            )}
+          </div>
+
+          {/* CTA Button */}
+          <div className="pt-4">
+            <Link
+              to={`/category/${category.slug}`}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                       bg-primary-500 dark:bg-primary-600
+                       text-white font-semibold
+                       hover:bg-primary-600 dark:hover:bg-primary-700
+                       hover:shadow-lg hover:-translate-y-0.5
+                       transition-all duration-300"
+            >
+              Explore {category.name}
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   )
 })
 
@@ -662,63 +693,34 @@ export default function Home() {
         )}
 
         {/* ==========================================
-            SECTION 6: CATEGORY SHOWCASE - CAROUSEL
+            SECTION 6: CATEGORY SHOWCASE - SPLIT SCREEN
             ========================================== */}
         {isSectionEnabled('categories') && categories.length > 0 && (
-          <AnimatedSection animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
-            <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-primary-500/6 rounded-full blur-[120px]" />
-                <div className="absolute top-0 left-1/4 w-[350px] h-[350px] bg-amber-500/6 rounded-full blur-[100px]" />
-              </div>
-
-              <div className="container-xl relative">
-                <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                      <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full
-                                     bg-primary-500/25 dark:bg-primary-900/30
-                                     text-primary-800 dark:text-primary-400
-                                     text-sm font-semibold mb-4">
-                        <SparklesIcon className="w-4 h-4" />
-                        Our Bestsellers
-                      </span>
-                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                        Discover Fischer{' '}
-                        <span className="text-primary-600 dark:text-primary-500">Essentials</span>
-                      </h2>
-                      <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
-                        {sections.categories?.subtitle || 'Premium appliances designed for modern living'}
-                      </p>
-                    </div>
-                    <Link
-                      to="/shop"
-                      className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl
-                               bg-primary-500 dark:bg-primary-600
-                               text-white font-semibold text-sm sm:text-base
-                               hover:bg-primary-600 dark:hover:bg-primary-700
-                               hover:shadow-lg hover:-translate-y-0.5 hover:scale-105
-                               active:scale-95 transition-all duration-300"
-                    >
-                      View All Products
-                      <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
-                </AnimatedSection>
-              </div>
-
-              <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
-                <ProductCarousel speed={95} fadeClass="from-white dark:from-dark-900">
-                  {(data?.video_categories?.length
-                    ? data.video_categories
-                    : categories.filter((c) => categoryVideos[c.slug])
-                  ).map((category) => (
-                    <CategoryCard key={category.id} category={category} categoryVideos={categoryVideos} />
-                  ))}
-                </ProductCarousel>
+          <section className="section bg-white dark:bg-dark-900">
+            <div className="container-xl">
+              {/* Section Header */}
+              <AnimatedSection animation="fade-up" duration={800} easing="gentle">
+                <div className="text-center mb-10 sm:mb-12 md:mb-16">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
+                    {sections.categories?.title || 'Explore Our Collections'}
+                  </h2>
+                  <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">
+                    {sections.categories?.subtitle || 'Each category carefully curated with premium quality and innovative designs'}
+                  </p>
+                </div>
               </AnimatedSection>
-            </section>
-          </AnimatedSection>
+
+              {/* Categories Detail - Split Screen Alternating */}
+              <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
+                {(data?.video_categories?.length
+                  ? data.video_categories
+                  : categories.filter((c) => categoryVideos[c.slug])
+                ).map((category, index) => (
+                  <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
+                ))}
+              </div>
+            </div>
+          </section>
         )}
 
         {/* ==========================================

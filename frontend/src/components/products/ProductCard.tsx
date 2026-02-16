@@ -324,7 +324,7 @@ const ProductCard = memo(function ProductCard({
             {(product.is_new || showNew) && (
               <span
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-gradient-to-r from-primary-500 to-primary-400 text-dark-900 shadow-lg
+                           bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-lg
                            transition-transform duration-300 ease-out
                            ${isHovered ? 'scale-110 -translate-y-0.5' : 'scale-100'}`}
               >
