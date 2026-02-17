@@ -1,40 +1,5 @@
 <?php
 
-// Temporary debug route - remove after fixing portfolio issue
-Route::get('/debug/portfolio', function () {
-    try {
-        // Force run the migration directly
-        if (!\Illuminate\Support\Facades\Schema::hasTable('portfolio_videos')) {
-            \Illuminate\Support\Facades\Schema::create('portfolio_videos', function ($table) {
-                $table->id();
-                $table->string('title');
-                $table->text('description')->nullable();
-                $table->string('video_url');
-                $table->string('thumbnail')->nullable();
-                $table->string('category')->nullable();
-                $table->integer('sort_order')->default(0);
-                $table->boolean('is_visible')->default(true);
-                $table->timestamps();
-            });
-        }
-        $hasTable = \Illuminate\Support\Facades\Schema::hasTable('portfolio_videos');
-        $count = $hasTable ? \Illuminate\Support\Facades\DB::table('portfolio_videos')->count() : 'N/A';
-        $pendingMigrations = \Illuminate\Support\Facades\Artisan::call('migrate', ['--status' => true]);
-        $output = \Illuminate\Support\Facades\Artisan::output();
-        return response()->json([
-            'table_exists' => $hasTable,
-            'table_created' => true,
-            'row_count' => $count,
-            'migrate_status' => $output,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'trace' => collect($e->getTrace())->take(5)->map(fn($t) => ($t['file'] ?? '?') . ':' . ($t['line'] ?? '?'))->all(),
-        ], 500);
-    }
-});
-
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
