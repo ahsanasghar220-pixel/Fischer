@@ -506,7 +506,7 @@ export default function Home() {
   }))
 
   // Hero video URL from section settings
-  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=5'
+  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=6'
 
   // Brand statement from section data
   const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
@@ -1005,6 +1005,7 @@ export default function Home() {
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
             style={{ objectPosition: 'center center' }}
             autoPlay loop muted playsInline preload="auto"
+            poster="/images/hero-poster.webp"
             // @ts-ignore - fetchpriority is valid HTML but not yet in React types
             fetchpriority="high"
             onCanPlayThrough={() => setVideoLoaded(true)}

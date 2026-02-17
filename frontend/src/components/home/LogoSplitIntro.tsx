@@ -35,18 +35,18 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
     const timers: NodeJS.Timeout[] = []
 
     // Start reveal animation with slight pause
-    timers.push(setTimeout(() => setPhase('reveal'), 300))
+    timers.push(setTimeout(() => setPhase('reveal'), 100))
 
     // Hold the reveal, then complete
     timers.push(setTimeout(() => {
       setPhase('complete')
       sessionStorage.setItem('fischer-intro-seen', 'true')
-    }, 2400))
+    }, 1200))
 
     // Call onComplete after fade out
     timers.push(setTimeout(() => {
       onComplete()
-    }, 2900))
+    }, 1500))
 
     return () => timers.forEach(t => clearTimeout(t))
   }, [onComplete, skipOnRepeatVisit])
@@ -127,7 +127,7 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
                   }}
                   transition={{
                     duration: 0.7,
-                    delay: i * 0.08,
+                    delay: i * 0.05,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >

@@ -14,8 +14,8 @@
     <!-- fonts.gstatic.com serves the font files via CORS (crossorigin required) -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Hint browser to fetch hero video early (preload as="video" is unsupported) -->
-    <link rel="prefetch" href="/videos/hero-video.mp4?v=5" as="video" type="video/mp4">
+    <!-- Preload hero poster image for fast LCP -->
+    <link rel="preload" as="image" href="/images/hero-poster.webp" type="image/webp">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
