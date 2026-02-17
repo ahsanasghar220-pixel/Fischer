@@ -1,5 +1,28 @@
 <?php
 
+// Temporary debug route - remove after fixing portfolio issue
+Route::get('/debug/portfolio', function () {
+    try {
+        $hasTable = \Illuminate\Support\Facades\Schema::hasTable('portfolio_videos');
+        $modelExists = class_exists(\App\Models\PortfolioVideo::class);
+        $count = $hasTable ? \Illuminate\Support\Facades\DB::table('portfolio_videos')->count() : 'N/A';
+        $migrations = \Illuminate\Support\Facades\DB::table('migrations')
+            ->where('migration', 'like', '%portfolio%')
+            ->pluck('migration');
+        return response()->json([
+            'table_exists' => $hasTable,
+            'model_exists' => $modelExists,
+            'row_count' => $count,
+            'portfolio_migrations' => $migrations,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'trace' => collect($e->getTrace())->take(5)->map(fn($t) => ($t['file'] ?? '?') . ':' . ($t['line'] ?? '?'))->all(),
+        ], 500);
+    }
+});
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
