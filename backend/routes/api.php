@@ -3,17 +3,29 @@
 // Temporary debug route - remove after fixing portfolio issue
 Route::get('/debug/portfolio', function () {
     try {
+        // Force run the migration directly
+        if (!\Illuminate\Support\Facades\Schema::hasTable('portfolio_videos')) {
+            \Illuminate\Support\Facades\Schema::create('portfolio_videos', function ($table) {
+                $table->id();
+                $table->string('title');
+                $table->text('description')->nullable();
+                $table->string('video_url');
+                $table->string('thumbnail')->nullable();
+                $table->string('category')->nullable();
+                $table->integer('sort_order')->default(0);
+                $table->boolean('is_visible')->default(true);
+                $table->timestamps();
+            });
+        }
         $hasTable = \Illuminate\Support\Facades\Schema::hasTable('portfolio_videos');
-        $modelExists = class_exists(\App\Models\PortfolioVideo::class);
         $count = $hasTable ? \Illuminate\Support\Facades\DB::table('portfolio_videos')->count() : 'N/A';
-        $migrations = \Illuminate\Support\Facades\DB::table('migrations')
-            ->where('migration', 'like', '%portfolio%')
-            ->pluck('migration');
+        $pendingMigrations = \Illuminate\Support\Facades\Artisan::call('migrate', ['--status' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
         return response()->json([
             'table_exists' => $hasTable,
-            'model_exists' => $modelExists,
+            'table_created' => true,
             'row_count' => $count,
-            'portfolio_migrations' => $migrations,
+            'migrate_status' => $output,
         ]);
     } catch (\Exception $e) {
         return response()->json([
