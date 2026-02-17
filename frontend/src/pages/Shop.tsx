@@ -616,10 +616,11 @@ export default function Shop() {
                 >
                   {productsData.data.map((product) => (
                     <StaggerItem key={product.id}>
-                      <div className="transition-transform duration-300 hover:-translate-y-2">
+                      <div className={`transition-transform duration-300 ${viewMode === 'grid' ? 'hover:-translate-y-2' : ''}`}>
                         <ProductCard
                           product={product}
                           onQuickView={setQuickViewProduct}
+                          viewMode={viewMode}
                         />
                       </div>
                     </StaggerItem>

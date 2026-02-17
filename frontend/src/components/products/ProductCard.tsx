@@ -57,6 +57,7 @@ interface ProductCardProps {
   onWishlistChange?: (inWishlist: boolean) => void
   onQuickView?: (product: Product) => void
   showNew?: boolean
+  viewMode?: 'grid' | 'list'
 }
 
 // Memoized ProductCard to prevent unnecessary re-renders
@@ -66,6 +67,7 @@ const ProductCard = memo(function ProductCard({
   onWishlistChange,
   onQuickView,
   showNew = false,
+  viewMode = 'grid',
 }: ProductCardProps) {
   const [isInWishlist, setIsInWishlist] = useState(inWishlist)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
@@ -244,7 +246,7 @@ const ProductCard = memo(function ProductCard({
       >
         <div
           ref={cardRef}
-          className="product-card relative overflow-visible"
+          className={`product-card relative overflow-visible ${viewMode === 'list' ? 'product-card--list' : ''}`}
           style={isTouchDevice ? undefined : {
             transform: `rotateX(${transform3D.rotateX}deg) rotateY(${transform3D.rotateY}deg)`,
             transformStyle: 'preserve-3d',
@@ -444,7 +446,12 @@ const ProductCard = memo(function ProductCard({
           )}
 
           {/* Name */}
-          <h3 className="product-name">{product.name}</h3>
+          <h3 className={`product-name ${viewMode === 'list' ? 'product-name--list' : ''}`}>{product.name}</h3>
+
+          {/* Description - only in list view */}
+          {viewMode === 'list' && product.short_description && (
+            <p className="product-description-list">{product.short_description}</p>
+          )}
 
           {/* Rating - simple static display */}
           {product.average_rating !== undefined && product.review_count !== undefined && product.review_count > 0 && (

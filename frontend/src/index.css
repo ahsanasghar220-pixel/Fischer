@@ -376,6 +376,105 @@ html.lenis, html.lenis body {
   }
 
   /* ========================================
+     LIST VIEW LAYOUT
+     ======================================== */
+  .product-card--list {
+    flex-direction: row;
+  }
+
+  .product-card--list:hover {
+    @apply translate-y-0;
+  }
+
+  .product-card--list .product-image {
+    aspect-ratio: auto;
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    @apply rounded-t-none rounded-l-2xl;
+  }
+
+  .product-card--list .product-info {
+    @apply p-4 md:p-5;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .product-card--list .product-name--list {
+    -webkit-line-clamp: 2;
+    min-height: auto;
+  }
+
+  .product-card--list .product-description-list {
+    @apply text-sm text-dark-500 dark:text-dark-400 mt-2 leading-relaxed;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .product-card--list .product-price {
+    @apply mt-3;
+  }
+
+  .product-card--list .product-actions {
+    @apply bottom-3 left-3 right-3;
+  }
+
+  .product-card--list .product-badge {
+    @apply top-3 left-3;
+  }
+
+  .product-card--list .product-wishlist {
+    @apply top-3 right-3;
+  }
+
+  /* Mobile list view - stack more compactly */
+  @media (max-width: 639px) {
+    .product-card--list {
+      flex-direction: row;
+    }
+
+    .product-card--list .product-image {
+      width: 130px;
+      min-width: 130px;
+      height: 130px;
+    }
+
+    .product-card--list .product-info {
+      @apply p-3;
+    }
+
+    .product-card--list .product-description-list {
+      display: none;
+    }
+
+    .product-card--list .product-actions {
+      @apply bottom-2 left-2 right-2;
+    }
+
+    .product-card--list .product-actions button {
+      @apply py-1.5 px-3 text-xs;
+    }
+
+    .product-card--list .product-badge {
+      @apply top-2 left-2;
+    }
+
+    .product-card--list .product-badge span {
+      @apply px-1.5 py-0.5 text-[9px];
+    }
+
+    .product-card--list .product-wishlist {
+      @apply top-2 right-2 p-1.5;
+    }
+
+    .product-card--list .product-wishlist svg {
+      @apply w-4 h-4;
+    }
+  }
+
+  /* ========================================
      TOUCH DEVICE OVERRIDES
      ======================================== */
   /* On touch-primary devices, always show product actions and dots */

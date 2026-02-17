@@ -64,31 +64,41 @@ class ProductController extends Controller
             $query->bestseller();
         }
 
-        // Sorting
-        $sortBy = $request->sort_by ?? 'created_at';
-        $sortOrder = $request->sort_order ?? 'desc';
+        // Always push out-of-stock products to the end
+        $query->orderByRaw("CASE WHEN stock_status = 'out_of_stock' THEN 1 ELSE 0 END ASC");
 
-        switch ($sortBy) {
+        // Sorting
+        $sort = $request->sort ?? $request->sort_by ?? 'latest';
+
+        switch ($sort) {
+            case 'price_asc':
             case 'price_low':
                 $query->orderBy('price', 'asc');
                 break;
+            case 'price_desc':
             case 'price_high':
                 $query->orderBy('price', 'desc');
                 break;
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
             case 'name':
-                $query->orderBy('name', $sortOrder);
+                $query->orderBy('name', $request->sort_order ?? 'asc');
                 break;
             case 'rating':
                 $query->orderByDesc('average_rating');
                 break;
+            case 'bestseller':
             case 'popularity':
                 $query->orderByDesc('sales_count');
                 break;
+            case 'latest':
             case 'newest':
-                $query->orderByDesc('created_at');
-                break;
             default:
-                $query->orderBy($sortBy, $sortOrder);
+                $query->orderByDesc('created_at');
         }
 
         $perPage = min($request->per_page ?? 12, 50);
@@ -200,14 +210,18 @@ class ProductController extends Controller
             $query->inStock();
         }
 
+        // Always push out-of-stock products to the end
+        $query->orderByRaw("CASE WHEN stock_status = 'out_of_stock' THEN 1 ELSE 0 END ASC");
+
         // Sorting
-        $sortBy = $request->sort_by ?? 'created_at';
-        match ($sortBy) {
-            'price_low' => $query->orderBy('price', 'asc'),
-            'price_high' => $query->orderBy('price', 'desc'),
-            'name' => $query->orderBy('name', 'asc'),
+        $sort = $request->sort ?? $request->sort_by ?? 'latest';
+        match ($sort) {
+            'price_asc', 'price_low' => $query->orderBy('price', 'asc'),
+            'price_desc', 'price_high' => $query->orderBy('price', 'desc'),
+            'name_asc', 'name' => $query->orderBy('name', 'asc'),
+            'name_desc' => $query->orderBy('name', 'desc'),
             'rating' => $query->orderByDesc('average_rating'),
-            'popularity' => $query->orderByDesc('sales_count'),
+            'bestseller', 'popularity' => $query->orderByDesc('sales_count'),
             default => $query->orderByDesc('created_at'),
         };
 
