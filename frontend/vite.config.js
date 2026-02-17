@@ -78,8 +78,9 @@ export default defineConfig({
                 manualChunks: function (id) {
                     // Critical path optimization - keep core small
                     if (id.includes('node_modules')) {
-                        // Core React libraries - highest priority
-                        if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                        // Core React libraries + essential peer deps - highest priority
+                        if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') ||
+                            id.includes('use-sync-external-store') || id.includes('scheduler')) {
                             return 'vendor-core';
                         }
                         // Framer Motion - lazy load this
