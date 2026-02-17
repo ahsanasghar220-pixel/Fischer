@@ -425,25 +425,25 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
 // Videos are in frontend/public/videos/categories/ and copied during build
 const defaultCategoryVideos: Record<string, string> = {
   // Kitchen Hoods variations
-  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4?v=2',
-  'built-in-hoods': '/videos/categories/built-in-hoods.mp4?v=2',
-  'hoods': '/videos/categories/built-in-hoods.mp4?v=2',
+  'kitchen-hoods': '/videos/categories/built-in-hoods.mp4?v=3',
+  'built-in-hoods': '/videos/categories/built-in-hoods.mp4?v=3',
+  'hoods': '/videos/categories/built-in-hoods.mp4?v=3',
 
   // Kitchen Hobs variations
-  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4?v=2',
-  'built-in-hobs': '/videos/categories/built-in-hobs.mp4?v=2',
-  'hobs': '/videos/categories/built-in-hobs.mp4?v=2',
+  'kitchen-hobs': '/videos/categories/built-in-hobs.mp4?v=3',
+  'built-in-hobs': '/videos/categories/built-in-hobs.mp4?v=3',
+  'hobs': '/videos/categories/built-in-hobs.mp4?v=3',
 
   // Oven Toasters variations
-  'oven-toasters': '/videos/categories/oven-toasters.mp4?v=2',
-  'oven-toaster': '/videos/categories/oven-toasters.mp4?v=2',
-  'toaster-ovens': '/videos/categories/oven-toasters.mp4?v=2',
-  'toasters': '/videos/categories/oven-toasters.mp4?v=2',
+  'oven-toasters': '/videos/categories/oven-toasters.mp4?v=3',
+  'oven-toaster': '/videos/categories/oven-toasters.mp4?v=3',
+  'toaster-ovens': '/videos/categories/oven-toasters.mp4?v=3',
+  'toasters': '/videos/categories/oven-toasters.mp4?v=3',
 
   // Air Fryers variations
-  'air-fryers': '/videos/categories/air-fryers.mp4?v=2',
-  'air-fryer': '/videos/categories/air-fryers.mp4?v=2',
-  'fryers': '/videos/categories/air-fryers.mp4?v=2',
+  'air-fryers': '/videos/categories/air-fryers.mp4?v=3',
+  'air-fryer': '/videos/categories/air-fryers.mp4?v=3',
+  'fryers': '/videos/categories/air-fryers.mp4?v=3',
 }
 
 export default function Home() {
