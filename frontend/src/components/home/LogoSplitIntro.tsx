@@ -41,12 +41,12 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
     timers.push(setTimeout(() => {
       setPhase('complete')
       sessionStorage.setItem('fischer-intro-seen', 'true')
-    }, 1200))
+    }, 900))
 
     // Call onComplete after fade out
     timers.push(setTimeout(() => {
       onComplete()
-    }, 1500))
+    }, 1100))
 
     return () => timers.forEach(t => clearTimeout(t))
   }, [onComplete, skipOnRepeatVisit])
@@ -77,7 +77,7 @@ export default function LogoSplitIntro({ onComplete, skipOnRepeatVisit = true }:
           onClick={handleSkip}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
         >
           {/* Sleek gradient background */}
           <motion.div

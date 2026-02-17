@@ -3,22 +3,6 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import http from 'http'
 
-// Make CSS non-render-blocking in production build
-// Critical CSS is already inlined in index.html <style> tags
-function asyncCssPlugin() {
-  return {
-    name: 'async-css',
-    enforce: 'post' as const,
-    transformIndexHtml(html: string) {
-      // Replace stylesheet links with async pattern (only for built CSS, not Google Fonts which is already async)
-      return html.replace(
-        /<link rel="stylesheet"(?: crossorigin)? href="(\/assets\/[^"]+\.css)">/g,
-        '<link rel="stylesheet" href="$1" media="print" onload="this.media=\'all\'"><noscript><link rel="stylesheet" href="$1"></noscript>'
-      )
-    },
-  }
-}
-
 // Custom proxy plugin to work around http-proxy incompatibility with Node 24
 function manualProxy() {
   const BACKEND = { hostname: '127.0.0.1', port: 80 }
@@ -61,7 +45,7 @@ function manualProxy() {
 }
 
 export default defineConfig({
-  plugins: [react(), asyncCssPlugin(), manualProxy()],
+  plugins: [react(), manualProxy()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
