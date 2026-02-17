@@ -10,10 +10,17 @@ class PortfolioController extends Controller
 {
     public function index()
     {
-        $videos = Cache::remember('portfolio_videos', 3600, function () {
-            return PortfolioVideo::visible()->ordered()->get();
-        });
+        try {
+            $videos = Cache::remember('portfolio_videos', 3600, function () {
+                return PortfolioVideo::visible()->ordered()->get();
+            });
 
-        return $this->success($videos);
+            return $this->success($videos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile() . ':' . $e->getLine(),
+            ], 500);
+        }
     }
 }
