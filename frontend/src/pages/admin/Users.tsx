@@ -8,6 +8,8 @@ import {
   ChevronRightIcon,
   XMarkIcon,
   ShieldCheckIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import toast from 'react-hot-toast'
@@ -392,12 +394,20 @@ export default function AdminUsers() {
                 <input
                   type="password"
                   value={form.password}
-                  onChange={e => { setForm({ ...form, password: e.target.value }); setFieldErrors(prev => { const { password, ...rest } = prev; return rest }) }}
+                  onChange={e => { setForm({ ...form, password: e.target.value, password_confirmation: '' }); setFieldErrors(prev => { const { password, password_confirmation, ...rest } = prev; return rest }) }}
                   placeholder={editingId ? 'Leave empty to keep current password' : 'Minimum 8 characters'}
                   className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.password ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                 />
                 {fieldErrors.password ? (
                   <p className="text-xs text-red-500 mt-1">{fieldErrors.password}</p>
+                ) : form.password ? (
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    {form.password.length >= 8 ? (
+                      <><CheckCircleIcon className="w-3.5 h-3.5 text-green-500" /><span className="text-xs text-green-600 dark:text-green-400">Password length is good</span></>
+                    ) : (
+                      <><ExclamationCircleIcon className="w-3.5 h-3.5 text-amber-500" /><span className="text-xs text-amber-600 dark:text-amber-400">{8 - form.password.length} more character{8 - form.password.length !== 1 ? 's' : ''} needed</span></>
+                    )}
+                  </div>
                 ) : (
                   !editingId && <p className="text-xs text-dark-400 mt-1">Must be at least 8 characters</p>
                 )}
@@ -411,9 +421,28 @@ export default function AdminUsers() {
                     value={form.password_confirmation}
                     onChange={e => { setForm({ ...form, password_confirmation: e.target.value }); setFieldErrors(prev => { const { password_confirmation, ...rest } = prev; return rest }) }}
                     placeholder="Re-enter password"
-                    className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.password_confirmation ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
+                    className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${
+                      fieldErrors.password_confirmation ? 'border-red-400 dark:border-red-500'
+                        : form.password_confirmation && form.password === form.password_confirmation ? 'border-green-400 dark:border-green-500'
+                        : form.password_confirmation && form.password !== form.password_confirmation ? 'border-red-400 dark:border-red-500'
+                        : 'border-dark-200 dark:border-dark-600'
+                    }`}
                   />
-                  {fieldErrors.password_confirmation && <p className="text-xs text-red-500 mt-1">{fieldErrors.password_confirmation}</p>}
+                  {fieldErrors.password_confirmation ? (
+                    <p className="text-xs text-red-500 mt-1">{fieldErrors.password_confirmation}</p>
+                  ) : form.password_confirmation ? (
+                    form.password === form.password_confirmation ? (
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />
+                        <span className="text-xs text-green-600 dark:text-green-400">Passwords match</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <ExclamationCircleIcon className="w-3.5 h-3.5 text-red-500" />
+                        <span className="text-xs text-red-500">Passwords do not match</span>
+                      </div>
+                    )
+                  ) : null}
                 </div>
               )}
 

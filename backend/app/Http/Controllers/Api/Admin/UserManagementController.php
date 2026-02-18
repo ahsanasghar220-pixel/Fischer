@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserManagementController extends Controller
 {
@@ -82,6 +83,10 @@ class UserManagementController extends Controller
                 'status' => $validated['status'] ?? 'active',
             ]);
 
+            // Ensure role exists (seeders may not have run on production)
+            Role::firstOrCreate(
+                ['name' => $validated['role'], 'guard_name' => 'web']
+            );
             $user->assignRole($validated['role']);
 
             return $this->success([
@@ -100,7 +105,7 @@ class UserManagementController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return $this->error('Failed to create user', 500);
+            return $this->error('Failed to create user: ' . $e->getMessage(), 500);
         }
     }
 
@@ -138,6 +143,9 @@ class UserManagementController extends Controller
             $user->update($updateData);
 
             if (isset($validated['role'])) {
+                Role::firstOrCreate(
+                    ['name' => $validated['role'], 'guard_name' => 'web']
+                );
                 $user->syncRoles([$validated['role']]);
             }
 
@@ -157,7 +165,7 @@ class UserManagementController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return $this->error('Failed to update user', 500);
+            return $this->error('Failed to update user: ' . $e->getMessage(), 500);
         }
     }
 
