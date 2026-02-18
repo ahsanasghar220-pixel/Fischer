@@ -167,7 +167,7 @@ export default function AdminAnalytics() {
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Revenue & Orders Trend</h2>
         <div className="h-80">
-          <ResponsiveContainer width="100%" height={300} minWidth={300}>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={salesChartData}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -209,7 +209,7 @@ export default function AdminAnalytics() {
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Orders by Status</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height={250} minWidth={250}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={ordersByStatus}
@@ -236,7 +236,7 @@ export default function AdminAnalytics() {
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Revenue by Payment Method</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height={250} minWidth={250}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={revenueByPayment} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
                 <XAxis type="number" tickFormatter={(v) => `Rs ${v / 1000}k`} tick={{ fill: axisTickColor }} />
@@ -252,7 +252,7 @@ export default function AdminAnalytics() {
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-4">Top Categories by Revenue</h2>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height={250} minWidth={250}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={topCategories}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-dark-200 dark:stroke-dark-600" />
                 <XAxis dataKey="name" tick={{ fill: axisTickColor }} />

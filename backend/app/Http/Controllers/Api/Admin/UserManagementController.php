@@ -12,46 +12,54 @@ class UserManagementController extends Controller
 {
     public function index(Request $request)
     {
-        $page = $request->get('page', 1);
-        $search = $request->get('search');
-        $perPage = 15;
+        try {
+            $page = $request->get('page', 1);
+            $search = $request->get('search');
+            $perPage = 15;
 
-        $query = User::role(['super-admin', 'admin', 'order-manager', 'content-manager']);
+            $query = User::role(['super-admin', 'admin', 'order-manager', 'content-manager']);
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                      ->orWhere('last_name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+
+            $users = $query->orderByDesc('created_at')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            $data = collect($users->items())->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'status' => $user->status ?? 'active',
+                    'roles' => $user->getRoleNames()->toArray(),
+                    'last_login_at' => $user->last_login_at,
+                    'created_at' => $user->created_at,
+                ];
             });
+
+            return $this->success([
+                'data' => $data,
+                'meta' => [
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'total' => $users->total(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('UserManagement index error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->error('Failed to load users: ' . $e->getMessage(), 500);
         }
-
-        $users = $query->orderByDesc('created_at')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        $data = collect($users->items())->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'full_name' => $user->full_name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'status' => $user->status ?? 'active',
-                'roles' => $user->getRoleNames()->toArray(),
-                'last_login_at' => $user->last_login_at,
-                'created_at' => $user->created_at,
-            ];
-        });
-
-        return $this->success([
-            'data' => $data,
-            'meta' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'total' => $users->total(),
-            ],
-        ]);
     }
 
     public function store(Request $request)

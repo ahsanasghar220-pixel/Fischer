@@ -415,7 +415,7 @@ export default function RealTimeAnalytics() {
             {trafficData?.sources?.length ? (
               <div className="flex flex-col lg:flex-row items-center gap-8">
                 <div className="w-48 h-48">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width={192} height={192}>
                     <PieChart>
                       <Pie
                         data={trafficData.sources}
