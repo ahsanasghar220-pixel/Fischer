@@ -127,6 +127,7 @@ export default {
         'border-flow': 'borderFlow 3s linear infinite',
         'breathe': 'breathe 4s ease-in-out infinite',
         'swing': 'swing 3s ease-in-out infinite',
+        'slide-in-right': 'slideInRight 0.3s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -148,6 +149,10 @@ export default {
         fadeInRight: {
           '0%': { opacity: '0', transform: 'translateX(30px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
         },
         slideUp: {
           '0%': { transform: 'translateY(20px)', opacity: '0' },
