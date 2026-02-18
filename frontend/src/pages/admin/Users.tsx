@@ -83,6 +83,7 @@ export default function AdminUsers() {
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState<UserForm>(emptyForm)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery<UsersResponse>({
@@ -95,6 +96,24 @@ export default function AdminUsers() {
       return res.data.data
     },
   })
+
+  const validateForm = (data: UserForm): Record<string, string> => {
+    const errors: Record<string, string> = {}
+    if (!data.first_name.trim()) errors.first_name = 'First name is required'
+    if (!data.last_name.trim()) errors.last_name = 'Last name is required'
+    if (!data.email.trim()) errors.email = 'Email is required'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errors.email = 'Enter a valid email address'
+    if (!editingId) {
+      if (!data.password) errors.password = 'Password is required'
+      else if (data.password.length < 8) errors.password = 'Password must be at least 8 characters'
+    } else if (data.password && data.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters'
+    }
+    if (data.password && data.password !== data.password_confirmation) {
+      errors.password_confirmation = 'Passwords do not match'
+    }
+    return errors
+  }
 
   const saveMutation = useMutation({
     mutationFn: async (data: UserForm) => {
@@ -116,10 +135,14 @@ export default function AdminUsers() {
     },
     onError: (err: any) => {
       const data = err?.response?.data
-      // Show first validation error if available, otherwise generic message
       if (data?.errors) {
-        const firstError = Object.values(data.errors).flat()[0] as string
-        toast.error(firstError || data?.message || 'Failed to save user')
+        // Map server validation errors to inline field errors
+        const mapped: Record<string, string> = {}
+        for (const [field, messages] of Object.entries(data.errors)) {
+          mapped[field] = (messages as string[])[0]
+        }
+        setFieldErrors(mapped)
+        toast.error('Please fix the errors below')
       } else {
         toast.error(data?.message || 'Failed to save user')
       }
@@ -142,6 +165,7 @@ export default function AdminUsers() {
     setShowModal(false)
     setEditingId(null)
     setForm(emptyForm)
+    setFieldErrors({})
   }
 
   const openEdit = (user: AdminUser) => {
@@ -316,9 +340,13 @@ export default function AdminUsers() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
+                const errors = validateForm(form)
+                setFieldErrors(errors)
+                if (Object.keys(errors).length > 0) return
                 saveMutation.mutate(form)
               }}
               className="p-6 space-y-4"
+              noValidate
             >
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -326,20 +354,22 @@ export default function AdminUsers() {
                   <input
                     type="text"
                     value={form.first_name}
-                    onChange={e => setForm({ ...form, first_name: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                    onChange={e => { setForm({ ...form, first_name: e.target.value }); setFieldErrors(prev => { const { first_name, ...rest } = prev; return rest }) }}
+                    placeholder="e.g. Ahmed"
+                    className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.first_name ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                   />
+                  {fieldErrors.first_name && <p className="text-xs text-red-500 mt-1">{fieldErrors.first_name}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Last Name *</label>
                   <input
                     type="text"
                     value={form.last_name}
-                    onChange={e => setForm({ ...form, last_name: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                    onChange={e => { setForm({ ...form, last_name: e.target.value }); setFieldErrors(prev => { const { last_name, ...rest } = prev; return rest }) }}
+                    placeholder="e.g. Khan"
+                    className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.last_name ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                   />
+                  {fieldErrors.last_name && <p className="text-xs text-red-500 mt-1">{fieldErrors.last_name}</p>}
                 </div>
               </div>
 
@@ -348,10 +378,11 @@ export default function AdminUsers() {
                 <input
                   type="email"
                   value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  onChange={e => { setForm({ ...form, email: e.target.value }); setFieldErrors(prev => { const { email, ...rest } = prev; return rest }) }}
+                  placeholder="e.g. user@fischer.com.pk"
+                  className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.email ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                 />
+                {fieldErrors.email && <p className="text-xs text-red-500 mt-1">{fieldErrors.email}</p>}
               </div>
 
               <div>
@@ -361,10 +392,15 @@ export default function AdminUsers() {
                 <input
                   type="password"
                   value={form.password}
-                  onChange={e => setForm({ ...form, password: e.target.value })}
-                  required={!editingId}
-                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  onChange={e => { setForm({ ...form, password: e.target.value }); setFieldErrors(prev => { const { password, ...rest } = prev; return rest }) }}
+                  placeholder={editingId ? 'Leave empty to keep current password' : 'Minimum 8 characters'}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.password ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                 />
+                {fieldErrors.password ? (
+                  <p className="text-xs text-red-500 mt-1">{fieldErrors.password}</p>
+                ) : (
+                  !editingId && <p className="text-xs text-dark-400 mt-1">Must be at least 8 characters</p>
+                )}
               </div>
 
               {form.password && (
@@ -373,10 +409,11 @@ export default function AdminUsers() {
                   <input
                     type="password"
                     value={form.password_confirmation}
-                    onChange={e => setForm({ ...form, password_confirmation: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                    onChange={e => { setForm({ ...form, password_confirmation: e.target.value }); setFieldErrors(prev => { const { password_confirmation, ...rest } = prev; return rest }) }}
+                    placeholder="Re-enter password"
+                    className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500 ${fieldErrors.password_confirmation ? 'border-red-400 dark:border-red-500' : 'border-dark-200 dark:border-dark-600'}`}
                   />
+                  {fieldErrors.password_confirmation && <p className="text-xs text-red-500 mt-1">{fieldErrors.password_confirmation}</p>}
                 </div>
               )}
 
@@ -391,7 +428,7 @@ export default function AdminUsers() {
                   <option value="content-manager">Content Manager</option>
                   <option value="admin">Admin</option>
                 </select>
-                <p className="text-xs text-dark-500 mt-1">
+                <p className="text-xs text-dark-400 mt-1">
                   {form.role === 'order-manager' && 'Can manage orders, customers, and service requests'}
                   {form.role === 'content-manager' && 'Can manage products, categories, bundles, pages, reviews, and sales'}
                   {form.role === 'admin' && 'Full access to all admin features except user management'}
