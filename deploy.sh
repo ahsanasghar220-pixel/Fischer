@@ -137,6 +137,10 @@ if [ -d "backend" ]; then
     echo "Seeding roles & permissions..."
     php artisan db:seed --class=RolePermissionSeeder --force
 
+    # Seed homepage sections (safe - uses updateOrInsert, idempotent)
+    echo "Seeding homepage sections..."
+    php artisan db:seed --class=HomepageSeeder --force
+
     # Clear permission cache so Spatie picks up fresh data
     php artisan cache:clear
 

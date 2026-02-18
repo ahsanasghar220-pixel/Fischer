@@ -25,39 +25,52 @@ class HomepageController extends Controller
      */
     public function index()
     {
-        $data = [
-            'sections' => HomepageSection::ordered()->get(),
-            'stats' => HomepageStat::ordered()->get(),
-            'features' => HomepageFeature::ordered()->get(),
-            'testimonials' => Testimonial::ordered()->get(),
-            'trust_badges' => HomepageTrustBadge::ordered()->get(),
-            'homepage_categories' => HomepageCategory::with('category:id,name,slug,image,icon')
-                ->visible()
-                ->ordered()
-                ->get(),
-            'homepage_products' => HomepageProduct::with(['product' => function ($q) {
-                    $q->select('id', 'name', 'slug', 'price', 'sku')->with('images');
-                }])
-                ->visible()
-                ->ordered()
-                ->get(),
-            'banners' => Banner::orderBy('sort_order')->get(),
-            'notable_clients' => NotableClient::ordered()->get(),
-            // For selection dropdowns
-            'all_categories' => Category::select('id', 'name', 'slug', 'image', 'icon')
-                ->where('is_active', true)
-                ->withCount('products')
-                ->orderBy('name')
-                ->get(),
-            'all_products' => Product::select('id', 'name', 'slug', 'price', 'sku')
-                ->with('images')
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->limit(500)
-                ->get(),
-        ];
+        try {
+            // Auto-seed sections if table is empty (handles fresh deploys)
+            if (HomepageSection::count() === 0) {
+                \Artisan::call('db:seed', ['--class' => 'HomepageSeeder', '--force' => true]);
+            }
 
-        return $this->success($data);
+            $data = [
+                'sections' => HomepageSection::ordered()->get(),
+                'stats' => HomepageStat::ordered()->get(),
+                'features' => HomepageFeature::ordered()->get(),
+                'testimonials' => Testimonial::ordered()->get(),
+                'trust_badges' => HomepageTrustBadge::ordered()->get(),
+                'homepage_categories' => HomepageCategory::with('category:id,name,slug,image,icon')
+                    ->visible()
+                    ->ordered()
+                    ->get(),
+                'homepage_products' => HomepageProduct::with(['product' => function ($q) {
+                        $q->select('id', 'name', 'slug', 'price', 'sku')->with('images');
+                    }])
+                    ->visible()
+                    ->ordered()
+                    ->get(),
+                'banners' => Banner::orderBy('sort_order')->get(),
+                'notable_clients' => NotableClient::ordered()->get(),
+                // For selection dropdowns
+                'all_categories' => Category::select('id', 'name', 'slug', 'image', 'icon')
+                    ->where('is_active', true)
+                    ->withCount('products')
+                    ->orderBy('name')
+                    ->get(),
+                'all_products' => Product::select('id', 'name', 'slug', 'price', 'sku')
+                    ->with('images')
+                    ->where('is_active', true)
+                    ->orderBy('name')
+                    ->limit(500)
+                    ->get(),
+            ];
+
+            return $this->success($data);
+        } catch (\Exception $e) {
+            \Log::error('Homepage index error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->error('Failed to load homepage settings: ' . $e->getMessage(), 500);
+        }
     }
 
     /**
