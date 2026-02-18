@@ -155,9 +155,9 @@ export default function AdminDashboard() {
           <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">{data?.orders.delivered || 0}</p>
           <p className="text-xs sm:text-sm text-green-700 dark:text-green-300 mt-1">Delivered</p>
         </div>
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3 sm:p-4 text-center">
-          <p className="text-2xl sm:text-3xl font-bold text-red-600 dark:text-red-400">{data?.products.out_of_stock || 0}</p>
-          <p className="text-xs sm:text-sm text-red-700 dark:text-red-300 mt-1">Out of Stock</p>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl p-3 sm:p-4 text-center">
+          <p className="text-2xl sm:text-3xl font-bold text-red-500 dark:text-red-400">{data?.products.out_of_stock || 0}</p>
+          <p className="text-xs sm:text-sm text-red-500/80 dark:text-red-300 mt-1">Out of Stock</p>
         </div>
       </div>
 
