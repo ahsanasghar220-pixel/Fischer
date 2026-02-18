@@ -86,10 +86,16 @@
   </head>
   <body class="font-sans antialiased">
     <div id="root">
-      <!-- Hero poster shown immediately while React loads - becomes LCP element -->
-      <div class="initial-skeleton">
+      <!-- Hero poster shown only on homepage while React loads - becomes LCP element -->
+      <div class="initial-skeleton" id="hero-skeleton">
         <img src="/images/hero-poster.webp" alt="" width="1280" height="720" fetchpriority="high" />
       </div>
+      <script>
+        // Only show hero skeleton on homepage; hide immediately on other pages
+        if (window.location.pathname !== '/') {
+          document.getElementById('hero-skeleton').style.display = 'none';
+        }
+      </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
