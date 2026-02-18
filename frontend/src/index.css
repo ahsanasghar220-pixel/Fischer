@@ -1388,12 +1388,18 @@ html.lenis, html.lenis body {
   animation: subtle-float 6s ease-in-out infinite;
 }
 
-/* Shimmer effect for loading states */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+/* GPU-composited shimmer sweep (uses transform instead of background-position) */
+@keyframes shimmer-gpu {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
+.animate-shimmer-gpu {
+  animation: shimmer-gpu 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Shimmer effect for loading states (skeleton loaders) */
 .animate-shimmer {
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
   background-size: 200% 100%;

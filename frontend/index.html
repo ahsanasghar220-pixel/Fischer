@@ -67,13 +67,17 @@
       html:not(.dark) { background-color: #fafafa; color: #18181b; }
       body { margin: 0; min-height: 100vh; font-family: 'Poppins', system-ui, sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
       #root { min-height: 100vh; overflow-x: hidden; }
-      /* Initial hero skeleton - shows hero poster before React loads */
+      /* Initial hero skeleton - matches hero section responsive heights to prevent CLS */
       .initial-skeleton {
         position: relative;
-        min-height: 100vh;
+        height: max(50vh, 450px); /* matches h-[50vh] min-h-[450px] */
         background: #09090b;
         overflow: hidden;
       }
+      @media (min-width: 640px) { .initial-skeleton { height: 65vh; } }
+      @media (min-width: 768px) { .initial-skeleton { height: 75vh; } }
+      @media (min-width: 1024px) { .initial-skeleton { height: 85vh; } }
+      @media (min-width: 1280px) { .initial-skeleton { height: 100vh; } }
       .initial-skeleton img {
         position: absolute;
         inset: 0;

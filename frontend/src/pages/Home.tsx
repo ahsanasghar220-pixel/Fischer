@@ -452,6 +452,7 @@ export default function Home() {
   const [introComplete, setIntroComplete] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  const [videoSrcReady, setVideoSrcReady] = useState(false)
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -460,6 +461,17 @@ export default function Home() {
       return response.data.data
     },
   })
+
+  // Defer hero video loading until after initial paint to avoid blocking LCP
+  useEffect(() => {
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(() => setVideoSrcReady(true))
+      return () => cancelIdleCallback(id)
+    } else {
+      const timer = setTimeout(() => setVideoSrcReady(true), 1500)
+      return () => clearTimeout(timer)
+    }
+  }, [])
 
   // Fetch homepage bundles
   const { data: homepageBundles } = useHomepageBundles()
@@ -996,7 +1008,9 @@ export default function Home() {
         {/* Hero is always first */}
         <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
           <div className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer-gpu" />
+            </div>
           </div>
           {videoError && (
             <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
@@ -1004,15 +1018,13 @@ export default function Home() {
           {!videoError && <video
             className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
             style={{ objectPosition: 'center center' }}
-            autoPlay loop muted playsInline preload="auto"
+            autoPlay loop muted playsInline preload="none"
             poster="/images/hero-poster.webp"
-            // @ts-ignore - fetchpriority is valid HTML but not yet in React types
-            fetchpriority="high"
             onCanPlayThrough={() => setVideoLoaded(true)}
             onLoadedData={() => setVideoLoaded(true)}
             onError={() => { setVideoError(true); setVideoLoaded(true) }}
           >
-            <source src={heroVideoUrl} type="video/mp4" />
+            {videoSrcReady && <source src={heroVideoUrl} type="video/mp4" />}
           </video>}
           <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
           <div className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
