@@ -26,6 +26,7 @@ import {
   VideoCameraIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 interface MenuItem {
   path?: string
@@ -168,28 +169,28 @@ export default function AdminLayout() {
 
       {/* Sidebar with smooth transitions */}
       <aside
-        className={`fixed inset-y-0 left-0 w-72 bg-dark-900 transform transition-all duration-300 ease-out z-50 lg:translate-x-0 flex flex-col ${
+        className={`fixed inset-y-0 left-0 w-72 bg-white dark:bg-dark-900 border-r border-dark-200 dark:border-dark-800 transform transition-all duration-300 ease-out z-50 lg:translate-x-0 flex flex-col ${
           sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-dark-800 flex-shrink-0">
+        <div className="h-16 flex items-center justify-between px-5 border-b border-dark-200 dark:border-dark-800 flex-shrink-0">
           <Link to="/admin" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-primary-500 rounded-lg flex items-center justify-center">
               <span className="text-dark-900 font-bold text-lg">F</span>
             </div>
-            <span className="text-white font-semibold text-lg">Fischer Admin</span>
+            <span className="text-dark-900 dark:text-white font-semibold text-lg">Fischer Admin</span>
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-dark-400 hover:text-white transition-colors"
+            className="lg:hidden text-dark-400 hover:text-dark-900 dark:hover:text-white transition-colors"
           >
             <XMarkIcon className="w-6 h-6" />
           </button>
         </div>
 
         {/* Navigation with smooth animations - scrollable */}
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 scrollbar-thin scrollbar-thumb-dark-700 scrollbar-track-dark-900 min-h-0">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-1 admin-sidebar-scroll min-h-0">
           {visibleMenuItems.map((item) => {
             const Icon = item.icon
             const hasChildren = item.children && item.children.length > 0
@@ -203,8 +204,8 @@ export default function AdminLayout() {
                     onClick={() => toggleMenu(item.label)}
                     className={`group flex items-center justify-between w-full gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 hover:translate-x-1 text-sm ${
                       isItemActive
-                        ? 'bg-dark-800 text-white font-medium'
-                        : 'text-dark-300 hover:bg-dark-800 hover:text-white'
+                        ? 'bg-dark-100 dark:bg-dark-800 text-dark-900 dark:text-white font-medium'
+                        : 'text-dark-500 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 hover:text-dark-900 dark:hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -218,7 +219,7 @@ export default function AdminLayout() {
                     )}
                   </button>
                   {isExpanded && item.children && (
-                    <div className="ml-4 space-y-1 border-l border-dark-800 pl-2">
+                    <div className="ml-4 space-y-1 border-l border-dark-200 dark:border-dark-800 pl-2">
                       {item.children.map((child) => {
                         const ChildIcon = child.icon
                         return (
@@ -228,8 +229,8 @@ export default function AdminLayout() {
                             onClick={() => setSidebarOpen(false)}
                             className={`group flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 hover:translate-x-1 text-sm ${
                               isActive(child.path!, child.exact)
-                                ? 'bg-primary-500 text-dark-900 font-medium'
-                                : 'text-dark-400 hover:bg-dark-800 hover:text-white'
+                                ? 'bg-primary-500 text-white font-medium'
+                                : 'text-dark-500 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-800 hover:text-dark-900 dark:hover:text-white'
                             }`}
                           >
                             <ChildIcon className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
@@ -250,8 +251,8 @@ export default function AdminLayout() {
                 onClick={() => setSidebarOpen(false)}
                 className={`group flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 hover:translate-x-1 text-sm ${
                   isItemActive
-                    ? 'bg-primary-500 text-dark-900 font-medium'
-                    : 'text-dark-300 hover:bg-dark-800 hover:text-white'
+                    ? 'bg-primary-500 text-white font-medium'
+                    : 'text-dark-500 dark:text-dark-300 hover:bg-dark-100 dark:hover:bg-dark-800 hover:text-dark-900 dark:hover:text-white'
                 }`}
               >
                 <Icon className="w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
@@ -262,21 +263,21 @@ export default function AdminLayout() {
         </nav>
 
         {/* User - fixed at bottom */}
-        <div className="flex-shrink-0 p-4 border-t border-dark-800 bg-dark-900">
+        <div className="flex-shrink-0 p-4 border-t border-dark-200 dark:border-dark-800 bg-white dark:bg-dark-900">
           <div className="flex items-center gap-3 mb-3 px-1">
-            <div className="w-10 h-10 bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-medium text-base">
+            <div className="w-10 h-10 bg-dark-200 dark:bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-dark-700 dark:text-white font-medium text-base">
                 {(user?.full_name || user?.first_name || user?.name || '?').charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-white font-medium truncate text-sm">{user?.full_name || user?.name}</p>
-              <p className="text-dark-400 text-xs truncate">{user?.email}</p>
+              <p className="text-dark-900 dark:text-white font-medium truncate text-sm">{user?.full_name || user?.name}</p>
+              <p className="text-dark-500 dark:text-dark-400 text-xs truncate">{user?.email}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="group flex items-center gap-3 w-full px-4 py-2.5 text-dark-300 hover:text-white hover:bg-dark-800 rounded-lg transition-all duration-200 hover:translate-x-1 text-base"
+            className="group flex items-center gap-3 w-full px-4 py-2.5 text-dark-500 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-800 rounded-lg transition-all duration-200 hover:translate-x-1 text-base"
           >
             <ArrowRightOnRectangleIcon className="w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
             <span>Logout</span>
@@ -298,6 +299,7 @@ export default function AdminLayout() {
           <div className="flex-1 lg:ml-0" />
 
           <div className="flex items-center gap-4">
+            <ThemeToggle variant="dropdown" />
             <Link
               to="/"
               target="_blank"
