@@ -365,7 +365,7 @@ const ProductCard = memo(function ProductCard({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-dark-900/70 backdrop-blur-sm flex items-center justify-center z-20"
+              className="absolute inset-0 bg-dark-950/60 dark:bg-dark-900/70 backdrop-blur-sm flex items-center justify-center z-20"
             >
               <div className="text-center px-4">
                 <motion.div
@@ -409,7 +409,7 @@ const ProductCard = memo(function ProductCard({
                         max-w-[200px]
                         transition-all duration-200 shadow-lg
                         ${product.stock_status === 'out_of_stock'
-                          ? 'bg-dark-400 dark:bg-dark-600 cursor-not-allowed'
+                          ? 'bg-dark-600 dark:bg-dark-600 cursor-not-allowed opacity-80'
                           : 'bg-primary-500 hover:bg-primary-400 hover:scale-[1.02] active:scale-[0.98]'
                         }
                         ${isAddingToCart ? 'opacity-70' : ''}`}
@@ -489,6 +489,13 @@ const ProductCard = memo(function ProductCard({
               <span className="product-price-old">{formatPrice(product.compare_price)}</span>
             )}
           </div>
+
+          {/* Out of Stock indicator in card info */}
+          {product.stock_status === 'out_of_stock' && (
+            <div className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded-md">
+              <span className="text-xs font-semibold text-red-700 dark:text-red-300">Out of Stock</span>
+            </div>
+          )}
 
           {/* Low Stock Warning */}
           {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (

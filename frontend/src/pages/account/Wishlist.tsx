@@ -153,14 +153,18 @@ export default function Wishlist() {
                     <button
                       onClick={() => handleAddToCart(item)}
                       disabled={item.product.stock_status === 'out_of_stock'}
-                      className="btn btn-primary btn-sm flex items-center gap-1"
+                      className={`btn btn-sm flex items-center gap-1 ${
+                        item.product.stock_status === 'out_of_stock'
+                          ? 'bg-dark-200 dark:bg-dark-700 text-dark-500 dark:text-dark-400 cursor-not-allowed'
+                          : 'bg-primary-500 text-white hover:bg-primary-600'
+                      }`}
                     >
                       <ShoppingCartIcon className="w-4 h-4" />
-                      Add to Cart
+                      {item.product.stock_status === 'out_of_stock' ? 'Unavailable' : 'Add to Cart'}
                     </button>
                     <button
                       onClick={() => removeMutation.mutate(item.product.id)}
-                      className="btn btn-dark-outline btn-sm flex items-center gap-1 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      className="btn btn-sm flex items-center gap-1 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       <TrashIcon className="w-4 h-4" />
                       Remove
