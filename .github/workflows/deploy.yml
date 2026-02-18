@@ -83,6 +83,15 @@ jobs:
           echo "=== composer.json exists? ==="
           cat deploy/composer.json | head -5
 
+      - name: Test SSH connectivity
+        run: |
+          echo "=== Testing SSH connectivity ==="
+          echo "Host: ${{ secrets.SSH_HOST }}"
+          echo "Port: ${{ secrets.SSH_PORT }}"
+          nc -zv -w 10 ${{ secrets.SSH_HOST }} ${{ secrets.SSH_PORT }} 2>&1 || echo "TCP connection FAILED"
+          echo "=== Deploy package size ==="
+          du -sh deploy/
+
       - name: Deploy to Hostinger via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -95,7 +104,9 @@ jobs:
           strip_components: 1
           rm: false
           overwrite: true
-          timeout: 120s
+          timeout: 300s
+          command_timeout: 10m
+          debug: true
 
       - name: Post-deployment tasks
         uses: appleboy/ssh-action@v1.0.0
