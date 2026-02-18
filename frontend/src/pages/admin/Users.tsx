@@ -99,7 +99,13 @@ export default function AdminUsers() {
   const saveMutation = useMutation({
     mutationFn: async (data: UserForm) => {
       if (editingId) {
-        return api.put(`/api/admin/users/${editingId}`, data)
+        // Strip empty password fields so backend 'sometimes' rule skips them
+        const payload: Record<string, any> = { ...data }
+        if (!payload.password) {
+          delete payload.password
+          delete payload.password_confirmation
+        }
+        return api.put(`/api/admin/users/${editingId}`, payload)
       }
       return api.post('/api/admin/users', data)
     },
@@ -109,8 +115,14 @@ export default function AdminUsers() {
       closeModal()
     },
     onError: (err: any) => {
-      const msg = err?.response?.data?.message || 'Failed to save user'
-      toast.error(msg)
+      const data = err?.response?.data
+      // Show first validation error if available, otherwise generic message
+      if (data?.errors) {
+        const firstError = Object.values(data.errors).flat()[0] as string
+        toast.error(firstError || data?.message || 'Failed to save user')
+      } else {
+        toast.error(data?.message || 'Failed to save user')
+      }
     },
   })
 

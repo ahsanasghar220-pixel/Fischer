@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class UserManagementController extends Controller
 {
@@ -58,7 +57,7 @@ class UserManagementController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return $this->error('Failed to load users: ' . $e->getMessage(), 500);
+            return $this->error('Failed to load users', 500);
         }
     }
 
@@ -68,32 +67,40 @@ class UserManagementController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', 'min:8'],
             'role' => 'required|string|in:admin,order-manager,content-manager',
             'status' => 'sometimes|string|in:active,inactive',
         ]);
 
-        $user = User::create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'status' => $validated['status'] ?? 'active',
-        ]);
+        try {
+            $user = User::create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'status' => $validated['status'] ?? 'active',
+            ]);
 
-        $user->assignRole($validated['role']);
+            $user->assignRole($validated['role']);
 
-        return $this->success([
-            'data' => [
-                'id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'full_name' => $user->full_name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames()->toArray(),
-                'status' => $user->status,
-            ],
-        ], 'User created successfully', 201);
+            return $this->success([
+                'data' => [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames()->toArray(),
+                    'status' => $user->status,
+                ],
+            ], 'User created successfully', 201);
+        } catch (\Exception $e) {
+            \Log::error('UserManagement store error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->error('Failed to create user', 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -105,38 +112,52 @@ class UserManagementController extends Controller
             return $this->error('Cannot modify a super admin', 403);
         }
 
-        $validated = $request->validate([
+        $rules = [
             'first_name' => 'sometimes|string|max:255',
             'last_name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
-            'password' => ['sometimes', 'confirmed', Password::defaults()],
             'role' => 'sometimes|string|in:admin,order-manager,content-manager',
             'status' => 'sometimes|string|in:active,inactive',
-        ]);
+        ];
 
-        $updateData = collect($validated)->except(['password', 'role', 'password_confirmation'])->toArray();
-
-        if (!empty($validated['password'])) {
-            $updateData['password'] = Hash::make($validated['password']);
+        // Only validate password if it's actually provided (non-empty)
+        if ($request->filled('password')) {
+            $rules['password'] = ['confirmed', 'min:8'];
         }
 
-        $user->update($updateData);
+        $validated = $request->validate($rules);
 
-        if (isset($validated['role'])) {
-            $user->syncRoles([$validated['role']]);
+        try {
+            $updateData = collect($validated)->except(['password', 'role', 'password_confirmation'])->toArray();
+
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            $user->update($updateData);
+
+            if (isset($validated['role'])) {
+                $user->syncRoles([$validated['role']]);
+            }
+
+            return $this->success([
+                'data' => [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'full_name' => $user->full_name,
+                    'email' => $user->email,
+                    'roles' => $user->getRoleNames()->toArray(),
+                    'status' => $user->status ?? 'active',
+                ],
+            ], 'User updated successfully');
+        } catch (\Exception $e) {
+            \Log::error('UserManagement update error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->error('Failed to update user', 500);
         }
-
-        return $this->success([
-            'data' => [
-                'id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'full_name' => $user->full_name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames()->toArray(),
-                'status' => $user->status ?? 'active',
-            ],
-        ], 'User updated successfully');
     }
 
     public function destroy($id)
