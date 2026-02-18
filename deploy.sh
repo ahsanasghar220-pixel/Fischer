@@ -141,6 +141,10 @@ if [ -d "backend" ]; then
     echo "Seeding homepage sections..."
     php artisan db:seed --class=HomepageSeeder --force
 
+    # Seed portfolio videos (safe - uses updateOrCreate, idempotent)
+    echo "Seeding portfolio videos..."
+    php artisan db:seed --class=PortfolioVideoSeeder --force
+
     # Clear permission cache so Spatie picks up fresh data
     php artisan cache:clear
 
