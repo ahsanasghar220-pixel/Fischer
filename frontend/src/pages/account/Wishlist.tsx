@@ -172,7 +172,7 @@ export default function Wishlist() {
           </div>
         ) : (
           <div className="p-12 text-center">
-            <HeartIcon className="w-16 h-16 mx-auto text-dark-300 dark:text-dark-600 mb-4" />
+            <HeartIcon className="w-16 h-16 mx-auto text-dark-400 dark:text-dark-600 mb-4" />
             <h3 className="text-xl font-semibold text-dark-900 dark:text-white mb-2">Your wishlist is empty</h3>
             <p className="text-dark-500 dark:text-dark-400 mb-6">
               Save items you love by clicking the heart icon on products

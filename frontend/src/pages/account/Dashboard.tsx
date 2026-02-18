@@ -81,7 +81,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Welcome Card */}
       <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">Hello, {user?.name}!</h2>
+        <h2 className="text-2xl font-bold mb-2">Hello, {user?.full_name || user?.first_name || 'there'}!</h2>
         <p className="opacity-90">
           From your account dashboard, you can view your recent orders, manage your shipping addresses, and edit your account details.
         </p>
@@ -138,7 +138,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="p-8 text-center text-dark-500 dark:text-dark-400">
-            <ShoppingBagIcon className="w-12 h-12 mx-auto text-dark-300 dark:text-dark-600 mb-3" />
+            <ShoppingBagIcon className="w-12 h-12 mx-auto text-dark-400 dark:text-dark-600 mb-3" />
             <p>No orders yet</p>
             <Link to="/shop" className="text-primary-600 dark:text-primary-400 hover:underline text-sm mt-2 inline-block">
               Start shopping
@@ -160,7 +160,7 @@ export default function Dashboard() {
           <div className="space-y-3">
             <div>
               <p className="text-sm text-dark-500 dark:text-dark-400">Name</p>
-              <p className="text-dark-900 dark:text-white">{user?.name}</p>
+              <p className="text-dark-900 dark:text-white">{user?.full_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'Not set'}</p>
             </div>
             <div>
               <p className="text-sm text-dark-500 dark:text-dark-400">Email</p>

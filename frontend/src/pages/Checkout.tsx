@@ -163,7 +163,7 @@ export default function Checkout() {
       setForm(prev => ({
         ...prev,
         email: user.email || '',
-        shipping_name: user.name || '',
+        shipping_name: user.full_name || `${user.first_name || ''} ${user.last_name || ''}`.trim() || '',
         shipping_phone: user.phone || '',
       }))
     }

@@ -52,7 +52,7 @@ export default function Account() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white">My Account</h1>
           {user && (
-            <p className="text-sm sm:text-base text-dark-500 dark:text-dark-400 mt-1">Welcome back, {user.name}</p>
+            <p className="text-sm sm:text-base text-dark-500 dark:text-dark-400 mt-1">Welcome back, {user.full_name || user.first_name || 'there'}</p>
           )}
         </div>
       </div>
@@ -64,15 +64,15 @@ export default function Account() {
             <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden sticky top-4">
               {/* User Info */}
               <div className="p-6 border-b border-dark-200 dark:border-dark-700">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-14 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {(user?.full_name || user?.first_name || user?.email)?.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-dark-900 dark:text-white">{user?.name}</h3>
-                    <p className="text-sm text-dark-500 dark:text-dark-400">{user?.email}</p>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-dark-900 dark:text-white truncate">{user?.full_name || user?.first_name || 'User'}</h3>
+                    <p className="text-sm text-dark-500 dark:text-dark-400 truncate">{user?.email}</p>
                   </div>
                 </div>
               </div>

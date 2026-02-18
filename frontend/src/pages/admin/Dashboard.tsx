@@ -204,7 +204,7 @@ export default function AdminDashboard() {
           <div className="divide-y divide-dark-200 dark:divide-dark-700">
             {data?.top_products?.slice(0, 5).map((product, index) => (
               <div key={product.id} className="p-3 sm:p-4 flex items-center gap-2 sm:gap-4">
-                <span className="text-base sm:text-lg font-bold text-dark-300 dark:text-dark-600 w-5 sm:w-6 flex-shrink-0">{index + 1}</span>
+                <span className="text-base sm:text-lg font-bold text-dark-400 dark:text-dark-600 w-5 sm:w-6 flex-shrink-0">{index + 1}</span>
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0">
                   {product.primary_image ? (
                     <img

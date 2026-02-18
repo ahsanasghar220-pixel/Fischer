@@ -68,7 +68,7 @@ export default function ServiceRequest() {
     serial_number: '',
     purchase_date: '',
     issue_description: '',
-    name: user?.name || '',
+    name: user?.full_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || '',
     email: user?.email || '',
     phone: user?.phone || '',
     address: '',

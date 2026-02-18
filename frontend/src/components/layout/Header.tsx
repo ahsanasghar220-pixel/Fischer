@@ -378,7 +378,7 @@ export default function Header() {
                   >
                     <div className="w-7 h-7 rounded-full bg-primary-500 flex items-center justify-center">
                       <span className="text-sm font-bold text-dark-900">
-                        {user?.name?.charAt(0).toUpperCase() || 'U'}
+                        {(user?.full_name || user?.first_name || user?.email || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                   </Popover.Button>
@@ -395,7 +395,7 @@ export default function Header() {
                     <Popover.Panel className="absolute right-0 top-full mt-3 w-64 bg-white dark:bg-dark-800 rounded-2xl shadow-xl ring-1 ring-dark-100 dark:ring-dark-700 overflow-hidden z-50">
                       {/* User info */}
                       <div className="px-5 py-4 bg-dark-50 dark:bg-dark-900/50">
-                        <p className="font-semibold text-dark-900 dark:text-white">{user?.full_name || user?.name}</p>
+                        <p className="font-semibold text-dark-900 dark:text-white">{user?.full_name || user?.first_name || 'User'}</p>
                         <p className="text-sm text-dark-500 dark:text-dark-400 truncate">{user?.email}</p>
                         {user?.loyalty_points !== undefined && (
                           <div className="mt-2 flex items-center gap-2">

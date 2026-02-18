@@ -267,11 +267,11 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3 mb-3 px-1">
             <div className="w-10 h-10 bg-dark-200 dark:bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-dark-700 dark:text-white font-medium text-base">
-                {(user?.full_name || user?.first_name || user?.name || '?').charAt(0).toUpperCase()}
+                {(user?.full_name || user?.first_name || user?.email || '?').charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-dark-900 dark:text-white font-medium truncate text-sm">{user?.full_name || user?.name}</p>
+              <p className="text-dark-900 dark:text-white font-medium truncate text-sm">{user?.full_name || user?.first_name || 'User'}</p>
               <p className="text-dark-500 dark:text-dark-400 text-xs truncate">{user?.email}</p>
             </div>
           </div>
