@@ -20,6 +20,9 @@ import DealerCtaEditor from './homepage/editors/DealerCtaEditor'
 import TestimonialsEditor from './homepage/editors/TestimonialsEditor'
 import AboutEditor from './homepage/editors/AboutEditor'
 import NotableClientsEditor from './homepage/editors/NotableClientsEditor'
+import FeaturedProductsEditor from './homepage/editors/FeaturedProductsEditor'
+import NewArrivalsEditor from './homepage/editors/NewArrivalsEditor'
+import NewsletterEditor from './homepage/editors/NewsletterEditor'
 
 export default function HomePageSettings() {
   const { data, isLoading, error } = useHomepageData()
@@ -247,6 +250,42 @@ export default function HomePageSettings() {
           onSave={(clients) => { mutations.updateNotableClients.mutate(clients); closeEditor() }}
           onUploadLogo={(file) => mutations.uploadClientLogo.mutateAsync(file)}
           isPending={mutations.updateNotableClients.isPending}
+        />
+      )}
+
+      {editingSection && activeEditor === 'featured_products' && data && (
+        <FeaturedProductsEditor
+          section={editingSection}
+          data={data}
+          open
+          onClose={closeEditor}
+          onSaveSection={(key, sectionData) => mutations.updateSection.mutate({ key, data: sectionData })}
+          onSaveProducts={(section, ids) => { mutations.updateProducts.mutate({ section, productIds: ids }); closeEditor() }}
+          isSectionPending={mutations.updateSection.isPending}
+          isProductsPending={mutations.updateProducts.isPending}
+        />
+      )}
+
+      {editingSection && activeEditor === 'new_arrivals' && data && (
+        <NewArrivalsEditor
+          section={editingSection}
+          data={data}
+          open
+          onClose={closeEditor}
+          onSaveSection={(key, sectionData) => mutations.updateSection.mutate({ key, data: sectionData })}
+          onSaveProducts={(section, ids) => { mutations.updateProducts.mutate({ section, productIds: ids }); closeEditor() }}
+          isSectionPending={mutations.updateSection.isPending}
+          isProductsPending={mutations.updateProducts.isPending}
+        />
+      )}
+
+      {editingSection && activeEditor === 'newsletter' && (
+        <NewsletterEditor
+          section={editingSection}
+          open
+          onClose={closeEditor}
+          onSave={handleSaveSection}
+          isPending={mutations.updateSection.isPending}
         />
       )}
     </div>

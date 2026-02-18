@@ -230,6 +230,27 @@ export const SECTION_META: Record<string, SectionMeta> = {
     editorDescription: 'Manage the client logos displayed in the trust section. Upload transparent PNG logos for each client.',
     icon: 'users',
   },
+  featured_products: {
+    key: 'featured_products',
+    label: 'Featured Products',
+    description: 'Hand-picked product showcase of your most popular appliances',
+    editorDescription: 'Select the products that appear in the Featured Products section. You can manually pick products or let the system choose based on popularity.',
+    icon: 'star',
+  },
+  new_arrivals: {
+    key: 'new_arrivals',
+    label: 'New Arrivals',
+    description: 'Latest additions to the catalog, shown in a product carousel',
+    editorDescription: 'Select the products that appear in the New Arrivals section. Choose manual selection to hand-pick products, or automatic to show the most recently added products.',
+    icon: 'trending',
+  },
+  newsletter: {
+    key: 'newsletter',
+    label: 'Newsletter / Offers',
+    description: 'Email subscription banner for exclusive offers and product announcements',
+    editorDescription: 'Configure the newsletter sign-up section. Set the heading, subtitle, input placeholder text, button label, and disclaimer.',
+    icon: 'chat',
+  },
 }
 
 export const iconOptions = [
