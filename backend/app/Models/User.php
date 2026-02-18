@@ -17,6 +17,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
 
+    // Force Spatie to use 'web' guard (roles are seeded with guard_name='web')
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'first_name',
         'last_name',

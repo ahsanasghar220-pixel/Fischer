@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserManagementController extends Controller
 {
@@ -16,7 +15,9 @@ class UserManagementController extends Controller
             $search = $request->get('search');
             $perPage = 15;
 
-            $query = User::role(['super-admin', 'admin', 'order-manager', 'content-manager']);
+            $query = User::whereHas('roles', function ($q) {
+                $q->whereIn('name', ['super-admin', 'admin', 'order-manager', 'content-manager']);
+            });
 
             if ($search) {
                 $query->where(function ($q) use ($search) {
@@ -77,7 +78,7 @@ class UserManagementController extends Controller
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
+                'password' => $validated['password'], // 'hashed' cast on model handles hashing
                 'status' => $validated['status'] ?? 'active',
             ]);
 
@@ -131,7 +132,7 @@ class UserManagementController extends Controller
             $updateData = collect($validated)->except(['password', 'role', 'password_confirmation'])->toArray();
 
             if (!empty($validated['password'])) {
-                $updateData['password'] = Hash::make($validated['password']);
+                $updateData['password'] = $validated['password']; // 'hashed' cast on model handles hashing
             }
 
             $user->update($updateData);
