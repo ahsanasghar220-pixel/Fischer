@@ -137,6 +137,9 @@ if [ -d "backend" ]; then
     echo "Seeding roles & permissions..."
     php artisan db:seed --class=RolePermissionSeeder --force
 
+    # Clear permission cache so Spatie picks up fresh data
+    php artisan cache:clear
+
     echo "✅ Backend setup complete"
     cd "$SCRIPT_DIR"
 fi

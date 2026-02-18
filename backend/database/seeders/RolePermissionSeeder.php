@@ -77,5 +77,8 @@ class RolePermissionSeeder extends Seeder
         // Ensure customer and dealer roles exist
         Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'dealer', 'guard_name' => 'web']);
+
+        // Clear cache again after all changes
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

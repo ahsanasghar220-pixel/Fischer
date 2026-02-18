@@ -4,49 +4,11 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\RolePermissionService;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class UserManagementController extends Controller
 {
-    /**
-     * Default permissions per role. Ensures roles have correct permissions
-     * even if the RolePermissionSeeder hasn't run on production.
-     */
-    private const ROLE_PERMISSIONS = [
-        'admin' => [
-            'manage-orders', 'manage-products', 'manage-categories', 'manage-bundles',
-            'manage-customers', 'manage-coupons', 'manage-reviews', 'manage-settings',
-            'manage-shipping', 'manage-homepage', 'manage-pages', 'manage-dealers',
-            'manage-sales', 'manage-banners', 'manage-service-requests', 'view-analytics',
-            'view-dashboard',
-        ],
-        'order-manager' => [
-            'manage-orders', 'manage-customers', 'manage-service-requests',
-            'view-analytics', 'view-dashboard',
-        ],
-        'content-manager' => [
-            'manage-products', 'manage-categories', 'manage-bundles', 'manage-homepage',
-            'manage-pages', 'manage-reviews', 'manage-coupons', 'manage-sales',
-            'manage-banners', 'view-dashboard',
-        ],
-    ];
-
-    private function ensureRoleWithPermissions(string $roleName): Role
-    {
-        $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
-
-        if (isset(self::ROLE_PERMISSIONS[$roleName]) && $role->permissions->isEmpty()) {
-            foreach (self::ROLE_PERMISSIONS[$roleName] as $perm) {
-                Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
-            }
-            $role->syncPermissions(self::ROLE_PERMISSIONS[$roleName]);
-        }
-
-        return $role;
-    }
-
     public function index(Request $request)
     {
         try {
@@ -121,7 +83,7 @@ class UserManagementController extends Controller
                 'status' => $validated['status'] ?? 'active',
             ]);
 
-            $this->ensureRoleWithPermissions($validated['role']);
+            RolePermissionService::ensureRolePermissions($validated['role']);
             $user->assignRole($validated['role']);
 
             return $this->success([
@@ -178,7 +140,7 @@ class UserManagementController extends Controller
             $user->update($updateData);
 
             if (isset($validated['role'])) {
-                $this->ensureRoleWithPermissions($validated['role']);
+                RolePermissionService::ensureRolePermissions($validated['role']);
                 $user->syncRoles([$validated['role']]);
             }
 

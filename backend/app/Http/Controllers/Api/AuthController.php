@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
+use App\Services\RolePermissionService;
 
 class AuthController extends Controller
 {
@@ -231,6 +232,12 @@ class AuthController extends Controller
 
     protected function formatUser(User $user): array
     {
+        // Auto-seed role permissions if missing (handles fresh deploys)
+        if ($user->isAdmin()) {
+            RolePermissionService::ensureAllRolesAndPermissions();
+            $user->unsetRelation('permissions')->unsetRelation('roles');
+        }
+
         return [
             'id' => $user->id,
             'first_name' => $user->first_name,
