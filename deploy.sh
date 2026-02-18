@@ -133,6 +133,10 @@ if [ -d "backend" ]; then
     echo "Running database migrations..."
     php artisan migrate --force
 
+    # Seed roles & permissions (safe - uses firstOrCreate, idempotent)
+    echo "Seeding roles & permissions..."
+    php artisan db:seed --class=RolePermissionSeeder --force
+
     echo "✅ Backend setup complete"
     cd "$SCRIPT_DIR"
 fi
