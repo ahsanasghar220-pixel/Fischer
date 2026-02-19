@@ -704,15 +704,15 @@ html.lenis, html.lenis body {
 
   /* Glow effects */
   .glow-sm {
-    box-shadow: 0 0 10px rgba(149, 18, 18, 0.3);
+    box-shadow: 0 0 10px rgb(var(--color-primary-500) / 0.3);
   }
 
   .glow {
-    box-shadow: 0 0 20px rgba(149, 18, 18, 0.4);
+    box-shadow: 0 0 20px rgb(var(--color-primary-500) / 0.4);
   }
 
   .glow-lg {
-    box-shadow: 0 0 30px rgba(149, 18, 18, 0.5);
+    box-shadow: 0 0 30px rgb(var(--color-primary-500) / 0.5);
   }
 
   /* Animation delays */

@@ -280,8 +280,8 @@ export default {
       },
       boxShadow: {
         'inner-lg': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.1)',
-        'glow': '0 0 15px rgba(149, 18, 18, 0.5)',
-        'glow-lg': '0 0 30px rgba(149, 18, 18, 0.6)',
+        'glow': '0 0 15px rgb(var(--color-primary-500) / 0.5)',
+        'glow-lg': '0 0 30px rgb(var(--color-primary-500) / 0.6)',
         '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
