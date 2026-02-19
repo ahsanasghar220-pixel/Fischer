@@ -324,7 +324,6 @@ interface CategoryShowcaseProps {
 const CategoryShowcase = memo(function CategoryShowcase({ category, index, categoryVideos, isMobile = false }: CategoryShowcaseProps) {
   const ref = useRef(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
   const videoContainerRef = useRef<HTMLDivElement>(null)
   // Load video when it's near the viewport (once), play/pause as it enters/exits
   const isNearViewport = useInView(videoContainerRef, { once: true, margin: '200px 0px' })
