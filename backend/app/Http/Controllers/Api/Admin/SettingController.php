@@ -113,6 +113,9 @@ class SettingController extends Controller
                     'birthday_bonus' => 100,
                     'min_redeem_points' => 0,
                 ],
+                'appearance' => [
+                    'brand_color' => '#951212',
+                ],
             ];
 
             // Merge database settings with defaults
@@ -158,6 +161,7 @@ class SettingController extends Controller
 
             // Clear cache
             Cache::forget('app_settings');
+            Cache::forget('brand_color');
 
             return $this->success(null, 'Settings updated successfully');
         } catch (\Exception $e) {
@@ -177,5 +181,19 @@ class SettingController extends Controller
         }
 
         return $this->success($allSettings['data'][$group]);
+    }
+
+    /**
+     * Public endpoint — returns the brand color (no auth required).
+     * Used by the frontend on startup to apply dynamic theming.
+     */
+    public function brandColor()
+    {
+        $color = Cache::remember('brand_color', 3600, function () {
+            $setting = Setting::where('key', 'appearance.brand_color')->first();
+            return $setting ? $setting->value : '#951212';
+        });
+
+        return response()->json(['brand_color' => $color]);
     }
 }

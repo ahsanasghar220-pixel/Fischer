@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\BundleController;
 use App\Http\Controllers\Api\SaleController;
+use App\Http\Controllers\Api\Admin\SettingController as AdminSettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,9 @@ use Illuminate\Support\Facades\Route;
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
+// Public settings (no auth) — used by frontend for dynamic theming
+Route::get('/settings/brand-color', [AdminSettingController::class, 'brandColor']);
 
 // Home page data
 Route::get('/home', [HomeController::class, 'index']);

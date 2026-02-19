@@ -36,6 +36,18 @@ html.lenis, html.lenis body {
     --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
     --color-border: 228 228 231;
     --color-accent: 149 18 18; /* Deep Red #951212 */
+    /* Brand primary color scale — overridden dynamically via JS */
+    --color-primary-50: 253 242 242;
+    --color-primary-100: 249 222 222;
+    --color-primary-200: 240 180 180;
+    --color-primary-300: 217 114 114;
+    --color-primary-400: 194 48 48;
+    --color-primary-500: 149 18 18;
+    --color-primary-600: 127 16 16;
+    --color-primary-700: 107 14 14;
+    --color-primary-800: 87 11 11;
+    --color-primary-900: 67 9 9;
+    --color-primary-950: 45 6 6;
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(228, 228, 231, 0.5);
     --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -843,168 +855,8 @@ html.lenis, html.lenis body {
 }
 
 /* ========================================
-   PREMIUM DARK LUXURY THEME ENHANCEMENTS
+   PREMIUM SCROLLBAR & SHADOW UTILITIES
    ======================================== */
-
-/* Advanced glassmorphism effect */
-.glass-premium {
-  background: rgba(24, 24, 27, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 4px 30px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* Frosted glass card */
-.glass-frosted {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-}
-
-/* Premium hover glow effect */
-.hover-glow {
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hover-glow::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, #951212, #951212, #951212);
-  opacity: 0;
-  z-index: -1;
-  filter: blur(12px);
-  transition: opacity 0.4s ease;
-}
-
-.hover-glow:hover::before {
-  opacity: 0.6;
-}
-
-/* Ambient glow for featured elements */
-.ambient-glow {
-  box-shadow:
-    0 0 60px -15px rgba(149, 18, 18, 0.4),
-    0 0 120px -30px rgba(149, 18, 18, 0.2);
-}
-
-/* Shimmer animation for premium elements */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.shimmer-gold {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(149, 18, 18, 0.15) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
-}
-
-/* Animated gradient text */
-@keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-gradient {
-  animation: gradient-flow 4s ease infinite;
-}
-
-/* Subtle noise texture overlay */
-.texture-noise::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Premium card shine effect */
-.card-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.card-shine::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
-  transition: left 0.6s ease;
-}
-
-.card-shine:hover::after {
-  left: 100%;
-}
-
-/* Animated border for premium sections */
-.border-animated {
-  position: relative;
-}
-
-.border-animated::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba(149, 18, 18, 0),
-    rgba(149, 18, 18, 0.5),
-    rgba(149, 18, 18, 0)
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: border-shimmer 3s linear infinite;
-}
-
-@keyframes border-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* 3D depth effect */
-.depth-3d {
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
-
-.depth-3d:hover {
-  transform: translateZ(10px);
-}
 
 /* Premium scrollbar for dark mode */
 .dark ::-webkit-scrollbar-track {
@@ -1047,111 +899,6 @@ html.lenis, html.lenis body {
     0 32px 64px rgba(0, 0, 0, 0.15);
 }
 
-/* Spotlight effect on hover */
-.spotlight {
-  position: relative;
-  overflow: hidden;
-}
-
-.spotlight::before {
-  content: '';
-  position: absolute;
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(
-    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(149, 18, 18, 0.15) 0%,
-    transparent 50%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.spotlight:hover::before {
-  opacity: 1;
-}
-
-/* Slow pulse animation for CTAs */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(149, 18, 18, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(149, 18, 18, 0.6);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-/* Slow spin for decorative elements */
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 30s linear infinite;
-}
-
-/* Bounce slow for badges */
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.animate-bounce-slow {
-  animation: bounce-slow 3s ease-in-out infinite;
-}
-
-/* Slide up animation for scroll indicator */
-@keyframes slide-up {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(-8px); opacity: 0.5; }
-}
-
-.animate-slide-up {
-  animation: slide-up 1.5s ease-in-out infinite;
-}
-
-/* Blob animation for backgrounds */
-@keyframes blob {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(20px, -30px) scale(1.1); }
-  50% { transform: translate(-20px, 20px) scale(0.9); }
-  75% { transform: translate(30px, 10px) scale(1.05); }
-}
-
-.animate-blob {
-  animation: blob 20s ease-in-out infinite;
-}
-
-/* Pulse slow for glows */
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 4s ease-in-out infinite;
-}
-
-/* Preserve 3D for card effects */
-.preserve-3d {
-  transform-style: preserve-3d;
-}
 
 /* Fade in up animation */
 @keyframes fade-in-up {
@@ -1177,80 +924,6 @@ html.lenis, html.lenis body {
    MICRO-INTERACTION UTILITIES
    ======================================== */
 
-/* Sweep underline on hover */
-.btn-hover-underline {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-hover-underline::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #951212, #951212);
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-hover-underline:hover::after {
-  transform: translateX(0);
-}
-
-/* Magnetic button effect - slight scale on hover, shrink on active */
-.btn-magnetic {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-}
-
-.btn-magnetic:hover {
-  transform: scale(1.02);
-}
-
-.btn-magnetic:active {
-  transform: scale(0.98);
-}
-
-/* Link underline grows from center */
-.link-underline-grow {
-  position: relative;
-  text-decoration: none;
-}
-
-.link-underline-grow::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: currentColor;
-  transition: width 0.3s ease, left 0.3s ease;
-}
-
-.link-underline-grow:hover::after {
-  width: 100%;
-  left: 0;
-}
-
-/* Scale bounce on tap/click - good for mobile */
-.tap-bounce {
-  transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.tap-bounce:active {
-  transform: scale(0.95);
-}
-
-/* Rotate on hover - subtle rotation for icons */
-.hover-rotate {
-  transition: transform 0.3s ease;
-}
-
-.hover-rotate:hover {
-  transform: rotate(10deg);
-}
 
 /* Lift effect - combines translate and shadow */
 .hover-lift {
@@ -1262,100 +935,6 @@ html.lenis, html.lenis body {
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
 }
 
-/* Glow on hover for buttons/cards */
-.hover-glow-primary {
-  transition: box-shadow 0.3s ease;
-}
-
-.hover-glow-primary:hover {
-  box-shadow: 0 0 20px rgba(149, 18, 18, 0.4);
-}
-
-/* Icon slide - icon moves on hover */
-.icon-slide-right {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.group:hover .icon-slide-right,
-.icon-slide-right:hover {
-  transform: translateX(4px);
-}
-
-/* Staggered entrance animation helper */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-
-/* Ripple effect on click */
-.ripple {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
-}
-
-.ripple:active::before {
-  width: 200%;
-  height: 200%;
-  opacity: 0;
-}
-
-/* Subtle shake animation for attention */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
-}
-
-.animate-shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Heartbeat animation for liked items */
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.1); }
-  50% { transform: scale(1); }
-  75% { transform: scale(1.1); }
-}
-
-.animate-heartbeat {
-  animation: heartbeat 1s ease-in-out;
-}
-
-/* Success checkmark animation */
-@keyframes checkmark {
-  0% { stroke-dashoffset: 100; }
-  100% { stroke-dashoffset: 0; }
-}
-
-.animate-checkmark {
-  stroke-dasharray: 100;
-  animation: checkmark 0.5s ease-in-out forwards;
-}
-
-/* Scroll indicator bounce animation */
-@keyframes scroll-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-.animate-scroll-bounce {
-  animation: scroll-bounce 2s ease-in-out infinite;
-}
 
 /* Smooth scale on scroll into view */
 @keyframes scale-in {
@@ -1377,16 +956,6 @@ html.lenis, html.lenis body {
   animation: slide-up-fade 0.7s ease-out forwards;
 }
 
-/* Parallax-like subtle movement */
-@keyframes subtle-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-5px) rotate(0.5deg); }
-  75% { transform: translateY(5px) rotate(-0.5deg); }
-}
-
-.animate-subtle-float {
-  animation: subtle-float 6s ease-in-out infinite;
-}
 
 /* GPU-composited shimmer sweep (uses transform instead of background-position) */
 @keyframes shimmer-gpu {
@@ -1406,53 +975,7 @@ html.lenis, html.lenis body {
   animation: shimmer 2s infinite;
 }
 
-/* Glow pulse for attention-grabbing elements */
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 5px rgba(149, 18, 18, 0.3), 0 0 10px rgba(149, 18, 18, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(149, 18, 18, 0.5), 0 0 30px rgba(149, 18, 18, 0.3); }
-}
 
-.animate-glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-/* Text reveal animation */
-@keyframes text-reveal {
-  0% { clip-path: inset(0 100% 0 0); }
-  100% { clip-path: inset(0 0 0 0); }
-}
-
-.animate-text-reveal {
-  animation: text-reveal 0.8s ease-out forwards;
-}
-
-/* Bounce in for modals/popups */
-@keyframes bounce-in {
-  0% { opacity: 0; transform: scale(0.3); }
-  50% { opacity: 1; transform: scale(1.05); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); }
-}
-
-.animate-bounce-in {
-  animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-}
-
-/* ========================================
-   GPU-ACCELERATED ANIMATION HELPERS
-   ======================================== */
-
-/* Force GPU acceleration for animated elements */
-.gpu-accelerated {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
-
-/* Remove will-change after animation to free up resources */
-.animation-done {
-  will-change: auto;
-}
 
 /* ========================================
    PERFORMANCE-OPTIMIZED SCROLL ANIMATIONS
@@ -1517,28 +1040,6 @@ html.lenis, html.lenis body {
 /* ========================================
    ADVANCED SMOOTH ANIMATIONS
    ======================================== */
-
-/* Ultra-smooth transition utility */
-.transition-smooth {
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.transition-smooth-fast {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Spring-like hover effect */
-.hover-spring {
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hover-spring:hover {
-  transform: scale(1.05);
-}
-
-.hover-spring:active {
-  transform: scale(0.98);
-}
 
 /* Premium shine sweep effect */
 .shine-sweep {

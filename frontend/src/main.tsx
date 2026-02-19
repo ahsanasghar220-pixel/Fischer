@@ -10,7 +10,11 @@ import CustomCursor from './components/ui/CustomCursor'
 import App from './App'
 import { useCartStore } from './stores/cartStore'
 import { trackPageLoad, preloadCriticalResources } from './lib/performance'
+import { initBrandColor } from './lib/colorTheme'
 import './index.css'
+
+// Apply dynamic brand color from admin settings (non-blocking)
+initBrandColor()
 
 // Preload critical resources for faster initial render
 preloadCriticalResources()

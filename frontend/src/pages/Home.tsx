@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo, lazy, Suspense } from 'react'
+import { useState, useEffect, useRef, memo, lazy, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
@@ -318,9 +318,10 @@ interface CategoryShowcaseProps {
   category: Category
   index: number
   categoryVideos: Record<string, string>
+  isMobile?: boolean
 }
 
-const CategoryShowcase = memo(function CategoryShowcase({ category, index, categoryVideos }: CategoryShowcaseProps) {
+const CategoryShowcase = memo(function CategoryShowcase({ category, index, categoryVideos, isMobile = false }: CategoryShowcaseProps) {
   const ref = useRef(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
@@ -331,8 +332,9 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
   const isEven = index % 2 === 0
   const videoSrc = categoryVideos[category.slug]
 
-  // Auto-play video when in view
+  // Auto-play video when in view (desktop only)
   useEffect(() => {
+    if (isMobile) return
     const video = videoRef.current
     if (!video || !videoSrc) return
 
@@ -343,23 +345,24 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
     } else {
       video.pause()
     }
-  }, [isVideoInView, videoSrc])
+  }, [isVideoInView, videoSrc, isMobile])
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{
+      // On mobile: skip animation (initial=false renders at animate values immediately, no JS animation frames)
+      initial={isMobile ? false : { opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={isMobile ? { duration: 0 } : {
         duration: 0.6,
         ease: [0.16, 1, 0.3, 1],
       }}
       className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
-      {/* Video Side - only load video when near viewport */}
+      {/* Video Side - desktop only; mobile shows category image */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-100 dark:bg-dark-900">
-          {videoSrc && isNearViewport ? (
+          {!isMobile && videoSrc && isNearViewport ? (
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
@@ -373,7 +376,11 @@ const CategoryShowcase = memo(function CategoryShowcase({ category, index, categ
             </video>
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-800 dark:to-dark-900">
-              <div className="text-dark-400 dark:text-dark-600 text-sm">{videoSrc ? '' : 'No video available'}</div>
+              {category.image ? (
+                <img src={category.image} alt={category.name} className="w-full h-full object-cover" loading="lazy" />
+              ) : (
+                <div className="text-dark-400 dark:text-dark-600 text-sm">{category.name}</div>
+              )}
             </div>
           )}
         </div>
@@ -444,6 +451,11 @@ const defaultCategoryVideos: Record<string, string> = {
   'air-fryers': '/videos/categories/air-fryers.mp4?v=3',
   'air-fryer': '/videos/categories/air-fryers.mp4?v=3',
   'fryers': '/videos/categories/air-fryers.mp4?v=3',
+
+  // Water Coolers
+  'water-coolers': '/videos/categories/water-cooler.mp4',
+  'water-cooler': '/videos/categories/water-cooler.mp4',
+  'coolers': '/videos/categories/water-cooler.mp4',
 }
 
 export default function Home() {
@@ -453,6 +465,9 @@ export default function Home() {
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
   const [videoSrcReady, setVideoSrcReady] = useState(false)
+
+  // On mobile, skip the video entirely — use the preloaded poster image as LCP
+  const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, [])
 
   const { data } = useQuery<HomeData>({
     queryKey: ['home'],
@@ -634,7 +649,7 @@ export default function Home() {
               ? data.video_categories
               : categories.filter((c) => categoryVideos[c.slug])
             ).map((category, index) => (
-              <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} />
+              <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} isMobile={isMobile} />
             ))}
           </div>
         </div>
@@ -1007,25 +1022,37 @@ export default function Home() {
       <div className="bg-white dark:bg-dark-950">
         {/* Hero is always first */}
         <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
-          <div className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}>
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer-gpu" />
-            </div>
-          </div>
-          {videoError && (
-            <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
+          {isMobile ? (
+            /* Mobile: static poster image — video is LCP killer on mobile */
+            <img
+              src="/images/hero-poster.webp"
+              alt=""
+              fetchPriority="high"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+          ) : (
+            <>
+              <div className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}>
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer-gpu" />
+                </div>
+              </div>
+              {videoError && (
+                <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
+              )}
+              {!videoError && <video
+                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
+                style={{ objectPosition: 'center center' }}
+                autoPlay loop muted playsInline preload="none"
+                poster="/images/hero-poster.webp"
+                onCanPlayThrough={() => setVideoLoaded(true)}
+                onLoadedData={() => setVideoLoaded(true)}
+                onError={() => { setVideoError(true); setVideoLoaded(true) }}
+              >
+                {videoSrcReady && <source src={heroVideoUrl} type="video/mp4" />}
+              </video>}
+            </>
           )}
-          {!videoError && <video
-            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
-            style={{ objectPosition: 'center center' }}
-            autoPlay loop muted playsInline preload="none"
-            poster="/images/hero-poster.webp"
-            onCanPlayThrough={() => setVideoLoaded(true)}
-            onLoadedData={() => setVideoLoaded(true)}
-            onError={() => { setVideoError(true); setVideoLoaded(true) }}
-          >
-            {videoSrcReady && <source src={heroVideoUrl} type="video/mp4" />}
-          </video>}
           <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
           <div className="hidden sm:flex absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
             <div className="flex flex-col items-center gap-2 text-white">

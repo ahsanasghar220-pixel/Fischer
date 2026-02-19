@@ -3,6 +3,22 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import http from 'http'
 
+// Injects <link rel="preload" as="style"> for the generated CSS bundle to eliminate render-blocking
+function preloadCssPlugin() {
+  return {
+    name: 'preload-css',
+    transformIndexHtml: {
+      enforce: 'post' as const,
+      transform(html: string) {
+        return html.replace(
+          /(<link rel="stylesheet" crossorigin href="(\/assets\/css\/[^"]+\.css)">)/g,
+          `<link rel="preload" as="style" href="$2">\n    $1`
+        )
+      },
+    },
+  }
+}
+
 // Custom proxy plugin to work around http-proxy incompatibility with Node 24
 function manualProxy() {
   const BACKEND = { hostname: '127.0.0.1', port: 80 }
@@ -45,7 +61,7 @@ function manualProxy() {
 }
 
 export default defineConfig({
-  plugins: [react(), manualProxy()],
+  plugins: [react(), manualProxy(), preloadCssPlugin()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

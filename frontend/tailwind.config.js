@@ -8,19 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Fischer brand colors - Deep Red
+        // Fischer brand colors — driven by CSS custom properties for dynamic theming
         primary: {
-          50: '#fdf2f2',  // Very light tint of #951212
-          100: '#f9dede', // Light tint
-          200: '#f0b4b4', // Lighter tint
-          300: '#d97272', // Light mid-tone
-          400: '#c23030', // Medium approaching brand
-          500: '#951212', // Main brand deep red
-          600: '#7f1010', // Slightly darker for hover
-          700: '#6b0e0e', // Darker for active/pressed
-          800: '#570b0b',
-          900: '#430909',
-          950: '#2d0606',
+          50:  'rgb(var(--color-primary-50)  / <alpha-value>)',
+          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+          200: 'rgb(var(--color-primary-200) / <alpha-value>)',
+          300: 'rgb(var(--color-primary-300) / <alpha-value>)',
+          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
+          800: 'rgb(var(--color-primary-800) / <alpha-value>)',
+          900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+          950: 'rgb(var(--color-primary-950) / <alpha-value>)',
         },
         // Override default red to match brand
         red: {

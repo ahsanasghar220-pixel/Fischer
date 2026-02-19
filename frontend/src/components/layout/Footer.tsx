@@ -347,7 +347,7 @@ export default function Footer() {
       <div className="border-t border-dark-200 dark:border-dark-800">
         <div className="container-xl py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-dark-500 text-sm text-center md:text-left">
+            <p className="text-dark-600 dark:text-dark-400 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} Fischer Pakistan (Fatima Engineering Works). All rights reserved.
             </p>
             <div className="flex items-center gap-4 sm:gap-6">
