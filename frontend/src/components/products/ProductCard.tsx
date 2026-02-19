@@ -365,20 +365,20 @@ const ProductCard = memo(function ProductCard({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-dark-950/60 dark:bg-dark-900/70 backdrop-blur-sm flex items-center justify-center z-20"
+              className="absolute inset-0 bg-white/75 dark:bg-dark-900/75 backdrop-blur-sm flex items-center justify-center z-20"
             >
               <div className="text-center px-4">
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="px-6 py-3 bg-red-600 dark:bg-red-500 rounded-xl shadow-lg"
+                  className="px-6 py-3 bg-dark-900 dark:bg-dark-700 rounded-xl shadow-lg"
                 >
                   <span className="text-base font-bold text-white uppercase tracking-wide">
                     Out of Stock
                   </span>
                 </motion.div>
-                <p className="mt-2 text-xs text-white/90 font-medium">
+                <p className="mt-2 text-xs text-dark-700 dark:text-white/90 font-medium">
                   Currently unavailable
                 </p>
               </div>

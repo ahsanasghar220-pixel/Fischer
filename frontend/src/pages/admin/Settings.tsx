@@ -182,19 +182,22 @@ export default function AdminSettings() {
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
         {/* Tabs */}
         <div className="border-b border-dark-200 dark:border-dark-700">
-          <div className="flex overflow-x-auto">
+          <div
+            className="flex overflow-x-auto"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
+          >
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id
                     ? 'text-primary-600 dark:text-primary-400 border-b-2 border-primary-500'
                     : 'text-dark-500 dark:text-dark-400 hover:text-dark-700 dark:hover:text-dark-200'
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
+                <tab.icon className="w-4 h-4 flex-shrink-0" />
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
