@@ -299,7 +299,7 @@ export default function Shop() {
                           : 'text-dark-600 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
                       }`}
                     >
-                      {cat.name} ({cat.products_count || 0})
+                      {cat.name}
                     </button>
                   ))}
                 </div>

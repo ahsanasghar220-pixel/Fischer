@@ -490,13 +490,6 @@ const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          {/* Out of Stock indicator in card info */}
-          {product.stock_status === 'out_of_stock' && (
-            <div className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded-md">
-              <span className="text-xs font-semibold text-red-700 dark:text-red-300">Out of Stock</span>
-            </div>
-          )}
-
           {/* Low Stock Warning */}
           {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (
             <motion.div

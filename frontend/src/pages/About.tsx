@@ -73,20 +73,19 @@ export default function About() {
                 <h2 className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white mb-4 sm:mb-6">Our Story</h2>
                 <div className="space-y-4 text-dark-600 dark:text-dark-400">
                   <p>
-                    Founded in 1990, Fischer Pakistan (Fatima Engineering Works) started with a simple mission: to provide
-                    high-quality, affordable home appliances to Pakistani families. What began
-                    as a small operation has grown into one of the country's most trusted
-                    appliance brands.
+                    Founded in 1990, Fischer Pakistan (Fatima Engineering Works) was built on one
+                    mission: to bring reliable, high-quality home appliances to Pakistani families
+                    at prices they can afford. What started as a modest operation has grown into
+                    one of Pakistan's most recognized and trusted appliance brands.
                   </p>
                   <p>
-                    Our journey has been marked by continuous innovation, unwavering commitment
-                    to quality, and deep understanding of Pakistani households' needs. Today,
-                    Fischer products can be found in millions of homes across the country.
+                    Over three decades, we have stayed true to our roots — continuous innovation,
+                    uncompromising quality, and a genuine understanding of what Pakistani households
+                    need. Today, Fischer appliances are present in millions of homes across the country.
                   </p>
                   <p>
-                    We take pride in our ISO 9001:2015 certification, which reflects our
-                    dedication to maintaining the highest quality standards in every product
-                    we manufacture.
+                    Our ISO 9001:2015 certification is a mark of that commitment — ensuring every
+                    product that leaves our facility meets the highest quality and safety standards.
                   </p>
                 </div>
               </motion.div>
@@ -98,8 +97,8 @@ export default function About() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <motion.img
-                  src="/images/about-factory.webp"
-                  alt="Fischer Factory"
+                  src="/images/about-fischer.webp"
+                  alt="Fischer Pakistan"
                   width={600}
                   height={400}
                   className="rounded-xl shadow-2xl w-full h-auto"

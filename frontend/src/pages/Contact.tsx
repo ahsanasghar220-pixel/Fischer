@@ -67,6 +67,9 @@ export default function Contact() {
           </a><br />
           <a href="mailto:sales@fischerinfo.pk" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
             sales@fischerinfo.pk
+          </a><br />
+          <a href="mailto:fischer.few@gmail.com" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            fischer.few@gmail.com
           </a>
         </>
       ),
