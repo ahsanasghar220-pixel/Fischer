@@ -113,15 +113,15 @@ export default function Footer() {
                 <img
                   src="/images/logo-dark.webp"
                   alt="Fischer"
-                  width={120}
-                  height={48}
+                  width={792}
+                  height={436}
                   className="h-12 w-auto dark:hidden"
                 />
                 <img
                   src="/images/logo-light.webp"
                   alt="Fischer"
-                  width={120}
-                  height={48}
+                  width={792}
+                  height={436}
                   className="h-12 w-auto hidden dark:block"
                 />
               </Link>

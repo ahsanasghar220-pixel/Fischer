@@ -201,8 +201,8 @@ export default function Header() {
               <AnimatedLogo
                 src="/images/logo-dark.webp"
                 alt="Fischer"
-                width={100}
-                height={40}
+                width={792}
+                height={436}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -214,8 +214,8 @@ export default function Header() {
               <AnimatedLogo
                 src="/images/logo-light.webp"
                 alt="Fischer"
-                width={100}
-                height={40}
+                width={792}
+                height={436}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -259,8 +259,8 @@ export default function Header() {
                     <AnimatedLogo
                       src="/images/logo-dark.webp"
                       alt="Fischer"
-                      width={120}
-                      height={48}
+                      width={792}
+                      height={436}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
@@ -274,8 +274,8 @@ export default function Header() {
                     <AnimatedLogo
                       src="/images/logo-light.webp"
                       alt="Fischer"
-                      width={120}
-                      height={48}
+                      width={792}
+                      height={436}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
