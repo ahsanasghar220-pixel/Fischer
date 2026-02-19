@@ -452,9 +452,9 @@ const defaultCategoryVideos: Record<string, string> = {
   'fryers': '/videos/categories/air-fryers.mp4?v=3',
 
   // Water Coolers
-  'water-coolers': '/videos/categories/water-cooler.mp4',
-  'water-cooler': '/videos/categories/water-cooler.mp4',
-  'coolers': '/videos/categories/water-cooler.mp4',
+  'water-coolers': '/videos/categories/water-coolers.mp4',
+  'water-cooler': '/videos/categories/water-coolers.mp4',
+  'coolers': '/videos/categories/water-coolers.mp4',
 }
 
 export default function Home() {
