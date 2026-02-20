@@ -16,8 +16,8 @@ class DashboardController extends Controller
     public function index()
     {
         try {
-            // Cache dashboard data for 5 minutes to reduce DB load
-            $data = Cache::remember('admin_dashboard', 300, function () {
+            // Cache dashboard data for 2 minutes to reduce DB load
+            $data = Cache::remember('admin_dashboard_v2', 120, function () {
                 return $this->getDashboardData();
             });
 
@@ -112,7 +112,73 @@ class DashboardController extends Controller
             ],
             'recent_orders' => $recentOrders,
             'top_products' => $topProducts,
+            'chart_data' => $this->getChartData(),
+            'low_stock_products' => $this->getLowStockProducts(),
         ];
+    }
+
+    private function getChartData()
+    {
+        try {
+            $startDate = Carbon::now()->subDays(29)->startOfDay();
+
+            $dailyData = DB::table('orders')
+                ->selectRaw("DATE(created_at) as date, SUM(total) as revenue, COUNT(*) as orders")
+                ->where('created_at', '>=', $startDate)
+                ->whereNull('deleted_at')
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->get()
+                ->keyBy('date');
+
+            $result = [];
+            for ($i = 29; $i >= 0; $i--) {
+                $date = Carbon::now()->subDays($i)->format('Y-m-d');
+                $record = $dailyData->get($date);
+                $result[] = [
+                    'date' => Carbon::now()->subDays($i)->format('M j'),
+                    'revenue' => $record ? (float) $record->revenue : 0,
+                    'orders' => $record ? (int) $record->orders : 0,
+                ];
+            }
+            return $result;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    private function getLowStockProducts()
+    {
+        try {
+            return DB::table('products')
+                ->leftJoin('product_images', function ($join) {
+                    $join->on('products.id', '=', 'product_images.product_id')
+                        ->where('product_images.is_primary', '=', true);
+                })
+                ->select(['products.id', 'products.name', 'products.slug', 'products.stock_quantity', 'product_images.image'])
+                ->where('products.is_active', true)
+                ->whereNull('products.deleted_at')
+                ->where('products.stock_quantity', '<=', 10)
+                ->orderBy('products.stock_quantity', 'asc')
+                ->limit(10)
+                ->get()
+                ->map(function ($product) {
+                    $imageUrl = null;
+                    if ($product->image) {
+                        $imageUrl = str_starts_with($product->image, 'http')
+                            ? $product->image
+                            : (str_starts_with($product->image, '/') ? $product->image : '/' . $product->image);
+                    }
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'slug' => $product->slug,
+                        'stock' => (int) $product->stock_quantity,
+                        'image' => $imageUrl,
+                    ];
+                });
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     private function getRecentOrders()

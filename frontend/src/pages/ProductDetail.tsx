@@ -546,8 +546,8 @@ export default function ProductDetail() {
                 transition={{ delay: 0.25 }}
               >
                 {product.is_new && <motion.span className="badge badge-primary" whileHover={{ scale: 1.1 }}>New</motion.span>}
-                {product.is_bestseller && <motion.span className="badge badge-dark" whileHover={{ scale: 1.1 }}>Bestseller</motion.span>}
-                {discountPercentage && <motion.span className="badge badge-danger" whileHover={{ scale: 1.1 }}>-{discountPercentage}%</motion.span>}
+                {product.is_bestseller && <motion.span className="px-2 py-0.5 bg-primary-700 dark:bg-primary-600 text-white text-xs font-bold rounded-md" whileHover={{ scale: 1.1 }}>Bestseller</motion.span>}
+                {discountPercentage && <motion.span className="px-2 py-0.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-xs font-bold rounded-md" whileHover={{ scale: 1.1 }}>-{discountPercentage}%</motion.span>}
               </motion.div>
 
               {product.brand && (

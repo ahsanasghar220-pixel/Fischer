@@ -351,7 +351,7 @@ const ProductCard = memo(function ProductCard({
             {product.is_bestseller && (
               <span
                 className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-dark-900 dark:bg-white text-white dark:text-dark-900 shadow-lg
+                           bg-primary-700 dark:bg-primary-600 text-white shadow-lg
                            transition-transform duration-300 ease-out
                            ${isHovered ? 'scale-105' : 'scale-100'}`}
               >

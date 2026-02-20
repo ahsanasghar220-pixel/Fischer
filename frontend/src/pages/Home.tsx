@@ -25,6 +25,10 @@ import type { Bundle } from '@/api/bundles'
 import type { BannerSlide } from '@/components/ui/BannerCarousel'
 import toast from 'react-hot-toast'
 
+// LogoSplitIntro must be eagerly imported — it's the splash screen and must
+// render synchronously on first paint to cover the hero (no Suspense gap).
+import LogoSplitIntro from '@/components/home/LogoSplitIntro'
+
 // Lazy-load below-the-fold components to reduce initial bundle size
 const ProductCard = lazy(() => import('@/components/products/ProductCard'))
 const ProductCarousel = lazy(() => import('@/components/products/ProductCarousel'))
@@ -34,7 +38,6 @@ const BundleCarousel = lazy(() => import('@/components/bundles').then(m => ({ de
 const BundleGrid = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleGrid })))
 const BundleBanner = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleBanner })))
 const BundleQuickView = lazy(() => import('@/components/bundles').then(m => ({ default: m.BundleQuickView })))
-const LogoSplitIntro = lazy(() => import('@/components/home/LogoSplitIntro'))
 const NotableClients = lazy(() => import('@/components/home/NotableClients'))
 const HeroProductBanner = lazy(() => import('@/components/home/HeroProductBanner'))
 
@@ -460,7 +463,11 @@ const defaultCategoryVideos: Record<string, string> = {
 export default function Home() {
   const [quickViewBundle, setQuickViewBundle] = useState<Bundle | null>(null)
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null)
-  const [introComplete, setIntroComplete] = useState(false)
+  // Synchronously check sessionStorage so repeat visitors skip the splash
+  // entirely — no Suspense gap, no flash of hero content before overlay.
+  const [introComplete, setIntroComplete] = useState(() => {
+    try { return !!sessionStorage.getItem('fischer-intro-seen') } catch { return false }
+  })
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
   const [videoSrcReady, setVideoSrcReady] = useState(false)
@@ -1013,9 +1020,7 @@ export default function Home() {
       </Helmet>
 
       {!introComplete && (
-        <Suspense fallback={null}>
-          <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
-        </Suspense>
+        <LogoSplitIntro onComplete={() => setIntroComplete(true)} />
       )}
 
       <div className="bg-white dark:bg-dark-950">

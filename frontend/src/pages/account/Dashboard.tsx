@@ -65,7 +65,7 @@ export default function Dashboard() {
       label: 'Wishlist Items',
       value: data?.stats.wishlist_count || 0,
       icon: HeartIcon,
-      color: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
+      color: 'bg-rose-100 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400',
       link: '/account/wishlist',
     },
     {

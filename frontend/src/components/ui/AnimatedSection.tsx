@@ -34,7 +34,7 @@ export default function AnimatedSection({
   delay = 0,
   duration = 1000, // Slower, smoother default
   threshold = 0.1, // Trigger earlier for smoother experience
-  animateOut = true,
+  animateOut = false,
   once = false,
   lazy = false,
   distance = 80, // More travel distance for elegant feel

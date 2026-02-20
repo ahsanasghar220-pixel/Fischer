@@ -166,12 +166,12 @@ const QuickViewModal = memo(function QuickViewModal({
                       {/* Badges */}
                       <div className="absolute top-4 left-4 flex flex-col gap-2">
                         {discountPercentage && (
-                          <span className="px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+                          <span className="px-3 py-1 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-bold rounded-full">
                             -{discountPercentage}%
                           </span>
                         )}
                         {product.is_new && (
-                          <span className="px-3 py-1 bg-emerald-500 text-white text-sm font-bold rounded-full">
+                          <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-primary-400 text-white text-sm font-bold rounded-full">
                             NEW
                           </span>
                         )}
