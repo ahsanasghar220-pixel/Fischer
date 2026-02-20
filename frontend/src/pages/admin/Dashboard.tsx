@@ -11,7 +11,6 @@ import {
   PlusIcon,
   ArrowPathIcon,
   ClockIcon,
-  TruckIcon,
   CheckCircleIcon,
   NoSymbolIcon,
   Cog6ToothIcon,
