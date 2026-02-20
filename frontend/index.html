@@ -99,10 +99,21 @@
         <img src="/images/hero-poster.webp" alt="" width="1280" height="720" fetchpriority="high" />
       </div>
       <script>
-        // Only show hero skeleton on homepage; hide immediately on other pages
-        if (window.location.pathname !== '/') {
-          document.getElementById('hero-skeleton').style.display = 'none';
-        }
+        (function() {
+          if (window.location.pathname !== '/') {
+            // Non-homepage: hide skeleton entirely
+            document.getElementById('hero-skeleton').style.display = 'none';
+          } else {
+            // Homepage: only show poster image on repeat visits (no intro screen)
+            // On first visit the LogoSplitIntro covers everything — keep skeleton dark
+            var hasSeenIntro = false;
+            try { hasSeenIntro = !!sessionStorage.getItem('fischer-intro-seen'); } catch(e) {}
+            if (!hasSeenIntro) {
+              var img = document.querySelector('#hero-skeleton img');
+              if (img) img.style.display = 'none';
+            }
+          }
+        })();
       </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
