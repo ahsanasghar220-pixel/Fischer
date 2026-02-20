@@ -24,6 +24,9 @@ export default function CategoriesEditor({ section, data, open, onClose, onSaveS
   const [subtitle, setSubtitle] = useState(section.subtitle || '')
   const [selected, setSelected] = useState<number[]>([])
   const [categoryVideos, setCategoryVideos] = useState<Record<string, string>>(section.settings?.category_videos || {})
+  const [mobileVideosEnabled, setMobileVideosEnabled] = useState<boolean>(
+    section.settings?.mobile_videos_enabled ?? false
+  )
 
   useEffect(() => {
     setSelected(data?.homepage_categories?.map(hc => hc.category_id) || [])
@@ -60,7 +63,7 @@ export default function CategoriesEditor({ section, data, open, onClose, onSaveS
   }
 
   const handleSaveAll = () => {
-    onSaveSection(section.key, { title, subtitle, settings: { ...section.settings, category_videos: categoryVideos } })
+    onSaveSection(section.key, { title, subtitle, settings: { ...section.settings, category_videos: categoryVideos, mobile_videos_enabled: mobileVideosEnabled } })
     onSaveCategories(selected)
   }
 
@@ -143,8 +146,16 @@ export default function CategoriesEditor({ section, data, open, onClose, onSaveS
         {/* Category Videos */}
         {selected.length > 0 && (
           <div className="border-t border-dark-200 dark:border-dark-700 pt-5">
-            <h3 className="text-sm font-semibold text-dark-900 dark:text-white mb-1">Category Preview Videos</h3>
-            <p className="text-xs text-dark-500 dark:text-dark-400 mb-3">Assign a preview video to each selected category. Shown when a visitor hovers over the category.</p>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm font-semibold text-dark-900 dark:text-white">Category Preview Videos</h3>
+              <label className="flex items-center gap-2 cursor-pointer select-none" onClick={() => setMobileVideosEnabled(v => !v)}>
+                <span className="text-xs text-dark-500 dark:text-dark-400">Mobile</span>
+                <div className={`relative w-9 h-5 rounded-full transition-colors ${mobileVideosEnabled ? 'bg-primary-600' : 'bg-dark-300 dark:bg-dark-600'}`}>
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${mobileVideosEnabled ? 'translate-x-4' : ''}`} />
+                </div>
+              </label>
+            </div>
+            <p className="text-xs text-dark-500 dark:text-dark-400 mb-3">Assign a preview video to each selected category. Shown when a visitor hovers over the category. Toggle "Mobile" to also play videos on mobile devices.</p>
             <div className="space-y-3">
               {selected.map(catId => {
                 const cat = allCategories.find(c => c.id === catId)

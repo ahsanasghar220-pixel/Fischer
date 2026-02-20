@@ -165,9 +165,9 @@ export default function AdminOrders() {
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Order</th>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Customer</th>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Status</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Payment</th>
+                    <th className="hidden md:table-cell text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Payment</th>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Total</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Date</th>
+                    <th className="hidden md:table-cell text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Date</th>
                     <th className="text-right px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Actions</th>
                   </tr>
                 </thead>
@@ -185,14 +185,14 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-4 py-3">
                         <p className="text-dark-900 dark:text-white">{order.customer_name}</p>
-                        <p className="text-xs text-dark-500 dark:text-dark-400">{order.customer_email}</p>
+                        <p className="hidden sm:block text-xs text-dark-500 dark:text-dark-400">{order.customer_email}</p>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getOrderStatusColor(order.status)}`}>
                           {order.status.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="hidden md:table-cell px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusColor(order.payment_status)}`}>
                           {order.payment_status}
                         </span>
@@ -201,7 +201,7 @@ export default function AdminOrders() {
                       <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">
                         {formatPrice(order.total)}
                       </td>
-                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400 text-sm">
+                      <td className="hidden md:table-cell px-4 py-3 text-dark-600 dark:text-dark-400 text-sm">
                         {formatDate(order.created_at)}
                       </td>
                       <td className="px-4 py-3">

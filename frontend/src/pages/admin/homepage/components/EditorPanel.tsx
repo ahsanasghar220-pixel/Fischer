@@ -46,16 +46,16 @@ export default function EditorPanel({ open, onClose, title, description, childre
       {/* Panel */}
       <div className="relative ml-auto w-full max-w-2xl bg-white dark:bg-dark-800 shadow-2xl flex flex-col h-full animate-slide-in-right">
         {/* Header */}
-        <div className="flex-shrink-0 border-b border-dark-200 dark:border-dark-700 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-dark-900 dark:text-white">{title}</h2>
-            <div className="flex items-center gap-2">
+        <div className="flex-shrink-0 border-b border-dark-200 dark:border-dark-700 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-base sm:text-lg font-semibold text-dark-900 dark:text-white truncate">{title}</h2>
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {sectionKey && (
                 <a
                   href={homepageUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 border border-dark-200 dark:border-dark-600 rounded-lg hover:border-primary-300 dark:hover:border-primary-700 transition-colors"
+                  className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 border border-dark-200 dark:border-dark-600 rounded-lg hover:border-primary-300 dark:hover:border-primary-700 transition-colors"
                 >
                   <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5" />
                   View on website
@@ -77,13 +77,13 @@ export default function EditorPanel({ open, onClose, title, description, childre
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex-shrink-0 border-t border-dark-200 dark:border-dark-700 px-6 py-4 bg-dark-50 dark:bg-dark-900/50">
+          <div className="flex-shrink-0 border-t border-dark-200 dark:border-dark-700 px-4 sm:px-6 py-4 bg-dark-50 dark:bg-dark-900/50">
             {footer}
           </div>
         )}

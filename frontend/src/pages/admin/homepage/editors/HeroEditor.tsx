@@ -18,9 +18,12 @@ export default function HeroEditor({ section, open, onClose, onSave, isPending }
   const [title, setTitle] = useState(section.title || '')
   const [subtitle, setSubtitle] = useState(section.subtitle || '')
   const [videoUrl, setVideoUrl] = useState(section.settings?.video_url || '')
+  const [mobileVideoEnabled, setMobileVideoEnabled] = useState<boolean>(
+    section.settings?.mobile_video_enabled ?? false
+  )
 
   const handleSave = () => {
-    onSave(section.key, { title, subtitle, settings: { ...section.settings, video_url: videoUrl } })
+    onSave(section.key, { title, subtitle, settings: { ...section.settings, video_url: videoUrl, mobile_video_enabled: mobileVideoEnabled } })
   }
 
   return (
@@ -90,6 +93,21 @@ export default function HeroEditor({ section, open, onClose, onSave, isPending }
             label=""
             placeholder="/videos/hero-video.mp4"
           />
+        </FormField>
+
+        <FormField
+          label="Play Video on Mobile"
+          tooltip="By default, mobile devices show a static image for faster page load (better LCP score). Enable this to play the video on mobile too."
+          helpText="Warning: enabling video on mobile will increase page load time on slower mobile networks."
+        >
+          <label className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setMobileVideoEnabled(v => !v)}>
+            <div className={`relative w-10 h-6 rounded-full transition-colors ${mobileVideoEnabled ? 'bg-primary-600' : 'bg-dark-300 dark:bg-dark-600'}`}>
+              <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${mobileVideoEnabled ? 'translate-x-4' : ''}`} />
+            </div>
+            <span className="text-sm text-dark-700 dark:text-dark-300">
+              {mobileVideoEnabled ? 'Video plays on mobile' : 'Static image on mobile (recommended)'}
+            </span>
+          </label>
         </FormField>
       </div>
     </EditorPanel>

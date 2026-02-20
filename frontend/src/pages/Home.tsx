@@ -540,6 +540,8 @@ export default function Home() {
 
   // Hero video URL from section settings
   const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=6'
+  // Admin toggle: play video on mobile (default false = show poster for LCP)
+  const heroMobileVideoEnabled: boolean = sections.hero?.settings?.mobile_video_enabled ?? false
 
   // Brand statement from section data
   const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
@@ -547,6 +549,8 @@ export default function Home() {
 
   // Category videos from section settings
   const categoryVideos: Record<string, string> = sections.categories?.settings?.category_videos || defaultCategoryVideos
+  // Admin toggle: play category videos on mobile (default false)
+  const categoryMobileVideosEnabled: boolean = sections.categories?.settings?.mobile_videos_enabled ?? false
 
   // Dealer CTA from section settings
   const dealerSettings = sections.dealer_cta?.settings || {}
@@ -655,7 +659,7 @@ export default function Home() {
               ? data.video_categories
               : categories.filter((c) => categoryVideos[c.slug])
             ).map((category, index) => (
-              <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} isMobile={isMobile} />
+              <CategoryShowcase key={category.id} category={category} index={index} categoryVideos={categoryVideos} isMobile={isMobile && !categoryMobileVideosEnabled} />
             ))}
           </div>
         </div>
@@ -1026,7 +1030,7 @@ export default function Home() {
       <div className="bg-white dark:bg-dark-950">
         {/* Hero is always first */}
         <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
-          {isMobile ? (
+          {(isMobile && !heroMobileVideoEnabled) ? (
             /* Mobile: static poster image — video is LCP killer on mobile */
             <img
               src="/images/hero-poster.webp"

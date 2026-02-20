@@ -116,11 +116,11 @@ export default function AdminProducts() {
                 <thead className="bg-dark-50 dark:bg-dark-700 border-b border-dark-200 dark:border-dark-600">
                   <tr>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Product</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">SKU</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Category</th>
+                    <th className="hidden md:table-cell text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">SKU</th>
+                    <th className="hidden lg:table-cell text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Category</th>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Price</th>
                     <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Stock</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Status</th>
+                    <th className="hidden sm:table-cell text-left px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Status</th>
                     <th className="text-right px-4 py-3 text-sm font-medium text-dark-600 dark:text-dark-300">Actions</th>
                   </tr>
                 </thead>
@@ -145,8 +145,8 @@ export default function AdminProducts() {
                           <span className="font-medium text-dark-900 dark:text-white">{product.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{product.sku}</td>
-                      <td className="px-4 py-3 text-dark-600 dark:text-dark-400">{product.category?.name || '-'}</td>
+                      <td className="hidden md:table-cell px-4 py-3 text-dark-600 dark:text-dark-400">{product.sku}</td>
+                      <td className="hidden lg:table-cell px-4 py-3 text-dark-600 dark:text-dark-400">{product.category?.name || '-'}</td>
                       <td className="px-4 py-3 font-medium text-dark-900 dark:text-white">{formatPrice(product.price)}</td>
                       <td className="px-4 py-3">
                         <span className={`${
@@ -156,7 +156,7 @@ export default function AdminProducts() {
                           {product.stock}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="hidden sm:table-cell px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                           product.is_active ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                         }`}>

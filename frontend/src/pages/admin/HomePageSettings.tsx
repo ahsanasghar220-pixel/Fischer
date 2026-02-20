@@ -85,16 +85,16 @@ export default function HomePageSettings() {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Homepage Settings</h1>
-          <p className="text-dark-500 dark:text-dark-400">Manage all sections of your homepage. Toggle visibility, reorder by dragging, and customize each section.</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-dark-900 dark:text-white">Homepage Settings</h1>
+          <p className="text-sm text-dark-500 dark:text-dark-400">Manage all sections of your homepage. Toggle visibility, reorder by dragging, and customize each section.</p>
         </div>
         <a
           href={homepageUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          className="self-start sm:self-auto flex items-center gap-2 px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap"
         >
           <ArrowTopRightOnSquareIcon className="w-4 h-4" />
           Preview Homepage
