@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import {
   PlusIcon,
@@ -11,6 +11,7 @@ import {
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import toast from 'react-hot-toast'
 
 interface Product {
   id: number
@@ -37,9 +38,30 @@ interface PaginatedProducts {
 }
 
 export default function AdminProducts() {
+  const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [status, setStatus] = useState('')
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/api/admin/products/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      toast.success('Product deleted')
+    },
+    onError: (error: any) => {
+      const message = error?.response?.data?.message || 'Failed to delete product'
+      toast.error(message)
+    },
+  })
+
+  const handleDelete = (id: number) => {
+    if (confirm('Are you sure you want to delete this product? This cannot be undone.')) {
+      deleteMutation.mutate(id)
+    }
+  }
 
   const { data, isLoading } = useQuery<PaginatedProducts>({
     queryKey: ['admin-products', page, search, status],
@@ -178,7 +200,11 @@ export default function AdminProducts() {
                           >
                             <PencilIcon className="w-4 h-4" />
                           </Link>
-                          <button className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            disabled={deleteMutation.isPending}
+                            className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded disabled:opacity-50"
+                          >
                             <TrashIcon className="w-4 h-4" />
                           </button>
                         </div>

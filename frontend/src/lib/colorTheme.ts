@@ -59,9 +59,13 @@ export function generateColorScale(hex: string): Record<string, string> {
   )
 }
 
+const BRAND_COLOR_KEY = 'fischer-brand-color'
+
 /**
  * Apply a brand color to the document root as CSS custom properties.
  * All Tailwind `primary-*` classes update instantly with no page reload.
+ * Also persists the color to localStorage so it can be restored synchronously
+ * on the next page load (no flash of default red before the API responds).
  */
 export function applyBrandColor(hex: string): void {
   if (!hex || !/^#[0-9a-fA-F]{6}$/.test(hex)) return
@@ -76,13 +80,35 @@ export function applyBrandColor(hex: string): void {
   // Keep --color-accent in sync (used in non-Tailwind CSS rules)
   const [r, g, b] = hexToRgb(hex)
   root.style.setProperty('--color-accent', `${r} ${g} ${b}`)
+
+  // Persist so the next page load can apply it before the API responds
+  try { localStorage.setItem(BRAND_COLOR_KEY, hex) } catch { /* ignore */ }
+}
+
+/**
+ * Read the brand color that was last saved to localStorage.
+ * Returns null if nothing has been cached yet.
+ */
+export function getCachedBrandColor(): string | null {
+  try { return localStorage.getItem(BRAND_COLOR_KEY) } catch { return null }
 }
 
 /**
  * Fetch the brand color from the public API and apply it.
- * Called once at app startup; silently falls back to CSS defaults on error.
+ * Called once at app startup.
+ *
+ * Strategy:
+ *  1. Apply the localStorage-cached color immediately (synchronous, no flash).
+ *  2. Fetch the latest color from the API and apply + re-cache it.
+ *     If the admin changed the color since the last visit it updates instantly.
  */
 export async function initBrandColor(): Promise<void> {
+  // Step 1 — apply cached color right away so the page never shows the
+  // CSS-default red while waiting for the network response.
+  const cached = getCachedBrandColor()
+  if (cached) applyBrandColor(cached)
+
+  // Step 2 — fetch the authoritative value from the API
   try {
     const base = import.meta.env.VITE_API_URL ?? ''
     const res = await fetch(`${base}/api/settings/brand-color`)
@@ -92,6 +118,6 @@ export async function initBrandColor(): Promise<void> {
       applyBrandColor(data.brand_color)
     }
   } catch {
-    // Silently fall back to CSS variable defaults
+    // Silently fall back to whatever was already applied
   }
 }

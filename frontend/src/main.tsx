@@ -10,11 +10,14 @@ import CustomCursor from './components/ui/CustomCursor'
 import App from './App'
 import { useCartStore } from './stores/cartStore'
 import { trackPageLoad, preloadCriticalResources } from './lib/performance'
-import { initBrandColor } from './lib/colorTheme'
+import { initBrandColor, getCachedBrandColor } from './lib/colorTheme'
 import './index.css'
 
-// Apply dynamic brand color from admin settings (non-blocking)
+// Apply dynamic brand color — cached first (synchronous, no flash), then API confirms
 initBrandColor()
+
+// Read cached primary color for use in static config below (Toaster, etc.)
+const primaryColor = getCachedBrandColor() ?? '#951212'
 
 // Preload critical resources for faster initial render
 preloadCriticalResources()
@@ -59,13 +62,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 },
                 success: {
                   iconTheme: {
-                    primary: '#951212',
+                    primary: primaryColor,
                     secondary: '#fff',
                   },
                 },
                 error: {
                   iconTheme: {
-                    primary: '#951212',
+                    primary: primaryColor,
                     secondary: '#fff',
                   },
                 },
