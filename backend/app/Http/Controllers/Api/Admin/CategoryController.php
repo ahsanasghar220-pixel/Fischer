@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -11,6 +12,16 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    private function clearCache(): void
+    {
+        Cache::forget('admin_categories');
+        // Clear public-facing caches so the shop reflects changes immediately
+        Cache::forget('all_categories');
+        Cache::forget('featured_categories');
+        Cache::forget('category_tree');
+        Cache::forget('categories_with_count');
+    }
+
     public function index(Request $request)
     {
         $search = $request->get('search');
@@ -76,41 +87,53 @@ class CategoryController extends Controller
     {
         $category = Category::withCount('products')->findOrFail($id);
 
+        $products = Product::where('category_id', $id)
+            ->select(['id', 'name', 'sku', 'price', 'stock_status', 'is_active', 'images'])
+            ->orderBy('name')
+            ->get();
+
         return $this->success([
-            'data' => $category,
+            'category' => $category,
+            'products' => $products,
         ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-            'image' => 'nullable|string|max:500',
-            'icon' => 'nullable|string|max:100',
-            'parent_id' => 'nullable|exists:categories,id',
-            'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
-            'is_featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
+            'name'             => 'required|string|max:255',
+            'slug'             => 'nullable|string|max:255',
+            'description'      => 'nullable|string',
+            'features'         => 'nullable|array',
+            'features.*'       => 'string|max:255',
+            'image'            => 'nullable|string|max:500',
+            'icon'             => 'nullable|string|max:100',
+            'parent_id'        => 'nullable|exists:categories,id',
+            'sort_order'       => 'nullable|integer',
+            'is_active'        => 'boolean',
+            'is_featured'      => 'boolean',
+            'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        // Use provided slug or auto-generate from name
+        $slug = !empty($validated['slug'])
+            ? Str::slug($validated['slug'])
+            : Str::slug($validated['name']);
+        unset($validated['slug']);
 
-        // Check for duplicate slug
-        $slugCount = Category::where('slug', $validated['slug'])->count();
-        if ($slugCount > 0) {
-            $validated['slug'] .= '-' . ($slugCount + 1);
+        // Ensure slug uniqueness
+        $base  = $slug;
+        $count = 1;
+        while (Category::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $count++;
         }
+        $validated['slug'] = $slug;
 
         $category = Category::create($validated);
+        $this->clearCache();
 
-        return $this->success([
-            'data' => $category,
-        ], 'Category created successfully', 201);
+        return $this->success($category, 'Category created successfully', 201);
     }
 
     public function update(Request $request, $id)
@@ -118,34 +141,46 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-            'image' => 'nullable|string|max:500',
-            'icon' => 'nullable|string|max:100',
-            'parent_id' => 'nullable|exists:categories,id',
-            'sort_order' => 'nullable|integer',
-            'is_active' => 'boolean',
-            'is_featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
+            'name'             => 'sometimes|required|string|max:255',
+            'slug'             => 'nullable|string|max:255',
+            'description'      => 'nullable|string',
+            'features'         => 'nullable|array',
+            'features.*'       => 'string|max:255',
+            'image'            => 'nullable|string|max:500',
+            'icon'             => 'nullable|string|max:100',
+            'parent_id'        => 'nullable|exists:categories,id',
+            'sort_order'       => 'nullable|integer',
+            'is_active'        => 'boolean',
+            'is_featured'      => 'boolean',
+            'meta_title'       => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        // Update slug if name changed
-        if (isset($validated['name']) && $validated['name'] !== $category->name) {
-            $validated['slug'] = Str::slug($validated['name']);
-            $slugCount = Category::where('slug', $validated['slug'])->where('id', '!=', $id)->count();
-            if ($slugCount > 0) {
-                $validated['slug'] .= '-' . ($slugCount + 1);
+        // Determine target slug
+        $providedSlug = $validated['slug'] ?? null;
+        unset($validated['slug']);
+
+        if (!empty($providedSlug)) {
+            $newSlug = Str::slug($providedSlug);
+        } elseif (isset($validated['name']) && $validated['name'] !== $category->name) {
+            $newSlug = Str::slug($validated['name']);
+        } else {
+            $newSlug = null; // no slug change needed
+        }
+
+        if ($newSlug && $newSlug !== $category->slug) {
+            $base  = $newSlug;
+            $count = 1;
+            while (Category::where('slug', $newSlug)->where('id', '!=', $id)->exists()) {
+                $newSlug = $base . '-' . $count++;
             }
+            $validated['slug'] = $newSlug;
         }
 
         $category->update($validated);
+        $this->clearCache();
 
-        return $this->success([
-            'data' => $category->fresh(),
-        ], 'Category updated successfully');
+        return $this->success($category->fresh(), 'Category updated successfully');
     }
 
     public function destroy($id)
@@ -158,6 +193,7 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+        $this->clearCache();
 
         return $this->success(null, 'Category deleted successfully');
     }
