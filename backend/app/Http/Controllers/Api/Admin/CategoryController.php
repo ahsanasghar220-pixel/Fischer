@@ -15,11 +15,15 @@ class CategoryController extends Controller
     private function clearCache(): void
     {
         Cache::forget('admin_categories');
-        // Clear public-facing caches so the shop reflects changes immediately
+        // Public-facing caches (must match keys in CategoryController)
         Cache::forget('all_categories');
         Cache::forget('featured_categories');
         Cache::forget('category_tree');
         Cache::forget('categories_with_count');
+        Cache::forget('categories_index');
+        Cache::forget('categories_index_featured');
+        Cache::forget('categories_featured');
+        Cache::forget('categories_tree');
     }
 
     public function index(Request $request)
