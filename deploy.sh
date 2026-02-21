@@ -145,6 +145,10 @@ if [ -d "backend" ]; then
     echo "Seeding portfolio videos..."
     php artisan db:seed --class=PortfolioVideoSeeder --force
 
+    # Correct water cooler product data (prices, capacities, missing products)
+    echo "Correcting water cooler product data..."
+    php artisan db:seed --class=ProductCorrectionSeeder --force
+
     # Clear permission cache so Spatie picks up fresh data
     php artisan cache:clear
 
