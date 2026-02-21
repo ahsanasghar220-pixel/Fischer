@@ -98,12 +98,12 @@ export default function MobileMenuOverlay({
                     {/* Centered Logo */}
                     <Link to="/" onClick={onClose} className="transition-transform hover:scale-105 active:scale-95">
                       <img
-                        src={getImageSrc('/images/logo-dark.webp')}
+                        src={getImageSrc('/images/logo/Fischer-electronics-logo-black.svg')}
                         alt="Fischer"
                         className="h-8 w-auto dark:hidden"
                       />
                       <img
-                        src={getImageSrc('/images/logo-light.webp')}
+                        src={getImageSrc('/images/logo/Fischer-electronics-logo-white.svg')}
                         alt="Fischer"
                         className="h-8 w-auto hidden dark:block"
                       />

@@ -199,7 +199,7 @@ export default function Header() {
             {/* Center: Logo */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center flex-shrink-0">
               <AnimatedLogo
-                src="/images/logo-dark.webp"
+                src="/images/logo/Fischer-electronics-logo-black.svg"
                 alt="Fischer"
                 width={792}
                 height={436}
@@ -212,7 +212,7 @@ export default function Header() {
                 }`}
               />
               <AnimatedLogo
-                src="/images/logo-light.webp"
+                src="/images/logo/Fischer-electronics-logo-white.svg"
                 alt="Fischer"
                 width={792}
                 height={436}
@@ -257,7 +257,7 @@ export default function Header() {
                   <>
                     {/* Dark logo - hidden on homepage hero and in dark mode */}
                     <AnimatedLogo
-                      src="/images/logo-dark.webp"
+                      src="/images/logo/Fischer-electronics-logo-black.svg"
                       alt="Fischer"
                       width={792}
                       height={436}
@@ -272,7 +272,7 @@ export default function Header() {
                     />
                     {/* White logo - show on homepage hero OR in dark mode */}
                     <AnimatedLogo
-                      src="/images/logo-light.webp"
+                      src="/images/logo/Fischer-electronics-logo-white.svg"
                       alt="Fischer"
                       width={792}
                       height={436}

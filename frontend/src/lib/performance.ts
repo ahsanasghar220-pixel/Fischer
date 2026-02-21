@@ -24,7 +24,7 @@ export function trackPageLoad() {
 export function preloadCriticalResources() {
   // Preload logos needed for header
   const logoDark = new Image()
-  logoDark.src = '/images/logo-dark.webp'
+  logoDark.src = '/images/logo/Fischer-electronics-logo-black.svg'
   const logoLight = new Image()
-  logoLight.src = '/images/logo-light.webp'
+  logoLight.src = '/images/logo/Fischer-electronics-logo-white.svg'
 }

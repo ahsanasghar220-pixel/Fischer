@@ -111,14 +111,14 @@ export default function Footer() {
             <div className="col-span-1 sm:col-span-2">
               <Link to="/" className="inline-block">
                 <img
-                  src="/images/logo-dark.webp"
+                  src="/images/logo/Fischer-electronics-logo-black.svg"
                   alt="Fischer"
                   width={792}
                   height={436}
                   className="h-12 w-auto dark:hidden"
                 />
                 <img
-                  src="/images/logo-light.webp"
+                  src="/images/logo/Fischer-electronics-logo-white.svg"
                   alt="Fischer"
                   width={792}
                   height={436}
