@@ -186,8 +186,15 @@ class CategoryController extends Controller
             $validated['slug'] = $newSlug;
         }
 
+        $wasActive = $category->is_active;
+
         $category->update($validated);
         $this->clearCache();
+
+        // Cascade deactivation: if category was just disabled, disable all its products
+        if ($wasActive && !$category->fresh()->is_active) {
+            Product::where('category_id', $id)->update(['is_active' => false]);
+        }
 
         return $this->success($category->fresh(), 'Category updated successfully');
     }
@@ -196,10 +203,8 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
-        // Check if category has products
-        if ($category->products()->count() > 0) {
-            return $this->error('Cannot delete category with products. Move or delete products first.', 422);
-        }
+        // Cascade: soft-delete all products in this category first
+        Product::where('category_id', $id)->each(fn ($p) => $p->delete());
 
         $category->delete();
         $this->clearCache();
