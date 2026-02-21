@@ -466,7 +466,7 @@ export default function AdminCategories() {
 
       {/* Products Panel */}
       {selectedCategoryId && (
-        <div className="fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-[60] flex">
           <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedCategoryId(null)} />
           <div className="relative ml-auto w-full max-w-2xl bg-white dark:bg-dark-800 shadow-2xl flex flex-col h-full">
 
