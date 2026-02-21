@@ -1,7 +1,7 @@
-import { memo, useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { EyeIcon, ShoppingCartIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, ShoppingCartIcon, ClockIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { formatPrice, formatDescription } from '@/lib/utils'
 import { HoverCard } from '@/components/effects/ScrollReveal'
 import type { Bundle } from '@/api/bundles'
@@ -20,6 +20,19 @@ const BundleCard = memo(function BundleCard({
   showQuickActions = true,
 }: BundleCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+
+  // Check if any products in the bundle are out of stock
+  const hasOutOfStockItems = useMemo(() => {
+    // Check products_preview for OOS items
+    if (bundle.products_preview?.some((p) => p.is_in_stock === false)) return true
+    // Check bundle items (fixed bundles)
+    if (bundle.items?.some((item) => item.product?.is_in_stock === false)) return true
+    // Check slot products (configurable bundles)
+    if (bundle.slots?.some((slot) =>
+      slot.products?.some((sp) => sp.product?.is_in_stock === false)
+    )) return true
+    return false
+  }, [bundle])
 
   // Helper to get proper image URL with fallback chain
   const getImageUrl = () => {
@@ -40,8 +53,23 @@ const BundleCard = memo(function BundleCard({
       return '/images/all-products.webp'
     }
 
-    // Ensure absolute path - already has leading slash from backend
+    // For /storage/ paths, prepend the API base URL so they resolve correctly
+    if (imageUrl.startsWith('/storage/')) {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      return `${apiBase}${imageUrl}`
+    }
+
     return imageUrl
+  }
+
+  // Helper to resolve product preview image URLs
+  const getProductImageUrl = (image: string | null): string | null => {
+    if (!image) return null
+    if (image.startsWith('/storage/')) {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      return `${apiBase}${image}`
+    }
+    return image
   }
 
   const getBadgeColor = (color: string) => {
@@ -118,26 +146,51 @@ const BundleCard = memo(function BundleCard({
             </motion.div>
           )}
 
+          {/* Out of Stock Badge */}
+          {hasOutOfStockItems && (
+            <motion.div
+              className={`absolute ${bundle.show_countdown && bundle.time_remaining ? 'top-12' : 'top-4'} right-4 flex items-center gap-1 px-2.5 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-white text-[10px] font-semibold`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.35 }}
+            >
+              <ExclamationTriangleIcon className="w-3 h-3" />
+              Contains out-of-stock items
+            </motion.div>
+          )}
+
           {/* Products Preview */}
           <motion.div
-            className="absolute bottom-4 left-4 right-4 flex items-center gap-2"
+            className="absolute bottom-4 left-4 right-4 flex items-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isHovered ? 1 : 0.8, y: isHovered ? 0 : 10 }}
             transition={{ duration: 0.3 }}
           >
-            {bundle.products_preview?.slice(0, 4).map((product, index) => (
-              <div
-                key={product.id}
-                className="w-10 h-10 rounded-lg bg-white dark:bg-dark-700 shadow-lg overflow-hidden border-2 border-white/50"
-                style={{ transform: `translateX(-${index * 8}px)`, zIndex: 4 - index }}
-              >
-                {product.image && (
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                )}
-              </div>
-            ))}
+            <div className="flex items-center -space-x-2">
+              {bundle.products_preview?.slice(0, 4).map((product, index) => (
+                <div
+                  key={product.id}
+                  className="w-12 h-12 flex-shrink-0 rounded-lg bg-white dark:bg-dark-700 shadow-lg overflow-hidden ring-2 ring-white dark:ring-dark-600"
+                  style={{ zIndex: 4 - index }}
+                >
+                  {product.image ? (
+                    <img
+                      src={getProductImageUrl(product.image) || ''}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.currentTarget
+                        target.style.display = 'none'
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-dark-100 dark:bg-dark-600" />
+                  )}
+                </div>
+              ))}
+            </div>
             {bundle.products_preview && bundle.products_preview.length > 4 && (
-              <span className="text-white text-xs font-medium">
+              <span className="text-white text-xs font-medium ml-2">
                 +{bundle.products_preview.length - 4} more
               </span>
             )}
@@ -169,12 +222,17 @@ const BundleCard = memo(function BundleCard({
                 <motion.button
                   onClick={(e) => {
                     e.preventDefault()
-                    onAddToCart(bundle)
+                    if (!hasOutOfStockItems) onAddToCart(bundle)
                   }}
-                  aria-label="Add to cart"
-                  className="p-2.5 bg-primary-500 rounded-full text-white hover:bg-primary-600 hover:scale-110 transition-all shadow-lg"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                  aria-label={hasOutOfStockItems ? 'Cannot add to cart - contains out-of-stock items' : 'Add to cart'}
+                  title={hasOutOfStockItems ? 'Cannot add to cart - contains out-of-stock items' : 'Add to cart'}
+                  className={`p-2.5 rounded-full text-white transition-all shadow-lg ${
+                    hasOutOfStockItems
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-primary-500 hover:bg-primary-600 hover:scale-110'
+                  }`}
+                  whileHover={hasOutOfStockItems ? {} : { scale: 1.1 }}
+                  whileTap={hasOutOfStockItems ? {} : { scale: 0.95 }}
                 >
                   <ShoppingCartIcon className="w-4 h-4" />
                 </motion.button>

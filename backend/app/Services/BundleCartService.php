@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Bundle;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class BundleCartService
@@ -46,6 +47,12 @@ class BundleCartService
                     'errors' => $validationErrors,
                 ];
             }
+        }
+
+        // Validate stock status of all bundle products
+        $stockValidation = $this->validateBundleProductsStock($bundle, $selections);
+        if (!$stockValidation['success']) {
+            return $stockValidation;
         }
 
         return DB::transaction(function () use ($cart, $bundle, $selections) {
@@ -246,6 +253,52 @@ class BundleCartService
             ->delete();
 
         return true;
+    }
+
+    /**
+     * Validate that all products in a bundle are in stock before adding to cart
+     */
+    protected function validateBundleProductsStock(Bundle $bundle, ?array $selections = null): array
+    {
+        $outOfStockProducts = [];
+
+        if ($bundle->isFixed()) {
+            // Load items with products for fixed bundles
+            $bundle->loadMissing('items.product');
+
+            foreach ($bundle->items as $item) {
+                if ($item->product && $item->product->stock_status === 'out_of_stock') {
+                    $outOfStockProducts[] = $item->product->name;
+                }
+            }
+        } elseif ($bundle->isConfigurable() && !empty($selections)) {
+            // For configurable bundles, check the selected products
+            $productIds = [];
+            foreach ($selections as $selection) {
+                $ids = (array) ($selection['product_ids'] ?? [$selection['product_id'] ?? null]);
+                $productIds = array_merge($productIds, array_filter($ids));
+            }
+
+            if (!empty($productIds)) {
+                $products = Product::whereIn('id', $productIds)
+                    ->where('stock_status', 'out_of_stock')
+                    ->get();
+
+                foreach ($products as $product) {
+                    $outOfStockProducts[] = $product->name;
+                }
+            }
+        }
+
+        if (!empty($outOfStockProducts)) {
+            $productList = implode(', ', $outOfStockProducts);
+            return [
+                'success' => false,
+                'message' => "Cannot add bundle to cart: [{$productList}] " . (count($outOfStockProducts) === 1 ? 'is' : 'are') . " out of stock",
+            ];
+        }
+
+        return ['success' => true];
     }
 
     /**

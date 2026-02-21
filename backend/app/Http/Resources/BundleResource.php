@@ -122,6 +122,7 @@ class BundleResource extends JsonResource
                         'id' => $item->product->id,
                         'name' => $item->product->name,
                         'image' => $item->product->primary_image,
+                        'is_in_stock' => $item->product->is_in_stock,
                     ];
                 }
             }
@@ -133,6 +134,7 @@ class BundleResource extends JsonResource
                         'id' => $firstProduct->id,
                         'name' => $firstProduct->name,
                         'image' => $firstProduct->primary_image,
+                        'is_in_stock' => $firstProduct->is_in_stock,
                     ];
                 }
             }

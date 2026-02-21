@@ -154,12 +154,16 @@ export default function AdminCoupons() {
     e.preventDefault()
     saveMutation.mutate({
       code: form.code,
+      name: form.name || null,
+      description: form.description || null,
       type: form.type,
       value: parseFloat(form.value) || 0,
-      min_order_amount: form.minimum_order_amount ? parseFloat(form.minimum_order_amount) : null,
-      max_discount: form.maximum_discount ? parseFloat(form.maximum_discount) : null,
+      minimum_order_amount: form.minimum_order_amount ? parseFloat(form.minimum_order_amount) : null,
+      maximum_discount: form.maximum_discount ? parseFloat(form.maximum_discount) : null,
       usage_limit: form.usage_limit ? parseInt(form.usage_limit) : null,
+      usage_limit_per_user: form.usage_limit_per_user ? parseInt(form.usage_limit_per_user) : null,
       is_active: form.is_active,
+      first_order_only: form.first_order_only,
       starts_at: form.starts_at || null,
       expires_at: form.expires_at || null,
     })
@@ -262,13 +266,25 @@ export default function AdminCoupons() {
               <div>
                 <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Code *</label>
                 <div className="flex gap-2">
-                  <input type="text" value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} required
+                  <input type="text" value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} required placeholder="e.g. SUMMER20"
                     className="flex-1 px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white font-mono uppercase focus:ring-2 focus:ring-primary-500" />
                   <button type="button" onClick={generateCode}
                     className="px-3 py-2 bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 rounded-lg text-sm hover:bg-dark-200 dark:hover:bg-dark-600">
                     Generate
                   </button>
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Name</label>
+                <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Summer Sale 20% Off"
+                  className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Internal name to identify this coupon</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Description</label>
+                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="e.g. 20% off all kitchen appliances during summer sale" rows={2}
+                  className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Optional notes about this coupon's purpose</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -279,37 +295,45 @@ export default function AdminCoupons() {
                     <option value="fixed">Fixed Amount</option>
                     <option value="free_shipping">Free Shipping</option>
                   </select>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Percentage = % off order, Fixed = flat Rs. discount, Free Shipping = waive delivery fee</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
                     {form.type === 'percentage' ? 'Discount %' : 'Amount (Rs.)'} *
                   </label>
-                  <input type="number" value={form.value} onChange={e => setForm({ ...form, value: e.target.value })} required min="0"
+                  <input type="number" value={form.value} onChange={e => setForm({ ...form, value: e.target.value })} required min="0" placeholder="e.g. 20"
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">
+                    {form.type === 'percentage' ? 'Percentage off the order total (1-100)' : form.type === 'fixed' ? 'Fixed amount in Rs. to discount' : 'Not applicable for free shipping'}
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Min Order (Rs.)</label>
-                  <input type="number" value={form.minimum_order_amount} onChange={e => setForm({ ...form, minimum_order_amount: e.target.value })} min="0"
+                  <input type="number" value={form.minimum_order_amount} onChange={e => setForm({ ...form, minimum_order_amount: e.target.value })} min="0" placeholder="e.g. 5000"
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Coupon will only work if the cart total is above this amount</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Max Discount (Rs.)</label>
-                  <input type="number" value={form.maximum_discount} onChange={e => setForm({ ...form, maximum_discount: e.target.value })} min="0"
+                  <input type="number" value={form.maximum_discount} onChange={e => setForm({ ...form, maximum_discount: e.target.value })} min="0" placeholder="e.g. 2000"
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Maximum discount cap in Rs. (useful for percentage coupons)</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Usage Limit</label>
-                  <input type="number" value={form.usage_limit} onChange={e => setForm({ ...form, usage_limit: e.target.value })} min="1"
+                  <input type="number" value={form.usage_limit} onChange={e => setForm({ ...form, usage_limit: e.target.value })} min="1" placeholder="e.g. 100"
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Total number of times this coupon can be used across all customers</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Per-User Limit</label>
-                  <input type="number" value={form.usage_limit_per_user} onChange={e => setForm({ ...form, usage_limit_per_user: e.target.value })} min="1"
+                  <input type="number" value={form.usage_limit_per_user} onChange={e => setForm({ ...form, usage_limit_per_user: e.target.value })} min="1" placeholder="e.g. 1"
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">How many times a single customer can use this coupon</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -317,23 +341,25 @@ export default function AdminCoupons() {
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Start Date</label>
                   <input type="date" value={form.starts_at} onChange={e => setForm({ ...form, starts_at: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Coupon becomes active on this date</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Expiry Date</label>
                   <input type="date" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })}
                     className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Coupon expires after this date</p>
                 </div>
               </div>
-              <div className="flex gap-4">
+              <div className="space-y-2">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })}
                     className="rounded border-dark-300 text-primary-500 focus:ring-primary-500" />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">Active</span>
+                  <span className="text-sm text-dark-700 dark:text-dark-300">Active <span className="text-xs text-dark-400 dark:text-dark-500">(Inactive coupons cannot be applied)</span></span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.first_order_only} onChange={e => setForm({ ...form, first_order_only: e.target.checked })}
                     className="rounded border-dark-300 text-primary-500 focus:ring-primary-500" />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">First order only</span>
+                  <span className="text-sm text-dark-700 dark:text-dark-300">First order only <span className="text-xs text-dark-400 dark:text-dark-500">(Only new customers who haven't placed an order can use this)</span></span>
                 </label>
               </div>
               <div className="flex gap-3 pt-2">

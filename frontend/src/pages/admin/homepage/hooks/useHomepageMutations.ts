@@ -59,6 +59,18 @@ export function useHomepageMutations() {
     onError: () => toast.error('Failed to upload logo'),
   })
 
+  const uploadHeroImage = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData()
+      formData.append('image', file)
+      const response = await api.post('/api/admin/homepage/hero-products/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response.data.data
+    },
+    onError: () => toast.error('Failed to upload hero image'),
+  })
+
   const updateCategories = useMutation({
     mutationFn: async (categoryIds: number[]) => {
       await api.put('/api/admin/homepage/categories', {
@@ -146,6 +158,7 @@ export function useHomepageMutations() {
     updateTrustBadges,
     updateNotableClients,
     uploadClientLogo,
+    uploadHeroImage,
     updateCategories,
     updateProducts,
     createBanner,

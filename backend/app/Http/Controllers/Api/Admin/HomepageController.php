@@ -557,6 +557,23 @@ class HomepageController extends Controller
     }
 
     /**
+     * Upload hero product image
+     */
+    public function uploadHeroImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $path = $request->file('image')->store('hero-products', 'public');
+
+        return $this->success([
+            'path' => '/storage/' . $path,
+            'url' => asset('storage/' . $path),
+        ], 'Hero image uploaded successfully');
+    }
+
+    /**
      * Upload client logo
      */
     public function uploadClientLogo(Request $request)

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/api'
+import { useCartStore } from '@/stores/cartStore'
 
 // Types
 export interface BundleProduct {
@@ -94,7 +95,7 @@ export interface Bundle {
   show_savings: boolean
   items: BundleItem[]
   slots: BundleSlot[]
-  products_preview: Array<{ id: number; name: string; image: string | null }>
+  products_preview: Array<{ id: number; name: string; image: string | null; is_in_stock?: boolean }>
   // Admin analytics
   view_count?: number
   add_to_cart_count?: number
@@ -224,6 +225,7 @@ export function useAddBundleToCart() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] })
+      useCartStore.getState().fetchCart()
     },
   })
 }

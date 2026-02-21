@@ -41,7 +41,7 @@ export default function EditorPanel({ open, onClose, title, description, childre
   return (
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/40" onClick={onClose} />
 
       {/* Panel */}
       <div className="relative ml-auto w-full max-w-2xl bg-white dark:bg-dark-800 shadow-2xl flex flex-col h-full animate-slide-in-right">

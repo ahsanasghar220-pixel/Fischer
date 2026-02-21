@@ -136,6 +136,7 @@ export default function HomePageSettings() {
           open
           onClose={closeEditor}
           onSave={handleSaveSection}
+          onUploadImage={(file) => mutations.uploadHeroImage.mutateAsync(file)}
           isPending={mutations.updateSection.isPending}
         />
       )}

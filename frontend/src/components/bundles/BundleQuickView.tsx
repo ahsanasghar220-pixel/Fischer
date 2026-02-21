@@ -11,6 +11,7 @@ import {
   ChevronRightIcon,
   GiftIcon,
   ArrowTopRightOnSquareIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { useCalculateBundlePrice, useAddBundleToCart } from '@/api/bundles'
@@ -140,6 +141,44 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
       return selected.length >= slot.min_selections
     })
   }, [bundle, selections])
+
+  // Check if the bundle contains any out-of-stock items
+  const hasOutOfStockItems = useMemo(() => {
+    if (!bundle) return false
+
+    // For fixed bundles, check all items
+    if (bundle.bundle_type === 'fixed' && bundle.items?.length > 0) {
+      return bundle.items.some((item) => item.product?.is_in_stock === false)
+    }
+
+    return false
+  }, [bundle])
+
+  // For configurable bundles, check if any selected products are OOS
+  const hasSelectedOutOfStockItems = useMemo(() => {
+    if (!bundle || bundle.bundle_type !== 'configurable') return false
+
+    for (const [slotId, productIds] of selections.entries()) {
+      const slot = bundle.slots.find((s) => s.id === slotId)
+      if (!slot) continue
+      for (const pid of productIds) {
+        const slotProduct = slot.products.find((sp) => sp.product_id === pid)
+        if (slotProduct && slotProduct.product?.is_in_stock === false) {
+          return true
+        }
+      }
+    }
+    return false
+  }, [bundle, selections])
+
+  const isAddToCartDisabled = useMemo(() => {
+    if (!bundle) return true
+    if (isAddingToCart || !bundle.is_available) return true
+    if (hasOutOfStockItems) return true
+    if (hasSelectedOutOfStockItems) return true
+    if (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled) return true
+    return false
+  }, [bundle, isAddingToCart, hasOutOfStockItems, hasSelectedOutOfStockItems, allRequiredSlotsFilled])
 
   // Handle add to cart
   const handleAddToCart = async () => {
@@ -369,35 +408,59 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                           Includes {bundle.items.length} items:
                         </h3>
                         <div className="space-y-2 max-h-40 overflow-y-auto">
-                          {bundle.items.map((item) => (
-                            <div
-                              key={item.id}
-                              className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-dark-700 rounded-lg"
-                            >
-                              <div className="w-10 h-10 rounded overflow-hidden bg-white dark:bg-dark-600 flex-shrink-0">
-                                {item.product.image ? (
-                                  <img
-                                    src={item.product.image}
-                                    alt={item.product.name}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center">
-                                    <GiftIcon className="w-4 h-4 text-gray-400" />
+                          {bundle.items.map((item) => {
+                            const isOOS = item.product?.is_in_stock === false
+                            return (
+                              <div
+                                key={item.id}
+                                className={`flex items-center gap-3 p-2 rounded-lg ${
+                                  isOOS
+                                    ? 'bg-red-50 dark:bg-red-900/10 opacity-75'
+                                    : 'bg-gray-50 dark:bg-dark-700'
+                                }`}
+                              >
+                                <div className={`w-10 h-10 rounded overflow-hidden flex-shrink-0 ${
+                                  isOOS ? 'bg-gray-200 dark:bg-dark-600 grayscale' : 'bg-white dark:bg-dark-600'
+                                }`}>
+                                  {item.product.image ? (
+                                    <img
+                                      src={item.product.image}
+                                      alt={item.product.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                      <GiftIcon className="w-4 h-4 text-gray-400" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className={`text-sm font-medium truncate ${
+                                    isOOS ? 'text-dark-400 dark:text-dark-500' : 'text-dark-900 dark:text-white'
+                                  }`}>
+                                    {item.product.name}
+                                  </p>
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-xs text-dark-500 dark:text-dark-400">
+                                      Qty: {item.quantity}
+                                    </p>
+                                    {isOOS && (
+                                      <span className="text-[10px] font-semibold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+                                        Out of Stock
+                                      </span>
+                                    )}
                                   </div>
-                                )}
+                                </div>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-dark-900 dark:text-white truncate">
-                                  {item.product.name}
-                                </p>
-                                <p className="text-xs text-dark-500 dark:text-dark-400">
-                                  Qty: {item.quantity}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
+                            )
+                          })}
                         </div>
+                        {hasOutOfStockItems && (
+                          <div className="mt-2 flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400">
+                            <ExclamationTriangleIcon className="w-3.5 h-3.5" />
+                            This bundle contains out-of-stock items and cannot be added to cart
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -421,15 +484,14 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                     <div className="mt-6 space-y-3">
                       <button
                         onClick={handleAddToCart}
-                        disabled={
-                          isAddingToCart ||
-                          !bundle.is_available ||
-                          (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
+                        disabled={isAddToCartDisabled}
+                        title={
+                          hasOutOfStockItems || hasSelectedOutOfStockItems
+                            ? 'Cannot add to cart - contains out-of-stock items'
+                            : undefined
                         }
                         className={`w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-                          isAddingToCart ||
-                          !bundle.is_available ||
-                          (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
+                          isAddToCartDisabled
                             ? 'bg-gray-300 dark:bg-dark-600 text-gray-500 cursor-not-allowed'
                             : 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25'
                         }`}
@@ -460,6 +522,12 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                     {bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled && (
                       <p className="mt-3 text-sm text-center text-orange-600 dark:text-orange-400">
                         Complete all required selections to add to cart
+                      </p>
+                    )}
+                    {(hasOutOfStockItems || hasSelectedOutOfStockItems) && (
+                      <p className="mt-3 text-sm text-center text-red-600 dark:text-red-400 flex items-center justify-center gap-1.5">
+                        <ExclamationTriangleIcon className="w-4 h-4" />
+                        Bundle contains out-of-stock items
                       </p>
                     )}
                   </div>
@@ -507,15 +575,19 @@ function QuickSlotSelector({ slot, selectedProductIds, onSelect }: QuickSlotSele
       <div className="p-2 flex flex-wrap gap-2">
         {slot.products.slice(0, 6).map((slotProduct) => {
           const isSelected = selectedProductIds.includes(slotProduct.product_id)
-          const canSelect = isSelected || !slot.allows_multiple || canSelectMore
+          const isOOS = slotProduct.product?.is_in_stock === false
+          const canSelect = !isOOS && (isSelected || !slot.allows_multiple || canSelectMore)
 
           return (
             <button
               key={slotProduct.id}
               onClick={() => canSelect && onSelect(slotProduct.product_id)}
               disabled={!canSelect}
+              title={isOOS ? `${slotProduct.product.name} is out of stock` : undefined}
               className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-sm transition-all ${
-                isSelected
+                isOOS
+                  ? 'border-gray-200 dark:border-dark-700 bg-gray-100 dark:bg-dark-800 opacity-50 cursor-not-allowed'
+                  : isSelected
                   ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                   : canSelect
                   ? 'border-gray-200 dark:border-dark-600 hover:border-primary-300'
@@ -526,11 +598,18 @@ function QuickSlotSelector({ slot, selectedProductIds, onSelect }: QuickSlotSele
                 <img
                   src={slotProduct.product.image}
                   alt=""
-                  className="w-6 h-6 rounded object-cover"
+                  className={`w-6 h-6 rounded object-cover ${isOOS ? 'grayscale' : ''}`}
                 />
               )}
-              <span className="truncate max-w-[100px]">{slotProduct.product.name}</span>
-              {isSelected && <CheckIcon className="w-4 h-4 text-primary-500 flex-shrink-0" />}
+              <span className={`truncate max-w-[100px] ${isOOS ? 'line-through text-dark-400' : ''}`}>
+                {slotProduct.product.name}
+              </span>
+              {isOOS && (
+                <span className="text-[9px] font-semibold text-red-500 dark:text-red-400 whitespace-nowrap">
+                  OOS
+                </span>
+              )}
+              {isSelected && !isOOS && <CheckIcon className="w-4 h-4 text-primary-500 flex-shrink-0" />}
             </button>
           )
         })}

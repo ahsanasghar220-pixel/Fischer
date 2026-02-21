@@ -7,6 +7,7 @@ import {
   TrashIcon,
   PhotoIcon,
   XMarkIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
@@ -27,6 +28,7 @@ interface Product {
   sku: string
   price: number
   primary_image?: string
+  stock_status?: string
 }
 
 type Tab = 'basic' | 'products' | 'pricing' | 'display' | 'media' | 'seo'
@@ -388,6 +390,7 @@ export default function BundleForm() {
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="e.g., Kitchen Essentials Bundle"
                   />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">The display name shown to customers on the website</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
@@ -400,6 +403,7 @@ export default function BundleForm() {
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                     placeholder="Auto-generated if empty"
                   />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Unique stock-keeping unit identifier for inventory tracking</p>
                 </div>
               </div>
 
@@ -444,8 +448,10 @@ export default function BundleForm() {
                     <option value="fixed">Fixed Bundle - Pre-defined products</option>
                     <option value="configurable">Configurable - Customer picks from slots</option>
                   </select>
-                  {isEditing && (
+                  {isEditing ? (
                     <p className="mt-1 text-xs text-dark-500">Bundle type cannot be changed after creation</p>
+                  ) : (
+                    <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Fixed = pre-defined set of products that customers buy as-is. Configurable = customers choose products from defined slots/options.</p>
                   )}
                 </div>
                 <div>
@@ -461,10 +467,11 @@ export default function BundleForm() {
                     <option value="grouped">Grouped Items</option>
                     <option value="individual">Individual Items</option>
                   </select>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Single Item = appears as one line item in cart. Grouped = expandable group showing all products. Individual = each product shown as separate line item.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-3">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -474,15 +481,18 @@ export default function BundleForm() {
                   />
                   <span className="text-sm text-dark-700 dark:text-dark-300">Active</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.allow_coupon_stacking}
-                    onChange={(e) => setFormData({ ...formData, allow_coupon_stacking: e.target.checked })}
-                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                  />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">Allow Coupon Stacking</span>
-                </label>
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.allow_coupon_stacking}
+                      onChange={(e) => setFormData({ ...formData, allow_coupon_stacking: e.target.checked })}
+                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                    />
+                    <span className="text-sm text-dark-700 dark:text-dark-300">Allow Coupon Stacking</span>
+                  </label>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1 ml-6">Allow customers to apply additional coupons on top of the bundle discount</p>
+                </div>
               </div>
             </div>
           )}
@@ -510,15 +520,25 @@ export default function BundleForm() {
                     </p>
                   ) : (
                     <div className="space-y-3">
-                      {items.map((item, index) => (
-                        <div key={index} className="flex items-center gap-4 p-4 bg-dark-50 dark:bg-dark-700 rounded-lg">
+                      {items.map((item, index) => {
+                        const isOOS = item.product?.stock_status === 'out_of_stock'
+                        return (
+                        <div key={index} className={`flex items-center gap-4 p-4 rounded-lg ${isOOS ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30' : 'bg-dark-50 dark:bg-dark-700'}`}>
                           <div className="w-12 h-12 bg-dark-200 dark:bg-dark-600 rounded overflow-hidden flex-shrink-0">
                             {item.product?.primary_image && (
                               <img src={item.product.primary_image} alt="" className="w-full h-full object-cover" />
                             )}
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium text-dark-900 dark:text-white">{item.product?.name}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-dark-900 dark:text-white">{item.product?.name}</p>
+                              {isOOS && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+                                  <ExclamationTriangleIcon className="w-3 h-3" />
+                                  Out of Stock
+                                </span>
+                              )}
+                            </div>
                             <p className="text-sm text-dark-500 dark:text-dark-400">
                               {formatPrice(item.product?.price || 0)}
                             </p>
@@ -563,7 +583,8 @@ export default function BundleForm() {
                             </button>
                           </div>
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
                 </>
@@ -656,14 +677,24 @@ export default function BundleForm() {
                           </div>
 
                           <div className="space-y-2">
-                            {slot.products.map((product, productIndex) => (
-                              <div key={productIndex} className="flex items-center gap-3 p-2 bg-dark-50 dark:bg-dark-700 rounded">
+                            {slot.products.map((product, productIndex) => {
+                              const isProductOOS = product.product?.stock_status === 'out_of_stock'
+                              return (
+                              <div key={productIndex} className={`flex items-center gap-3 p-2 rounded ${isProductOOS ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30' : 'bg-dark-50 dark:bg-dark-700'}`}>
                                 <div className="w-8 h-8 bg-dark-200 dark:bg-dark-600 rounded overflow-hidden">
                                   {product.product?.primary_image && (
                                     <img src={product.product.primary_image} alt="" className="w-full h-full object-cover" />
                                   )}
                                 </div>
-                                <span className="flex-1 text-sm text-dark-900 dark:text-white">{product.product?.name}</span>
+                                <span className="flex-1 text-sm text-dark-900 dark:text-white flex items-center gap-2">
+                                  {product.product?.name}
+                                  {isProductOOS && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+                                      <ExclamationTriangleIcon className="w-3 h-3" />
+                                      Out of Stock
+                                    </span>
+                                  )}
+                                </span>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveSlotProduct(slotIndex, productIndex)}
@@ -672,7 +703,8 @@ export default function BundleForm() {
                                   <XMarkIcon className="w-4 h-4" />
                                 </button>
                               </div>
-                            ))}
+                              )
+                            })}
                             <button
                               type="button"
                               onClick={() => { setShowProductSearch(true); setSelectedSlotIndex(slotIndex); }}
@@ -725,7 +757,15 @@ export default function BundleForm() {
                               )}
                             </div>
                             <div className="flex-1">
-                              <p className="font-medium text-dark-900 dark:text-white">{product.name}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-dark-900 dark:text-white">{product.name}</p>
+                                {product.stock_status === 'out_of_stock' && (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded">
+                                    <ExclamationTriangleIcon className="w-3 h-3" />
+                                    OOS
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-sm text-dark-500">{formatPrice(product.price)}</p>
                             </div>
                           </button>
@@ -756,6 +796,7 @@ export default function BundleForm() {
                     <option value="percentage">Percentage Discount</option>
                     <option value="fixed_price">Fixed Price</option>
                   </select>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Fixed Price = bundle sells at a set price regardless of individual product prices. Percentage = discount off the combined product prices.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
@@ -780,6 +821,11 @@ export default function BundleForm() {
                       }`}
                     />
                   </div>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">
+                    {formData.discount_type === 'fixed_price'
+                      ? 'The final price customers pay for this bundle'
+                      : 'Percentage discount off the combined original price (e.g. 20 for 20% off)'}
+                  </p>
                 </div>
               </div>
 
@@ -841,6 +887,7 @@ export default function BundleForm() {
                   placeholder="Leave empty for unlimited"
                   className="w-full md:w-1/2 px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Maximum number of this bundle that can be sold. Leave empty for unlimited stock.</p>
               </div>
             </div>
           )}
@@ -861,6 +908,7 @@ export default function BundleForm() {
                     maxLength={50}
                     className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Text shown on the bundle badge (e.g. 'Best Value', 'Limited Time')</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
@@ -890,6 +938,7 @@ export default function BundleForm() {
                   maxLength={100}
                   className="w-full md:w-1/2 px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Text shown on the Add to Cart button (e.g. 'Buy Now', 'Add Bundle to Cart')</p>
               </div>
 
               <div className="border-t border-dark-200 dark:border-dark-700 pt-6">
@@ -921,6 +970,7 @@ export default function BundleForm() {
                           <option value="grid">Grid</option>
                           <option value="banner">Banner</option>
                         </select>
+                        <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Carousel = rotating product slider. Grid = static product grid layout. Banner = large promotional hero banner.</p>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
@@ -939,25 +989,31 @@ export default function BundleForm() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.show_countdown}
-                    onChange={(e) => setFormData({ ...formData, show_countdown: e.target.checked })}
-                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                  />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">Show Countdown Timer</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.show_savings}
-                    onChange={(e) => setFormData({ ...formData, show_savings: e.target.checked })}
-                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                  />
-                  <span className="text-sm text-dark-700 dark:text-dark-300">Show Savings Amount</span>
-                </label>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.show_countdown}
+                      onChange={(e) => setFormData({ ...formData, show_countdown: e.target.checked })}
+                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                    />
+                    <span className="text-sm text-dark-700 dark:text-dark-300">Show Countdown Timer</span>
+                  </label>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1 ml-6">Display a countdown timer if the bundle has an end date</p>
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.show_savings}
+                      onChange={(e) => setFormData({ ...formData, show_savings: e.target.checked })}
+                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                    />
+                    <span className="text-sm text-dark-700 dark:text-dark-300">Show Savings Amount</span>
+                  </label>
+                  <p className="text-xs text-dark-400 dark:text-dark-500 mt-1 ml-6">Display the savings amount/percentage to customers</p>
+                </div>
               </div>
             </div>
           )}

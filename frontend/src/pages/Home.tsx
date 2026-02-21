@@ -212,6 +212,8 @@ interface HomeData {
   categories: Category[]
   video_categories?: Category[]
   bestsellers: Product[]
+  featured_products?: Product[]
+  new_arrivals?: Product[]
   testimonials: Testimonial[]
   stats: Stat[]
   features: Feature[]
@@ -743,6 +745,96 @@ export default function Home() {
       </AnimatedSection>
     ) : null,
 
+    featured_products: () => data?.featured_products && data.featured_products.length > 0 ? (
+      <AnimatedSection key="featured_products" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+        <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-purple-500/6 rounded-full blur-[120px]" />
+            <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-primary-500/6 rounded-full blur-[100px]" />
+          </div>
+          <div className="container-xl relative">
+            <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/25 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 text-sm font-semibold mb-4">
+                    <SparklesIcon className="w-4 h-4" />
+                    Hand Picked
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                    Featured <span className="text-primary-600 dark:text-primary-500">Products</span>
+                  </h2>
+                  <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
+                    Curated selection of our finest appliances
+                  </p>
+                </div>
+                <Link
+                  to="/shop?featured=1"
+                  className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary-500 dark:bg-primary-600 text-white font-semibold text-sm sm:text-base hover:bg-primary-600 dark:hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  View All Featured
+                  <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </AnimatedSection>
+          </div>
+          <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+            <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+              <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
+                {data.featured_products.slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+                ))}
+              </ProductCarousel>
+            </AnimatedSection>
+          </div>
+        </section>
+      </AnimatedSection>
+    ) : null,
+
+    new_arrivals: () => data?.new_arrivals && data.new_arrivals.length > 0 ? (
+      <AnimatedSection key="new_arrivals" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+        <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-500/6 rounded-full blur-[120px]" />
+            <div className="absolute top-0 right-1/4 w-[350px] h-[350px] bg-primary-500/6 rounded-full blur-[100px]" />
+          </div>
+          <div className="container-xl relative">
+            <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/25 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 text-sm font-semibold mb-4">
+                    <BoltIcon className="w-4 h-4" />
+                    Just Arrived
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
+                    New <span className="text-primary-600 dark:text-primary-500">Arrivals</span>
+                  </h2>
+                  <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
+                    The latest additions to our product lineup
+                  </p>
+                </div>
+                <Link
+                  to="/shop?sort=latest"
+                  className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary-500 dark:bg-primary-600 text-white font-semibold text-sm sm:text-base hover:bg-primary-600 dark:hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  View All New Arrivals
+                  <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </AnimatedSection>
+          </div>
+          <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+            <AnimatedSection animation="fade-up" delay={300} duration={1000} easing="gentle">
+              <ProductCarousel speed={90} fadeClass="from-white dark:from-dark-900">
+                {data.new_arrivals.slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
+                ))}
+              </ProductCarousel>
+            </AnimatedSection>
+          </div>
+        </section>
+      </AnimatedSection>
+    ) : null,
+
     bundles: () => (
       <div key="bundles">
         {homepageBundles?.banner && homepageBundles.banner.length > 0 && (
@@ -1003,7 +1095,7 @@ export default function Home() {
   // Default section order (used when sort_order not available from API)
   const defaultOrder: string[] = [
     'brand_statement', 'hero_products', 'stats', 'categories', 'features',
-    'bestsellers', 'bundles', 'banner_carousel',
+    'bestsellers', 'featured_products', 'new_arrivals', 'bundles', 'banner_carousel',
     'dealer_cta', 'testimonials', 'about', 'notable_clients',
   ]
 

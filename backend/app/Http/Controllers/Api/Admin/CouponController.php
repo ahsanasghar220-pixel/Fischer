@@ -19,10 +19,10 @@ class CouponController extends Controller
         // Raw query for maximum speed
         $query = DB::table('coupons')
             ->select([
-                'id', 'code', 'type', 'value', 'minimum_order_amount',
-                'maximum_discount', 'usage_limit', 'usage_limit_per_user',
-                'times_used', 'is_active', 'first_order_only',
-                'starts_at', 'expires_at', 'created_at',
+                'id', 'code', 'name', 'description', 'type', 'value',
+                'minimum_order_amount', 'maximum_discount', 'usage_limit',
+                'usage_limit_per_user', 'times_used', 'is_active',
+                'first_order_only', 'starts_at', 'expires_at', 'created_at',
             ])
             ->whereNull('deleted_at');
 
@@ -53,6 +53,8 @@ class CouponController extends Controller
     {
         $validated = $request->validate([
             'code' => 'required|string|max:50|unique:coupons,code',
+            'name' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'type' => 'required|string|in:fixed,percentage,free_shipping',
             'value' => 'required|numeric|min:0',
             'minimum_order_amount' => 'nullable|numeric|min:0',
@@ -90,6 +92,8 @@ class CouponController extends Controller
 
         $validated = $request->validate([
             'code' => 'sometimes|string|max:50|unique:coupons,code,' . $id,
+            'name' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'type' => 'sometimes|string|in:fixed,percentage,free_shipping',
             'value' => 'sometimes|numeric|min:0',
             'minimum_order_amount' => 'nullable|numeric|min:0',
