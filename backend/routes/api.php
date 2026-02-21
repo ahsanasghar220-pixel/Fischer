@@ -189,9 +189,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('wishlist')->group(function () {
         Route::get('/', [WishlistController::class, 'index']);
         Route::post('/toggle', [WishlistController::class, 'toggle']);
+        Route::post('/check', [WishlistController::class, 'check']);
         Route::post('/{productId}', [WishlistController::class, 'add']);
         Route::delete('/{productId}', [WishlistController::class, 'remove']);
-        Route::post('/check', [WishlistController::class, 'check']);
         Route::post('/{wishlistId}/move-to-cart', [WishlistController::class, 'moveToCart']);
     });
 

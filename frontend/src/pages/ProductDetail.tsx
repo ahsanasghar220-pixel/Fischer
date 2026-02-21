@@ -759,7 +759,7 @@ export default function ProductDetail() {
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
                       >
-                        <HeartSolidIcon className="w-6 h-6 text-red-500" />
+                        <HeartSolidIcon className="w-6 h-6 text-primary-500" />
                       </motion.div>
                     ) : (
                       <motion.div

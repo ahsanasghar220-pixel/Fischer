@@ -338,8 +338,8 @@ const QuickViewModal = memo(function QuickViewModal({
                         onClick={handleWishlistClick}
                         className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-colors ${
                           inWishlist
-                            ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-500'
-                            : 'border-dark-200 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:border-red-500 hover:text-red-500'
+                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-500'
+                            : 'border-dark-200 dark:border-dark-600 text-dark-600 dark:text-dark-300 hover:border-primary-500 hover:text-primary-500'
                         }`}
                       >
                         {inWishlist ? (

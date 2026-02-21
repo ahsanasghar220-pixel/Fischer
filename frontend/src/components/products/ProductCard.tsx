@@ -392,7 +392,7 @@ const ProductCard = memo(function ProductCard({
             aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
           >
             {isInWishlist ? (
-              <HeartSolidIcon className="w-5 h-5 text-red-500" />
+              <HeartSolidIcon className="w-5 h-5 text-primary-500" />
             ) : (
               <HeartIcon className="w-5 h-5" />
             )}

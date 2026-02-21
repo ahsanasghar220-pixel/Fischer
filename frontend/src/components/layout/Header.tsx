@@ -250,7 +250,7 @@ export default function Header() {
             {/* Left section: Logo and navigation */}
             <div className="flex items-center gap-4 lg:gap-6 flex-1">
               {/* Logo - LEFT side on desktop */}
-              <Link to="/" className="flex-shrink-0 group">
+              <Link to="/" className="relative flex items-center flex-shrink-0 group">
                 {logoError ? (
                   <span className="text-xl font-bold text-primary-600">Fischer</span>
                 ) : (
