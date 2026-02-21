@@ -197,7 +197,7 @@ export default function Header() {
             </button>
 
             {/* Center: Logo */}
-            <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center flex-shrink-0">
+            <Link to="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center flex-shrink-0">
               <AnimatedLogo
                 src="/images/logo/Fischer-electronics-logo-black.svg"
                 alt="Fischer"

@@ -165,8 +165,8 @@ export default function ProductDetail() {
   // Sync wishlist state with server
   useEffect(() => {
     if (isAuthenticated && product) {
-      api.post('/api/wishlist/check', { product_id: product.id })
-        .then(res => setIsInWishlist(res.data.data?.in_wishlist || false))
+      api.post('/api/wishlist/check', { product_ids: [product.id] })
+        .then(res => setIsInWishlist(res.data.data?.in_wishlist?.includes(product.id) || false))
         .catch(() => {})
     }
   }, [product?.id, isAuthenticated])
