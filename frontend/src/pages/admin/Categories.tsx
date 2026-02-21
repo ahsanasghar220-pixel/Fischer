@@ -29,7 +29,7 @@ interface ProductSummary {
   price: number
   stock_status: string
   is_active: boolean
-  images: string[] | null
+  primary_image: string | null
 }
 
 // Parse features from API (may be JSON string from raw DB query or array from Eloquent)
@@ -158,7 +158,7 @@ export default function AdminCategories() {
           className="flex items-center gap-3 flex-1 text-left min-w-0"
         >
           {level > 0 && <ChevronRightIcon className="w-4 h-4 text-dark-300 dark:text-dark-500 flex-shrink-0" />}
-          <div className="w-12 h-12 bg-gradient-to-br from-dark-800 to-dark-900 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-dark-100 dark:bg-dark-800 rounded-xl flex items-center justify-center flex-shrink-0">
             <CategoryIcon slug={category.slug} className="w-8 h-8" />
           </div>
           <div className="min-w-0">
@@ -200,7 +200,7 @@ export default function AdminCategories() {
   const renderCategoryCard = (category: Category) => (
     <div
       key={category.id}
-      className="group bg-gradient-to-br from-dark-800 to-dark-900 rounded-2xl overflow-hidden border border-dark-700 hover:border-primary-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 flex flex-col"
+      className="group bg-white dark:bg-dark-800 rounded-2xl overflow-hidden border border-dark-200 dark:border-dark-700 hover:border-primary-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 flex flex-col"
     >
       {/* Clickable body — opens products panel */}
       <button
@@ -228,8 +228,8 @@ export default function AdminCategories() {
 
         {/* Info section */}
         <div className="px-4 pb-3">
-          <h3 className="font-bold text-white truncate">{category.name}</h3>
-          <p className="text-sm text-dark-400">
+          <h3 className="font-bold text-dark-900 dark:text-white truncate">{category.name}</h3>
+          <p className="text-sm text-dark-500 dark:text-dark-400">
             {category.products_count} product{category.products_count !== 1 ? 's' : ''}
           </p>
           {category.children && category.children.length > 0 && (
@@ -245,13 +245,13 @@ export default function AdminCategories() {
             {category.children.slice(0, 3).map((child) => (
               <span
                 key={child.id}
-                className="px-2 py-0.5 text-xs bg-dark-700 text-dark-300 rounded-full truncate max-w-[100px]"
+                className="px-2 py-0.5 text-xs bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 rounded-full truncate max-w-[100px]"
               >
                 {child.name}
               </span>
             ))}
             {category.children.length > 3 && (
-              <span className="px-2 py-0.5 text-xs bg-dark-700 text-dark-400 rounded-full">
+              <span className="px-2 py-0.5 text-xs bg-dark-100 dark:bg-dark-700 text-dark-500 dark:text-dark-400 rounded-full">
                 +{category.children.length - 3} more
               </span>
             )}
@@ -260,24 +260,24 @@ export default function AdminCategories() {
       </button>
 
       {/* Action bar — always visible */}
-      <div className="border-t border-dark-700 px-3 py-2 flex items-center gap-1">
+      <div className="border-t border-dark-200 dark:border-dark-700 px-3 py-2 flex items-center gap-1">
         <button
           onClick={() => setSelectedCategoryId(category.id)}
-          className="flex-1 text-xs text-dark-400 hover:text-primary-400 transition-colors py-1 text-center"
+          className="flex-1 text-xs text-dark-500 dark:text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors py-1 text-center"
         >
           View Products
         </button>
-        <div className="w-px h-4 bg-dark-700 mx-1" />
+        <div className="w-px h-4 bg-dark-200 dark:bg-dark-700 mx-1" />
         <button
           onClick={(e) => { e.stopPropagation(); handleEdit(category) }}
-          className="p-1.5 text-dark-400 hover:text-primary-400 hover:bg-dark-700 rounded transition-colors"
+          className="p-1.5 text-dark-400 hover:text-primary-400 hover:bg-dark-100 dark:hover:bg-dark-700 rounded transition-colors"
           title="Edit"
         >
           <PencilIcon className="w-4 h-4" />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); handleDelete(category.id) }}
-          className="p-1.5 text-dark-400 hover:text-red-400 hover:bg-dark-700 rounded transition-colors"
+          className="p-1.5 text-dark-400 hover:text-red-400 hover:bg-dark-100 dark:hover:bg-dark-700 rounded transition-colors"
           title="Delete"
         >
           <TrashIcon className="w-4 h-4" />
@@ -502,9 +502,8 @@ export default function AdminCategories() {
               ) : categoryDetail?.products && categoryDetail.products.length > 0 ? (
                 <div className="space-y-3">
                   {categoryDetail.products.map((product) => {
-                    const imgPath = product.images?.[0]
-                    const imgSrc = imgPath
-                      ? imgPath.startsWith('http') ? imgPath : `/storage/${imgPath}`
+                    const imgSrc = product.primary_image
+                      ? product.primary_image.startsWith('http') ? product.primary_image : `/storage/${product.primary_image}`
                       : null
                     return (
                       <div

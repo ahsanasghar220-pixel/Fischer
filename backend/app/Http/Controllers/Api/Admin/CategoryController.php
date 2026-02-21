@@ -87,10 +87,19 @@ class CategoryController extends Controller
     {
         $category = Category::withCount('products')->findOrFail($id);
 
-        $products = Product::where('category_id', $id)
-            ->select(['id', 'name', 'sku', 'price', 'stock_status', 'is_active', 'images'])
+        $products = Product::with(['images' => function ($q) {
+                $q->orderBy('is_primary', 'desc')->orderBy('sort_order');
+            }])
+            ->where('category_id', $id)
+            ->select(['id', 'name', 'sku', 'price', 'stock_status', 'is_active'])
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(function ($product) {
+                $primary = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
+                $product->primary_image = $primary ? $primary->image : null;
+                unset($product->images);
+                return $product;
+            });
 
         return $this->success([
             'category' => $category,
