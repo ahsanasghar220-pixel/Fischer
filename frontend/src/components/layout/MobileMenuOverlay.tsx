@@ -290,7 +290,7 @@ export default function MobileMenuOverlay({
                             onLogout()
                             onClose()
                           }}
-                          className="block w-full text-left py-3 px-4 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200"
+                          className="block w-full text-left py-3 px-4 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-xl transition-all duration-200"
                         >
                           Sign Out
                         </button>

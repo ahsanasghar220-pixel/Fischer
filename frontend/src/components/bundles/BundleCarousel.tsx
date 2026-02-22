@@ -140,7 +140,7 @@ const BundleCarousel = memo(function BundleCarousel({
       </div>
 
       {/* Carousel Container */}
-      <div className="container mx-auto px-4 overflow-hidden">
+      <div className="container mx-auto px-4 overflow-x-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
