@@ -16,32 +16,7 @@ import { StarIcon as StarSolidIcon, HeartIcon as HeartSolidIcon } from '@heroico
 import { useCartStore } from '@/stores/cartStore'
 import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number | null
-  description?: string
-  short_description?: string
-  primary_image?: string | null
-  images?: { id: number; image_path?: string; image?: string; is_primary: boolean }[]
-  stock_status: string
-  stock?: number
-  is_new?: boolean
-  is_bestseller?: boolean
-  average_rating?: number
-  review_count?: number
-  category?: {
-    name: string
-    slug: string
-  }
-  brand?: {
-    name: string
-    slug: string
-  }
-}
+import type { Product } from '@/types'
 
 interface QuickViewModalProps {
   isOpen: boolean

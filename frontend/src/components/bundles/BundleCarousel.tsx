@@ -2,7 +2,7 @@ import { memo, useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import BundleCard from './BundleCard'
-import type { Bundle } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles.types'
 
 interface BundleCarouselProps {
   bundles: Bundle[]

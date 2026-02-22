@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { StaggerContainer, StaggerItem } from '@/components/effects/ScrollReveal'
 import BundleCard from './BundleCard'
-import type { Bundle } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles.types'
 
 interface BundleGridProps {
   bundles: Bundle[]

@@ -66,7 +66,6 @@ interface CartState {
   fetchCart: () => Promise<void>
   addItem: (productId: number, quantity?: number, variantId?: number | null) => Promise<void>
   updateQuantity: (itemId: number, quantity: number) => Promise<void>
-  updateItemQuantity: (itemId: number, quantity: number) => Promise<void>
   removeItem: (itemId: number) => Promise<void>
   clearCart: () => Promise<void>
   applyCoupon: (code: string) => Promise<boolean>
@@ -148,10 +147,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       toast.error(err.response?.data?.message || 'Failed to update quantity')
       throw error
     }
-  },
-
-  updateItemQuantity: async (itemId: number, quantity: number) => {
-    return get().updateQuantity(itemId, quantity)
   },
 
   removeItem: async (itemId: number) => {

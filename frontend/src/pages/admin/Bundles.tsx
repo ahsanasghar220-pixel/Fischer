@@ -16,8 +16,8 @@ import {
   useDeleteBundle,
   useDuplicateBundle,
   useToggleBundle,
-  type Bundle,
-} from '@/api/bundles'
+} from '@/api/bundles.admin'
+import type { Bundle } from '@/api/bundles.types'
 import toast from 'react-hot-toast'
 
 export default function AdminBundles() {

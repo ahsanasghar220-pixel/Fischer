@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ServiceRequest;
 use App\Models\Product;
+use App\Http\Requests\StoreServiceRequestRequest;
 use Illuminate\Http\Request;
 
 class ServiceRequestController extends Controller
@@ -20,25 +21,9 @@ class ServiceRequestController extends Controller
         return $this->paginated($requests);
     }
 
-    public function store(Request $request)
+    public function store(StoreServiceRequestRequest $request)
     {
-        $validated = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
-            'customer_phone' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
-            'address' => 'required|string|max:1000',
-            'product_id' => 'nullable|exists:products,id',
-            'product_name' => 'required|string|max:255',
-            'model_number' => 'nullable|string|max:100',
-            'serial_number' => 'nullable|string|max:100',
-            'purchase_date' => 'nullable|date|before_or_equal:today',
-            'under_warranty' => 'boolean',
-            'service_type' => 'required|in:installation,repair,maintenance,warranty_claim,replacement,other',
-            'problem_description' => 'required|string|min:20|max:2000',
-            'images' => 'nullable|array|max:5',
-            'images.*' => 'image|max:5120',
-        ]);
+        $validated = $request->validated();
 
         $user = $request->user();
 

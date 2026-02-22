@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
-import { HeartIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline'
-import { HeartIcon as HeartSolidIcon, StarIcon } from '@heroicons/react/24/solid'
+import { StarIcon } from '@heroicons/react/24/solid'
 import { useState, useCallback, memo, useMemo, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
@@ -12,6 +11,8 @@ import toast from 'react-hot-toast'
 import { formatPrice } from '@/lib/utils'
 import AuthModal from '@/components/ui/AuthModal'
 import AddToCartModal from '@/components/cart/AddToCartModal'
+import type { Product } from '@/types'
+import ProductCardImage from './ProductCardImage'
 
 // CSS for shimmer effect - using CSS animations for GPU acceleration
 const shimmerStyle = `
@@ -24,32 +25,6 @@ const shimmerStyle = `
   50% { box-shadow: 0 12px 40px rgb(var(--color-primary-500) / 0.3); }
 }
 `
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number | null
-  description?: string
-  short_description?: string
-  primary_image?: string | null
-  images?: Array<{ id: number; image?: string; image_path?: string; is_primary: boolean }>
-  stock_status: string
-  stock?: number
-  is_new?: boolean
-  is_bestseller?: boolean
-  average_rating?: number
-  review_count?: number
-  category?: {
-    name: string
-    slug: string
-  }
-  brand?: {
-    name: string
-    slug: string
-  }
-}
 
 interface ProductCardProps {
   product: Product
@@ -253,284 +228,120 @@ const ProductCard = memo(function ProductCard({
             transition: 'transform 0.15s ease-out',
           }}
         >
-        {/* Image Container */}
-        <div className="product-image" {...(isTouchDevice ? swipeHandlers : {})}>
-          {/* Loading skeleton */}
-          {!imageLoaded && (
-            <div className="absolute inset-0 skeleton" />
-          )}
-
-          {allImages.length > 0 && !imageError ? (
-            <>
-              {/* Enhanced image animation with fade + slide */}
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.img
-                  key={allImages[currentImageIndex]}
-                  src={allImages[currentImageIndex]}
-                  alt={currentImageIndex === 0 ? product.name : `${product.name} - view ${currentImageIndex + 1}`}
-                  width={300}
-                  height={300}
-                  className="absolute inset-0 w-full h-full object-contain p-2"
-                  loading="lazy"
-                  decoding="async"
-                  onLoad={currentImageIndex === 0 ? () => setImageLoaded(true) : undefined}
-                  onError={currentImageIndex === 0 ? () => setImageError(true) : undefined}
-                  initial={{
-                    opacity: 0,
-                    x: 20,
-                    scale: 1
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    scale: isHovered ? 1.05 : 1
-                  }}
-                  exit={{
-                    opacity: 0,
-                    x: -20,
-                    scale: 1
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                />
-              </AnimatePresence>
-
-              {/* Enhanced dot indicators with animation - always visible on touch */}
-              {hasMultipleImages && (isHovered || isTouchDevice) && (
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
-                  {allImages.map((_, index) => (
-                    <motion.span
-                      key={index}
-                      className={`rounded-full transition-all duration-300
-                                ${currentImageIndex === index
-                                  ? 'bg-white'
-                                  : 'bg-white/50 hover:bg-white/70'}`}
-                      animate={{
-                        width: currentImageIndex === index ? 12 : 6,
-                        height: currentImageIndex === index ? 6 : 6,
-                      }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="w-full h-full bg-dark-50 dark:bg-dark-800 flex items-center justify-center">
-              <span className="text-sm font-medium text-dark-400 dark:text-dark-500 text-center px-4">{product.name}</span>
-            </div>
-          )}
-
-          {/* Gradient overlay on hover */}
-          <div className="product-overlay" />
-
-          {/* Badges - CSS transitions */}
-          <div className="product-badge flex flex-col gap-2">
-            {discountPercentage && (
-              <span
-                className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-lg
-                           transition-transform duration-300 ease-out
-                           ${isHovered ? 'scale-110' : 'scale-100'}`}
-              >
-                -{discountPercentage}%
-              </span>
-            )}
-            {(product.is_new || showNew) && (
-              <span
-                className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-lg
-                           transition-transform duration-300 ease-out
-                           ${isHovered ? 'scale-110 -translate-y-0.5' : 'scale-100'}`}
-              >
-                NEW
-              </span>
-            )}
-            {product.is_bestseller && (
-              <span
-                className={`px-2.5 py-1 text-xs font-bold rounded-lg
-                           bg-primary-700 dark:bg-primary-600 text-white shadow-lg
-                           transition-transform duration-300 ease-out
-                           ${isHovered ? 'scale-105' : 'scale-100'}`}
-              >
-                BEST
-              </span>
-            )}
-          </div>
-
-          {/* Out of Stock Overlay */}
-          {product.stock_status === 'out_of_stock' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-white/75 dark:bg-dark-900/75 backdrop-blur-sm flex items-center justify-center z-20"
-            >
-              <div className="text-center px-4">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="px-6 py-3 bg-dark-900 dark:bg-dark-700 rounded-xl shadow-lg"
-                >
-                  <span className="text-base font-bold text-white uppercase tracking-wide">
-                    Out of Stock
-                  </span>
-                </motion.div>
-                <p className="mt-2 text-xs text-dark-700 dark:text-white/90 font-medium">
-                  Currently unavailable
-                </p>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Wishlist Button */}
-          <button
-            onClick={handleToggleWishlist}
-            className="product-wishlist transition-transform duration-200 hover:scale-110"
-            aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-          >
-            {isInWishlist ? (
-              <HeartSolidIcon className="w-5 h-5 text-primary-500" />
-            ) : (
-              <HeartIcon className="w-5 h-5" />
-            )}
-          </button>
-
-          {/* Quick Actions on Hover (always visible on touch via CSS) */}
-          <div className="product-actions">
-            <button
-              onClick={handleAddToCart}
-              disabled={isAddingToCart || product.stock_status === 'out_of_stock'}
-              className={`flex-1 py-2.5 px-5 rounded-lg
-                        text-white text-sm font-semibold
-                        flex items-center justify-center gap-2
-                        max-w-[200px]
-                        transition-all duration-200 shadow-lg
-                        ${product.stock_status === 'out_of_stock'
-                          ? 'bg-dark-600 dark:bg-dark-600 cursor-not-allowed opacity-80'
-                          : 'bg-primary-500 hover:bg-primary-400 hover:scale-[1.02] active:scale-[0.98]'
-                        }
-                        ${isAddingToCart ? 'opacity-70' : ''}`}
-            >
-              <ShoppingCartIcon className="w-4 h-4" />
-              {product.stock_status === 'out_of_stock'
-                ? 'Out of Stock'
-                : isAddingToCart
-                  ? 'Adding...'
-                  : 'Add to Cart'
-              }
-            </button>
-            {/* Hide Quick View on touch - users can tap the card itself */}
-            {!isTouchDevice && (
-              <button
-                onClick={handleQuickView}
-                className="p-2 bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700
-                          text-dark-900 dark:text-white rounded-lg
-                          transition-all duration-200 shadow-lg
-                          hover:scale-105 active:scale-95"
-                aria-label="Quick view"
-              >
-                <EyeIcon className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="product-info">
-          {/* Category */}
-          {product.category && (
-            <p className="product-category">{product.category.name}</p>
-          )}
-
-          {/* Name */}
-          <h3 className={`product-name ${viewMode === 'list' ? 'product-name--list' : ''}`}>{product.name}</h3>
-
-          {/* Description - only in list view */}
-          {viewMode === 'list' && product.short_description && (
-            <p className="product-description-list">{product.short_description}</p>
-          )}
-
-          {/* Rating - simple static display */}
-          {product.average_rating !== undefined && product.review_count !== undefined && product.review_count > 0 && (
-            <div className="flex items-center gap-2 mt-2">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((star) => {
-                  const isActive = star <= Math.round(Number(product.average_rating) || 0)
-                  return (
-                    <StarIcon
-                      key={star}
-                      className={`w-4 h-4 transition-transform duration-200
-                        ${isActive ? 'text-primary-500' : 'text-dark-200 dark:text-dark-700'}
-                        ${isHovered && isActive ? 'scale-110' : 'scale-100'}`}
-                    />
-                  )
-                })}
-              </div>
-              <span className="text-xs text-dark-500 dark:text-dark-400">
-                ({product.review_count})
-              </span>
-            </div>
-          )}
-
-          {/* Price with clean scale-up on hover */}
-          <div className="product-price">
-            <span
-              className={`inline-block bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black
-                         transition-transform duration-300 origin-left
-                         ${isHovered && !isTouchDevice ? 'scale-105' : 'scale-100'}`}
-              style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
-            >
-              {formatPrice(product.price)}
-            </span>
-            {product.compare_price && product.compare_price > product.price && (
-              <span className="product-price-old">{formatPrice(product.compare_price)}</span>
-            )}
-          </div>
-
-          {/* Low Stock Warning */}
-          {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-md"
-            >
-              <motion.span
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-xs font-semibold text-orange-700 dark:text-orange-300"
-              >
-                ⚠ Only {product.stock} left!
-              </motion.span>
-            </motion.div>
-          )}
-        </div>
-
-        {/* Subtle glow effect on hover - CSS only, skip on touch */}
-        {!isTouchDevice && (
-          <div
-            className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
-                       ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-            style={{
-              boxShadow: '0 0 40px rgb(var(--color-primary-500) / 0.25)',
-              animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
-            }}
+          {/* Image Container */}
+          <ProductCardImage
+            product={product}
+            allImages={allImages}
+            currentImageIndex={currentImageIndex}
+            imageLoaded={imageLoaded}
+            imageError={imageError}
+            isHovered={isHovered}
+            isInWishlist={isInWishlist}
+            isAddingToCart={isAddingToCart}
+            isTouchDevice={isTouchDevice}
+            discountPercentage={discountPercentage}
+            showNew={showNew}
+            swipeHandlers={swipeHandlers as Record<string, unknown>}
+            onImageLoad={() => setImageLoaded(true)}
+            onImageError={() => setImageError(true)}
+            onToggleWishlist={handleToggleWishlist}
+            onAddToCart={handleAddToCart}
+            onQuickView={handleQuickView}
           />
-        )}
 
-        {/* Shine sweep effect on hover - CSS animation, skip on touch */}
-        {!isTouchDevice && (
-          <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
-            <div
-              className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                         transition-transform duration-700 ease-out
-                         ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
-            />
+          {/* Product Info */}
+          <div className="product-info">
+            {/* Category */}
+            {product.category && (
+              <p className="product-category">{product.category.name}</p>
+            )}
+
+            {/* Name */}
+            <h3 className={`product-name ${viewMode === 'list' ? 'product-name--list' : ''}`}>{product.name}</h3>
+
+            {/* Description - only in list view */}
+            {viewMode === 'list' && product.short_description && (
+              <p className="product-description-list">{product.short_description}</p>
+            )}
+
+            {/* Rating - simple static display */}
+            {product.average_rating !== undefined && product.review_count !== undefined && product.review_count > 0 && (
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const isActive = star <= Math.round(Number(product.average_rating) || 0)
+                    return (
+                      <StarIcon
+                        key={star}
+                        className={`w-4 h-4 transition-transform duration-200
+                          ${isActive ? 'text-primary-500' : 'text-dark-200 dark:text-dark-700'}
+                          ${isHovered && isActive ? 'scale-110' : 'scale-100'}`}
+                      />
+                    )
+                  })}
+                </div>
+                <span className="text-xs text-dark-500 dark:text-dark-400">
+                  ({product.review_count})
+                </span>
+              </div>
+            )}
+
+            {/* Price with clean scale-up on hover */}
+            <div className="product-price">
+              <span
+                className={`inline-block bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black
+                           transition-transform duration-300 origin-left
+                           ${isHovered && !isTouchDevice ? 'scale-105' : 'scale-100'}`}
+                style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+              >
+                {formatPrice(product.price)}
+              </span>
+              {product.compare_price && product.compare_price > product.price && (
+                <span className="product-price-old">{formatPrice(product.compare_price)}</span>
+              )}
+            </div>
+
+            {/* Low Stock Warning */}
+            {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-2 flex items-center gap-1.5 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-md"
+              >
+                <motion.span
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-xs font-semibold text-orange-700 dark:text-orange-300"
+                >
+                  ⚠ Only {product.stock} left!
+                </motion.span>
+              </motion.div>
+            )}
           </div>
-        )}
-      </div>
+
+          {/* Subtle glow effect on hover - CSS only, skip on touch */}
+          {!isTouchDevice && (
+            <div
+              className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300
+                         ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+              style={{
+                boxShadow: '0 0 40px rgb(var(--color-primary-500) / 0.25)',
+                animation: isHovered ? 'subtle-glow 2s ease-in-out infinite' : 'none',
+              }}
+            />
+          )}
+
+          {/* Shine sweep effect on hover - CSS animation, skip on touch */}
+          {!isTouchDevice && (
+            <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
+              <div
+                className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                           transition-transform duration-700 ease-out
+                           ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Auth Modal for wishlist */}

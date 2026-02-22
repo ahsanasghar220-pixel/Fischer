@@ -8,6 +8,7 @@ import QuickViewModal from '@/components/products/QuickViewModal'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import CategoryIcon from '@/components/ui/CategoryIcon'
 import { StaggerContainer, StaggerItem, HoverCard } from '@/components/effects/ScrollReveal'
+import type { Product } from '@/types'
 
 interface Category {
   id: number
@@ -21,24 +22,6 @@ interface Category {
 }
 
 const DEFAULT_FEATURES = ['Premium Quality', 'Energy Efficient', '1 Year Warranty', 'Latest Technology']
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number | null
-  primary_image?: string | null
-  stock_status: string
-  is_new?: boolean
-  is_bestseller?: boolean
-  average_rating?: number
-  review_count?: number
-  category?: {
-    name: string
-    slug: string
-  }
-}
 
 interface CategoryData {
   category: Category

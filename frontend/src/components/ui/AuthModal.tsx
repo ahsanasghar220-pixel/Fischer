@@ -142,8 +142,8 @@ export default function AuthModal({
 
                   <div className="text-center mb-6">
                     <Link to="/" onClick={onClose}>
-                      <img src="/images/logo/Fischer-electronics-logo-black.svg" alt="Fischer" width={792} height={436} className="h-10 mx-auto dark:hidden" />
-                      <img src="/images/logo/Fischer-electronics-logo-white.svg" alt="Fischer" width={792} height={436} className="h-10 mx-auto hidden dark:block" />
+                      <img src="/images/logo/Fischer-electronics-logo-black.svg" alt="Fischer" width={784} height={465} className="h-10 mx-auto dark:hidden" />
+                      <img src="/images/logo/Fischer-electronics-logo-white.svg" alt="Fischer" width={784} height={465} className="h-10 mx-auto hidden dark:block" />
                     </Link>
                     <p className="mt-4 text-dark-600 dark:text-dark-400">{message}</p>
                   </div>

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCartIcon, ArrowRightIcon, PlayIcon } from '@heroicons/react/24/solid'
 import { ClockIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { formatPrice, formatDescription } from '@/lib/utils'
-import type { Bundle } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles.types'
 
 interface BundleBannerProps {
   bundle: Bundle

@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, useSc
 import api from '@/lib/api'
 import KitchenSVG from './KitchenSVG'
 import ProductPopup from './ProductPopup'
+import type { Product, KitchenProduct } from '@/types'
 
 // Mobile detection hook for performance optimization
 const useIsMobile = () => {
@@ -15,24 +16,6 @@ const useIsMobile = () => {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
   return isMobile
-}
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number
-  primary_image?: string
-  category?: { name: string; slug: string }
-  short_description?: string
-}
-
-interface KitchenProduct {
-  id: string
-  name: string
-  categorySlug: string
-  product: Product | null
 }
 
 const kitchenProducts: Omit<KitchenProduct, 'product'>[] = [

@@ -10,7 +10,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import { useBundles } from '@/api/bundles'
-import type { Bundle } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles.types'
 import BundleCard from '@/components/bundles/BundleCard'
 import { BundleQuickView } from '@/components/bundles'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'

@@ -1,26 +1,25 @@
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
 import { useState, useRef, useMemo, memo, useCallback, useEffect } from 'react'
+import {
+  PRODUCT_HOTSPOTS,
+  KITCHEN_CSS_KEYFRAMES,
+  DUST_PARTICLE_SEEDS,
+  AMBIENT_PARTICLE_SEEDS,
+  BUBBLE_SEEDS,
+  HEAT_WAVE_SEEDS,
+  SPARKLE_POSITIONS,
+  HOB_BURNER_CX,
+  STEAM_PARTICLE_CX,
+  FLOOR_TILE_X_POSITIONS,
+  CABINET_DOOR_X_POSITIONS,
+  LIGHT_RAY_SEEDS,
+  type ProductHotspot,
+} from './svg/kitchen-paths'
 
 interface KitchenSVGProps {
   onProductClick: (productId: string, event: React.MouseEvent) => void
   activeProductId: string | null
 }
-
-interface ProductHotspot {
-  id: string
-  cx: number
-  cy: number
-  label: string
-}
-
-const productHotspots: ProductHotspot[] = [
-  { id: 'hood', cx: 400, cy: 120, label: 'Kitchen Hood' },
-  { id: 'hob', cx: 400, cy: 320, label: 'Built-in Hob' },
-  { id: 'cooler', cx: 120, cy: 480, label: 'Water Cooler' },
-  { id: 'geyser', cx: 680, cy: 480, label: 'Geyser' },
-  { id: 'airfryer', cx: 220, cy: 280, label: 'Air Fryer' },
-  { id: 'oven', cx: 580, cy: 280, label: 'Oven Toaster' },
-]
 
 // PERFORMANCE: Use CSS animations via style tag instead of framer-motion for particles
 // This reduces JavaScript overhead significantly
@@ -192,56 +191,9 @@ const HeatWave = memo(({ x, y, delay }: { x: number; y: number; delay: number })
 HeatWave.displayName = 'HeatWave'
 
 // CSS Keyframes for performance - defined as a style element
+// Keyframe strings are sourced from ./svg/kitchen-paths
 const CSSKeyframes = () => (
-  <style>{`
-    @keyframes dustFloat {
-      0% { opacity: 0; transform: translate(0, 0); }
-      25% { opacity: 0.8; }
-      50% { opacity: 0.4; transform: translate(5px, 30px); }
-      100% { opacity: 0; transform: translate(0, 60px); }
-    }
-    @keyframes particleFloat {
-      0% { opacity: 0; transform: translateY(0) scale(0); }
-      50% { opacity: 0.6; transform: translateY(-25px) scale(1); }
-      100% { opacity: 0; transform: translateY(-50px) scale(0.5); }
-    }
-    @keyframes flameFlicker {
-      0%, 100% { opacity: 0.7; transform: scaleY(1) scaleX(1); }
-      50% { opacity: 0.9; transform: scaleY(0.9) scaleX(0.85); }
-    }
-    @keyframes bubbleRise {
-      0% { opacity: 0; transform: translateY(0) scale(0.5); }
-      30% { opacity: 0.8; transform: translateY(-30px) scale(1.2); }
-      100% { opacity: 0; transform: translateY(-80px) scale(0.3); }
-    }
-    @keyframes steamRise {
-      0% { opacity: 0; transform: translateY(0) scaleY(0.3); }
-      50% { opacity: 0.7; transform: translateY(-10px) scaleY(1); }
-      100% { opacity: 0; transform: translateY(-25px) scaleY(0.8); }
-    }
-    @keyframes waterDrop {
-      0% { opacity: 0; transform: translateY(0) scale(0.5); }
-      50% { opacity: 0.9; transform: translateY(7px) scale(1); }
-      100% { opacity: 0; transform: translateY(15px) scale(0.8); }
-    }
-    @keyframes rippleExpand {
-      0% { opacity: 0; transform: scale(0.5); }
-      50% { opacity: 0.6; transform: scale(1.3); }
-      100% { opacity: 0; transform: scale(1.8); }
-    }
-    @keyframes sparkle {
-      0%, 100% { opacity: 0; transform: scale(0); }
-      50% { opacity: 1; transform: scale(1); }
-    }
-    @keyframes heatWave {
-      0%, 100% { opacity: 0.3; transform: scaleY(1) translateY(0); }
-      50% { opacity: 0.6; transform: scaleY(1.2) translateY(-2px); }
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.3; }
-      50% { transform: scale(1.3); opacity: 0.6; }
-    }
-  `}</style>
+  <style>{KITCHEN_CSS_KEYFRAMES}</style>
 )
 
 interface HotspotItemProps {
@@ -547,48 +499,12 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
     mouseY.set(y)
   }, [mouseX, mouseY])
 
-  // Memoize dust particles array - REDUCED from 30 to 10
-  const dustParticles = useMemo(() =>
-    [...Array(10)].map((_, i) => ({
-      key: `dust-${i}`,
-      x: 340 + (i % 5) * 35,
-      y: 180 + Math.floor(i / 5) * 40,
-      delay: i * 0.3
-    })), [])
-
-  // Memoize ambient particles - REDUCED from 20 to 8
-  const ambientParticles = useMemo(() =>
-    [...Array(8)].map((_, i) => ({
-      key: `particle-${i}`,
-      x: 80 + (i * 90),
-      y: 500 + (Math.sin(i) * 40),
-      delay: i * 0.4,
-      duration: 4 + (i % 3)
-    })), [])
-
-  // Memoize bubbles - REDUCED from 12 to 6
-  const bubbles = useMemo(() =>
-    [...Array(6)].map((_, i) => ({
-      key: `bubble-${i}`,
-      cx: 392 + (i % 3) * 8,
-      cy: 348,
-      delay: i * 0.5
-    })), [])
-
-  // Memoize heat waves - REDUCED from 8 to 4
-  const heatWaves = useMemo(() =>
-    [...Array(4)].map((_, i) => ({
-      key: `heat-${i}`,
-      x: 370 + i * 20,
-      y: 340 - (i % 2) * 5,
-      delay: i * 0.2
-    })), [])
-
-  // Memoize sparkles - REDUCED from 9 to 5
-  const sparkles = useMemo(() => [
-    { x: 380, y: 150 }, { x: 580, y: 250 },
-    { x: 250, y: 480 }, { x: 420, y: 330 }, { x: 520, y: 480 }
-  ], [])
+  // Particle arrays sourced from static seeds in ./svg/kitchen-paths
+  const dustParticles = DUST_PARTICLE_SEEDS
+  const ambientParticles = AMBIENT_PARTICLE_SEEDS
+  const bubbles = BUBBLE_SEEDS
+  const heatWaves = HEAT_WAVE_SEEDS
+  const sparkles = SPARKLE_POSITIONS
 
   return (
     <svg
@@ -777,7 +693,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
       {/* Light rays coming through window - simplified for performance */}
       <g opacity="0.4" style={{ filter: 'blur(8px)' }}>
-        {[0, 1, 2].map((i) => (
+        {LIGHT_RAY_SEEDS.map((i) => (
           <path
             key={i}
             d={`M${370 + i * 30},160 L${340 + i * 40},350`}
@@ -1134,7 +1050,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         />
 
         {/* Cabinet doors */}
-        {[200, 300, 500, 600].map((x, i) => (
+        {CABINET_DOOR_X_POSITIONS.map((x, i) => (
           <motion.line
             key={x}
             x1={x} y1="400" x2={x} y2="540"
@@ -1453,7 +1369,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         {/* Floor tiles pattern */}
         <g strokeWidth="1" className="stroke-gray-200 dark:stroke-dark-700">
           <line x1="50" y1="550" x2="750" y2="550" />
-          {[0, 100, 200, 300, 400, 500, 600, 700].map(x => (
+          {FLOOR_TILE_X_POSITIONS.map(x => (
             <line key={x} x1={50 + x * 0.875} y1="550" x2={90 + x * 0.875} y2="600" />
           ))}
         </g>
@@ -1461,7 +1377,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
       {/* Animated FLAMES under hob burners - cooking effect! */}
       <motion.g style={{ x: parallaxX2, y: parallaxY2 }}>
-        {[360, 400, 440].map((cx, i) => (
+        {HOB_BURNER_CX.map((cx, i) => (
           <Flame key={`flame-${cx}`} cx={cx} delay={i * 0.15} />
         ))}
       </motion.g>
@@ -1475,7 +1391,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
 
       {/* STEAM particles with curling motion from hob */}
       <motion.g style={{ x: parallaxX2, y: parallaxY2 }}>
-        {[360, 380, 400, 420, 440].map((cx, i) => (
+        {STEAM_PARTICLE_CX.map((cx, i) => (
           <SteamParticle key={`steam-${cx}`} cx={cx} delay={i * 0.3} />
         ))}
       </motion.g>
@@ -1526,7 +1442,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
       </motion.g>
 
       {/* Product Hotspots with PULSING GLOW and enhanced animations */}
-      {productHotspots.map((hotspot, index) => (
+      {PRODUCT_HOTSPOTS.map((hotspot, index) => (
         <HotspotItem
           key={hotspot.id}
           hotspot={hotspot}
@@ -1562,7 +1478,7 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         strokeDasharray="5,5"
       >
         <motion.path
-          d={`M${productHotspots[0].cx},${productHotspots[0].cy} L${productHotspots[1].cx},${productHotspots[1].cy}`}
+          d={`M${PRODUCT_HOTSPOTS[0].cx},${PRODUCT_HOTSPOTS[0].cy} L${PRODUCT_HOTSPOTS[1].cx},${PRODUCT_HOTSPOTS[1].cy}`}
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 0.3 }}
           viewport={{ once: true }}
@@ -1570,20 +1486,20 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         />
         {/* Animated flow particles along connection line - using x/y transforms */}
         <motion.circle
-          cx={productHotspots[0].cx}
-          cy={productHotspots[0].cy}
+          cx={PRODUCT_HOTSPOTS[0].cx}
+          cy={PRODUCT_HOTSPOTS[0].cy}
           r="2"
           className="fill-primary-400"
           animate={{
-            x: [0, productHotspots[1].cx - productHotspots[0].cx],
-            y: [0, productHotspots[1].cy - productHotspots[0].cy],
+            x: [0, PRODUCT_HOTSPOTS[1].cx - PRODUCT_HOTSPOTS[0].cx],
+            y: [0, PRODUCT_HOTSPOTS[1].cy - PRODUCT_HOTSPOTS[0].cy],
             opacity: [0, 0.8, 0]
           }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         />
 
         <motion.path
-          d={`M${productHotspots[4].cx},${productHotspots[4].cy} L${productHotspots[2].cx},${productHotspots[2].cy}`}
+          d={`M${PRODUCT_HOTSPOTS[4].cx},${PRODUCT_HOTSPOTS[4].cy} L${PRODUCT_HOTSPOTS[2].cx},${PRODUCT_HOTSPOTS[2].cy}`}
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 0.3 }}
           viewport={{ once: true }}
@@ -1591,20 +1507,20 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         />
         {/* Animated flow particles - using x/y transforms */}
         <motion.circle
-          cx={productHotspots[4].cx}
-          cy={productHotspots[4].cy}
+          cx={PRODUCT_HOTSPOTS[4].cx}
+          cy={PRODUCT_HOTSPOTS[4].cy}
           r="2"
           className="fill-primary-400"
           animate={{
-            x: [0, productHotspots[2].cx - productHotspots[4].cx],
-            y: [0, productHotspots[2].cy - productHotspots[4].cy],
+            x: [0, PRODUCT_HOTSPOTS[2].cx - PRODUCT_HOTSPOTS[4].cx],
+            y: [0, PRODUCT_HOTSPOTS[2].cy - PRODUCT_HOTSPOTS[4].cy],
             opacity: [0, 0.8, 0]
           }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
         />
 
         <motion.path
-          d={`M${productHotspots[5].cx},${productHotspots[5].cy} L${productHotspots[3].cx},${productHotspots[3].cy}`}
+          d={`M${PRODUCT_HOTSPOTS[5].cx},${PRODUCT_HOTSPOTS[5].cy} L${PRODUCT_HOTSPOTS[3].cx},${PRODUCT_HOTSPOTS[3].cy}`}
           initial={{ pathLength: 0, opacity: 0 }}
           whileInView={{ pathLength: 1, opacity: 0.3 }}
           viewport={{ once: true }}
@@ -1612,13 +1528,13 @@ function KitchenSVG({ onProductClick, activeProductId }: KitchenSVGProps) {
         />
         {/* Animated flow particles - using x/y transforms */}
         <motion.circle
-          cx={productHotspots[5].cx}
-          cy={productHotspots[5].cy}
+          cx={PRODUCT_HOTSPOTS[5].cx}
+          cy={PRODUCT_HOTSPOTS[5].cy}
           r="2"
           className="fill-primary-400"
           animate={{
-            x: [0, productHotspots[3].cx - productHotspots[5].cx],
-            y: [0, productHotspots[3].cy - productHotspots[5].cy],
+            x: [0, PRODUCT_HOTSPOTS[3].cx - PRODUCT_HOTSPOTS[5].cx],
+            y: [0, PRODUCT_HOTSPOTS[3].cy - PRODUCT_HOTSPOTS[5].cy],
             opacity: [0, 0.8, 0]
           }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 3 }}

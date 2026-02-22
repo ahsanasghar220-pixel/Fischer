@@ -5,21 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Coupon;
 use App\Models\ShippingZone;
 use App\Models\ShippingMethod;
 use App\Models\Setting;
+use App\Services\CartService;
+use App\Services\OrderCreationService;
 use App\Services\PaymentService;
-use App\Mail\OrderPlacedNotification;
-use App\Mail\OrderConfirmation;
+use App\Http\Requests\PlaceOrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
+    public function __construct(
+        private CartService $cartService,
+        private OrderCreationService $orderService,
+    ) {}
+
     public function getShippingMethods(Request $request)
     {
         $request->validate([
@@ -29,7 +31,7 @@ class CheckoutController extends Controller
         $zone = ShippingZone::findByCity($request->city);
         $methods = ShippingMethod::active()->ordered()->get();
 
-        $cart = $this->getCart($request);
+        $cart = $this->cartService->getCartForCheckout($request);
         $subtotal = $cart ? $cart->subtotal : 0;
         $weight = $cart ? $cart->total_weight : 0;
         $itemCount = $cart ? $cart->items_count : 0;
@@ -56,7 +58,7 @@ class CheckoutController extends Controller
             'loyalty_points' => 'nullable|integer|min:0',
         ]);
 
-        $cart = $this->getCart($request);
+        $cart = $this->cartService->getCartForCheckout($request);
 
         if (!$cart || $cart->items->isEmpty()) {
             return $this->error('Cart is empty', 400);
@@ -99,252 +101,77 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function placeOrder(Request $request)
+    public function placeOrder(PlaceOrderRequest $request)
     {
-        $validated = $request->validate([
-            // Shipping info (accept either name or first_name/last_name)
-            'shipping_name' => 'required_without_all:shipping_first_name,shipping_last_name|nullable|string|max:255',
-            'shipping_first_name' => 'required_without:shipping_name|nullable|string|max:255',
-            'shipping_last_name' => 'required_without:shipping_name|nullable|string|max:255',
-            'shipping_phone' => 'required|string|max:20',
-            'shipping_email' => 'nullable|email|max:255',
-            'shipping_address_line_1' => 'required|string|max:500',
-            'shipping_address_line_2' => 'nullable|string|max:500',
-            'shipping_city' => 'required|string|max:255',
-            'shipping_state' => 'nullable|string|max:255',
-            'shipping_postal_code' => 'nullable|string|max:10',
-
-            // Billing (optional)
-            'billing_same_as_shipping' => 'boolean',
-            'billing_name' => 'nullable|string|max:255',
-            'billing_first_name' => 'nullable|string|max:255',
-            'billing_last_name' => 'nullable|string|max:255',
-            'billing_phone' => 'nullable|string|max:20',
-            'billing_address_line_1' => 'nullable|string|max:500',
-            'billing_city' => 'nullable|string|max:255',
-
-            // Payment
-            'payment_method' => 'required|in:cod,bank_transfer,jazzcash,easypaisa,card',
-            'transaction_id' => 'required_if:payment_method,bank_transfer|nullable|string|max:255',
-            'payment_proof' => 'nullable|string', // Base64 image or URL
-
-            // Shipping method
-            'shipping_method_id' => 'required|exists:shipping_methods,id',
-
-            // Loyalty points
-            'loyalty_points' => 'nullable|integer|min:0',
-
-            // Notes
-            'notes' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         // Parse shipping name into first/last if not provided separately
         if (!empty($validated['shipping_name']) && empty($validated['shipping_first_name'])) {
             $nameParts = explode(' ', $validated['shipping_name'], 2);
             $validated['shipping_first_name'] = $nameParts[0];
-            $validated['shipping_last_name'] = $nameParts[1] ?? '';
+            $validated['shipping_last_name']  = $nameParts[1] ?? '';
         }
 
         // Parse billing name if provided
         if (!empty($validated['billing_name']) && empty($validated['billing_first_name'])) {
             $nameParts = explode(' ', $validated['billing_name'], 2);
             $validated['billing_first_name'] = $nameParts[0];
-            $validated['billing_last_name'] = $nameParts[1] ?? '';
+            $validated['billing_last_name']  = $nameParts[1] ?? '';
         }
 
         // Map notes field
         $validated['customer_notes'] = $validated['notes'] ?? null;
 
-        $cart = $this->getCart($request);
+        $cart = $this->cartService->getCartForCheckout($request);
 
         if (!$cart || $cart->items->isEmpty()) {
             return $this->error('Your cart is empty', 400);
         }
 
-        return DB::transaction(function () use ($validated, $cart, $request) {
+        $ipAddress = $request->ip();
+        $userAgent = $request->userAgent();
+
+        return DB::transaction(function () use ($validated, $cart, $ipAddress, $userAgent) {
             // Try to get authenticated user (works even without auth:sanctum middleware)
             $user = auth('sanctum')->user();
 
-            // Re-validate stock availability INSIDE transaction with row-level locks to prevent race conditions
-            foreach ($cart->items as $item) {
-                if ($item->product_variant_id) {
-                    $variant = \App\Models\ProductVariant::lockForUpdate()->find($item->product_variant_id);
-                    if (!$variant) {
-                        throw new \Exception("Product variant no longer exists");
-                    }
-                    if ($variant->product->track_inventory && !$variant->product->allow_backorders) {
-                        if ($variant->stock_quantity < $item->quantity) {
-                            throw new \Exception("'{$item->product->name}' only has {$variant->stock_quantity} items available, but you requested {$item->quantity}");
-                        }
-                    }
-                } else {
-                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
-                    if (!$product || !$product->is_active) {
-                        throw new \Exception("Product '{$item->product->name}' is no longer available");
-                    }
-                    if ($product->track_inventory && !$product->allow_backorders) {
-                        if ($product->stock_quantity < $item->quantity) {
-                            throw new \Exception("'{$product->name}' only has {$product->stock_quantity} items available, but you requested {$item->quantity}");
-                        }
-                    }
-                }
-            }
+            // Re-validate stock inside transaction with row-level locks
+            $this->orderService->validateStock($cart);
 
-            // Calculate amounts
-            $subtotal = $cart->subtotal;
-            $discount = $cart->getDiscount();
+            // Calculate subtotal, shipping, loyalty discounts, and total
+            $totals = $this->orderService->calculateTotals($cart, $validated, $user);
 
-            // Shipping
-            $shippingMethod = ShippingMethod::find($validated['shipping_method_id']);
-            $zone = ShippingZone::findByCity($validated['shipping_city']);
-            $shippingAmount = $shippingMethod->calculateCost($subtotal, $cart->total_weight, $cart->items_count, $zone);
+            // Persist the order
+            $order = $this->orderService->createOrder(
+                $user, $cart, $totals, $validated, $ipAddress, $userAgent
+            );
 
-            // Free shipping coupon
-            if ($cart->coupon_code) {
-                $coupon = Coupon::where('code', $cart->coupon_code)->first();
-                if ($coupon && $coupon->type === 'free_shipping') {
-                    $shippingAmount = 0;
-                }
-            }
-
-            // Loyalty points
-            $loyaltyPointsUsed = 0;
-            $loyaltyDiscount = 0;
-            $pointValue = (int) Setting::get('loyalty.point_value', 1);
-            $loyaltyEnabled = Setting::get('loyalty.enabled', true);
-            if ($loyaltyEnabled && $user && ($validated['loyalty_points'] ?? 0) > 0) {
-                $loyaltyPointsUsed = min($validated['loyalty_points'], $user->loyalty_points);
-                $loyaltyDiscount = $loyaltyPointsUsed * $pointValue;
-                $loyaltyDiscount = min($loyaltyDiscount, $subtotal - $discount);
-            }
-
-            $total = $subtotal - $discount + $shippingAmount - $loyaltyDiscount;
-
-            // Create order
-            $order = Order::create([
-                'user_id' => $user?->id,
-                'guest_email' => $user ? null : ($validated['shipping_email'] ?? null),
-                'guest_phone' => $user ? null : ($validated['shipping_phone'] ?? null),
-                'status' => 'pending',
-                'payment_status' => 'pending',
-                'payment_method' => $validated['payment_method'],
-                'transaction_id' => $validated['transaction_id'] ?? null,
-
-                'subtotal' => $subtotal,
-                'discount_amount' => $discount,
-                'shipping_amount' => $shippingAmount,
-                'tax_amount' => 0,
-                'total' => $total,
-
-                'shipping_first_name' => $validated['shipping_first_name'],
-                'shipping_last_name' => $validated['shipping_last_name'],
-                'shipping_phone' => $validated['shipping_phone'],
-                'shipping_email' => ($validated['shipping_email'] ?? null) ?? $user?->email,
-                'shipping_address_line_1' => $validated['shipping_address_line_1'],
-                'shipping_address_line_2' => $validated['shipping_address_line_2'] ?? null,
-                'shipping_city' => $validated['shipping_city'],
-                'shipping_state' => $validated['shipping_state'] ?? null,
-                'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
-                'shipping_country' => 'Pakistan',
-
-                'same_billing_address' => $validated['billing_same_as_shipping'] ?? true,
-                'billing_first_name' => $validated['billing_first_name'] ?? null,
-                'billing_last_name' => $validated['billing_last_name'] ?? null,
-                'billing_phone' => $validated['billing_phone'] ?? null,
-                'billing_address_line_1' => $validated['billing_address_line_1'] ?? null,
-                'billing_city' => $validated['billing_city'] ?? null,
-
-                'shipping_method' => $shippingMethod->name,
-
-                'coupon_code' => $cart->coupon_code,
-                'coupon_id' => $cart->coupon?->id,
-
-                'loyalty_points_used' => $loyaltyPointsUsed,
-                'loyalty_discount' => $loyaltyDiscount,
-
-                'customer_notes' => $validated['customer_notes'] ?? null,
-                'source' => 'website',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-            ]);
-
-            // Create order items
-            foreach ($cart->items as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'product_variant_id' => $item->product_variant_id,
-                    'product_name' => $item->product->name,
-                    'product_sku' => $item->productVariant?->sku ?? $item->product->sku,
-                    'product_image' => $item->product->primary_image,
-                    'variant_attributes' => $item->productVariant?->attribute_values_formatted,
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->unit_price,
-                    'total_price' => $item->total_price,
-                ]);
-
-                // Update stock
-                if ($item->product_variant_id) {
-                    $item->productVariant->updateStock($item->quantity, 'decrement');
-                } else {
-                    $item->product->updateStock($item->quantity, 'decrement');
-                }
-
-                // Update sales count
-                $item->product->incrementSalesCount($item->quantity);
-            }
+            // Create order items, decrement stock, update sales counts
+            $this->orderService->createOrderItems($order, $cart);
 
             // Record coupon usage
-            if ($cart->coupon_code && $cart->coupon) {
-                $cart->coupon->recordUsage($order, $user?->id, $discount);
-            }
+            $this->orderService->handleCouponUsage($cart, $order, $user, $totals['discount']);
 
-            // Deduct loyalty points
-            if ($loyaltyPointsUsed > 0 && $user) {
-                $user->redeemLoyaltyPoints(
-                    $loyaltyPointsUsed,
-                    "Redeemed for order #{$order->order_number}",
-                    Order::class,
-                    $order->id
-                );
-            }
-
-            // Calculate loyalty points earned
-            $pointsPerAmount = (int) Setting::get('loyalty.points_per_amount', 100);
-            $pointsEarned = $pointsPerAmount > 0 ? floor($total / $pointsPerAmount) : 0;
-            if (!$loyaltyEnabled) $pointsEarned = 0;
-            $order->update(['loyalty_points_earned' => $pointsEarned]);
+            // Deduct redeemed loyalty points and record points earned
+            $this->orderService->handleLoyaltyPoints(
+                $order,
+                $user,
+                $totals['loyalty_points_used'],
+                $totals['total'],
+                $totals['loyalty_enabled']
+            );
 
             // Clear cart
             $cart->clear();
 
-            // Send email notifications
-            try {
-                $notificationEnabled = Setting::get('notifications.order_notification_enabled', true);
-                if ($notificationEnabled) {
-                    $recipientEmails = Setting::get('notifications.order_notification_emails', 'fischer.few@gmail.com');
-                    $emails = array_filter(array_map('trim', explode(',', $recipientEmails)));
-                    foreach ($emails as $email) {
-                        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                            Mail::to($email)->queue(new OrderPlacedNotification($order));
-                        }
-                    }
-                }
-
-                $customerConfirmation = Setting::get('notifications.order_confirmation_to_customer', true);
-                $customerEmail = $order->shipping_email ?? $user?->email;
-                if ($customerConfirmation && $customerEmail) {
-                    Mail::to($customerEmail)->queue(new OrderConfirmation($order));
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to send order notification emails: ' . $e->getMessage());
-            }
+            // Queue order notification emails
+            $this->orderService->sendOrderNotifications($order, $user);
 
             // Handle payment
-            $paymentResult = $this->handlePayment($order, $validated['payment_method'], $request);
+            $paymentResult = $this->handlePayment($order, $validated['payment_method'], request());
 
             return $this->success([
-                'order' => $order->fresh()->load('items'),
+                'order'   => $order->fresh()->load('items'),
                 'payment' => $paymentResult,
             ], 'Order placed successfully', 201);
         });
@@ -397,35 +224,4 @@ class CheckoutController extends Controller
         }
     }
 
-    protected function getCart(Request $request): ?Cart
-    {
-        // Use sanctum guard to get authenticated user even without middleware
-        $userId = auth('sanctum')->id();
-        $sessionId = $request->header('X-Session-ID') ?? $request->session_id;
-
-        if ($userId) {
-            $userCart = Cart::with(['items.product', 'items.productVariant'])->where('user_id', $userId)->first();
-
-            // If user cart exists and has items, use it
-            if ($userCart && $userCart->items->isNotEmpty()) {
-                return $userCart;
-            }
-
-            // If user cart is empty but session cart exists with items, use session cart as fallback
-            if ($sessionId) {
-                $sessionCart = Cart::with(['items.product', 'items.productVariant'])->where('session_id', $sessionId)->first();
-                if ($sessionCart && $sessionCart->items->isNotEmpty()) {
-                    return $sessionCart;
-                }
-            }
-
-            return $userCart; // Return user cart even if empty
-        }
-
-        if ($sessionId) {
-            return Cart::with(['items.product', 'items.productVariant'])->where('session_id', $sessionId)->first();
-        }
-
-        return null;
-    }
 }

@@ -1,0 +1,123 @@
+/* Fonts are loaded asynchronously in index.html to prevent render blocking */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Lenis smooth scroll styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+@layer base {
+  :root {
+    /* Light theme CSS variables */
+    --color-bg-primary: 250 250 250;
+    --color-bg-secondary: 255 255 255;
+    --color-bg-tertiary: 244 244 245;
+    --color-text-primary: 24 24 27;
+    --color-text-secondary: 55 55 62; /* Improved contrast: was 63 63 70 */
+    --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
+    --color-border: 228 228 231;
+    --color-accent: 149 18 18; /* Deep Red #951212 */
+    /* Brand primary color scale — overridden dynamically via JS */
+    --color-primary-50: 253 242 242;
+    --color-primary-100: 249 222 222;
+    --color-primary-200: 240 180 180;
+    --color-primary-300: 217 114 114;
+    --color-primary-400: 194 48 48;
+    --color-primary-500: 149 18 18;
+    --color-primary-600: 127 16 16;
+    --color-primary-700: 107 14 14;
+    --color-primary-800: 87 11 11;
+    --color-primary-900: 67 9 9;
+    --color-primary-950: 45 6 6;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(228, 228, 231, 0.5);
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .dark {
+    /* Dark theme CSS variables */
+    --color-bg-primary: 9 9 11;
+    --color-bg-secondary: 24 24 27;
+    --color-bg-tertiary: 39 39 42;
+    --color-text-primary: 250 250 250;
+    --color-text-secondary: 220 220 224; /* Improved contrast: was 212 212 216 */
+    --color-text-muted: 180 180 188; /* Improved contrast: was 161 161 170 (now 4.5:1 ratio) */
+    --color-border: 63 63 70;
+    --color-accent: 149 18 18; /* Deep Red #951212 - same in dark mode */
+    --glass-bg: rgba(24, 24, 27, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-dark-50 dark:bg-dark-950 text-dark-900 dark:text-dark-50 transition-colors duration-300;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Fix iOS touch delay */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Ensure #root doesn't overflow */
+  #root {
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar - Light mode */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-100 dark:bg-dark-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-300 dark:bg-dark-600 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-400 dark:bg-dark-500;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary-500/30 text-dark-900 dark:text-white;
+  }
+
+  /* Focus outline */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-dark-900;
+  }
+}

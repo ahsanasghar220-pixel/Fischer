@@ -8,17 +8,23 @@ use App\Models\Bundle;
 use App\Models\Cart;
 use App\Services\BundlePricingService;
 use App\Services\BundleCartService;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class BundleController extends Controller
 {
     protected BundlePricingService $pricingService;
     protected BundleCartService $cartService;
+    protected CartService $generalCartService;
 
-    public function __construct(BundlePricingService $pricingService, BundleCartService $cartService)
-    {
+    public function __construct(
+        BundlePricingService $pricingService,
+        BundleCartService $cartService,
+        CartService $generalCartService,
+    ) {
         $this->pricingService = $pricingService;
         $this->cartService = $cartService;
+        $this->generalCartService = $generalCartService;
     }
 
     /**
@@ -162,7 +168,7 @@ class BundleController extends Controller
         $bundle = Bundle::where('slug', $request->bundle_slug)->available()->firstOrFail();
 
         // Get or create cart
-        $cart = $this->getOrCreateCart($request);
+        $cart = $this->generalCartService->getOrCreateCartWithMerge($request);
 
         $result = $this->cartService->addBundleToCart($cart, $bundle, $request->selections);
 
@@ -197,41 +203,4 @@ class BundleController extends Controller
         return $this->success(BundleResource::collection($relatedBundles));
     }
 
-    /**
-     * Get or create a cart for the current user/session
-     */
-    protected function getOrCreateCart(Request $request): Cart
-    {
-        $userId = auth()->id();
-        $sessionId = $request->header('X-Session-ID') ?? $request->session_id ?? session()->getId();
-
-        if ($userId) {
-            $cart = Cart::firstOrCreate(['user_id' => $userId]);
-
-            // Merge session cart if exists
-            if ($sessionId) {
-                $sessionCart = Cart::where('session_id', $sessionId)->whereNull('user_id')->first();
-                if ($sessionCart) {
-                    foreach ($sessionCart->items as $item) {
-                        $existingItem = $cart->items()
-                            ->where('product_id', $item->product_id)
-                            ->where('product_variant_id', $item->product_variant_id)
-                            ->whereNull('bundle_id')
-                            ->first();
-
-                        if ($existingItem) {
-                            $existingItem->increment('quantity', $item->quantity);
-                        } else {
-                            $item->update(['cart_id' => $cart->id]);
-                        }
-                    }
-                    $sessionCart->delete();
-                }
-            }
-        } else {
-            $cart = Cart::firstOrCreate(['session_id' => $sessionId]);
-        }
-
-        return $cart;
-    }
 }

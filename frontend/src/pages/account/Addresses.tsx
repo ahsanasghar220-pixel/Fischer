@@ -4,6 +4,7 @@ import { PlusIcon, PencilIcon, TrashIcon, CheckIcon, MapPinIcon } from '@heroico
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
+import { PAKISTAN_CITIES } from '@/data'
 
 interface Address {
   id: number
@@ -19,12 +20,6 @@ interface Address {
   is_default_shipping: boolean
   is_default_billing: boolean
 }
-
-const pakistanCities = [
-  'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
-  'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala', 'Hyderabad', 'Abbottabad',
-  'Bahawalpur', 'Sargodha', 'Sukkur', 'Mardan', 'Sahiwal', 'Sheikhupura'
-]
 
 const initialFormState = {
   label: '',
@@ -212,7 +207,7 @@ export default function Addresses() {
                   required
                 >
                   <option value="">Select city</option>
-                  {pakistanCities.map((city) => (
+                  {PAKISTAN_CITIES.map((city) => (
                     <option key={city} value={city}>{city}</option>
                   ))}
                 </select>

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { EyeIcon, ShoppingCartIcon, ClockIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { formatPrice, formatDescription } from '@/lib/utils'
 import { HoverCard } from '@/components/effects/ScrollReveal'
-import type { Bundle } from '@/api/bundles'
+import type { Bundle } from '@/api/bundles.types'
 
 interface BundleCardProps {
   bundle: Bundle

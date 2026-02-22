@@ -1,0 +1,10 @@
+{
+  "name": "Fischer Pakistan - Quality Home Appliances",
+  "short_name": "Fischer",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "any", "type": "image/png" }
+  ],
+  "theme_color": "#951212",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

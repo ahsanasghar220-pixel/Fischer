@@ -1,6 +1,7 @@
 import { XMarkIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useCallback } from 'react'
+import type { Product } from '@/types'
 
 // CSS animations for smooth, GPU-accelerated effects
 const popupAnimationStyles = `
@@ -33,17 +34,6 @@ const popupAnimationStyles = `
   100% { opacity: 1; transform: translateY(0); }
 }
 `
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number
-  primary_image?: string
-  category?: { name: string; slug: string }
-  short_description?: string
-}
 
 interface ProductPopupProps {
   product: Product | null

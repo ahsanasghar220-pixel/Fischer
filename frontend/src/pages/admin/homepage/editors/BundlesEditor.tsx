@@ -16,7 +16,8 @@ import FormField from '../components/FormField'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import type { Section } from '../types'
 import { SECTION_META } from '../types'
-import { useAdminBundles, useUpdateBundle, type Bundle } from '@/api/bundles'
+import { useAdminBundles, useUpdateBundle } from '@/api/bundles.admin'
+import type { Bundle } from '@/api/bundles.types'
 
 interface BundlesEditorProps {
   section: Section

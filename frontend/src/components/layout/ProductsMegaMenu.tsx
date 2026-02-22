@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getCategoryProductImage } from '@/lib/categoryImages'
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
+import type { Product } from '@/types'
 
 interface Category {
   id?: number
@@ -34,15 +35,6 @@ interface MenuCategory {
 interface ProductsMegaMenuProps {
   isHomePage?: boolean
   isScrolled?: boolean
-}
-
-interface Product {
-  id: number
-  name: string
-  slug: string
-  price: number
-  compare_price?: number | null
-  primary_image?: string | null
 }
 
 export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMegaMenuProps) {

@@ -121,8 +121,8 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
-            <img src="/images/logo/Fischer-electronics-logo-black.svg" alt="Fischer" width={792} height={436} className="h-12 w-auto mx-auto dark:hidden" />
-            <img src="/images/logo/Fischer-electronics-logo-white.svg" alt="Fischer" width={792} height={436} className="h-12 w-auto mx-auto hidden dark:block" />
+            <img src="/images/logo/Fischer-electronics-logo-black.svg" alt="Fischer" width={784} height={465} className="h-12 w-auto mx-auto dark:hidden" />
+            <img src="/images/logo/Fischer-electronics-logo-white.svg" alt="Fischer" width={784} height={465} className="h-12 w-auto mx-auto hidden dark:block" />
           </Link>
           <h1 className="mt-6 text-3xl font-bold text-dark-900 dark:text-white">Reset Password</h1>
           <p className="mt-2 text-dark-500 dark:text-dark-400">

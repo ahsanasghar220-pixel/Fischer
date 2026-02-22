@@ -1,0 +1,234 @@
+@layer components {
+  /* ========================================
+     BUTTONS - Premium styles with gradients
+     ======================================== */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold rounded-xl
+           transition-all duration-300 ease-out
+           focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+           active:scale-[0.98];
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-500 text-white
+           hover:bg-primary-600 hover:shadow-glow hover:-translate-y-0.5
+           focus:ring-primary-500 dark:focus:ring-offset-dark-900;
+  }
+
+  .btn-secondary {
+    @apply btn bg-dark-900 dark:bg-white text-white dark:text-dark-900
+           hover:bg-dark-800 dark:hover:bg-dark-100 hover:-translate-y-0.5
+           focus:ring-dark-500;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-dark-900 dark:border-white text-dark-900 dark:text-white bg-transparent
+           hover:bg-dark-900 dark:hover:bg-white hover:text-white dark:hover:text-dark-900
+           focus:ring-dark-500;
+  }
+
+  .btn-ghost {
+    @apply btn text-dark-700 dark:text-dark-300 bg-transparent
+           hover:bg-dark-100 dark:hover:bg-dark-800
+           focus:ring-dark-300;
+  }
+
+  .btn-danger {
+    @apply btn bg-gradient-to-r from-red-500 to-red-400 text-white
+           hover:from-red-400 hover:to-red-300 hover:shadow-lg hover:-translate-y-0.5
+           focus:ring-red-500;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-sm rounded-lg;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-lg rounded-2xl;
+  }
+
+  .btn-icon {
+    @apply p-2.5 rounded-xl;
+  }
+
+  /* ========================================
+     INPUTS - Modern floating label style
+     ======================================== */
+  .input {
+    @apply w-full px-4 py-3.5
+           bg-white dark:bg-dark-800
+           border border-dark-200 dark:border-dark-700
+           rounded-xl text-dark-900 dark:text-white
+           placeholder:text-dark-400 dark:placeholder:text-dark-500
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-all duration-200;
+  }
+
+  .input-error {
+    @apply border-red-500 dark:border-red-400 focus:ring-red-500;
+  }
+
+  .input-group {
+    @apply relative;
+  }
+
+  .input-icon {
+    @apply absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500 pointer-events-none;
+  }
+
+  .input-with-icon {
+    @apply pl-12;
+  }
+
+  /* ========================================
+     CARDS - Glass morphism and premium shadows
+     ======================================== */
+  .card {
+    @apply bg-white dark:bg-dark-800/50 rounded-2xl
+           border border-dark-200 dark:border-dark-700/50
+           shadow-card backdrop-blur-sm
+           transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply card hover:shadow-card-hover hover:border-dark-300 dark:hover:border-dark-600
+           hover:-translate-y-1 cursor-pointer;
+  }
+
+  .card-glass {
+    @apply bg-white/90 dark:bg-dark-800/60 backdrop-blur-xl
+           border border-dark-200/60 dark:border-dark-700/30
+           rounded-2xl shadow-lg dark:shadow-xl;
+  }
+
+  .card-premium {
+    @apply bg-gradient-to-br from-white to-dark-50 dark:from-dark-800 dark:to-dark-900
+           rounded-3xl border border-dark-200 dark:border-dark-700
+           shadow-lg dark:shadow-premium;
+  }
+
+  /* ========================================
+     BADGES - Status and tags
+     ======================================== */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300;
+  }
+
+  .badge-info {
+    @apply badge bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300;
+  }
+
+  .badge-dark {
+    @apply badge bg-dark-900 dark:bg-dark-100 text-white dark:text-dark-900;
+  }
+
+  /* ========================================
+     SECTIONS - Layout helpers
+     ======================================== */
+  .section {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  /* Responsive container padding utility */
+  .container-padding {
+    @apply px-4 sm:px-6 md:px-8 lg:px-12;
+  }
+
+  /* Touch-friendly targets - minimum 44px for accessibility */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .section-sm {
+    @apply py-12 md:py-16;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold font-display
+           text-dark-900 dark:text-white tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg md:text-xl text-dark-500 dark:text-dark-400 mt-4 max-w-2xl;
+  }
+
+  .container-xl {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ========================================
+     NAVIGATION STYLES
+     ======================================== */
+  .nav-link {
+    @apply relative text-dark-600 dark:text-dark-300 font-medium
+           hover:text-dark-900 dark:hover:text-white
+           transition-colors duration-200;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 w-0 h-0.5
+           bg-primary-500 rounded-full
+           transition-all duration-300;
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply w-full;
+  }
+
+  .nav-link.active {
+    @apply text-dark-900 dark:text-white;
+  }
+
+  /* ========================================
+     DROPDOWN MENUS
+     ======================================== */
+  .dropdown {
+    @apply absolute top-full mt-2 w-56
+           bg-white dark:bg-dark-800
+           border border-dark-100 dark:border-dark-700
+           rounded-xl shadow-xl overflow-hidden
+           opacity-0 invisible translate-y-2
+           transition-all duration-200;
+  }
+
+  .dropdown.open {
+    @apply opacity-100 visible translate-y-0;
+  }
+
+  .dropdown-item {
+    @apply block px-4 py-3 text-dark-700 dark:text-dark-200
+           hover:bg-dark-50 dark:hover:bg-dark-700/50
+           transition-colors duration-150;
+  }
+
+  /* ========================================
+     SCROLLBAR HIDE UTILITY
+     ======================================== */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
