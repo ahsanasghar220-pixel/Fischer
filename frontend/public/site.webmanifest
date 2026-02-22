@@ -1,10 +1,13 @@
 {
   "name": "Fischer Pakistan - Quality Home Appliances",
   "short_name": "Fischer",
-  "icons": [
-    { "src": "/favicon.png", "sizes": "any", "type": "image/png" }
-  ],
+  "description": "Shop premium Water Coolers, Geysers, Cooking Ranges and more. ISO certified quality with nationwide delivery.",
+  "start_url": "/",
+  "display": "standalone",
   "theme_color": "#951212",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
