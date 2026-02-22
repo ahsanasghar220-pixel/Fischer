@@ -109,20 +109,20 @@ export default function Footer() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
             {/* Brand Column */}
             <div className="col-span-1 sm:col-span-2">
-              <Link to="/" className="inline-block">
+              <Link to="/" className="inline-block py-1">
                 <img
                   src="/images/logo/Fischer-electronics-logo-black.svg"
                   alt="Fischer"
                   width={794}
                   height={450}
-                  className="h-9 w-auto dark:hidden"
+                  className="h-8 w-auto dark:hidden"
                 />
                 <img
                   src="/images/logo/Fischer-electronics-logo-white.svg"
                   alt="Fischer"
                   width={794}
                   height={450}
-                  className="h-9 w-auto hidden dark:block"
+                  className="h-8 w-auto hidden dark:block"
                 />
               </Link>
               <p className="mt-6 text-dark-600 dark:text-dark-400 text-sm leading-relaxed max-w-xs">
