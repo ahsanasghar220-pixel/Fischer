@@ -34,7 +34,7 @@ export default function BundlesSection({
       )}
 
       {homepageBundles?.carousel && homepageBundles.carousel.length > 0 && (
-        <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle" lazy>
+        <AnimatedSection animation="fade-up" duration={1100} threshold={0.08} easing="gentle">
           <section className="section bg-white dark:bg-dark-900">
             <div className="container-xl">
               <AnimatedSection animation="fade-up" delay={150} duration={1000} easing="gentle">

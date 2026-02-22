@@ -19,7 +19,6 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import CartDrawer from '@/components/cart/CartDrawer'
 import ProductsMegaMenu from '@/components/layout/ProductsMegaMenu'
-import AnimatedLogo from '@/components/ui/AnimatedLogo'
 import MobileMenuOverlay from '@/components/layout/MobileMenuOverlay'
 import api from '@/lib/api'
 
@@ -198,11 +197,11 @@ export default function Header() {
 
             {/* Center: Logo */}
             <Link to="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center flex-shrink-0">
-              <AnimatedLogo
+              <img
                 src="/images/logo/Fischer-electronics-logo-black.svg"
                 alt="Fischer"
                 width={794}
-                height={450}
+                height={439}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -211,11 +210,11 @@ export default function Header() {
                     : 'dark:hidden'
                 }`}
               />
-              <AnimatedLogo
+              <img
                 src="/images/logo/Fischer-electronics-logo-white.svg"
                 alt="Fischer"
                 width={794}
-                height={450}
+                height={439}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -256,11 +255,11 @@ export default function Header() {
                 ) : (
                   <>
                     {/* Dark logo - hidden on homepage hero and in dark mode */}
-                    <AnimatedLogo
+                    <img
                       src="/images/logo/Fischer-electronics-logo-black.svg"
                       alt="Fischer"
                       width={794}
-                      height={450}
+                      height={439}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
@@ -271,11 +270,11 @@ export default function Header() {
                       onError={() => setLogoError(true)}
                     />
                     {/* White logo - show on homepage hero OR in dark mode */}
-                    <AnimatedLogo
+                    <img
                       src="/images/logo/Fischer-electronics-logo-white.svg"
                       alt="Fischer"
                       width={794}
-                      height={450}
+                      height={439}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${

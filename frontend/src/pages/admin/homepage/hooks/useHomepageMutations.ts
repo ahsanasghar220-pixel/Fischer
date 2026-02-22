@@ -151,6 +151,14 @@ export function useHomepageMutations() {
     onError: () => toast.error('Failed to delete testimonial'),
   })
 
+  const reorderSections = useMutation({
+    mutationFn: async (sections: { key: string; sort_order: number }[]) => {
+      await api.post('/api/admin/homepage/sections/reorder', { sections })
+    },
+    onSuccess: () => { invalidate(); toast.success('Sections reordered') },
+    onError: () => toast.error('Failed to reorder sections'),
+  })
+
   return {
     updateSection,
     updateStats,
@@ -167,5 +175,6 @@ export function useHomepageMutations() {
     createTestimonial,
     updateTestimonial,
     deleteTestimonial,
+    reorderSections,
   }
 }

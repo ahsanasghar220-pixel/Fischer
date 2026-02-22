@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import { useHomepageData } from './homepage/hooks/useHomepageData'
 import { useHomepageMutations } from './homepage/hooks/useHomepageMutations'
 import SectionGrid from './homepage/components/SectionGrid'
@@ -29,6 +29,7 @@ export default function HomePageSettings() {
   const mutations = useHomepageMutations()
   const [activeEditor, setActiveEditor] = useState<string | null>(null)
   const [editingSection, setEditingSection] = useState<Section | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const sections = data?.sections || []
 
@@ -42,14 +43,10 @@ export default function HomePageSettings() {
   }, [])
 
   const handleReorder = useCallback((reordered: Section[]) => {
-    // Save each section's new sort_order
-    reordered.forEach((s, i) => {
-      const original = sections.find(os => os.key === s.key)
-      if (original && original.sort_order !== i) {
-        mutations.updateSection.mutate({ key: s.key, data: { sort_order: i } })
-      }
-    })
-  }, [sections, mutations.updateSection])
+    mutations.reorderSections.mutate(
+      reordered.map((s, i) => ({ key: s.key, sort_order: i }))
+    )
+  }, [mutations.reorderSections])
 
   const handleSaveSection = useCallback((key: string, sectionData: { title: string; subtitle: string; settings?: Record<string, any> }) => {
     mutations.updateSection.mutate({ key, data: sectionData }, {
@@ -90,15 +87,33 @@ export default function HomePageSettings() {
           <h1 className="text-xl sm:text-2xl font-bold text-dark-900 dark:text-white">Homepage Settings</h1>
           <p className="text-sm text-dark-500 dark:text-dark-400">Manage all sections of your homepage. Toggle visibility, reorder by dragging, and customize each section.</p>
         </div>
-        <a
-          href={homepageUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="self-start sm:self-auto flex items-center gap-2 px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap"
-        >
-          <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-          Preview Homepage
-        </a>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex items-center border border-dark-200 dark:border-dark-700 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-primary-600 text-white' : 'text-dark-500 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-700'}`}
+              title="Grid view"
+            >
+              <Squares2X2Icon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 ${viewMode === 'list' ? 'bg-primary-600 text-white' : 'text-dark-500 dark:text-dark-400 hover:bg-dark-100 dark:hover:bg-dark-700'}`}
+              title="List view"
+            >
+              <ListBulletIcon className="w-4 h-4" />
+            </button>
+          </div>
+          <a
+            href={homepageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap"
+          >
+            <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+            Preview Homepage
+          </a>
+        </div>
       </div>
 
       {/* Section card grid */}
@@ -107,6 +122,7 @@ export default function HomePageSettings() {
         onToggle={handleToggle}
         onEdit={handleEdit}
         onReorder={handleReorder}
+        viewMode={viewMode}
       />
 
       {/* Editors — only the active one renders */}

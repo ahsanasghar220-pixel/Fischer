@@ -7,9 +7,10 @@ interface SectionGridProps {
   onToggle: (key: string, enabled: boolean) => void
   onEdit: (section: Section) => void
   onReorder: (sections: Section[]) => void
+  viewMode?: 'grid' | 'list'
 }
 
-export default function SectionGrid({ sections, onToggle, onEdit, onReorder }: SectionGridProps) {
+export default function SectionGrid({ sections, onToggle, onEdit, onReorder, viewMode = 'grid' }: SectionGridProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
@@ -55,7 +56,7 @@ export default function SectionGrid({ sections, onToggle, onEdit, onReorder }: S
   }, [sections, onReorder])
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className={viewMode === 'list' ? 'flex flex-col gap-2' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'}>
       {sections.map((section, index) => (
         <div
           key={section.key}

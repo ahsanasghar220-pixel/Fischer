@@ -201,7 +201,7 @@ export default function Home() {
     ),
 
     bestsellers: () => data?.bestsellers && data.bestsellers.length > 0 ? (
-      <AnimatedSection key="bestsellers" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+      <AnimatedSection key="bestsellers" animation="fade-up" duration={1100} threshold={0.05} easing="gentle">
         <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-amber-500/6 rounded-full blur-[120px]" />
@@ -246,7 +246,7 @@ export default function Home() {
     ) : null,
 
     featured_products: () => data?.featured_products && data.featured_products.length > 0 ? (
-      <AnimatedSection key="featured_products" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+      <AnimatedSection key="featured_products" animation="fade-up" duration={1100} threshold={0.05} easing="gentle">
         <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-purple-500/6 rounded-full blur-[120px]" />
@@ -291,7 +291,7 @@ export default function Home() {
     ) : null,
 
     new_arrivals: () => data?.new_arrivals && data.new_arrivals.length > 0 ? (
-      <AnimatedSection key="new_arrivals" animation="fade-up" duration={1100} threshold={0.05} easing="gentle" lazy>
+      <AnimatedSection key="new_arrivals" animation="fade-up" duration={1100} threshold={0.05} easing="gentle">
         <section className="section bg-white dark:bg-dark-900 relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-emerald-500/6 rounded-full blur-[120px]" />
@@ -542,7 +542,6 @@ export default function Home() {
                 className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
                 style={{ objectPosition: 'center center' }}
                 autoPlay loop muted playsInline preload="none"
-                poster="/images/hero-poster.webp"
                 onCanPlayThrough={() => setVideoLoaded(true)}
                 onLoadedData={() => setVideoLoaded(true)}
                 onError={() => { setVideoError(true); setVideoLoaded(true) }}

@@ -276,7 +276,7 @@ const QuickViewModal = memo(function QuickViewModal({
                     </div>
 
                     {/* Quantity & Add to Cart */}
-                    <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
                       {/* Quantity Selector */}
                       <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-xl overflow-hidden">
                         <button
@@ -327,8 +327,8 @@ const QuickViewModal = memo(function QuickViewModal({
 
                     {/* Features */}
                     <div className="grid grid-cols-2 gap-4 pt-6 border-t border-dark-100 dark:border-dark-700">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <div className="flex items-center gap-3 px-1">
+                        <div className="w-11 h-11 flex-shrink-0 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                           <TruckIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
@@ -336,8 +336,8 @@ const QuickViewModal = memo(function QuickViewModal({
                           <p className="text-xs text-dark-500 dark:text-dark-400">Standard delivery charges apply for other cities</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                      <div className="flex items-center gap-3 px-1">
+                        <div className="w-11 h-11 flex-shrink-0 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                           <ShieldCheckIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
