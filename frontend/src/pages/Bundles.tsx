@@ -209,7 +209,7 @@ export default function Bundles() {
               staggerDelay={0.1}
             >
               {bundles.map((bundle: Bundle) => (
-                <StaggerItem key={bundle.id}>
+                <StaggerItem key={bundle.id} className="overflow-visible">
                   {viewMode === 'grid' ? (
                     <BundleCard
                       bundle={bundle}

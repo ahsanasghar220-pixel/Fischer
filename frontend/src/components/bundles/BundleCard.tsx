@@ -94,7 +94,7 @@ const BundleCard = memo(function BundleCard({
   return (
     <HoverCard intensity={8}>
       <motion.div
-        className="group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
+        className="group relative bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         initial={{ opacity: 0, y: 20 }}

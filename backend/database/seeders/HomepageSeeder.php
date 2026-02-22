@@ -171,6 +171,17 @@ class HomepageSeeder extends Seeder
                 ]),
             ],
             [
+                'key' => 'bundles',
+                'title' => 'Bundle Offers',
+                'subtitle' => 'Save more when you buy together. Explore our curated appliance bundles.',
+                'is_enabled' => true,
+                'sort_order' => 9,
+                'settings' => json_encode([
+                    'display_count' => 6,
+                    'show_savings' => true,
+                ]),
+            ],
+            [
                 'key' => 'dealer_cta',
                 'title' => 'Become a Fischer Authorized Dealer',
                 'subtitle' => 'Join our nationwide network of 500+ dealers and grow your business with Pakistan\'s most trusted appliance brand.',
