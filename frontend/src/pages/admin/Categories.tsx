@@ -184,7 +184,7 @@ export default function AdminCategories() {
             </button>
             <button
               onClick={() => handleDelete(category.id)}
-              className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+              className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
               title="Delete"
             >
               <TrashIcon className="w-4 h-4" />
@@ -277,7 +277,7 @@ export default function AdminCategories() {
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); handleDelete(category.id) }}
-          className="p-1.5 text-dark-400 hover:text-red-400 hover:bg-dark-100 dark:hover:bg-dark-700 rounded transition-colors"
+          className="p-1.5 text-dark-400 hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded transition-colors"
           title="Delete"
         >
           <TrashIcon className="w-4 h-4" />

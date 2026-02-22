@@ -198,7 +198,7 @@ export default function AdminDealers() {
                               </button>
                               <button
                                 onClick={() => updateStatusMutation.mutate({ id: dealer.id, status: 'rejected' })}
-                                className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                                className="p-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
                               >
                                 <XMarkIcon className="w-4 h-4" />
                               </button>

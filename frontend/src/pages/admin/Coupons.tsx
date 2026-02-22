@@ -239,7 +239,7 @@ export default function AdminCoupons() {
                           <DocumentDuplicateIcon className="w-4 h-4" />
                         </button>
                         <button onClick={() => { if (confirm('Delete?')) deleteMutation.mutate(coupon.id) }}
-                          className="p-1.5 text-dark-400 hover:text-red-500" title="Delete">
+                          className="p-1.5 text-dark-400 hover:text-primary-500" title="Delete">
                           <TrashIcon className="w-4 h-4" />
                         </button>
                       </div>

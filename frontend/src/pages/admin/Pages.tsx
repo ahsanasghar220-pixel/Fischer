@@ -252,7 +252,7 @@ export default function AdminPages() {
                           </button>
                           <button
                             onClick={() => handleDelete(page.id)}
-                            className="p-2 text-dark-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                            className="p-2 text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded"
                           >
                             <TrashIcon className="w-4 h-4" />
                           </button>

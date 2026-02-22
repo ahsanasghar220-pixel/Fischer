@@ -304,7 +304,7 @@ export default function AdminReviews() {
                               deleteMutation.mutate(review.id)
                             }
                           }}
-                          className="p-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                          className="p-1.5 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                           title="Delete"
                         >
                           <TrashIcon className="w-5 h-5" />

@@ -268,7 +268,7 @@ export default function AdminShipping() {
                         </button>
                         <button
                           onClick={() => { if (confirm('Delete this zone?')) deleteZoneMutation.mutate(zone.id) }}
-                          className="p-1.5 text-dark-400 hover:text-red-500 transition-colors"
+                          className="p-1.5 text-dark-400 hover:text-primary-500 transition-colors"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
@@ -329,7 +329,7 @@ export default function AdminShipping() {
                         </button>
                         <button
                           onClick={() => { if (confirm('Delete this method?')) deleteMethodMutation.mutate(method.id) }}
-                          className="p-1.5 text-dark-400 hover:text-red-500 transition-colors"
+                          className="p-1.5 text-dark-400 hover:text-primary-500 transition-colors"
                         >
                           <TrashIcon className="w-4 h-4" />
                         </button>
