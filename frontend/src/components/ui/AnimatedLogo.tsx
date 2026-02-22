@@ -55,7 +55,7 @@ export default function AnimatedLogo({
   }
 
   return (
-    <div className="relative overflow-hidden" style={{ width: 'auto', height: 'auto' }}>
+    <div className="relative overflow-x-hidden" style={{ width: 'auto', height: 'auto' }}>
       {/* Left half of logo */}
       <motion.div
         className="absolute inset-0"
