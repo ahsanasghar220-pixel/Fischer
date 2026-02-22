@@ -115,14 +115,14 @@ export default function Footer() {
                   alt="Fischer"
                   width={794}
                   height={450}
-                  className="h-12 w-auto dark:hidden"
+                  className="h-9 w-auto dark:hidden"
                 />
                 <img
                   src="/images/logo/Fischer-electronics-logo-white.svg"
                   alt="Fischer"
                   width={794}
                   height={450}
-                  className="h-12 w-auto hidden dark:block"
+                  className="h-9 w-auto hidden dark:block"
                 />
               </Link>
               <p className="mt-6 text-dark-600 dark:text-dark-400 text-sm leading-relaxed max-w-xs">
