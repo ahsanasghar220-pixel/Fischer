@@ -97,15 +97,15 @@ export default function HeroEditor({ section, open, onClose, onSave, isPending }
 
         <FormField
           label="Play Video on Mobile"
-          tooltip="By default, mobile devices show a static image for faster page load (better LCP score). Enable this to play the video on mobile too."
-          helpText="Warning: enabling video on mobile will increase page load time on slower mobile networks."
+          tooltip="Controls whether the hero video plays on mobile devices. On by default. Disable to show a static poster image instead (better LCP score on slow networks)."
+          helpText="Tip: disabling video on mobile can improve page load speed on slower connections."
         >
           <label className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setMobileVideoEnabled(v => !v)}>
             <div className={`relative w-10 h-6 rounded-full transition-colors ${mobileVideoEnabled ? 'bg-primary-600' : 'bg-dark-300 dark:bg-dark-600'}`}>
               <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${mobileVideoEnabled ? 'translate-x-4' : ''}`} />
             </div>
             <span className="text-sm text-dark-700 dark:text-dark-300">
-              {mobileVideoEnabled ? 'Video plays on mobile' : 'Static image on mobile (recommended)'}
+              {mobileVideoEnabled ? 'Video plays on mobile (on by default)' : 'Static image on mobile'}
             </span>
           </label>
         </FormField>

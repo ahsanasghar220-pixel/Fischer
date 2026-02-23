@@ -191,10 +191,10 @@ export default function ProductInfo({
             animate={{ opacity: [1, 0.5, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            ⚠ Low Stock - Only {currentStock} left
+            ⚠ Low Stock
           </motion.span>
         ) : (
-          <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock ({currentStock} available)</span>
+          <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock</span>
         )}
       </motion.div>
 

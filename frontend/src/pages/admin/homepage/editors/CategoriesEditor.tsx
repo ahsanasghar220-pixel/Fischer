@@ -149,13 +149,13 @@ export default function CategoriesEditor({ section, data, open, onClose, onSaveS
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-semibold text-dark-900 dark:text-white">Category Preview Videos</h3>
               <label className="flex items-center gap-2 cursor-pointer select-none" onClick={() => setMobileVideosEnabled(v => !v)}>
-                <span className="text-xs text-dark-500 dark:text-dark-400">Mobile</span>
+                <span className="text-xs text-dark-500 dark:text-dark-400">Mobile (on by default)</span>
                 <div className={`relative w-9 h-5 rounded-full transition-colors ${mobileVideosEnabled ? 'bg-primary-600' : 'bg-dark-300 dark:bg-dark-600'}`}>
                   <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${mobileVideosEnabled ? 'translate-x-4' : ''}`} />
                 </div>
               </label>
             </div>
-            <p className="text-xs text-dark-500 dark:text-dark-400 mb-3">Assign a preview video to each selected category. Shown when a visitor hovers over the category. Toggle "Mobile" to also play videos on mobile devices.</p>
+            <p className="text-xs text-dark-500 dark:text-dark-400 mb-3">Assign a preview video to each selected category. Videos play automatically when in view. The "Mobile" toggle is on by default — disable it to show static images on mobile instead (better for slow connections).</p>
             <div className="space-y-3">
               {selected.map(catId => {
                 const cat = allCategories.find(c => c.id === catId)

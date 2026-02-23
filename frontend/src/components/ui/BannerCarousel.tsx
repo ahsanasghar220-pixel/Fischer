@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import { useTouchSwipe } from '@/hooks/useTouchSwipe'
 
 export interface BannerSlide {
   image: string
@@ -61,6 +62,11 @@ const BannerCarousel = memo(function BannerCarousel({
     setCurrentIndex(index)
   }
 
+  const swipeHandlers = useTouchSwipe({
+    onSwipeLeft: goToNext,
+    onSwipeRight: goToPrev,
+  })
+
   // Auto-play
   useEffect(() => {
     if (!autoPlay || isPaused || slides.length <= 1) return
@@ -80,6 +86,8 @@ const BannerCarousel = memo(function BannerCarousel({
       className={`relative w-full ${heightClasses[height]} overflow-hidden bg-dark-900`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={(e) => { setIsPaused(true); swipeHandlers.onTouchStart(e) }}
+      onTouchEnd={(e) => { swipeHandlers.onTouchEnd(e); setIsPaused(false) }}
     >
       {/* Slides */}
       <AnimatePresence mode="wait" custom={direction}>

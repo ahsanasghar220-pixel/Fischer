@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import BundleCard from './BundleCard'
 import type { Bundle } from '@/api/bundles.types'
+import { useTouchSwipe } from '@/hooks/useTouchSwipe'
 
 interface BundleCarouselProps {
   bundles: Bundle[]
@@ -65,6 +66,11 @@ const BundleCarousel = memo(function BundleCarousel({
     setDirection(index > currentIndex ? 1 : -1)
     setCurrentIndex(index)
   }
+
+  const swipeHandlers = useTouchSwipe({
+    onSwipeLeft: goToNext,
+    onSwipeRight: goToPrev,
+  })
 
   // Auto-play
   useEffect(() => {
@@ -140,7 +146,12 @@ const BundleCarousel = memo(function BundleCarousel({
       </div>
 
       {/* Carousel Container */}
-      <div className="container mx-auto px-4 overflow-x-clip overflow-y-visible">
+      <div
+        className="container mx-auto px-4 overflow-x-clip overflow-y-visible"
+        {...swipeHandlers}
+        onTouchStart={(e) => { setIsPaused(true); swipeHandlers.onTouchStart(e) }}
+        onTouchEnd={(e) => { swipeHandlers.onTouchEnd(e); setIsPaused(false) }}
+      >
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}

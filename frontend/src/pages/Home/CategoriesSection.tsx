@@ -66,11 +66,11 @@ const CategoryShowcase = memo(function CategoryShowcase({
               ease: [0.16, 1, 0.3, 1],
             }
       }
-      className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
+      className={`grid lg:grid-cols-2 gap-6 lg:gap-10 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
     >
       {/* Video Side - desktop only; mobile shows category image */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'lg:order-2' : ''}`}>
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-dark-100 dark:bg-dark-900">
+        <div className="relative aspect-[16/10] rounded-xl overflow-hidden shadow-xl bg-dark-100 dark:bg-dark-900">
           {!isMobile && videoSrc && isNearViewport ? (
             <video
               ref={videoRef}
@@ -102,8 +102,8 @@ const CategoryShowcase = memo(function CategoryShowcase({
 
       {/* Content Side */}
       <div className={`${!isEven ? 'lg:order-1' : ''}`}>
-        <div className="space-y-6">
-          <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white">
+        <div className="space-y-4">
+          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-dark-900 dark:text-white">
             {category.name}
           </h3>
 
@@ -170,13 +170,13 @@ export default function CategoriesSection({
       <div className="container-xl">
         <AnimatedSection animation="fade-up" duration={800} easing="gentle">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-dark-900 dark:text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 dark:text-white mb-4">
               {title}
             </h2>
             <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">{subtitle}</p>
           </div>
         </AnimatedSection>
-        <div className="space-y-12 sm:space-y-16 md:space-y-24 overflow-hidden">
+        <div className="space-y-10 sm:space-y-12 md:space-y-16 overflow-hidden max-w-5xl mx-auto">
           {displayCategories.map((category, index) => (
             <CategoryShowcase
               key={category.id}

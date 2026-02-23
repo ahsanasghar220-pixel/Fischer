@@ -120,8 +120,8 @@ export default function Home() {
 
   // Hero video URL from section settings
   const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=6'
-  // Admin toggle: play video on mobile (default false = show poster for LCP)
-  const heroMobileVideoEnabled: boolean = sections.hero?.settings?.mobile_video_enabled ?? false
+  // Admin toggle: play video on mobile (default true)
+  const heroMobileVideoEnabled: boolean = sections.hero?.settings?.mobile_video_enabled ?? true
 
   // Brand statement from section data
   const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
@@ -129,8 +129,8 @@ export default function Home() {
 
   // Category videos from section settings
   const categoryVideos: Record<string, string> = sections.categories?.settings?.category_videos || defaultCategoryVideos
-  // Admin toggle: play category videos on mobile (default false)
-  const categoryMobileVideosEnabled: boolean = sections.categories?.settings?.mobile_videos_enabled ?? false
+  // Admin toggle: play category videos on mobile (default true)
+  const categoryMobileVideosEnabled: boolean = sections.categories?.settings?.mobile_videos_enabled ?? true
 
   // Dealer CTA from section settings
   const dealerSettings = sections.dealer_cta?.settings || {}

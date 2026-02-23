@@ -41,6 +41,8 @@ const ProductCarousel = memo(function ProductCarousel({
   const nudgeRemainingRef = useRef(0)
   const [cardWidth, setCardWidth] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const touchStartXRef = useRef(0)
+  const touchStartOffsetRef = useRef(0)
 
   const totalItems = children.length
 
@@ -164,7 +166,19 @@ const ProductCarousel = memo(function ProductCarousel({
       className="relative group/carousel overflow-x-clip overflow-y-visible"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered(true)}
+      onTouchStart={(e) => {
+        setIsHovered(true)
+        touchStartXRef.current = e.touches[0].clientX
+        touchStartOffsetRef.current = offsetRef.current
+      }}
+      onTouchMove={(e) => {
+        const dx = e.touches[0].clientX - touchStartXRef.current
+        let next = touchStartOffsetRef.current + dx
+        // Wrap to stay within the seamless loop bounds
+        while (next <= -singleSetWidth) next += singleSetWidth
+        while (next > 0) next -= singleSetWidth
+        offsetRef.current = next
+      }}
       onTouchEnd={() => setIsHovered(false)}
     >
       {/* Fade edges */}
