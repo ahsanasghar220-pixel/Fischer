@@ -144,6 +144,7 @@ class HomepageSeeder extends Seeder
                         'kitchen-hobs' => '/videos/categories/built-in-hobs.mp4',
                         'oven-toasters' => '/videos/categories/oven-toasters.mp4',
                         'air-fryers' => '/videos/categories/air-fryers.mp4',
+                        'water-coolers' => '/videos/categories/water-cooler-2.mp4',
                     ],
                 ]),
             ],
