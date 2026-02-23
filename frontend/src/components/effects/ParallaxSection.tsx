@@ -59,7 +59,7 @@ interface ScrollProgressProps {
 
 export const ScrollProgress = memo(function ScrollProgress({
   className = '',
-  color = '#951212',
+  color = '#1d7dd7',
   height = 3
 }: ScrollProgressProps) {
   const { scrollYProgress } = useScroll()

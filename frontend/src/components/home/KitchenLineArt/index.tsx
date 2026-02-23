@@ -128,7 +128,7 @@ export default function KitchenLineArt() {
             style={{
               x: blob1X,
               y: blob1Y,
-              background: 'radial-gradient(circle, rgba(149,18,18,0.4) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(29,125,215,0.4) 0%, transparent 70%)',
               top: '10%',
               left: '10%'
             }}
@@ -188,7 +188,7 @@ export default function KitchenLineArt() {
             style={{
               x: glowX,
               y: glowY,
-              background: 'radial-gradient(circle, rgba(149,18,18,0.15) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(29,125,215,0.15) 0%, transparent 70%)',
               filter: 'blur(60px)',
               mixBlendMode: 'overlay'
             }}
@@ -198,13 +198,13 @@ export default function KitchenLineArt() {
           <motion.div
             className="absolute inset-0"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(149,18,18,0.05) 0%, transparent 60%)'
+              background: 'radial-gradient(ellipse at center, rgba(29,125,215,0.05) 0%, transparent 60%)'
             }}
             animate={{
               background: [
-                'radial-gradient(ellipse at 20% 30%, rgba(149,18,18,0.05) 0%, transparent 60%)',
+                'radial-gradient(ellipse at 20% 30%, rgba(29,125,215,0.05) 0%, transparent 60%)',
                 'radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.05) 0%, transparent 60%)',
-                'radial-gradient(ellipse at 20% 30%, rgba(149,18,18,0.05) 0%, transparent 60%)',
+                'radial-gradient(ellipse at 20% 30%, rgba(29,125,215,0.05) 0%, transparent 60%)',
               ]
             }}
             transition={{ duration: 10, repeat: Infinity }}
@@ -217,7 +217,7 @@ export default function KitchenLineArt() {
         <div
           className="absolute inset-0"
           style={{
-            background: 'radial-gradient(ellipse at center, rgba(149,18,18,0.05) 0%, transparent 60%)'
+            background: 'radial-gradient(ellipse at center, rgba(29,125,215,0.05) 0%, transparent 60%)'
           }}
         />
       )}
@@ -242,7 +242,7 @@ export default function KitchenLineArt() {
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                background: i % 2 === 0 ? 'rgba(149,18,18,0.2)' : 'rgba(59,130,246,0.2)',
+                background: i % 2 === 0 ? 'rgba(29,125,215,0.2)' : 'rgba(59,130,246,0.2)',
                 boxShadow: '0 0 10px currentColor'
               }}
               animate={{
@@ -302,7 +302,7 @@ export default function KitchenLineArt() {
                       }}
                       whileHover={{
                         y: -5,
-                        color: '#951212',
+                        color: '#1d7dd7',
                         transition: { duration: 0.2 }
                       }}
                     >
@@ -336,7 +336,7 @@ export default function KitchenLineArt() {
           <motion.div
             className="absolute inset-0 -z-10 rounded-3xl"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(149,18,18,0.15) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse at center, rgba(29,125,215,0.15) 0%, transparent 70%)',
               filter: 'blur(40px)'
             }}
             animate={{
@@ -380,9 +380,9 @@ export default function KitchenLineArt() {
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5],
                 boxShadow: [
-                  '0 0 0 0 rgba(149,18,18,0.4)',
-                  '0 0 0 8px rgba(149,18,18,0)',
-                  '0 0 0 0 rgba(149,18,18,0.4)'
+                  '0 0 0 0 rgba(29,125,215,0.4)',
+                  '0 0 0 8px rgba(29,125,215,0)',
+                  '0 0 0 0 rgba(29,125,215,0.4)'
                 ]
               }}
               transition={{ duration: 2, repeat: Infinity }}

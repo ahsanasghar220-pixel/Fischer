@@ -35,19 +35,19 @@ html.lenis, html.lenis body {
     --color-text-secondary: 55 55 62; /* Improved contrast: was 63 63 70 */
     --color-text-muted: 82 82 91; /* Improved contrast: was 113 113 122 (now 4.5:1 ratio) */
     --color-border: 228 228 231;
-    --color-accent: 149 18 18; /* Deep Red #951212 */
+    --color-accent: 29 125 215; /* Brand Blue #1d7dd7 */
     /* Brand primary color scale — overridden dynamically via JS */
-    --color-primary-50: 253 242 242;
-    --color-primary-100: 249 222 222;
-    --color-primary-200: 240 180 180;
-    --color-primary-300: 217 114 114;
-    --color-primary-400: 194 48 48;
-    --color-primary-500: 149 18 18;
-    --color-primary-600: 127 16 16;
-    --color-primary-700: 107 14 14;
-    --color-primary-800: 87 11 11;
-    --color-primary-900: 67 9 9;
-    --color-primary-950: 45 6 6;
+    --color-primary-50: 239 246 255;
+    --color-primary-100: 219 234 254;
+    --color-primary-200: 191 219 254;
+    --color-primary-300: 147 197 253;
+    --color-primary-400: 96 165 250;
+    --color-primary-500: 29 125 215;
+    --color-primary-600: 23 105 183;
+    --color-primary-700: 18 87 160;
+    --color-primary-800: 14 69 120;
+    --color-primary-900: 10 48 82;
+    --color-primary-950: 6 29 48;
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(228, 228, 231, 0.5);
     --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
@@ -62,7 +62,7 @@ html.lenis, html.lenis body {
     --color-text-secondary: 220 220 224; /* Improved contrast: was 212 212 216 */
     --color-text-muted: 180 180 188; /* Improved contrast: was 161 161 170 (now 4.5:1 ratio) */
     --color-border: 63 63 70;
-    --color-accent: 149 18 18; /* Deep Red #951212 - same in dark mode */
+    --color-accent: 29 125 215; /* Brand Blue #1d7dd7 - same in dark mode */
     --glass-bg: rgba(24, 24, 27, 0.8);
     --glass-border: rgba(255, 255, 255, 0.1);
   }

@@ -264,13 +264,15 @@ class HomepageSeeder extends Seeder
         ];
 
         foreach ($sections as $section) {
-            DB::table('homepage_sections')->updateOrInsert(
-                ['key' => $section['key']],
-                array_merge($section, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ])
-            );
+            // Only seed if the section doesn't exist yet — preserves admin toggle/settings customizations
+            if (!DB::table('homepage_sections')->where('key', $section['key'])->exists()) {
+                DB::table('homepage_sections')->insert(
+                    array_merge($section, [
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])
+                );
+            }
         }
 
         // Default stats

@@ -103,8 +103,8 @@ function BlueprintFloorPlan() {
             transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 1.5 + i * 0.15 }}
             style={{ originX: `${zone.x}px`, originY: `${zone.y}px` }}
           >
-            <circle cx={zone.x} cy={zone.y} r={16} fill="rgba(149,18,18,0.15)" stroke="rgba(149,18,18,0.5)" strokeWidth={1} />
-            <circle cx={zone.x} cy={zone.y} r={4} fill="rgba(149,18,18,0.8)" />
+            <circle cx={zone.x} cy={zone.y} r={16} fill="rgba(29,125,215,0.15)" stroke="rgba(29,125,215,0.5)" strokeWidth={1} />
+            <circle cx={zone.x} cy={zone.y} r={4} fill="rgba(29,125,215,0.8)" />
             <text
               x={zone.x}
               y={zone.y + 28}
@@ -123,7 +123,7 @@ function BlueprintFloorPlan() {
         <motion.line
           x1={50}
           x2={550}
-          stroke="rgba(149,18,18,0.15)"
+          stroke="rgba(29,125,215,0.15)"
           strokeWidth={1}
           initial={{ y1: 30, y2: 30 }}
           animate={isInView ? { y1: [30, 270, 30], y2: [30, 270, 30] } : {}}

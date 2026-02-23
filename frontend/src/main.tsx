@@ -17,7 +17,7 @@ import './index.css'
 initBrandColor()
 
 // Read cached primary color for use in static config below (Toaster, etc.)
-const primaryColor = getCachedBrandColor() ?? '#951212'
+const primaryColor = getCachedBrandColor() ?? '#1d7dd7'
 
 // Preload critical resources for faster initial render
 preloadCriticalResources()

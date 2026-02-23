@@ -32,11 +32,11 @@
 .text-shimmer {
   background: linear-gradient(
     90deg,
-    #951212 0%,
-    #951212 25%,
+    #1d7dd7 0%,
+    #1d7dd7 25%,
     #fff 50%,
-    #951212 75%,
-    #951212 100%
+    #1d7dd7 75%,
+    #1d7dd7 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -74,7 +74,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #951212, #951212);
+  background: linear-gradient(90deg, #1d7dd7, #1d7dd7);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -101,10 +101,10 @@
 
 @keyframes glow-breathe {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(149, 18, 18, 0.3), 0 0 30px rgba(149, 18, 18, 0.15);
+    box-shadow: 0 0 15px rgba(29, 125, 215, 0.3), 0 0 30px rgba(29, 125, 215, 0.15);
   }
   50% {
-    box-shadow: 0 0 25px rgba(149, 18, 18, 0.5), 0 0 50px rgba(149, 18, 18, 0.25);
+    box-shadow: 0 0 25px rgba(29, 125, 215, 0.5), 0 0 50px rgba(29, 125, 215, 0.25);
   }
 }
 

@@ -20,7 +20,11 @@ class FeedController extends Controller {
     }
 
     public function clientConfig(): \Illuminate\Http\JsonResponse {
-        $service = app(\App\Services\MarketingIntegrationService::class);
-        return response()->json($service->getClientConfig());
+        try {
+            $service = app(\App\Services\MarketingIntegrationService::class);
+            return response()->json($service->getClientConfig());
+        } catch (\Throwable $e) {
+            return response()->json([]);
+        }
     }
 }

@@ -103,7 +103,7 @@ export default function KitchenExperience() {
         <div
           className="absolute inset-0 opacity-30"
           style={{
-            background: `radial-gradient(ellipse at 50% 50%, rgba(149,18,18,0.3) 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at 50% 50%, rgba(29,125,215,0.3) 0%, transparent 70%)`,
             transform: `rotate(${gradientAngle}deg)`,
           }}
         />

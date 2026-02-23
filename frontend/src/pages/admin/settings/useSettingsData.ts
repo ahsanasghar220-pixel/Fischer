@@ -205,7 +205,7 @@ export function useSettingsData() {
   })
 
   const [appearanceSettings, setAppearanceSettings] = useState<AppearanceSettings>({
-    brand_color: '#951212',
+    brand_color: '#1d7dd7',
   })
 
   const { data: settings, isLoading } = useQuery({

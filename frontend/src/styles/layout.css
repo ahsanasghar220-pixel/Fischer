@@ -43,7 +43,7 @@
      ANIMATED GRADIENT BACKGROUND
      ======================================== */
   .gradient-animated {
-    background: linear-gradient(-45deg, #951212, #951212, #951212, #7f1010);
+    background: linear-gradient(-45deg, #1d7dd7, #1d7dd7, #1d7dd7, #1769b7);
     background-size: 400% 400%;
     animation: gradient 8s ease infinite;
   }

@@ -24,6 +24,9 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   VideoCameraIcon,
+  MegaphoneIcon,
+  PresentationChartLineIcon,
+  AdjustmentsHorizontalIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -61,6 +64,15 @@ const menuItems: MenuItem[] = [
   },
   {
     label: 'Marketing',
+    icon: MegaphoneIcon,
+    permission: 'manage-sales',
+    children: [
+      { path: '/admin/marketing', label: 'Dashboard', icon: PresentationChartLineIcon, permission: 'manage-sales' },
+      { path: '/admin/marketing/integrations', label: 'Integrations', icon: AdjustmentsHorizontalIcon, permission: 'manage-sales' },
+    ]
+  },
+  {
+    label: 'Promotions',
     icon: FireIcon,
     permission: 'manage-sales',
     children: [

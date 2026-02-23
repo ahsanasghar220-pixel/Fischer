@@ -22,19 +22,19 @@ export default {
           900: 'rgb(var(--color-primary-900) / <alpha-value>)',
           950: 'rgb(var(--color-primary-950) / <alpha-value>)',
         },
-        // Override default red to match brand
+        // Override default red to match brand blue
         red: {
-          50: '#951212',
-          100: '#951212',
-          200: '#951212',
-          300: '#951212',
-          400: '#951212',
-          500: '#951212',
-          600: '#7f1010',
-          700: '#6b0e0e',
-          800: '#570b0b',
-          900: '#430909',
-          950: '#2d0606',
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#1d7dd7',
+          600: '#1769b7',
+          700: '#1257a0',
+          800: '#0e4578',
+          900: '#0a3052',
+          950: '#061d30',
         },
         dark: {
           50: '#fafafa',
@@ -51,24 +51,23 @@ export default {
         },
         // Accent colors for UI elements
         accent: {
-          blue: '#3b82f6',
           cyan: '#06b6d4',
           emerald: '#10b981',
           orange: '#f97316',
           purple: '#8b5cf6',
-          // Red palette matching brand deep red
-          red: {
-            50: '#951212',
-            100: '#951212',
-            200: '#951212',
-            300: '#951212',
-            400: '#951212',
-            500: '#951212',
-            600: '#7f1010',
-            700: '#6b0e0e',
-            800: '#570b0b',
-            900: '#430909',
-            950: '#2d0606',
+          // Brand blue palette
+          blue: {
+            50: '#eff6ff',
+            100: '#dbeafe',
+            200: '#bfdbfe',
+            300: '#93c5fd',
+            400: '#60a5fa',
+            500: '#1d7dd7',
+            600: '#1769b7',
+            700: '#1257a0',
+            800: '#0e4578',
+            900: '#0a3052',
+            950: '#061d30',
           },
         },
       },
@@ -89,7 +88,7 @@ export default {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'gradient-mesh': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'hero-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23800000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        'hero-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231d7dd7' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
@@ -175,8 +174,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 5px #951212, 0 0 10px #951212, 0 0 15px #951212' },
-          '100%': { boxShadow: '0 0 10px #951212, 0 0 20px #951212, 0 0 30px #951212' },
+          '0%': { boxShadow: '0 0 5px #1d7dd7, 0 0 10px #1d7dd7, 0 0 15px #1d7dd7' },
+          '100%': { boxShadow: '0 0 10px #1d7dd7, 0 0 20px #1d7dd7, 0 0 30px #1d7dd7' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
@@ -208,11 +207,11 @@ export default {
         pulseGlow: {
           '0%, 100%': {
             opacity: '0.6',
-            boxShadow: '0 0 20px rgba(149, 18, 18, 0.3)',
+            boxShadow: '0 0 20px rgba(29, 125, 215, 0.3)',
           },
           '50%': {
             opacity: '1',
-            boxShadow: '0 0 40px rgba(149, 18, 18, 0.6)',
+            boxShadow: '0 0 40px rgba(29, 125, 215, 0.6)',
           },
         },
         gradientShift: {
@@ -235,11 +234,11 @@ export default {
         },
         glowPulse: {
           '0%, 100%': {
-            boxShadow: '0 0 20px rgba(149, 18, 18, 0.4), 0 0 40px rgba(149, 18, 18, 0.2)',
+            boxShadow: '0 0 20px rgba(29, 125, 215, 0.4), 0 0 40px rgba(29, 125, 215, 0.2)',
             opacity: '1'
           },
           '50%': {
-            boxShadow: '0 0 40px rgba(149, 18, 18, 0.6), 0 0 60px rgba(149, 18, 18, 0.3)',
+            boxShadow: '0 0 40px rgba(29, 125, 215, 0.6), 0 0 60px rgba(29, 125, 215, 0.3)',
             opacity: '0.9'
           },
         },

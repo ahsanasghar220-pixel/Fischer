@@ -21,7 +21,7 @@ import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { useTheme } from '@/contexts/ThemeContext'
 
-const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#951212', '#8b5cf6', '#ec4899']
+const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#1d7dd7', '#8b5cf6', '#ec4899']
 
 interface AnalyticsData {
   period: string

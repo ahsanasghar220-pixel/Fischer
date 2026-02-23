@@ -10,7 +10,7 @@ interface Props {
 }
 
 const PRESET_COLORS = [
-  { label: 'Fischer Red', color: '#951212' },
+  { label: 'Fischer Blue', color: '#1d7dd7' },
   { label: 'Royal Blue', color: '#1d4ed8' },
   { label: 'Emerald', color: '#059669' },
   { label: 'Violet', color: '#7c3aed' },
@@ -59,7 +59,7 @@ export default function AppearanceSettingsTab({ appearanceSettings, setAppearanc
                 setAppearanceSettings({ ...appearanceSettings, brand_color: val })
                 if (/^#[0-9a-fA-F]{6}$/.test(val)) applyBrandColor(val)
               }}
-              placeholder="#951212"
+              placeholder="#1d7dd7"
               maxLength={7}
               className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
