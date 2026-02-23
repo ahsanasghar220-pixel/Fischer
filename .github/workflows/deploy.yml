@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,7 +32,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/dist
-          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/public/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
@@ -50,49 +52,48 @@ jobs:
           echo "✓ Build directory exists"
           ls -lh frontend/dist/ | head -10
 
-      - name: Create deployment package
+      - name: Check if static assets changed
+        id: check-assets
         run: |
-          # Create deployment directory
+          CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -E "^frontend/public/(images|videos)/" || true)
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Static assets changed — will upload separately"
+            echo "$CHANGED" | head -20
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No static asset changes — skipping asset upload"
+          fi
+
+      - name: Create deployment package (code only — no images/videos)
+        run: |
           mkdir -p deploy
 
-          # Copy backend files (WITHOUT vendor - will install on server)
+          # Backend files (no vendor)
           cp -r backend/* deploy/
           rm -rf deploy/vendor
 
-          # Copy frontend build to public folder
-          cp -r frontend/dist/* deploy/public/
+          # Frontend build → public/ but EXCLUDE images/ and videos/
+          # (large binary assets are already on the server from previous deploys
+          #  and are only re-uploaded when they actually change — see next step)
+          rsync -a --exclude='images/' --exclude='videos/' frontend/dist/ deploy/public/
 
-          # Remove unnecessary files
-          rm -rf deploy/tests
-          rm -rf deploy/storage/logs/*
-          rm -rf deploy/.git
-          rm -f deploy/.env.example
-          rm -f deploy/phpunit.xml
+          # Clean up unnecessary files
+          rm -rf deploy/tests deploy/storage/logs/* deploy/.git
+          rm -f deploy/.env.example deploy/phpunit.xml
 
-          # Create required directories
-          mkdir -p deploy/storage/app/public
-          mkdir -p deploy/storage/framework/cache
-          mkdir -p deploy/storage/framework/sessions
-          mkdir -p deploy/storage/framework/views
-          mkdir -p deploy/storage/logs
-          mkdir -p deploy/bootstrap/cache
+          # Ensure required directories exist
+          mkdir -p deploy/storage/app/public \
+                   deploy/storage/framework/cache \
+                   deploy/storage/framework/sessions \
+                   deploy/storage/framework/views \
+                   deploy/storage/logs \
+                   deploy/bootstrap/cache
 
-          # Debug: Show what's in deploy folder
-          echo "=== Deploy folder contents ==="
-          ls -la deploy/
-          echo "=== composer.json exists? ==="
-          cat deploy/composer.json | head -5
-
-      - name: Test SSH connectivity
-        run: |
-          echo "=== Testing SSH connectivity ==="
-          echo "Host: ${{ secrets.SSH_HOST }}"
-          echo "Port: ${{ secrets.SSH_PORT }}"
-          nc -zv -w 10 ${{ secrets.SSH_HOST }} ${{ secrets.SSH_PORT }} 2>&1 || echo "TCP connection FAILED"
-          echo "=== Deploy package size ==="
+          echo "=== Code-only deploy package size ==="
           du -sh deploy/
 
-      - name: Deploy to Hostinger via SCP
+      - name: Deploy code to Hostinger via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -105,9 +106,25 @@ jobs:
           strip_components: 1
           rm: false
           overwrite: true
-          timeout: 300s
+          timeout: 60s
           command_timeout: 10m
-          debug: true
+
+      - name: Upload changed static assets (images/videos)
+        if: steps.check-assets.outputs.changed == 'true'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "frontend/dist/images/*,frontend/dist/videos/*"
+          target: ${{ secrets.SSH_SERVER_DIR }}/public/
+          strip_components: 2
+          rm: false
+          overwrite: true
+          timeout: 60s
+          command_timeout: 30m
 
       - name: Post-deployment tasks
         uses: appleboy/ssh-action@v1.0.0
@@ -121,57 +138,39 @@ jobs:
           script: |
             cd ${{ secrets.SSH_SERVER_DIR }}
 
-            # PHP 8.2 path on Hostinger
             PHP=/opt/alt/php82/usr/bin/php
 
             echo "=== PHP Version ==="
             $PHP -v
 
-            # Find composer location
             COMPOSER=$(which composer 2>/dev/null || echo "/usr/local/bin/composer")
-            echo "=== Composer location: $COMPOSER ==="
+            echo "=== Composer: $COMPOSER ==="
 
-            # Only reinstall vendor if composer.lock changed
             if [ ! -d "vendor" ] || [ "composer.lock" -nt "vendor" ]; then
               echo "=== Installing composer dependencies ==="
-              $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-                echo "Trying alternative composer path..."
-                $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || {
-                  echo "Trying to download composer..."
-                  curl -sS https://getcomposer.org/installer | $PHP
-                  $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction
-                }
-              }
+              $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || \
+              $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || \
+              (curl -sS https://getcomposer.org/installer | $PHP && $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction)
             else
-              echo "=== Vendor directory up to date, skipping composer install ==="
+              echo "=== Vendor up to date, skipping composer install ==="
             fi
 
-            # Set permissions
             chmod -R 755 storage bootstrap/cache
-
-            # Ensure required directories exist
             mkdir -p resources/views storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
-            # Generate APP_KEY if not set
             if ! grep -q "APP_KEY=base64:" .env; then
               echo "=== Generating APP_KEY ==="
               $PHP artisan key:generate --force
             fi
 
-            # Clear config cache before migrations
             $PHP artisan config:clear
 
-            # Run migrations (preserves existing data)
             echo "=== Running migrations ==="
             $PHP artisan migrate --force 2>&1
 
-            # Check queue worker status (visitor tracking runs in background queue)
-            # IMPORTANT: Ensure queue worker is running: php artisan queue:work --tries=3 --daemon
-            # You can check with: ps aux | grep "queue:work"
             echo "=== Queue Worker Status ==="
-            ps aux | grep "queue:work" | grep -v grep || echo "WARNING: Queue worker not running. Start with: php artisan queue:work --tries=3 --daemon &"
+            ps aux | grep "queue:work" | grep -v grep || echo "WARNING: Queue worker not running"
 
-            # Always run safe/idempotent seeders
             echo "=== Running safe seeders ==="
             $PHP artisan db:seed --class=ShippingZoneSeeder --force || true
             $PHP artisan db:seed --class=ShippingMethodSeeder --force || true
@@ -180,7 +179,6 @@ jobs:
             $PHP artisan db:seed --class=PortfolioVideoSeeder --force || true
             echo "=== Safe seeders completed ==="
 
-            # Only run other seeders if SEED_ON_DEPLOY file exists (create this file manually when needed)
             if [ -f "SEED_ON_DEPLOY" ]; then
               echo "=== SEED_ON_DEPLOY detected, running additional seeders ==="
               $PHP artisan db:seed --class=CategorySeeder --force || true
@@ -192,24 +190,19 @@ jobs:
               $PHP artisan db:seed --class=PageSeeder --force || true
               rm -f SEED_ON_DEPLOY
               echo "=== Additional seeders completed ==="
-            else
-              echo "=== Skipping additional seeders (create SEED_ON_DEPLOY file to run) ==="
             fi
 
-            # Clear all caches
             echo "=== Clearing caches ==="
             $PHP artisan cache:clear || true
             $PHP artisan config:clear
             $PHP artisan route:clear
             $PHP artisan view:clear || true
 
-            # Rebuild caches for production performance
             echo "=== Rebuilding caches ==="
             $PHP artisan config:cache
             $PHP artisan route:cache
             $PHP artisan view:cache
 
-            # Create storage link manually (exec() is disabled on Hostinger)
             rm -rf public/storage
             ln -s ../storage/app/public public/storage
             echo "=== Storage link created ==="
