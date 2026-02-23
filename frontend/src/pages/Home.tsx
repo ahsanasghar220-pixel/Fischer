@@ -119,7 +119,7 @@ export default function Home() {
   }))
 
   // Hero video URL from section settings
-  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=6'
+  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=7'
   // Admin toggle: play video on mobile (default true)
   const heroMobileVideoEnabled: boolean = sections.hero?.settings?.mobile_video_enabled ?? true
 

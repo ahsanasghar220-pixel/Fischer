@@ -29,7 +29,7 @@ class HomepageSeeder extends Seeder
                     'slide_interval' => 6000,
                     'show_navigation' => true,
                     'show_indicators' => true,
-                    'video_url' => '/videos/hero-video.mp4?v=4',
+                    'video_url' => '/videos/hero-video.mp4?v=7',
                 ]),
             ],
             [
