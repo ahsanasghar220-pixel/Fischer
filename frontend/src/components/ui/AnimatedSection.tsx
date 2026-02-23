@@ -37,7 +37,7 @@ export default function AnimatedSection({
   animateOut = false,
   once = false,
   lazy = false,
-  distance = 80, // More travel distance for elegant feel
+  distance = 36, // Subtle travel distance — enough to notice, not jarring
   style,
   id,
   easing = 'gentle', // Default to gentle easing
@@ -192,7 +192,7 @@ export function StaggeredChildren({
   duration = 800, // Slower, smoother
   threshold = 0.05,
   once = true,
-  distance = 50,
+  distance = 28,
   easing = 'gentle',
 }: StaggeredChildrenProps) {
   const ref = useRef<HTMLDivElement>(null)

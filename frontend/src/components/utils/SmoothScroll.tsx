@@ -43,7 +43,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     }
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease out
       orientation: 'vertical',
       gestureOrientation: 'vertical',
@@ -84,7 +84,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     if (!lenis) return
 
     const offset = options?.offset ?? 0
-    const duration = options?.duration ?? 1.2
+    const duration = options?.duration ?? 0.8
     const immediate = options?.immediate ?? false
 
     lenis.scrollTo(target, {

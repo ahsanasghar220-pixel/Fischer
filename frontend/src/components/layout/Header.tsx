@@ -200,8 +200,6 @@ export default function Header() {
               <img
                 src="/images/logo/Fischer-electronics-logo-black.svg"
                 alt="Fischer"
-                width={794}
-                height={439}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -213,8 +211,6 @@ export default function Header() {
               <img
                 src="/images/logo/Fischer-electronics-logo-white.svg"
                 alt="Fischer"
-                width={794}
-                height={439}
                 loading="eager"
                 decoding="async"
                 className={`h-9 w-auto ${
@@ -258,8 +254,6 @@ export default function Header() {
                     <img
                       src="/images/logo/Fischer-electronics-logo-black.svg"
                       alt="Fischer"
-                      width={794}
-                      height={439}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
@@ -273,8 +267,6 @@ export default function Header() {
                     <img
                       src="/images/logo/Fischer-electronics-logo-white.svg"
                       alt="Fischer"
-                      width={794}
-                      height={439}
                       loading="eager"
                       decoding="async"
                       className={`h-8 sm:h-9 md:h-10 lg:h-12 w-auto ${
