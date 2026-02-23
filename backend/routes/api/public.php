@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\BundleController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Api\DeployWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 | Public Routes (no authentication required)
 |--------------------------------------------------------------------------
 */
+
+// Deploy webhook — called by GitHub Actions after FTP upload
+Route::post('/deploy-webhook', [DeployWebhookController::class, 'handle']);
 
 // Public settings — used by frontend for dynamic theming
 Route::get('/settings/brand-color', [AdminSettingController::class, 'brandColor']);

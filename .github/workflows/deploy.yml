@@ -1,5 +1,25 @@
 name: Deploy to Hostinger
 
+# ─────────────────────────────────────────────────────────────────────────────
+# How this works (avoids Hostinger's SSH/port-22 firewall block on GH Actions):
+#
+#   1. Build frontend (Vite)
+#   2. Upload code via FTPS (port 21 — not blocked)
+#      • Backend PHP + compiled frontend JS/CSS — small, fast
+#      • Images/videos only when they actually changed — conditional
+#   3. Trigger HTTPS webhook on the server (port 443 — always open)
+#      • Server runs: composer install (if needed), migrate, seeders, cache
+#
+# Required GitHub secrets:
+#   SSH_HOST            — Hostinger server hostname
+#   SSH_USERNAME        — FTP/SSH username
+#   SSH_PASSWORD        — FTP/SSH password
+#   FTP_SERVER_DIR      — FTP path to app root WITH trailing slash
+#                         e.g. "public_html/" or "domains/example.com/public_html/"
+#   VITE_API_URL        — Backend API URL for frontend build
+#   DEPLOY_WEBHOOK_SECRET — Random secret; also set in server .env
+# ─────────────────────────────────────────────────────────────────────────────
+
 on:
   push:
     branches:
@@ -46,174 +66,129 @@ jobs:
       - name: Verify build exists
         run: |
           if [ ! -d "frontend/dist" ]; then
-            echo "ERROR: frontend/dist directory not found!"
+            echo "ERROR: frontend/dist not found"
             exit 1
           fi
-          echo "✓ Build directory exists"
-          ls -lh frontend/dist/ | head -10
+          echo "✓ Build ready ($(du -sh frontend/dist | cut -f1))"
 
       - name: Check if static assets changed
         id: check-assets
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -E "^frontend/public/(images|videos)/" || true)
+          CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null \
+            | grep -E "^frontend/public/(images|videos)/" || true)
           if [ -n "$CHANGED" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Static assets changed — will upload separately"
+            echo "Assets changed:"
             echo "$CHANGED" | head -20
           else
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "No static asset changes — skipping asset upload"
+            echo "No asset changes — skipping asset upload"
           fi
 
-      - name: Create deployment package (code only — no images/videos)
+      # ─── Build code-only deployment package ────────────────────────────────
+      - name: Create code deployment package
         run: |
           mkdir -p deploy
 
-          # Backend files (no vendor)
+          # Backend PHP (no vendor — stays on server, updated by webhook if needed)
           cp -r backend/* deploy/
           rm -rf deploy/vendor
 
-          # Frontend build → public/ but EXCLUDE images/ and videos/
-          # (large binary assets are already on the server from previous deploys
-          #  and are only re-uploaded when they actually change — see next step)
+          # Frontend build → public/  (images/ and videos/ excluded — too large)
           rsync -a --exclude='images/' --exclude='videos/' frontend/dist/ deploy/public/
 
-          # Clean up unnecessary files
-          rm -rf deploy/tests deploy/storage/logs/* deploy/.git
-          rm -f deploy/.env.example deploy/phpunit.xml
+          # Clean up files we don't need on the server
+          rm -rf deploy/tests deploy/storage/logs/*
+          rm -f  deploy/.env.example deploy/phpunit.xml deploy/.env
 
-          # Ensure required directories exist
-          mkdir -p deploy/storage/app/public \
-                   deploy/storage/framework/cache \
-                   deploy/storage/framework/sessions \
-                   deploy/storage/framework/views \
-                   deploy/storage/logs \
-                   deploy/bootstrap/cache
+          # Ensure empty storage/bootstrap dirs exist (Laravel needs these)
+          mkdir -p \
+            deploy/storage/app/public \
+            deploy/storage/framework/cache \
+            deploy/storage/framework/sessions \
+            deploy/storage/framework/views \
+            deploy/storage/logs \
+            deploy/bootstrap/cache
 
-          echo "=== Code-only deploy package size ==="
-          du -sh deploy/
+          echo "=== Code package: $(du -sh deploy | cut -f1) ==="
+          ls deploy/
 
-      - name: Deploy code to Hostinger via SCP
-        uses: appleboy/scp-action@v0.1.7
+      # ─── FTP: upload code ──────────────────────────────────────────────────
+      - name: Deploy code via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.SSH_HOST }}
+          server: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "./deploy/*"
-          target: ${{ secrets.SSH_SERVER_DIR }}
-          strip_components: 1
-          rm: false
-          overwrite: true
-          timeout: 60s
-          command_timeout: 10m
+          protocol: ftps
+          local-dir: ./deploy/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.env
+            **/node_modules/**
+          dangerous-clean-slate: false
+          log-level: minimal
 
-      - name: Upload changed static assets (images/videos)
+      # ─── FTP: upload images (only when changed) ────────────────────────────
+      - name: Upload changed images via FTPS
         if: steps.check-assets.outputs.changed == 'true'
-        uses: appleboy/scp-action@v0.1.7
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.SSH_HOST }}
+          server: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "frontend/dist/images/*,frontend/dist/videos/*"
-          target: ${{ secrets.SSH_SERVER_DIR }}/public/
-          strip_components: 2
-          rm: false
-          overwrite: true
-          timeout: 60s
-          command_timeout: 30m
+          protocol: ftps
+          local-dir: ./frontend/dist/images/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}public/images/
+          dangerous-clean-slate: false
+          log-level: minimal
 
-      - name: Post-deployment tasks
-        uses: appleboy/ssh-action@v1.0.0
+      # ─── FTP: upload videos (only when changed) ────────────────────────────
+      - name: Upload changed videos via FTPS
+        if: steps.check-assets.outputs.changed == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.SSH_HOST }}
+          server: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          command_timeout: 15m
-          script: |
-            cd ${{ secrets.SSH_SERVER_DIR }}
+          protocol: ftps
+          local-dir: ./frontend/dist/videos/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}public/videos/
+          dangerous-clean-slate: false
+          log-level: minimal
 
-            PHP=/opt/alt/php82/usr/bin/php
+      # ─── Webhook: composer + migrate + cache ──────────────────────────────
+      - name: Run post-deployment tasks via webhook
+        run: |
+          echo "Triggering post-deployment tasks on server..."
 
-            echo "=== PHP Version ==="
-            $PHP -v
+          HTTP_STATUS=$(curl -s \
+            --max-time 300 \
+            -o /tmp/webhook_out.txt \
+            -w "%{http_code}" \
+            -X POST \
+            -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"deploy":true}' \
+            "https://fischer.codeformulator.com/api/deploy-webhook")
 
-            COMPOSER=$(which composer 2>/dev/null || echo "/usr/local/bin/composer")
-            echo "=== Composer: $COMPOSER ==="
+          echo "--- Server response (HTTP $HTTP_STATUS) ---"
+          cat /tmp/webhook_out.txt | python3 -m json.tool 2>/dev/null || cat /tmp/webhook_out.txt
+          echo ""
 
-            if [ ! -d "vendor" ] || [ "composer.lock" -nt "vendor" ]; then
-              echo "=== Installing composer dependencies ==="
-              $PHP $COMPOSER install --no-dev --optimize-autoloader --no-interaction 2>&1 || \
-              $PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction 2>&1 || \
-              (curl -sS https://getcomposer.org/installer | $PHP && $PHP composer.phar install --no-dev --optimize-autoloader --no-interaction)
-            else
-              echo "=== Vendor up to date, skipping composer install ==="
-            fi
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "ERROR: Webhook returned HTTP $HTTP_STATUS"
+            exit 1
+          fi
 
-            chmod -R 755 storage bootstrap/cache
-            mkdir -p resources/views storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
-
-            if ! grep -q "APP_KEY=base64:" .env; then
-              echo "=== Generating APP_KEY ==="
-              $PHP artisan key:generate --force
-            fi
-
-            $PHP artisan config:clear
-
-            echo "=== Running migrations ==="
-            $PHP artisan migrate --force 2>&1
-
-            echo "=== Queue Worker Status ==="
-            ps aux | grep "queue:work" | grep -v grep || echo "WARNING: Queue worker not running"
-
-            echo "=== Running safe seeders ==="
-            $PHP artisan db:seed --class=ShippingZoneSeeder --force || true
-            $PHP artisan db:seed --class=ShippingMethodSeeder --force || true
-            $PHP artisan db:seed --class=RolePermissionSeeder --force || true
-            $PHP artisan db:seed --class=HomepageSeeder --force || true
-            $PHP artisan db:seed --class=PortfolioVideoSeeder --force || true
-            echo "=== Safe seeders completed ==="
-
-            if [ -f "SEED_ON_DEPLOY" ]; then
-              echo "=== SEED_ON_DEPLOY detected, running additional seeders ==="
-              $PHP artisan db:seed --class=CategorySeeder --force || true
-              $PHP artisan db:seed --class=ProductSeeder --force || true
-              $PHP artisan db:seed --class=ProductDataSeeder --force || true
-              $PHP artisan db:seed --class=BannerSeeder --force || true
-              $PHP artisan db:seed --class=HomepageSeeder --force || true
-              $PHP artisan db:seed --class=SettingsSeeder --force || true
-              $PHP artisan db:seed --class=PageSeeder --force || true
-              rm -f SEED_ON_DEPLOY
-              echo "=== Additional seeders completed ==="
-            fi
-
-            echo "=== Clearing caches ==="
-            $PHP artisan cache:clear || true
-            $PHP artisan config:clear
-            $PHP artisan route:clear
-            $PHP artisan view:clear || true
-
-            echo "=== Rebuilding caches ==="
-            $PHP artisan config:cache
-            $PHP artisan route:cache
-            $PHP artisan view:cache
-
-            rm -rf public/storage
-            ln -s ../storage/app/public public/storage
-            echo "=== Storage link created ==="
-
-            echo "=== Deployment completed successfully ==="
-            $PHP artisan --version
+          echo "✓ Post-deployment tasks completed"
 
       - name: Notify on success
         if: success()
-        run: echo "Deployment completed successfully!"
+        run: echo "✓ Deployment completed successfully!"
 
       - name: Notify on failure
         if: failure()
-        run: echo "Deployment failed!"
+        run: echo "✗ Deployment failed — check the logs above"
