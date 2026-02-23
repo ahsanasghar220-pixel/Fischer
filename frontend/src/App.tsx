@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy, Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 import Layout from './components/layout/Layout'
+import MarketingPixels from './components/marketing/MarketingPixels'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import ScrollToTop from './components/utils/ScrollToTop'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -127,11 +128,16 @@ const AdminSales = lazy(() => import('./pages/admin/Sales'))
 const AdminUsers = lazy(() => import('./pages/admin/Users'))
 const Sale = lazy(() => import('./pages/Sale'))
 
+// Marketing
+const AdminMarketingDashboard = lazy(() => import('./pages/admin/marketing'))
+const AdminMarketingIntegrations = lazy(() => import('./pages/admin/marketing/integrations'))
+
 function App() {
   return (
     <ErrorBoundary>
     <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
+      <MarketingPixels />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Layout />}>
@@ -181,6 +187,8 @@ function App() {
           <Route path="page/:slug" element={<Page />} />
 
           {/* 404 */}
+          <Route path="marketing" element={<AdminMarketingDashboard />} />
+          <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 
@@ -210,6 +218,8 @@ function App() {
           <Route path="sales" element={<AdminSales />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="marketing" element={<AdminMarketingDashboard />} />
+          <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

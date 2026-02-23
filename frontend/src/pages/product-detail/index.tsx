@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
 import api from '@/lib/api'
+import { trackViewContent } from '@/lib/tracking'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -51,6 +52,19 @@ export default function ProductDetail() {
     setQuantity(1)
     setSelectedVariant(null)
   }, [slug])
+
+  // Fire ViewContent tracking event when product data loads
+  useEffect(() => {
+    if (product) {
+      trackViewContent({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.category?.name,
+        brand: 'Fischer',
+      })
+    }
+  }, [product?.id])
 
   // Sync wishlist state with server
   useEffect(() => {

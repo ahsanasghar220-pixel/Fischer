@@ -63,6 +63,12 @@ class Order extends Model
         'source',
         'ip_address',
         'user_agent',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+        'referrer',
     ];
 
     protected $casts = [

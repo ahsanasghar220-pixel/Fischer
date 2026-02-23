@@ -22,3 +22,6 @@ Schedule::command('loyalty:expire-points')->dailyAt('00:00');
 
 // Clean up old sessions
 Schedule::command('session:gc')->weekly();
+// Check abandoned carts for marketing reminders
+Schedule::command('marketing:check-abandoned-carts')->everyTenMinutes();
+

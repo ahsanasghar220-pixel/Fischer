@@ -100,3 +100,9 @@ Route::prefix('sales')->group(function () {
     Route::get('/', [SaleController::class, 'index']);
     Route::get('/{slug}', [SaleController::class, 'show']);
 });
+// Product Feeds
+Route::get("feeds/google", [App\Http\Controllers\Api\FeedController::class, "google"]);
+Route::get("feeds/meta", [App\Http\Controllers\Api\FeedController::class, "meta"]);
+Route::get("feeds/tiktok", [App\Http\Controllers\Api\FeedController::class, "tiktok"]);
+Route::get("marketing/config", [App\Http\Controllers\Api\FeedController::class, "clientConfig"]);
+

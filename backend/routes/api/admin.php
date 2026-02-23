@@ -188,4 +188,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
         Route::get('/active-sessions', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'activeSessions']);
         Route::get('/cart-analytics', [App\Http\Controllers\Api\Admin\RealTimeAnalyticsController::class, 'cartAnalytics']);
     });
+
+    // Marketing
+    Route::prefix("marketing")->group(function () {
+        Route::get("integrations", [App\Http\Controllers\Api\Admin\MarketingController::class, "integrations"]);
+        Route::post("integrations", [App\Http\Controllers\Api\Admin\MarketingController::class, "saveIntegration"]);
+        Route::get("dashboard", [App\Http\Controllers\Api\Admin\MarketingController::class, "dashboard"]);
+        Route::get("abandoned-carts", [App\Http\Controllers\Api\Admin\MarketingController::class, "abandonedCarts"]);
+        Route::post("abandoned-carts/{cart}/resend", [App\Http\Controllers\Api\Admin\MarketingController::class, "resendReminder"]);
+    });
 });

@@ -5,6 +5,7 @@ import api from '@/lib/api'
 import { useCartStore } from '@/stores/cartStore'
 import { useAuthStore } from '@/stores/authStore'
 import toast from 'react-hot-toast'
+import { getUtmData } from '@/lib/utm'
 import type { ShippingMethod } from '@/types'
 
 export interface Address {
@@ -98,6 +99,7 @@ export function useCheckout() {
   // Place order mutation
   const placeOrderMutation = useMutation({
     mutationFn: async (data: CheckoutForm) => {
+      const utmData = getUtmData()
       const response = await api.post('/api/checkout/place-order', {
         ...data,
         shipping_email: data.email,
@@ -108,6 +110,7 @@ export function useCheckout() {
           return { product_id: item.product!.id, variant_id: item.variant?.id, quantity: item.quantity }
         }),
         coupon_code: couponCode,
+        utm_data: Object.keys(utmData).length > 0 ? utmData : undefined,
       })
       return response.data
     },
