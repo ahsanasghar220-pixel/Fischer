@@ -22,11 +22,6 @@ DirectoryIndex index.html index.php
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Serve .php files directly (must come before API routes so deploy-webhook.php executes)
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteCond %{REQUEST_FILENAME} \.php$
-    RewriteRule ^ - [L]
-
     # Laravel backend routes - API and utility endpoints
     RewriteCond %{REQUEST_URI} ^/api [NC,OR]
     RewriteCond %{REQUEST_URI} ^/sanctum [NC,OR]

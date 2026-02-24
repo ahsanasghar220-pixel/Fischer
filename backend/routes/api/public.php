@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Deploy webhook — called by GitHub Actions after FTP upload
-Route::post('/deploy-webhook', [DeployWebhookController::class, 'handle']);
+// Deploy webhook — called by GitHub Actions after FTP upload (GET+POST for compatibility)
+Route::match(['GET', 'POST'], '/deploy-webhook', [DeployWebhookController::class, 'handle']);
 
 // Public settings — used by frontend for dynamic theming
 Route::get('/settings/brand-color', [AdminSettingController::class, 'brandColor']);
