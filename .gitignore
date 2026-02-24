@@ -2,6 +2,7 @@
 /backend/vendor/
 /backend/node_modules/
 /backend/.env
+/backend/.env.production
 /backend/.env.backup
 /backend/.phpunit.result.cache
 /backend/storage/*.key

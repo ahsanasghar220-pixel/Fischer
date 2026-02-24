@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\DeployWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,11 +15,10 @@ use Illuminate\Support\Facades\Route;
 |   api/customer.php — account, orders, wishlist, addresses (auth:sanctum)
 |   api/admin.php    — all admin routes (auth:sanctum + admin middleware)
 |
+| Deploy webhook is registered in routes/web.php as GET /deploy-run
+| (web routes bypass route cache — reliable for deployment).
+|
 */
-
-// Deploy webhook — registered here in the top-level file so it is always
-// available regardless of route cache state. Updated: 2026-02-24b.
-Route::match(['GET', 'POST'], '/deploy-webhook', [DeployWebhookController::class, 'handle']);
 
 require __DIR__ . '/api/public.php';
 require __DIR__ . '/api/auth.php';

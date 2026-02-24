@@ -91,7 +91,7 @@ jobs:
 
           # Clean up files we don't need on the server
           rm -rf deploy/tests deploy/storage/logs/*
-          rm -f  deploy/.env.example deploy/phpunit.xml deploy/.env
+          rm -f  deploy/.env.example deploy/.env.production deploy/phpunit.xml deploy/.env
 
           # Ensure empty storage/bootstrap dirs exist (Laravel needs these)
           mkdir -p \
@@ -147,6 +147,7 @@ jobs:
 
       - name: Upload images via lftp
         run: |
+          set -o pipefail
           timeout 300 lftp -c "
             set net:timeout 30
             set ftp:ssl-force true
@@ -160,11 +161,12 @@ jobs:
               ./frontend/public/images/ \
               ${{ secrets.FTP_SERVER_DIR }}public/images/
             bye
-          " 2>&1 | tail -30
+          " 2>&1 | tail -30 || { echo "ERROR: lftp image upload failed"; exit 1; }
           echo "✓ Images upload done"
 
       - name: Upload videos via lftp
         run: |
+          set -o pipefail
           timeout 300 lftp -c "
             set net:timeout 30
             set ftp:ssl-force true
@@ -178,8 +180,26 @@ jobs:
               ./frontend/public/videos/ \
               ${{ secrets.FTP_SERVER_DIR }}public/videos/
             bye
-          " 2>&1 | tail -10
+          " 2>&1 | tail -10 || { echo "ERROR: lftp video upload failed"; exit 1; }
           echo "✓ Videos upload done"
+
+      # ─── Health check: verify Laravel boots before running webhook ────────
+      - name: Verify server health
+        run: |
+          echo "Checking server health..."
+          HTTP_STATUS=$(curl -s --max-time 30 -o /tmp/health_out.txt -w "%{http_code}" \
+            "https://fischer.codeformulator.com/up")
+
+          echo "Health check: HTTP $HTTP_STATUS"
+          cat /tmp/health_out.txt 2>/dev/null || true
+          echo ""
+
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "WARNING: Health check returned HTTP $HTTP_STATUS — Laravel may not be booting"
+            echo "Continuing anyway (webhook will clear caches)..."
+          else
+            echo "✓ Server is healthy"
+          fi
 
       # ─── Webhook: composer + migrate + cache ──────────────────────────────
       # Uses GET /deploy-run — a web route in routes/web.php (not api.php).
@@ -213,7 +233,13 @@ jobs:
             exit 1
           fi
 
-          echo "✓ Post-deployment tasks completed"
+          # Verify the webhook actually succeeded (not just HTTP 200)
+          if echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('success') else 1)" 2>/dev/null; then
+            echo "✓ Post-deployment tasks completed successfully"
+          else
+            echo "ERROR: Webhook returned success=false — check output above"
+            exit 1
+          fi
 
       - name: Notify on success
         if: success()
