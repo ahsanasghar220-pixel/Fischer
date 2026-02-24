@@ -47,17 +47,7 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: Cache frontend build
-        id: cache-build
-        uses: actions/cache@v3
-        with:
-          path: frontend/dist
-          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/public/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
       - name: Build frontend
-        if: steps.cache-build.outputs.cache-hit != 'true'
         working-directory: frontend
         run: npm run build
         env:
@@ -117,7 +107,7 @@ jobs:
             **/.env
             **/node_modules/**
           dangerous-clean-slate: false
-          log-level: minimal
+          log-level: standard
 
       # ─── FTP: wipe bootstrap/cache so stale route cache can't block webhook ──
       # Uses dangerous-clean-slate on the bootstrap/cache dir only — deletes the
