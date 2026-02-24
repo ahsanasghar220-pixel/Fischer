@@ -123,58 +123,62 @@ jobs:
           dangerous-clean-slate: false
           log-level: minimal
 
-      # ─── FTPS: delete stale route/config cache files before webhook ──────────
-      # Uses lftp to explicitly delete *.php files from bootstrap/cache on server.
-      # This ensures stale route caches can't block the webhook from running.
+      # ─── lftp: delete stale route cache, upload images + videos ─────────────
+      # NOTE: use ftp:// (not ftps://) + ftp:ssl-force = explicit FTPS on port 21.
+      # ftps:// tries implicit FTPS on port 990 which hangs on Hostinger.
+      # Shell-level timeout 300s prevents steps from hanging indefinitely.
+      - name: Install lftp
+        run: sudo apt-get install -y lftp 2>/dev/null | tail -1
+
       - name: Delete server bootstrap cache via lftp
         run: |
-          sudo apt-get install -y lftp 2>/dev/null | tail -1
-          lftp -c "
+          timeout 60 lftp -c "
+            set net:timeout 20
             set ftp:ssl-force true
             set ssl:verify-certificate no
-            open ftps://${{ secrets.SSH_HOST }}
+            set ftp:passive-mode true
+            open ftp://${{ secrets.SSH_HOST }}
             login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
             cd ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
             glob rm -f *.php
             bye
-          " 2>&1 && echo "✓ Bootstrap cache cleared" || echo "lftp cache clear done (some files may not have existed)"
+          " 2>&1 && echo "✓ Bootstrap cache cleared" || echo "Cache clear done (files may not have existed or timed out — continuing)"
 
-      # ─── lftp: upload images ──────────────────────────────────────────────
-      # Uses lftp mirror (more reliable than FTP-Deploy-Action for large files —
-      # handles reconnects and doesn't lose state on timeout).
       - name: Upload images via lftp
         run: |
-          sudo apt-get install -y lftp 2>/dev/null | tail -1
-          lftp -c "
+          timeout 300 lftp -c "
+            set net:timeout 30
             set ftp:ssl-force true
             set ssl:verify-certificate no
+            set ftp:passive-mode true
             set net:reconnect-interval-base 5
             set net:max-retries 3
-            open ftps://${{ secrets.SSH_HOST }}
+            open ftp://${{ secrets.SSH_HOST }}
             login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
             mirror --reverse --only-newer --verbose \
               ./frontend/public/images/ \
               ${{ secrets.FTP_SERVER_DIR }}public/images/
             bye
-          " 2>&1 | tail -20
-          echo "✓ Images upload complete"
+          " 2>&1 | tail -30
+          echo "✓ Images upload done"
 
-      # ─── lftp: upload videos ──────────────────────────────────────────────
       - name: Upload videos via lftp
         run: |
-          lftp -c "
+          timeout 300 lftp -c "
+            set net:timeout 30
             set ftp:ssl-force true
             set ssl:verify-certificate no
+            set ftp:passive-mode true
             set net:reconnect-interval-base 5
             set net:max-retries 3
-            open ftps://${{ secrets.SSH_HOST }}
+            open ftp://${{ secrets.SSH_HOST }}
             login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
             mirror --reverse --only-newer --verbose \
               ./frontend/public/videos/ \
               ${{ secrets.FTP_SERVER_DIR }}public/videos/
             bye
           " 2>&1 | tail -10
-          echo "✓ Videos upload complete"
+          echo "✓ Videos upload done"
 
       # ─── Webhook: composer + migrate + cache ──────────────────────────────
       # Uses the Laravel route /api/deploy-webhook (POST) — safe because the
