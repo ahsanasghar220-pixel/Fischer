@@ -116,7 +116,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
                   <div className="w-3.5 h-3.5 sm:w-5 sm:h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
                     <CheckCircleIcon className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                   </div>
-                  <span className="text-dark-700 dark:text-dark-300 text-[10px] sm:text-sm md:text-base font-medium leading-snug truncate sm:whitespace-normal">{feature}</span>
+                  <span className="text-dark-700 dark:text-dark-300 text-[10px] sm:text-sm md:text-base font-medium line-clamp-1">{feature}</span>
                 </div>
               ))}
           </div>

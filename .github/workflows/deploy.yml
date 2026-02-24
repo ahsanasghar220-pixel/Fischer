@@ -139,33 +139,42 @@ jobs:
             bye
           " 2>&1 && echo "✓ Bootstrap cache cleared" || echo "lftp cache clear done (some files may not have existed)"
 
-      # ─── FTP: upload images (only when changed) ────────────────────────────
-      - name: Upload changed images via FTPS
-        if: steps.check-assets.outputs.changed == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          protocol: ftps
-          local-dir: ./frontend/public/images/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}public/images/
-          dangerous-clean-slate: false
-          log-level: minimal
+      # ─── lftp: upload images ──────────────────────────────────────────────
+      # Uses lftp mirror (more reliable than FTP-Deploy-Action for large files —
+      # handles reconnects and doesn't lose state on timeout).
+      - name: Upload images via lftp
+        run: |
+          sudo apt-get install -y lftp 2>/dev/null | tail -1
+          lftp -c "
+            set ftp:ssl-force true
+            set ssl:verify-certificate no
+            set net:reconnect-interval-base 5
+            set net:max-retries 3
+            open ftps://${{ secrets.SSH_HOST }}
+            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
+            mirror --reverse --only-newer --verbose \
+              ./frontend/public/images/ \
+              ${{ secrets.FTP_SERVER_DIR }}public/images/
+            bye
+          " 2>&1 | tail -20
+          echo "✓ Images upload complete"
 
-      # ─── FTP: upload videos (only when changed) ────────────────────────────
-      - name: Upload changed videos via FTPS
-        if: steps.check-assets.outputs.changed == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          protocol: ftps
-          local-dir: ./frontend/public/videos/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}public/videos/
-          dangerous-clean-slate: false
-          log-level: minimal
+      # ─── lftp: upload videos ──────────────────────────────────────────────
+      - name: Upload videos via lftp
+        run: |
+          lftp -c "
+            set ftp:ssl-force true
+            set ssl:verify-certificate no
+            set net:reconnect-interval-base 5
+            set net:max-retries 3
+            open ftps://${{ secrets.SSH_HOST }}
+            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
+            mirror --reverse --only-newer --verbose \
+              ./frontend/public/videos/ \
+              ${{ secrets.FTP_SERVER_DIR }}public/videos/
+            bye
+          " 2>&1 | tail -10
+          echo "✓ Videos upload complete"
 
       # ─── Webhook: composer + migrate + cache ──────────────────────────────
       # Uses the Laravel route /api/deploy-webhook (POST) — safe because the

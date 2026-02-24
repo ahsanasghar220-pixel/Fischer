@@ -21,8 +21,8 @@ class CategorySeeder extends Seeder
                     '1 Year Warranty',
                     'Energy Efficient',
                     'Heat + Auto Clean',
-                    'Gesture and Touch Control',
-                    'Inverter Technology A+++ Rated',
+                    'Touch & Gesture Control',
+                    'A+++ Inverter Tech',
                     'Low Noise Level',
                 ],
                 'image' => '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
@@ -43,7 +43,7 @@ class CategorySeeder extends Seeder
                     'Flame Failure Device',
                     'Stainless Steel Finish',
                     '5KW Powerful Burners',
-                    'Immediate Auto Ignition',
+                    'Auto Ignition',
                 ],
                 'image' => '/images/products/kitchen-hobs/FBH-SS90-5SBF/1.webp',
                 'icon' => 'kitchen-hob',
@@ -62,7 +62,7 @@ class CategorySeeder extends Seeder
                     'Flame Failure Device',
                     'Stainless Steel Finish',
                     '5KW Powerful Burners',
-                    'Immediate Auto Ignition',
+                    'Auto Ignition',
                     'Multiple Size Options',
                 ],
                 'image' => '/images/products/cooking-ranges/fcr-5bb.webp',
@@ -76,11 +76,11 @@ class CategorySeeder extends Seeder
                 'slug' => 'oven-toasters',
                 'description' => 'Digital and mechanical oven toasters with capacities from 35L to 48L. Features include rotisserie function and convection heating.',
                 'features' => [
-                    'Double Layered Glass Door',
+                    'Double Glass Door',
                     'Inner Lamp',
                     'Rotisserie Function',
                     'Convection Function',
-                    'Stainless Steel Elements',
+                    'SS Heating Elements',
                     'Digital Controls',
                     'Large Capacity',
                 ],
@@ -97,8 +97,8 @@ class CategorySeeder extends Seeder
                 'features' => [
                     'Oil-Free Cooking',
                     'Digital Touch Panel',
-                    'Wide Temperature Control',
-                    'Injection Molding Texture',
+                    'Temperature Control',
+                    'Premium Molded Body',
                     'Non-Stick Coating',
                     'Dual Heating Element',
                     'Large Capacity',
@@ -115,11 +115,11 @@ class CategorySeeder extends Seeder
                 'description' => 'Commercial and industrial electric water coolers with capacities from 35L to 300L. Made with food-grade stainless steel.',
                 'features' => [
                     'Adjustable Thermostat',
-                    'Food Grade Stainless Steel',
-                    'High Back Pressure Compressor',
-                    'Spring Loaded Push Button',
-                    'Non-Magnetic Heavy Gauge',
-                    'Brand New Compressor with Condenser',
+                    'Food-Grade SS Tank',
+                    'High-Pressure Compressor',
+                    'Push-Button Taps',
+                    'Non-Magnetic Body',
+                    'Brand New Compressor',
                 ],
                 'image' => '/images/products/water-coolers/water-cooler-35ltr.webp',
                 'icon' => 'water-cooler',
@@ -134,8 +134,8 @@ class CategorySeeder extends Seeder
                 'features' => [
                     'Space-Saving Design',
                     'Adjustable Thermostat',
-                    'Food Grade Stainless Steel',
-                    'High Back Pressure Compressor',
+                    'Food-Grade SS Tank',
+                    'High-Pressure Compressor',
                     'Compact Footprint',
                 ],
                 'image' => '/images/products/slim-water-coolers/fe-35-slim.webp',
@@ -149,7 +149,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'storage-coolers',
                 'description' => 'Self-contained storage water coolers with large capacity from 25L to 1000L. Ideal for high-demand environments.',
                 'features' => [
-                    'Food Grade Stainless Steel Tanks',
+                    'Food-Grade SS Tanks',
                     'Brand New Compressors',
                     'Copper Fan Motors',
                     'Large Storage Capacity',
@@ -166,7 +166,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'water-dispensers',
                 'description' => 'Compact water dispensers for home and office use. Features food-grade stainless steel tanks and eco-friendly refrigerants.',
                 'features' => [
-                    'Food-Grade Stainless Steel Tanks',
+                    'Food-Grade SS Tanks',
                     'Eco-Friendly Refrigerants',
                     '100% Copper Coiling',
                     'Hot & Cold Functions',
@@ -187,7 +187,7 @@ class CategorySeeder extends Seeder
                     'Energy Efficient',
                     'Overheating Protection',
                     'Fully Insulated',
-                    'Incoloy 840 Heating Element',
+                    'Incoloy 840 Element',
                 ],
                 'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
                 'icon' => 'electric-geyser',
@@ -201,11 +201,11 @@ class CategorySeeder extends Seeder
                 'description' => 'Fast electric water heaters from 30 to 200 liters with adjustable wattage options and thermal safety cutouts.',
                 'features' => [
                     'Single Welded Tanks',
-                    'Adjustable Wattage Options',
-                    'Thermal Safety Cutouts',
+                    'Adjustable Wattage',
+                    'Thermal Safety Cutout',
                     'Full Insulation',
-                    'Incoloy 840 Heating Element',
-                    'Fast Heating Technology',
+                    'Incoloy 840 Element',
+                    'Fast Heating',
                 ],
                 'image' => '/images/products/fast-electric-water-heaters/ffeg-f100.webp',
                 'icon' => 'fast-geyser',
@@ -218,7 +218,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'instant-electric-water-heaters',
                 'description' => 'Instant cum storage electric water heaters from 10 to 60 liters with quick heating technology and compact design.',
                 'features' => [
-                    'Quick Heating Technology',
+                    'Quick Heating',
                     'Compact Design',
                     'Overheating Protection',
                     'Wattage Control',
@@ -240,8 +240,8 @@ class CategorySeeder extends Seeder
                     'Overheating Protection',
                     'Wattage Control',
                     'Fully Insulated',
-                    'Accurate Volume Capacity',
-                    'Incoloy 840 Heating Element',
+                    'Accurate Volume',
+                    'Incoloy 840 Element',
                 ],
                 'image' => '/images/products/hybrid-geysers/fhg-65g.webp',
                 'icon' => 'hybrid-geyser',
@@ -255,7 +255,7 @@ class CategorySeeder extends Seeder
                 'description' => 'Kitchen and appliance accessories including basket liners, iron racks, and replacement parts.',
                 'features' => [
                     'Durable Materials',
-                    'Compatible with Fischer Products',
+                    'Fischer Compatible',
                     'Affordable Prices',
                     'Easy Installation',
                 ],
@@ -269,9 +269,9 @@ class CategorySeeder extends Seeder
 
         // Create all categories (all as parent categories, no hierarchy)
         foreach ($categories as $category) {
-            Category::updateOrCreate(
+            Category::withTrashed()->updateOrCreate(
                 ['slug' => $category['slug']],
-                array_merge($category, ['parent_id' => null])
+                array_merge($category, ['parent_id' => null, 'deleted_at' => null])
             );
         }
 
