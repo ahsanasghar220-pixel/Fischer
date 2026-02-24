@@ -60,6 +60,7 @@ export function generateColorScale(hex: string): Record<string, string> {
 }
 
 const BRAND_COLOR_KEY = 'fischer-brand-color'
+export const DEFAULT_BRAND_COLOR = '#1d7dd7'
 
 /**
  * Apply a brand color to the document root as CSS custom properties.
@@ -103,21 +104,20 @@ export function getCachedBrandColor(): string | null {
  *     If the admin changed the color since the last visit it updates instantly.
  */
 export async function initBrandColor(): Promise<void> {
-  // Step 1 — apply cached color right away so the page never shows the
-  // CSS-default red while waiting for the network response.
+  // Step 1 — apply default immediately so there's never a flash of wrong color.
+  // Cached color overrides the default if present (admin may have changed it).
   const cached = getCachedBrandColor()
-  if (cached) applyBrandColor(cached)
+  applyBrandColor(cached ?? DEFAULT_BRAND_COLOR)
 
-  // Step 2 — fetch the authoritative value from the API
+  // Step 2 — fetch the authoritative value from the API.
+  // If the admin has set a custom color, use it; otherwise fall back to default.
   try {
     const base = import.meta.env.VITE_API_URL ?? ''
     const res = await fetch(`${base}/api/settings/brand-color`)
     if (!res.ok) return
     const data = await res.json()
-    if (data?.brand_color) {
-      applyBrandColor(data.brand_color)
-    }
+    applyBrandColor(data?.brand_color || DEFAULT_BRAND_COLOR)
   } catch {
-    // Silently fall back to whatever was already applied
+    // API unreachable — keep whatever is already applied
   }
 }

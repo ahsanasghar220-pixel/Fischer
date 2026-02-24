@@ -54,11 +54,11 @@ const ProductCarousel = memo(function ProductCarousel({
     }
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
-    let cols = 4
-    if (w < 640) cols = 1.3
-    else if (w < 768) cols = 2
-    else if (w < 1024) cols = 3
-    else cols = 4
+    let cols = 5
+    if (w < 640) cols = 1.5
+    else if (w < 768) cols = 2.5
+    else if (w < 1024) cols = 4
+    else cols = 5
     const totalGap = gap * (Math.floor(cols) - (cols % 1 === 0 ? 1 : 0))
     setCardWidth((w - totalGap) / cols)
   }, [gap, fixedCardWidth])

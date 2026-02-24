@@ -539,7 +539,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
               )}
               {!videoError && <video
-                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
+                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-cover object-center`}
                 style={{ objectPosition: 'center center' }}
                 autoPlay loop muted playsInline preload="none"
                 onCanPlayThrough={() => setVideoLoaded(true)}

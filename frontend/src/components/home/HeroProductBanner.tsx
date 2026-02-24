@@ -117,11 +117,11 @@ function ProductCard({ product }: { product: ProductHighlight }) {
     >
       <Link
         to={product.href}
-        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col"
+        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary-500/20 border border-transparent hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 hover:-translate-y-2 h-full flex flex-col"
       >
         {/* Image Container with Carousel */}
         <div
-          className="h-[150px] md:h-[220px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 p-3 md:p-6 relative overflow-hidden flex-shrink-0 flex items-center justify-center"
+          className="h-[150px] md:h-[220px] bg-gray-50 relative overflow-hidden flex-shrink-0"
           {...(isTouchDevice ? swipeHandlers : {})}
         >
           <AnimatePresence mode="wait">
@@ -133,7 +133,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
               height={220}
               loading="lazy"
               decoding="async"
-              className="max-w-full max-h-full object-contain"
+              className="absolute inset-0 w-full h-full object-cover"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -161,7 +161,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
           )}
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
 
         {/* Content */}
