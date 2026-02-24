@@ -185,7 +185,7 @@ jobs:
             -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{"deploy":true}' \
-            "https://fischer.codeformulator.com/api/deploy-webhook")
+            "https://fischer.codeformulator.com/deploy-webhook.php")
 
           echo "--- Server response (HTTP $HTTP_STATUS) ---"
           cat /tmp/webhook_out.txt | python3 -m json.tool 2>/dev/null || cat /tmp/webhook_out.txt
