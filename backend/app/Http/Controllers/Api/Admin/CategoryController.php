@@ -215,4 +215,80 @@ class CategoryController extends Controller
 
         return $this->success(null, 'Category deleted successfully');
     }
+
+    public function export()
+    {
+        $categories = DB::table('categories')
+            ->select(['slug', 'name', 'description', 'is_active', 'sort_order', 'image'])
+            ->whereNull('deleted_at')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        $cols = ['slug', 'name', 'description', 'is_active', 'sort_order', 'image'];
+
+        $csv = implode(',', $cols) . "\n";
+        foreach ($categories as $c) {
+            $row = array_map(fn ($h) => '"' . str_replace('"', '""', (string) ($c->$h ?? '')) . '"', $cols);
+            $csv .= implode(',', $row) . "\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="categories-' . date('Y-m-d') . '.csv"',
+        ]);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $handle  = fopen($request->file('file')->getPathname(), 'r');
+        $headers = array_map('trim', fgetcsv($handle) ?: []);
+
+        if (empty($headers) || !in_array('slug', $headers)) {
+            fclose($handle);
+            return $this->error('Invalid CSV: missing required header "slug"', 422);
+        }
+
+        $created = 0;
+        $updated = 0;
+        $errors  = [];
+        $rowNum  = 1;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowNum++;
+            if (count($row) !== count($headers)) {
+                continue;
+            }
+            $data = array_combine($headers, array_map('trim', $row));
+
+            if (empty($data['slug']) || empty($data['name'])) {
+                $errors[] = ['row' => $rowNum, 'message' => 'Missing required fields: slug, name'];
+                continue;
+            }
+
+            $payload = ['name' => $data['name']];
+
+            if (isset($data['description'])  && $data['description']  !== '') $payload['description']  = $data['description'];
+            if (isset($data['image'])        && $data['image']         !== '') $payload['image']        = $data['image'];
+            if (isset($data['sort_order'])   && is_numeric($data['sort_order'])) $payload['sort_order'] = (int) $data['sort_order'];
+            if (isset($data['is_active'])    && $data['is_active']     !== '') $payload['is_active']    = (bool)(int) $data['is_active'];
+
+            $category = Category::updateOrCreate(['slug' => $data['slug']], $payload);
+            $category->wasRecentlyCreated ? $created++ : $updated++;
+        }
+
+        fclose($handle);
+        $this->clearCache();
+
+        $msg = "{$created} category/categories created, {$updated} updated";
+        if (count($errors)) {
+            $msg .= ', ' . count($errors) . ' row(s) had errors';
+        }
+
+        return $this->success(['created' => $created, 'updated' => $updated, 'errors' => $errors], $msg);
+    }
 }

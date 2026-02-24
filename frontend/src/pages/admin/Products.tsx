@@ -7,11 +7,31 @@ import {
   PencilIcon,
   TrashIcon,
   EyeIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import { formatPrice } from '@/lib/utils'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
+import CsvImportPanel from '@/components/admin/CsvImportPanel'
+
+const PRODUCT_COLUMNS = [
+  { name: 'sku',               required: true,  example: 'FAF-401WD',     note: 'Unique key — used to match/update existing records' },
+  { name: 'name',              required: true,  example: 'Air Fryer Pro',  note: 'Product name' },
+  { name: 'category_slug',     required: false, example: 'air-fryers',     note: 'Must match an existing category slug' },
+  { name: 'price',             required: true,  example: '16250',          note: 'Numeric (PKR)' },
+  { name: 'compare_price',     required: false, example: '18000',          note: 'Numeric or blank' },
+  { name: 'stock_quantity',    required: false, example: '50',             note: 'Integer, defaults to 100 if blank' },
+  { name: 'stock_status',      required: false, example: 'in_stock',       note: 'in_stock / out_of_stock / backorder' },
+  { name: 'is_active',         required: false, example: '1',              note: '1 = active, 0 = inactive' },
+  { name: 'is_featured',       required: false, example: '0',              note: '1 = featured, 0 = normal' },
+  { name: 'is_new',            required: false, example: '1',              note: '1 = new, 0 = normal' },
+  { name: 'is_bestseller',     required: false, example: '0',              note: '1 = bestseller, 0 = normal' },
+  { name: 'short_description', required: false, example: 'Compact fryer',  note: 'Plain text' },
+  { name: 'weight',            required: false, example: '2.5',            note: 'Numeric (kg)' },
+  { name: 'meta_title',        required: false, example: 'Buy Air Fryer',  note: 'SEO title' },
+  { name: 'meta_description',  required: false, example: 'Best air fryer', note: 'SEO description' },
+]
 
 interface Product {
   id: number
@@ -42,6 +62,7 @@ export default function AdminProducts() {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [status, setStatus] = useState('')
+  const [showImport, setShowImport] = useState(false)
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
@@ -85,11 +106,33 @@ export default function AdminProducts() {
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Products</h1>
           <p className="text-dark-500 dark:text-dark-400">Manage your product catalog</p>
         </div>
-        <Link to="/admin/products/new" className="btn btn-primary flex items-center gap-2">
-          <PlusIcon className="w-5 h-5" />
-          Add Product
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowImport(v => !v)}
+            className={`btn btn-secondary flex items-center gap-2 ${showImport ? 'ring-2 ring-primary-500' : ''}`}
+          >
+            <ArrowUpTrayIcon className="w-4 h-4" />
+            Import / Export
+          </button>
+          <Link to="/admin/products/new" className="btn btn-primary flex items-center gap-2">
+            <PlusIcon className="w-5 h-5" />
+            Add Product
+          </Link>
+        </div>
       </div>
+
+      {/* CSV Import/Export Panel */}
+      {showImport && (
+        <CsvImportPanel
+          importUrl="/api/admin/products/import"
+          exportUrl="/api/admin/products/export"
+          columns={PRODUCT_COLUMNS}
+          label="Products"
+          onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
+          onClose={() => setShowImport(false)}
+        />
+      )}
 
       {/* Filters */}
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">

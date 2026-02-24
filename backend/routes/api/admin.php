@@ -28,6 +28,8 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
 
     // Categories
     Route::apiResource('categories', App\Http\Controllers\Api\Admin\CategoryController::class);
+    Route::post('/categories/import', [App\Http\Controllers\Api\Admin\CategoryController::class, 'import']);
+    Route::get('/categories/export', [App\Http\Controllers\Api\Admin\CategoryController::class, 'export']);
 
     // Brands
     Route::apiResource('brands', App\Http\Controllers\Api\Admin\BrandController::class);

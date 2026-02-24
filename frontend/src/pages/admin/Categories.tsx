@@ -3,11 +3,22 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   PlusIcon, PencilIcon, TrashIcon, ChevronRightIcon,
   Squares2X2Icon, ListBulletIcon, XMarkIcon, CubeIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import CategoryIcon from '@/components/ui/CategoryIcon'
+import CsvImportPanel from '@/components/admin/CsvImportPanel'
+
+const CATEGORY_COLUMNS = [
+  { name: 'slug',        required: true,  example: 'air-fryers',       note: 'Unique key — used to match/update existing records' },
+  { name: 'name',        required: true,  example: 'Air Fryers',        note: 'Category name' },
+  { name: 'description', required: false, example: 'Healthy cooking',   note: 'Plain text' },
+  { name: 'is_active',   required: false, example: '1',                 note: '1 = active, 0 = inactive' },
+  { name: 'sort_order',  required: false, example: '5',                 note: 'Integer — lower = higher in list' },
+  { name: 'image',       required: false, example: '/images/fryer.jpg', note: 'Image path' },
+]
 
 interface Category {
   id: number
@@ -42,6 +53,7 @@ const parseFeatures = (features: string[] | string | null | undefined): string[]
 export default function AdminCategories() {
   const queryClient = useQueryClient()
   const [showForm, setShowForm] = useState(false)
+  const [showImport, setShowImport] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
@@ -325,6 +337,14 @@ export default function AdminCategories() {
               <ListBulletIcon className="w-5 h-5" />
             </button>
           </div>
+          <button
+            type="button"
+            onClick={() => setShowImport(v => !v)}
+            className={`btn btn-secondary flex items-center gap-2 whitespace-nowrap ${showImport ? 'ring-2 ring-primary-500' : ''}`}
+          >
+            <ArrowUpTrayIcon className="w-4 h-4" />
+            Import / Export
+          </button>
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
@@ -336,6 +356,18 @@ export default function AdminCategories() {
           )}
         </div>
       </div>
+
+      {/* CSV Import/Export Panel */}
+      {showImport && (
+        <CsvImportPanel
+          importUrl="/api/admin/categories/import"
+          exportUrl="/api/admin/categories/export"
+          columns={CATEGORY_COLUMNS}
+          label="Categories"
+          onImportSuccess={() => queryClient.invalidateQueries({ queryKey: ['admin-categories'] })}
+          onClose={() => setShowImport(false)}
+        />
+      )}
 
       {/* Form */}
       {showForm && (
