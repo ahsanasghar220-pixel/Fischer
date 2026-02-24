@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DeployWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,6 +12,10 @@ use Illuminate\Support\Facades\Route;
 | API routes will be handled by the frontend's client-side router.
 |
 */
+
+// Deploy webhook — web route (no api prefix, no CSRF on GET, no route cache dependency)
+// Called by GitHub Actions after FTP upload: GET /deploy-run
+Route::get('/deploy-run', [DeployWebhookController::class, 'handle']);
 
 // Health check
 Route::get('/up', function () {

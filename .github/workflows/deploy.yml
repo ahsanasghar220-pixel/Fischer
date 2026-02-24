@@ -182,9 +182,9 @@ jobs:
           echo "✓ Videos upload done"
 
       # ─── Webhook: composer + migrate + cache ──────────────────────────────
-      # Calls deploy-webhook.php directly — served by Apache/LiteSpeed as a
-      # standalone PHP file (bypasses Laravel routing entirely). Uses GET to
-      # avoid any Hostinger WAF rules that block POST to .php files.
+      # Uses GET /deploy-run — a web route in routes/web.php (not api.php).
+      # Web routes have no api/ prefix and no route cache dependency — the
+      # route loads directly from routes/web.php every request.
       - name: Run post-deployment tasks via webhook
         run: |
           echo "Triggering post-deployment tasks on server..."
@@ -195,7 +195,7 @@ jobs:
             -w "%{http_code}" \
             -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
             -H "Accept: application/json" \
-            "https://fischer.codeformulator.com/deploy-webhook.php")
+            "https://fischer.codeformulator.com/deploy-run")
 
           echo "--- Server response (HTTP $HTTP_STATUS) ---"
           RESPONSE=$(cat /tmp/webhook_out.txt)
