@@ -1,60 +1,49 @@
 <?php
 
 /**
- * Standalone deploy webhook — bypasses Laravel route cache.
- * Kept as fallback; primary webhook is now POST /api/deploy-webhook.
+ * Standalone deploy webhook — bypasses Laravel's HTTP routing entirely.
  *
- * Called by GitHub Actions after FTP upload. This file is served directly
- * by Apache (not through Laravel routing) so it works even when the
- * route cache is stale.
+ * The .htaccess serves this file directly (it exists on disk, so the
+ * RewriteCond %{REQUEST_FILENAME} -f rule applies and stops the rewrite).
+ * No route cache, no CSRF, no middleware stack involved.
+ *
+ * Called via GET by GitHub Actions after FTP upload.
+ * Updated: 2026-02-24.
  */
 
-// Allow GET or POST (Hostinger blocks POST to .php at server level)
-if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+require __DIR__ . '/../vendor/autoload.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// Bootstrap via console kernel — this properly boots the app (config, DB, etc.)
+// without going through the HTTP routing/middleware stack.
+$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+header('Content-Type: application/json');
+
+// Verify secret (config() is now available after bootstrap)
+$secret   = config('deploy.webhook_secret', '');
+$headers  = function_exists('getallheaders') ? getallheaders() : [];
+$provided = $headers['X-Deploy-Secret'] ?? ($_SERVER['HTTP_X_DEPLOY_SECRET'] ?? '');
+
+if (empty($secret) || !hash_equals($secret, $provided)) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
-// Bootstrap Laravel
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
-
-// Build a proper request and handle it through the existing controller
+// Build a synthetic POST request so the controller's own auth check passes
 $request = Illuminate\Http\Request::create(
     '/api/deploy-webhook',
     'POST',
     [],
     [],
     [],
-    array_merge($_SERVER, [
-        'HTTP_X_DEPLOY_SECRET' => $_SERVER['HTTP_X_DEPLOY_SECRET'] ?? '',
-        'HTTP_CONTENT_TYPE' => 'application/json',
-        'HTTP_ACCEPT' => 'application/json',
-    ]),
-    file_get_contents('php://input')
+    ['HTTP_X_DEPLOY_SECRET' => $provided, 'HTTP_ACCEPT' => 'application/json']
 );
 
-$app->instance('request', $request);
-Illuminate\Support\Facades\Facade::clearResolvedInstance('request');
+// Delegate to the controller (handles migrations, seeders, cache rebuild, etc.)
+$controller = app(\App\Http\Controllers\Api\DeployWebhookController::class);
+$response   = $controller->handle($request);
 
-// Verify deploy secret
-$secret = $app['config']->get('deploy.webhook_secret', '');
-$provided = $request->header('X-Deploy-Secret', '');
-
-if (empty($secret) || !hash_equals($secret, $provided)) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Unauthorized']);
-    exit;
-}
-
-// Delegate to the controller
-$controller = $app->make(App\Http\Controllers\Api\DeployWebhookController::class);
-$response = $controller->handle($request);
-
-// Send response
 http_response_code($response->getStatusCode());
-header('Content-Type: application/json');
 echo $response->getContent();
