@@ -91,8 +91,10 @@ jobs:
           echo "=== Images: $(du -sh deploy/public/images 2>/dev/null | cut -f1 || echo 'none') ==="
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
-      # ─── FTP: upload code ──────────────────────────────────────────────────
-      - name: Deploy code via FTPS
+      # ─── FTP: upload all files ─────────────────────────────────────────────
+      # state-name forces a fresh sync — previous sync state missed new files.
+      # After this succeeds, the v2 state file will be used for future diffs.
+      - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.SSH_HOST }}
@@ -101,13 +103,14 @@ jobs:
           protocol: ftps
           local-dir: ./deploy/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          state-name: .ftp-deploy-sync-state-v2.json
           exclude: |
             **/.git*
             **/.git*/**
             **/.env
             **/node_modules/**
           dangerous-clean-slate: false
-          log-level: standard
+          log-level: verbose
 
       # ─── FTP: wipe bootstrap/cache so stale route cache can't block webhook ──
       # Uses dangerous-clean-slate on the bootstrap/cache dir only — deletes the
