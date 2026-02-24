@@ -22,11 +22,15 @@ DirectoryIndex index.html index.php
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Deploy webhook — standalone PHP, bypasses Laravel routing entirely.
+    # This avoids the route-cache chicken-and-egg problem.
+    RewriteCond %{REQUEST_URI} ^/deploy-run$ [NC]
+    RewriteRule ^ deploy-run.php [L]
+
     # Laravel backend routes - API and utility endpoints
     RewriteCond %{REQUEST_URI} ^/api [NC,OR]
     RewriteCond %{REQUEST_URI} ^/sanctum [NC,OR]
-    RewriteCond %{REQUEST_URI} ^/up$ [NC,OR]
-    RewriteCond %{REQUEST_URI} ^/deploy-run$ [NC]
+    RewriteCond %{REQUEST_URI} ^/up$ [NC]
     RewriteRule ^ index.php [L]
 
     # Serve existing files directly (images, CSS, JS, etc.)
