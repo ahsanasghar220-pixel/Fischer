@@ -123,18 +123,21 @@ jobs:
           dangerous-clean-slate: false
           log-level: minimal
 
-      # ─── FTP: wipe bootstrap/cache so stale route cache can't block webhook ──
-      - name: Clear server bootstrap cache via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          protocol: ftps
-          local-dir: ./deploy/bootstrap/cache/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
-          dangerous-clean-slate: true
-          log-level: minimal
+      # ─── FTPS: delete stale route/config cache files before webhook ──────────
+      # Uses lftp to explicitly delete *.php files from bootstrap/cache on server.
+      # This ensures stale route caches can't block the webhook from running.
+      - name: Delete server bootstrap cache via lftp
+        run: |
+          sudo apt-get install -y lftp 2>/dev/null | tail -1
+          lftp -c "
+            set ftp:ssl-force true
+            set ssl:verify-certificate no
+            open ftps://${{ secrets.SSH_HOST }}
+            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
+            cd ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
+            glob rm -f *.php
+            bye
+          " 2>&1 && echo "✓ Bootstrap cache cleared" || echo "lftp cache clear done (some files may not have existed)"
 
       # ─── FTP: upload images (only when changed) ────────────────────────────
       - name: Upload changed images via FTPS
