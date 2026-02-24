@@ -74,16 +74,8 @@ jobs:
       - name: Check if static assets changed
         id: check-assets
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null \
-            | grep -E "^frontend/public/(images|videos)/" || true)
-          if [ -n "$CHANGED" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Assets changed:"
-            echo "$CHANGED" | head -20
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "No asset changes — skipping asset upload"
-          fi
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Always uploading images/videos to keep server in sync"
 
       # ─── Build code-only deployment package ────────────────────────────────
       - name: Create code deployment package
