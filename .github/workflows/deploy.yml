@@ -123,26 +123,27 @@ jobs:
           dangerous-clean-slate: false
           log-level: minimal
 
-      # ─── lftp: delete stale route cache, upload images + videos ─────────────
+      # ─── FTP: wipe bootstrap/cache so stale route cache can't block webhook ──
+      # Uses dangerous-clean-slate on the bootstrap/cache dir only — deletes the
+      # stale routes-v7.php on the server so Laravel re-reads routes from source.
+      - name: Clear bootstrap cache via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          protocol: ftps
+          local-dir: ./deploy/bootstrap/cache/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
+          dangerous-clean-slate: true
+          log-level: standard
+
+      # ─── lftp: upload images + videos ────────────────────────────────────────
       # NOTE: use ftp:// (not ftps://) + ftp:ssl-force = explicit FTPS on port 21.
       # ftps:// tries implicit FTPS on port 990 which hangs on Hostinger.
       # Shell-level timeout 300s prevents steps from hanging indefinitely.
       - name: Install lftp
         run: sudo apt-get install -y lftp 2>/dev/null | tail -1
-
-      - name: Delete server bootstrap cache via lftp
-        run: |
-          timeout 60 lftp -c "
-            set net:timeout 20
-            set ftp:ssl-force true
-            set ssl:verify-certificate no
-            set ftp:passive-mode true
-            open ftp://${{ secrets.SSH_HOST }}
-            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
-            cd ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
-            glob rm -f *.php
-            bye
-          " 2>&1 && echo "✓ Bootstrap cache cleared" || echo "Cache clear done (files may not have existed or timed out — continuing)"
 
       - name: Upload images via lftp
         run: |
