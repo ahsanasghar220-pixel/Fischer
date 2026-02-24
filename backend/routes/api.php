@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\DeployWebhookController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +17,10 @@
 |   api/admin.php    — all admin routes (auth:sanctum + admin middleware)
 |
 */
+
+// Deploy webhook — defined here (top-level file) to guarantee it's always
+// registered regardless of sub-file loading issues on the server.
+Route::match(['GET', 'POST'], '/deploy-webhook', [DeployWebhookController::class, 'handle']);
 
 require __DIR__ . '/api/public.php';
 require __DIR__ . '/api/auth.php';
