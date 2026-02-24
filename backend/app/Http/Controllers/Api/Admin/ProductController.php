@@ -125,7 +125,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['category:id,name,slug', 'images'])->findOrFail($id);
+        $product = Product::with(['category:id,name,slug', 'images', 'variants'])->findOrFail($id);
 
         return $this->success($product);
     }

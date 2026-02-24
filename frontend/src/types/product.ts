@@ -14,7 +14,9 @@ export interface ProductVariant {
   price: number
   compare_price?: number
   stock: number
-  attributes: Record<string, string> | Array<{ attribute: string; value: string }>
+  stock_quantity?: number
+  is_active?: boolean
+  attributes?: Record<string, string> | Array<{ attribute: string; value: string }>
 }
 
 export interface Review {

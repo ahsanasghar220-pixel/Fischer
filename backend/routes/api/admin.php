@@ -21,6 +21,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
     Route::post('/products/import', [App\Http\Controllers\Api\Admin\ProductController::class, 'import']);
     Route::get('/products/export', [App\Http\Controllers\Api\Admin\ProductController::class, 'export']);
 
+    // Product Variants
+    Route::post('/products/{product}/variants', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'store']);
+    Route::put('/products/{product}/variants/{variant}', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'update']);
+    Route::delete('/products/{product}/variants/{variant}', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'destroy']);
+
     // Categories
     Route::apiResource('categories', App\Http\Controllers\Api\Admin\CategoryController::class);
 
