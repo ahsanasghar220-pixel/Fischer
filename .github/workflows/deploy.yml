@@ -4,9 +4,9 @@ name: Deploy to Hostinger
 # How this works (avoids Hostinger's SSH/port-22 firewall block on GH Actions):
 #
 #   1. Build frontend (Vite)
-#   2. Upload code via FTPS (port 21 — not blocked)
-#      • Backend PHP + compiled frontend JS/CSS — small, fast
-#      • Images/videos only when they actually changed — conditional
+#   2. Upload EVERYTHING via FTPS (port 21 — not blocked)
+#      • Backend PHP + compiled frontend JS/CSS/images/videos
+#      • FTP-Deploy-Action does differential sync — only changed files transfer
 #   3. Trigger HTTPS webhook on the server (port 443 — always open)
 #      • Server runs: composer install (if needed), migrate, seeders, cache
 #
@@ -71,14 +71,8 @@ jobs:
           fi
           echo "✓ Build ready ($(du -sh frontend/dist | cut -f1))"
 
-      - name: Check if static assets changed
-        id: check-assets
-        run: |
-          echo "changed=true" >> $GITHUB_OUTPUT
-          echo "Always uploading images/videos to keep server in sync"
-
-      # ─── Build code-only deployment package ────────────────────────────────
-      - name: Create code deployment package
+      # ─── Build full deployment package ──────────────────────────────────
+      - name: Create deployment package
         run: |
           mkdir -p deploy
 
@@ -86,8 +80,8 @@ jobs:
           cp -r backend/* deploy/
           rm -rf deploy/vendor
 
-          # Frontend build → public/  (images/ and videos/ excluded — too large)
-          rsync -a --exclude='images/' --exclude='videos/' frontend/dist/ deploy/public/
+          # Frontend build → public/  (includes images + videos)
+          rsync -a frontend/dist/ deploy/public/
 
           # Clean up files we don't need on the server
           rm -rf deploy/tests deploy/storage/logs/*
@@ -102,8 +96,10 @@ jobs:
             deploy/storage/logs \
             deploy/bootstrap/cache
 
-          echo "=== Code package: $(du -sh deploy | cut -f1) ==="
-          ls deploy/
+          echo "=== Deploy package: $(du -sh deploy | cut -f1) ==="
+          echo "=== Public dir: $(du -sh deploy/public | cut -f1) ==="
+          echo "=== Images: $(du -sh deploy/public/images 2>/dev/null | cut -f1 || echo 'none') ==="
+          echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
       # ─── FTP: upload code ──────────────────────────────────────────────────
       - name: Deploy code via FTPS
@@ -137,51 +133,6 @@ jobs:
           server-dir: ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
           dangerous-clean-slate: true
           log-level: standard
-
-      # ─── lftp: upload images + videos ────────────────────────────────────────
-      # NOTE: use ftp:// (not ftps://) + ftp:ssl-force = explicit FTPS on port 21.
-      # ftps:// tries implicit FTPS on port 990 which hangs on Hostinger.
-      # Shell-level timeout 300s prevents steps from hanging indefinitely.
-      - name: Install lftp
-        run: sudo apt-get install -y lftp 2>/dev/null | tail -1
-
-      - name: Upload images via lftp
-        run: |
-          set -o pipefail
-          timeout 300 lftp -c "
-            set net:timeout 30
-            set ftp:ssl-force true
-            set ssl:verify-certificate no
-            set ftp:passive-mode true
-            set net:reconnect-interval-base 5
-            set net:max-retries 3
-            open ftp://${{ secrets.SSH_HOST }}
-            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
-            mirror --reverse --only-newer --verbose \
-              ./frontend/public/images/ \
-              ${{ secrets.FTP_SERVER_DIR }}public/images/
-            bye
-          " 2>&1 | tail -30 || { echo "ERROR: lftp image upload failed"; exit 1; }
-          echo "✓ Images upload done"
-
-      - name: Upload videos via lftp
-        run: |
-          set -o pipefail
-          timeout 300 lftp -c "
-            set net:timeout 30
-            set ftp:ssl-force true
-            set ssl:verify-certificate no
-            set ftp:passive-mode true
-            set net:reconnect-interval-base 5
-            set net:max-retries 3
-            open ftp://${{ secrets.SSH_HOST }}
-            login ${{ secrets.SSH_USERNAME }} ${{ secrets.SSH_PASSWORD }}
-            mirror --reverse --only-newer --verbose \
-              ./frontend/public/videos/ \
-              ${{ secrets.FTP_SERVER_DIR }}public/videos/
-            bye
-          " 2>&1 | tail -10 || { echo "ERROR: lftp video upload failed"; exit 1; }
-          echo "✓ Videos upload done"
 
       # ─── Health check: verify Laravel boots before running webhook ────────
       - name: Verify server health
