@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/dist
-          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('frontend/src/**/*', 'frontend/public/**/*', 'frontend/index.html', 'frontend/vite.config.ts', 'frontend/tailwind.config.js') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
@@ -145,7 +145,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           protocol: ftps
-          local-dir: ./frontend/dist/images/
+          local-dir: ./frontend/public/images/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}public/images/
           dangerous-clean-slate: false
           log-level: minimal
@@ -159,7 +159,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           protocol: ftps
-          local-dir: ./frontend/dist/videos/
+          local-dir: ./frontend/public/videos/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}public/videos/
           dangerous-clean-slate: false
           log-level: minimal
@@ -177,11 +177,18 @@ jobs:
             "https://fischer.codeformulator.com/deploy-webhook.php")
 
           echo "--- Server response (HTTP $HTTP_STATUS) ---"
-          cat /tmp/webhook_out.txt | python3 -m json.tool 2>/dev/null || cat /tmp/webhook_out.txt
+          RESPONSE=$(cat /tmp/webhook_out.txt)
+          echo "$RESPONSE" | python3 -m json.tool 2>/dev/null || echo "$RESPONSE" | head -5
           echo ""
 
           if [ "$HTTP_STATUS" -ne 200 ]; then
             echo "ERROR: Webhook returned HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          # Detect if PHP didn't execute (Laravel SPA HTML returned instead of JSON)
+          if echo "$RESPONSE" | grep -q "<!DOCTYPE html>"; then
+            echo "ERROR: deploy-webhook.php returned HTML — PHP not executing or file missing on server"
             exit 1
           fi
 
