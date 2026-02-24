@@ -2,7 +2,7 @@
 
 /**
  * Standalone deploy webhook — bypasses Laravel route cache.
- * Force re-deploy: 2026-02-24
+ * Kept as fallback; primary webhook is now POST /api/deploy-webhook.
  *
  * Called by GitHub Actions after FTP upload. This file is served directly
  * by Apache (not through Laravel routing) so it works even when the

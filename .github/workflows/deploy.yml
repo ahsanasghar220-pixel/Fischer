@@ -165,6 +165,8 @@ jobs:
           log-level: minimal
 
       # ─── Webhook: composer + migrate + cache ──────────────────────────────
+      # Uses the Laravel route /api/deploy-webhook (POST) — safe because the
+      # bootstrap/cache wipe above ensures no stale route cache blocks it.
       - name: Run post-deployment tasks via webhook
         run: |
           echo "Triggering post-deployment tasks on server..."
@@ -173,8 +175,11 @@ jobs:
             --max-time 300 \
             -o /tmp/webhook_out.txt \
             -w "%{http_code}" \
+            -X POST \
             -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
-            "https://fischer.codeformulator.com/deploy-webhook.php")
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            "https://fischer.codeformulator.com/api/deploy-webhook")
 
           echo "--- Server response (HTTP $HTTP_STATUS) ---"
           RESPONSE=$(cat /tmp/webhook_out.txt)
@@ -186,9 +191,9 @@ jobs:
             exit 1
           fi
 
-          # Detect if PHP didn't execute (Laravel SPA HTML returned instead of JSON)
+          # Detect if PHP/Laravel returned HTML instead of JSON
           if echo "$RESPONSE" | grep -q "<!DOCTYPE html>"; then
-            echo "ERROR: deploy-webhook.php returned HTML — PHP not executing or file missing on server"
+            echo "ERROR: Webhook returned HTML — Laravel routing issue on server"
             exit 1
           fi
 
