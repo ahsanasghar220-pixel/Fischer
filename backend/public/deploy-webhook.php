@@ -8,8 +8,8 @@
  * route cache is stale.
  */
 
-// Only allow POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+// Allow GET or POST (Hostinger blocks POST to .php at server level)
+if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit;

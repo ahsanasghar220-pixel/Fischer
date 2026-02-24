@@ -181,10 +181,7 @@ jobs:
             --max-time 300 \
             -o /tmp/webhook_out.txt \
             -w "%{http_code}" \
-            -X POST \
             -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
-            -H "Content-Type: application/json" \
-            -d '{"deploy":true}' \
             "https://fischer.codeformulator.com/deploy-webhook.php")
 
           echo "--- Server response (HTTP $HTTP_STATUS) ---"
