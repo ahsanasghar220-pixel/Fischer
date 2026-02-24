@@ -69,7 +69,7 @@ class DeployWebhookController extends Controller
             $flagFile = base_path('SEED_ON_DEPLOY');
             if (file_exists($flagFile)) {
                 $extraSeeders = [
-                    'CategorySeeder', 'ProductSeeder', 'ProductDataSeeder',
+                    'CategorySeeder', 'ProductDataSeeder', 'ProductCorrectionSeeder',
                     'BannerSeeder', 'HomepageSeeder', 'SettingsSeeder', 'PageSeeder',
                 ];
                 foreach ($extraSeeders as $seeder) {
