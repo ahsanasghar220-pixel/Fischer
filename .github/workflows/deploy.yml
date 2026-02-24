@@ -131,6 +131,19 @@ jobs:
           dangerous-clean-slate: false
           log-level: minimal
 
+      # ─── FTP: wipe bootstrap/cache so stale route cache can't block webhook ──
+      - name: Clear server bootstrap cache via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          protocol: ftps
+          local-dir: ./deploy/bootstrap/cache/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}bootstrap/cache/
+          dangerous-clean-slate: true
+          log-level: minimal
+
       # ─── FTP: upload images (only when changed) ────────────────────────────
       - name: Upload changed images via FTPS
         if: steps.check-assets.outputs.changed == 'true'
