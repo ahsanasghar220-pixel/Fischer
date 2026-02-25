@@ -97,18 +97,20 @@ jobs:
           sudo apt-get install -qq -y lftp > /dev/null 2>&1
 
           echo "Uploading deploy package via lftp mirror..."
-          lftp -u "${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }}" -e "
-            set ftp:ssl-force yes
-            set ssl:verify-certificate no
-            set net:max-retries 3
-            set net:reconnect-interval-base 5
-            mirror --reverse --verbose --only-newer --no-perms --parallel=5 \
-              --exclude-glob .git* \
-              --exclude-glob .env \
-              --exclude-glob node_modules/ \
-              ./deploy/ ${{ secrets.FTP_SERVER_DIR }}
-            bye
-          " "${{ secrets.SSH_HOST }}"
+          lftp <<EOF
+          set ftp:ssl-force yes
+          set ftp:ssl-protect-data yes
+          set ssl:verify-certificate no
+          set net:max-retries 3
+          set net:reconnect-interval-base 5
+          open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}
+          mirror --reverse --verbose --only-newer --no-perms --parallel=5 \
+            --exclude-glob .git* \
+            --exclude-glob .env \
+            --exclude-glob node_modules/ \
+            ./deploy/ ${{ secrets.FTP_SERVER_DIR }}
+          bye
+          EOF
 
           echo "✓ FTP upload complete"
 
