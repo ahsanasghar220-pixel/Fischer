@@ -153,6 +153,7 @@ class ProductController extends Controller
             'dimensions' => 'nullable|string|max:100',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'specifications' => 'nullable|string',
         ]);
 
         if (isset($validated['stock'])) {
@@ -204,6 +205,7 @@ class ProductController extends Controller
             'dimensions' => 'nullable|string|max:100',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            'specifications' => 'nullable|string',
         ]);
 
         if (isset($validated['stock'])) {

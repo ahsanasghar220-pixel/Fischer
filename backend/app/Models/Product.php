@@ -56,7 +56,7 @@ class Product extends Model
         'dealer_price' => 'decimal:2',
         'weight' => 'decimal:3',
         'dimensions' => 'array',
-        'specifications' => 'array',
+
         'meta_keywords' => 'array',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',

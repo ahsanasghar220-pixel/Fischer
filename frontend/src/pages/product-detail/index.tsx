@@ -28,7 +28,7 @@ export default function ProductDetail() {
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [showCartModal, setShowCartModal] = useState(false)
   const [addedProduct, setAddedProduct] = useState<{id: number, name: string, primary_image?: string, price: number, quantity: number} | null>(null)
-  const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description')
+  const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description')
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [canReview, setCanReview] = useState<boolean | null>(null)

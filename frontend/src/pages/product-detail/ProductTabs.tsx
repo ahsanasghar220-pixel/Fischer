@@ -3,12 +3,20 @@ import type { Product } from '@/types'
 
 interface ProductTabsProps {
   product: Product
-  activeTab: 'description' | 'reviews'
-  onTabChange: (tab: 'description' | 'reviews') => void
+  activeTab: 'description' | 'specifications' | 'reviews'
+  onTabChange: (tab: 'description' | 'specifications' | 'reviews') => void
   reviewsContent: React.ReactNode
 }
 
 export default function ProductTabs({ product, activeTab, onTabChange, reviewsContent }: ProductTabsProps) {
+  const hasSpecs = !!product.specifications && product.specifications.trim() !== '' && product.specifications !== '<p></p>'
+
+  const tabs: Array<{ key: 'description' | 'specifications' | 'reviews'; label: string; show: boolean }> = [
+    { key: 'description', label: 'Description', show: true },
+    { key: 'specifications', label: 'Specifications', show: hasSpecs },
+    { key: 'reviews', label: `Reviews (${product.review_count || 0})`, show: true },
+  ]
+
   return (
     <motion.div
       className="bg-white dark:bg-dark-900 rounded-xl overflow-hidden border border-dark-200 dark:border-dark-700"
@@ -19,20 +27,19 @@ export default function ProductTabs({ product, activeTab, onTabChange, reviewsCo
     >
       {/* Tab Headers */}
       <div className="flex border-b border-dark-200 dark:border-dark-700">
-        {(['description', 'reviews'] as const).map((tab) => (
+        {tabs.filter(t => t.show).map((tab) => (
           <motion.button
-            key={tab}
-            onClick={() => onTabChange(tab)}
+            key={tab.key}
+            onClick={() => onTabChange(tab.key)}
             className={`flex-1 py-4 px-2 sm:px-6 text-center font-medium transition-colors relative text-xs sm:text-sm md:text-base whitespace-nowrap ${
-              activeTab === tab
+              activeTab === tab.key
                 ? 'text-primary-600 dark:text-primary-400'
                 : 'text-dark-500 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white'
             }`}
             whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
           >
-            {tab === 'description' && 'Description'}
-            {tab === 'reviews' && `Reviews (${product.review_count || 0})`}
-            {activeTab === tab && (
+            {tab.label}
+            {activeTab === tab.key && (
               <motion.div
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500"
                 layoutId="activeTab"
@@ -77,6 +84,49 @@ export default function ProductTabs({ product, activeTab, onTabChange, reviewsCo
                   <p className="text-dark-600 dark:text-dark-400">{product.warranty_info}</p>
                 </motion.div>
               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'specifications' && hasSpecs && (
+            <motion.div
+              key="specifications"
+              className="prose dark:prose-invert max-w-none"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div
+                className="text-dark-700 dark:text-dark-300 leading-relaxed specs-content"
+                dangerouslySetInnerHTML={{ __html: product.specifications! }}
+              />
+              <style>{`
+                .specs-content table {
+                  border-collapse: collapse;
+                  width: 100%;
+                  margin: 0.75rem 0;
+                }
+                .specs-content th,
+                .specs-content td {
+                  border: 1px solid #e5e7eb;
+                  padding: 8px 12px;
+                  text-align: left;
+                  vertical-align: top;
+                }
+                .specs-content th {
+                  background: #f9fafb;
+                  font-weight: 600;
+                  color: #111827;
+                }
+                .dark .specs-content th {
+                  background: #1f2937;
+                  border-color: #374151;
+                  color: #f9fafb;
+                }
+                .dark .specs-content td {
+                  border-color: #374151;
+                }
+              `}</style>
             </motion.div>
           )}
 

@@ -76,7 +76,7 @@ export interface Product {
   brand_id?: number | null
   weight?: number | null
   dimensions?: string | null
-  specifications?: Record<string, string>
+  specifications?: string | null
   warranty_info?: string
   meta_title?: string | null
   meta_description?: string | null

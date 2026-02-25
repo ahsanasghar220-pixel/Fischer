@@ -21,6 +21,7 @@ type FormData = {
   sku: string
   description: string
   short_description: string
+  specifications: string
   price: string
   compare_price: string
   cost_price: string
@@ -50,6 +51,7 @@ export default function ProductEdit() {
     sku: '',
     description: '',
     short_description: '',
+    specifications: '',
     price: '',
     compare_price: '',
     cost_price: '',
@@ -113,6 +115,7 @@ export default function ProductEdit() {
         brand_id: product.brand_id?.toString() || '',
         weight: product.weight?.toString() || '',
         dimensions: product.dimensions || '',
+        specifications: product.specifications || '',
         meta_title: product.meta_title || '',
         meta_description: product.meta_description || '',
       })
@@ -248,6 +251,10 @@ export default function ProductEdit() {
     }))
   }
 
+  const handleSpecsChange = (html: string) => {
+    setFormData(prev => ({ ...prev, specifications: html }))
+  }
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
@@ -312,6 +319,7 @@ export default function ProductEdit() {
             errors={errors}
             categories={categories}
             onChange={handleChange}
+            onSpecsChange={handleSpecsChange}
           />
 
           <MediaTab

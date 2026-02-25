@@ -1,10 +1,12 @@
 import type { Category } from '@/types'
+import RichTextEditor from '@/components/admin/RichTextEditor'
 
 type FormData = {
   name: string
   sku: string
   description: string
   short_description: string
+  specifications: string
   price: string
   compare_price: string
   cost_price: string
@@ -28,9 +30,10 @@ interface BasicInfoTabProps {
   errors: Record<string, string>
   categories?: Category[]
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  onSpecsChange: (html: string) => void
 }
 
-export default function BasicInfoTab({ formData, errors, categories, onChange }: BasicInfoTabProps) {
+export default function BasicInfoTab({ formData, errors, categories, onChange, onSpecsChange }: BasicInfoTabProps) {
   return (
     <>
       {/* Basic Info */}
@@ -93,6 +96,19 @@ export default function BasicInfoTab({ formData, errors, categories, onChange }:
             />
           </div>
         </div>
+      </div>
+
+      {/* Specifications */}
+      <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-1">Product Specifications</h2>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mb-4">
+          Add spec details, feature lists, or tables. Supports bold, headings, bullet lists, and tables.
+        </p>
+        <RichTextEditor
+          value={formData.specifications}
+          onChange={onSpecsChange}
+          placeholder="e.g. Capacity: 35L, Power: 1500W, Dimensions: 45×35×30 cm…"
+        />
       </div>
 
       {/* Pricing */}

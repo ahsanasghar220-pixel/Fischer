@@ -137,7 +137,7 @@ if [ -d "backend" ]; then
     echo "Seeding roles & permissions..."
     php artisan db:seed --class=RolePermissionSeeder --force
 
-    # Seed homepage sections (safe - uses updateOrInsert, idempotent)
+    # Seed homepage sections (safe - only inserts missing sections, preserves existing is_enabled)
     echo "Seeding homepage sections..."
     php artisan db:seed --class=HomepageSeeder --force
 
