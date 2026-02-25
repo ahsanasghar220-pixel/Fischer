@@ -180,7 +180,7 @@ export default function Header() {
         {/* Main header */}
         <nav className="container-xl px-4 sm:px-6" aria-label="Top">
           {/* Mobile Layout - Hamburger | Logo (centered) | Cart */}
-          <div className="relative flex lg:hidden items-center justify-between h-14">
+          <div className="relative flex lg:hidden items-center justify-between h-16">
             {/* Left: Hamburger */}
             <button
               type="button"

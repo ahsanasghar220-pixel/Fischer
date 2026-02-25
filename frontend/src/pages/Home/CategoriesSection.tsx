@@ -102,7 +102,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
 
       {/* Content Side — top-aligned with small top padding so title is never cut */}
       <div className={`flex flex-col justify-start pt-2 sm:pt-0 sm:block overflow-hidden sm:overflow-visible ${!isEven ? 'order-1' : ''}`}>
-        <div className="space-y-1.5 sm:space-y-4 md:space-y-6">
+        <div className="space-y-1 sm:space-y-4 md:space-y-6">
           <h3 className="text-sm sm:text-xl md:text-2xl lg:text-4xl font-bold text-dark-900 dark:text-white leading-tight">
             {category.name}
           </h3>
@@ -120,7 +120,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
           </div>
 
           {/* CTA — text link on mobile, filled button on sm+ */}
-          <div className="pt-0.5 sm:pt-2">
+          <div className="sm:pt-2">
             <Link
               to={`/category/${category.slug}`}
               className="group inline-flex items-center gap-1 sm:gap-2
