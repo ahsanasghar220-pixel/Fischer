@@ -66,11 +66,11 @@ const CategoryShowcase = memo(function CategoryShowcase({
               ease: [0.16, 1, 0.3, 1],
             }
       }
-      className={`grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-8 lg:gap-14 items-center ${!isEven ? 'flex-row-reverse' : ''}`}
+      className={`grid grid-cols-2 gap-3 sm:gap-5 md:gap-8 lg:gap-14 items-center ${!isEven ? 'flex-row-reverse' : ''}`}
     >
       {/* Video/Image Side */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'order-2' : ''}`}>
-        <div className="relative aspect-video rounded-xl overflow-hidden shadow-md sm:shadow-xl bg-dark-100 dark:bg-dark-900">
+        <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-sm sm:shadow-xl bg-dark-100 dark:bg-dark-900">
           {!isMobile && videoSrc && isNearViewport ? (
             <video
               ref={videoRef}
@@ -102,21 +102,21 @@ const CategoryShowcase = memo(function CategoryShowcase({
 
       {/* Content Side */}
       <div className={`${!isEven ? 'order-1' : ''}`}>
-        <div className="space-y-2 sm:space-y-4 md:space-y-6">
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold text-dark-900 dark:text-white leading-tight">
+        <div className="space-y-1.5 sm:space-y-4 md:space-y-6">
+          <h3 className="text-sm sm:text-xl md:text-2xl lg:text-4xl font-bold text-dark-900 dark:text-white leading-tight">
             {category.name}
           </h3>
 
-          {/* Features list — 4 on mobile, 6 on sm+ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-3 md:gap-4">
+          {/* Features list — always 4 items, single column on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-3 md:gap-4">
             {getCategoryFeatures(category)
               .slice(0, 6)
               .map((feature, i) => (
-                <div key={i} className={`items-center gap-1.5 sm:gap-3 min-w-0 ${i >= 4 ? 'hidden sm:flex' : 'flex'}`}>
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
-                    <CheckCircleIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
+                <div key={i} className={`items-center gap-1 sm:gap-3 min-w-0 ${i >= 4 ? 'hidden sm:flex' : 'flex'}`}>
+                  <div className="w-3 h-3 sm:w-5 sm:h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
+                    <CheckCircleIcon className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                   </div>
-                  <span className="text-dark-700 dark:text-dark-300 text-xs sm:text-sm md:text-base font-medium line-clamp-1">{feature}</span>
+                  <span className="text-dark-700 dark:text-dark-300 text-[10px] sm:text-sm md:text-base font-medium line-clamp-1">{feature}</span>
                 </div>
               ))}
           </div>
@@ -125,15 +125,15 @@ const CategoryShowcase = memo(function CategoryShowcase({
           <div className="pt-0 sm:pt-2">
             <Link
               to={`/category/${category.slug}`}
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-lg sm:rounded-xl
+              className="inline-flex items-center gap-1 sm:gap-2 px-2 py-1 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-md sm:rounded-xl
                        bg-primary-500 dark:bg-primary-600
-                       text-white text-xs sm:text-sm md:text-base font-semibold
+                       text-white text-[10px] sm:text-sm md:text-base font-semibold
                        hover:bg-primary-600 dark:hover:bg-primary-700
                        hover:shadow-lg hover:-translate-y-0.5
                        transition-all duration-300"
             >
               Explore {category.name}
-              <ArrowRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <ArrowRightIcon className="w-2.5 h-2.5 sm:w-4 sm:h-4" />
             </Link>
           </div>
         </div>
@@ -176,7 +176,7 @@ export default function CategoriesSection({
             <p className="text-lg text-dark-600 dark:text-dark-400 max-w-2xl mx-auto">{subtitle}</p>
           </div>
         </AnimatedSection>
-        <div className="space-y-10 sm:space-y-12 md:space-y-16 lg:space-y-20 overflow-hidden max-w-5xl mx-auto">
+        <div className="space-y-6 sm:space-y-12 md:space-y-16 lg:space-y-20 overflow-hidden max-w-5xl mx-auto">
           {displayCategories.map((category, index) => (
             <CategoryShowcase
               key={category.id}
