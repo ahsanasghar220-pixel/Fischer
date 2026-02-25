@@ -89,43 +89,47 @@ jobs:
           echo "=== Images: $(du -sh deploy/public/images 2>/dev/null | cut -f1 || echo 'none') ==="
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
-      # ─── FTP: upload via lftp mirror ──────────────────────────────────────
-      # Uses lftp instead of FTP-Deploy-Action (whose .in.* temp file rename
-      # silently fails on Hostinger). Script file avoids heredoc issues.
+      # ─── FTP: upload via lftp ─────────────────────────────────────────────
       - name: Deploy via FTPS
         run: |
           sudo apt-get install -qq -y lftp > /dev/null 2>&1
 
-          cat > /tmp/deploy.lftp <<LFTP
-          set ftp:ssl-force yes
-          set ftp:ssl-protect-data yes
-          set ssl:verify-certificate no
-          set net:max-retries 3
-          set net:reconnect-interval-base 5
-          open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}
-          mirror --reverse --verbose --no-perms --parallel=5 \
-            --exclude-glob .git* \
-            --exclude-glob .env \
-            --exclude-glob node_modules/ \
-            ./deploy/ ${{ secrets.FTP_SERVER_DIR }}
-          bye
-          LFTP
+          # Step 1: Test basic FTP upload with a single file
+          echo "ftp-test-$(date +%s)" > /tmp/ftp-test.txt
+          echo "Testing FTP connection with single file upload..."
+          lftp -e "set ftp:ssl-force yes; set ftp:ssl-protect-data yes; set ssl:verify-certificate no; open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}; put /tmp/ftp-test.txt -o ${{ secrets.FTP_SERVER_DIR }}public/ftp-test.txt; bye"
 
-          echo "Uploading deploy package via lftp mirror..."
-          lftp -f /tmp/deploy.lftp
-
-          echo ""
-          echo "Verifying upload..."
-          VERIFY=$(curl -s -o /dev/null -w "%{content_type}" "https://fischer.codeformulator.com/deploy-tasks.php")
-          if echo "$VERIFY" | grep -q "application/json"; then
-            echo "✓ FTP upload verified — deploy-tasks.php is reachable"
+          echo "Verifying test file..."
+          TEST_RESULT=$(curl -s "https://fischer.codeformulator.com/ftp-test.txt")
+          if echo "$TEST_RESULT" | grep -q "ftp-test-"; then
+            echo "✓ Single file FTP upload works!"
           else
-            echo "ERROR: deploy-tasks.php not found on server after upload"
-            echo "Content-Type returned: $VERIFY"
-            echo "Listing remote public/ dir for diagnostics..."
-            lftp -f /tmp/deploy.lftp <<< "ls ${{ secrets.FTP_SERVER_DIR }}public/*.php; bye" 2>&1 || true
+            echo "✗ Single file upload FAILED — FTP cannot write to server"
+            echo "Got: $TEST_RESULT"
             exit 1
           fi
+
+          # Step 2: Upload deploy package via mirror (single-line command)
+          echo ""
+          echo "Uploading full deploy package..."
+          lftp -e "set ftp:ssl-force yes; set ftp:ssl-protect-data yes; set ssl:verify-certificate no; set net:max-retries 3; open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}; mirror --reverse --verbose --no-perms --parallel=5 --exclude-glob .git* --exclude-glob .env --exclude-glob node_modules/ ./deploy/ ${{ secrets.FTP_SERVER_DIR }}; bye"
+
+          # Step 3: Verify real files uploaded
+          echo ""
+          echo "Verifying deploy-tasks.php..."
+          VERIFY=$(curl -s -o /dev/null -w "%{content_type}" "https://fischer.codeformulator.com/deploy-tasks.php")
+          if echo "$VERIFY" | grep -q "application/json"; then
+            echo "✓ Upload verified"
+          else
+            echo "✗ mirror failed — deploy-tasks.php not on server (got: $VERIFY)"
+            echo "Trying direct file uploads as fallback..."
+            lftp -e "set ftp:ssl-force yes; set ftp:ssl-protect-data yes; set ssl:verify-certificate no; open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}; put deploy/public/deploy-tasks.php -o ${{ secrets.FTP_SERVER_DIR }}public/deploy-tasks.php; bye"
+            echo "Checking fallback..."
+            VERIFY2=$(curl -s -o /dev/null -w "%{content_type}" "https://fischer.codeformulator.com/deploy-tasks.php")
+            echo "deploy-tasks.php content-type: $VERIFY2"
+          fi
+
+          echo "✓ FTP upload complete"
 
       # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────
       # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
