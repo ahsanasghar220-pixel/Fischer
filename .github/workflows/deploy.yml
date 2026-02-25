@@ -90,30 +90,42 @@ jobs:
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
       # ─── FTP: upload via lftp mirror ──────────────────────────────────────
-      # Replaced FTP-Deploy-Action — its .in.* temp file rename silently fails
-      # on Hostinger's FTP, leaving files as hidden temp files instead of the
-      # actual filenames. lftp mirror uploads files directly without this issue.
+      # Uses lftp instead of FTP-Deploy-Action (whose .in.* temp file rename
+      # silently fails on Hostinger). Script file avoids heredoc issues.
       - name: Deploy via FTPS
         run: |
           sudo apt-get install -qq -y lftp > /dev/null 2>&1
 
-          echo "Uploading deploy package via lftp mirror..."
-          lftp <<EOF
+          cat > /tmp/deploy.lftp <<LFTP
           set ftp:ssl-force yes
           set ftp:ssl-protect-data yes
           set ssl:verify-certificate no
           set net:max-retries 3
           set net:reconnect-interval-base 5
           open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }}
-          mirror --reverse --verbose --only-newer --no-perms --parallel=5 \
+          mirror --reverse --verbose --no-perms --parallel=5 \
             --exclude-glob .git* \
             --exclude-glob .env \
             --exclude-glob node_modules/ \
             ./deploy/ ${{ secrets.FTP_SERVER_DIR }}
           bye
-          EOF
+          LFTP
 
-          echo "✓ FTP upload complete"
+          echo "Uploading deploy package via lftp mirror..."
+          lftp -f /tmp/deploy.lftp
+
+          echo ""
+          echo "Verifying upload..."
+          VERIFY=$(curl -s -o /dev/null -w "%{content_type}" "https://fischer.codeformulator.com/deploy-tasks.php")
+          if echo "$VERIFY" | grep -q "application/json"; then
+            echo "✓ FTP upload verified — deploy-tasks.php is reachable"
+          else
+            echo "ERROR: deploy-tasks.php not found on server after upload"
+            echo "Content-Type returned: $VERIFY"
+            echo "Listing remote public/ dir for diagnostics..."
+            lftp -f /tmp/deploy.lftp <<< "ls ${{ secrets.FTP_SERVER_DIR }}public/*.php; bye" 2>&1 || true
+            exit 1
+          fi
 
       # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────
       # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
