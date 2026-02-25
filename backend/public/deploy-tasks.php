@@ -45,9 +45,13 @@ try {
     $output[] = 'caches cleared';
 
     // Migrations
-    Artisan::call('migrate', ['--force' => true]);
-    $migrateOut = trim(Artisan::output());
-    $output[]   = 'migrate: ' . ($migrateOut ?: 'up to date');
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        $migrateOut = trim(Artisan::output());
+        $output[]   = 'migrate: ' . ($migrateOut ?: 'up to date');
+    } catch (\Throwable $e) {
+        $output[] = 'migrate: FAILED (' . $e->getMessage() . ')';
+    }
 
     // Safe seeders (idempotent — safe to run every deploy)
     $seeders = [

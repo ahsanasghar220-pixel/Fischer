@@ -57,7 +57,7 @@ return new class extends Migration
             DB::table('shipping_zone_rates')->insertOrIgnore([
                 'shipping_zone_id' => $lahoreZoneId,
                 'shipping_method_id' => $method->id,
-                'base_cost' => 0,
+                'rate' => 0,
                 'free_shipping_threshold' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
