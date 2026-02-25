@@ -93,8 +93,15 @@ class MarketingController extends Controller
             'device_breakdown' => $deviceBreakdown,
         ]);
         } catch (\Throwable $e) {
+            $emptyKpi = ['value' => 0, 'previous' => 0, 'change' => 0];
             return response()->json([
-                'kpis'             => [],
+                'kpis' => [
+                    'revenue'         => $emptyKpi,
+                    'orders'          => $emptyKpi,
+                    'aov'             => $emptyKpi,
+                    'conversion_rate' => $emptyKpi,
+                    'visitors'        => $emptyKpi,
+                ],
                 'chart_data'       => [],
                 'by_source'        => [],
                 'funnel'           => ['visitors' => 0, 'product_views' => 0, 'add_to_cart' => 0, 'checkout' => 0, 'purchase' => 0],
