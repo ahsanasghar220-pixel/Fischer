@@ -66,7 +66,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
               ease: [0.16, 1, 0.3, 1],
             }
       }
-      className={`grid grid-cols-2 gap-3 sm:gap-5 md:gap-8 lg:gap-14 h-32 sm:h-auto items-stretch sm:items-center ${!isEven ? 'flex-row-reverse' : ''}`}
+      className={`grid grid-cols-2 gap-3 sm:gap-5 md:gap-8 lg:gap-14 h-36 sm:h-auto items-stretch sm:items-center ${!isEven ? 'flex-row-reverse' : ''}`}
     >
       {/* Video/Image Side — fixed row height on mobile, image fills via object-cover */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'order-2' : ''}`}>
@@ -100,8 +100,8 @@ const CategoryShowcase = memo(function CategoryShowcase({
         </div>
       </div>
 
-      {/* Content Side — flex+justify-center so text is vertically centred in the fixed row */}
-      <div className={`flex flex-col justify-center sm:block overflow-hidden sm:overflow-visible ${!isEven ? 'order-1' : ''}`}>
+      {/* Content Side — top-aligned with small top padding so title is never cut */}
+      <div className={`flex flex-col justify-start pt-2 sm:pt-0 sm:block overflow-hidden sm:overflow-visible ${!isEven ? 'order-1' : ''}`}>
         <div className="space-y-1.5 sm:space-y-4 md:space-y-6">
           <h3 className="text-sm sm:text-xl md:text-2xl lg:text-4xl font-bold text-dark-900 dark:text-white leading-tight">
             {category.name}
@@ -112,10 +112,8 @@ const CategoryShowcase = memo(function CategoryShowcase({
             {getCategoryFeatures(category)
               .slice(0, 6)
               .map((feature, i) => (
-                <div key={i} className={`items-center gap-1 sm:gap-3 min-w-0 ${i >= 4 ? 'hidden sm:flex' : 'flex'}`}>
-                  <div className="w-3 h-3 sm:w-5 sm:h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
-                    <CheckCircleIcon className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                  </div>
+                <div key={i} className={`items-center gap-1.5 sm:gap-3 min-w-0 ${i >= 4 ? 'hidden sm:flex' : 'flex'}`}>
+                  <CheckCircleIcon className="w-3 h-3 sm:w-[18px] sm:h-[18px] text-primary-500 flex-shrink-0" />
                   <span className="text-dark-700 dark:text-dark-300 text-[10px] sm:text-sm md:text-base font-medium line-clamp-1">{feature}</span>
                 </div>
               ))}
