@@ -15,6 +15,7 @@ name: Deploy to Hostinger
 #   FTP_SERVER_DIR      — FTP path to app root WITH trailing slash
 #                         e.g. "public_html/" or "domains/example.com/public_html/"
 #   VITE_API_URL        — Backend API URL for frontend build
+#   DEPLOY_WEBHOOK_SECRET — Shared secret for post-deploy tasks
 # ─────────────────────────────────────────────────────────────────────────────
 
 on:
@@ -113,6 +114,37 @@ jobs:
           EOF
 
           echo "✓ FTP upload complete"
+
+      # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────
+      # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
+      # This is why it works — previous webhook failed because FTP-Deploy-Action
+      # never actually uploaded the PHP file due to .in.* rename failures.
+      - name: Run post-deployment tasks
+        run: |
+          echo "Running migrations, seeders, and cache rebuild..."
+
+          HTTP_STATUS=$(curl -s \
+            --max-time 300 \
+            -o /tmp/deploy_out.txt \
+            -w "%{http_code}" \
+            -H "X-Deploy-Secret: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}" \
+            "https://fischer.codeformulator.com/deploy-tasks.php")
+
+          echo "--- Server response (HTTP $HTTP_STATUS) ---"
+          cat /tmp/deploy_out.txt | python3 -m json.tool 2>/dev/null || cat /tmp/deploy_out.txt | head -5
+          echo ""
+
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "WARNING: Post-deploy tasks returned HTTP $HTTP_STATUS"
+            exit 1
+          fi
+
+          if cat /tmp/deploy_out.txt | python3 -c "import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('success') else 1)" 2>/dev/null; then
+            echo "✓ Post-deployment tasks completed"
+          else
+            echo "WARNING: Post-deploy tasks reported failure — check output above"
+            exit 1
+          fi
 
       - name: Notify on success
         if: success()
