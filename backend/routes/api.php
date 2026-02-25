@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Route;
 |   api/customer.php — account, orders, wishlist, addresses (auth:sanctum)
 |   api/admin.php    — all admin routes (auth:sanctum + admin middleware)
 |
-| Deploy webhook is registered in routes/web.php as GET /deploy-run
-| (web routes bypass route cache — reliable for deployment).
 |
 */
 

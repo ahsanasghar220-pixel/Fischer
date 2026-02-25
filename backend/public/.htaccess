@@ -25,8 +25,7 @@ DirectoryIndex index.html index.php
     # Laravel backend routes - API and utility endpoints
     RewriteCond %{REQUEST_URI} ^/api [NC,OR]
     RewriteCond %{REQUEST_URI} ^/sanctum [NC,OR]
-    RewriteCond %{REQUEST_URI} ^/up$ [NC,OR]
-    RewriteCond %{REQUEST_URI} ^/deploy-run$ [NC]
+    RewriteCond %{REQUEST_URI} ^/up$ [NC]
     RewriteRule ^ index.php [L]
 
     # Serve existing files directly (images, CSS, JS, etc.)
