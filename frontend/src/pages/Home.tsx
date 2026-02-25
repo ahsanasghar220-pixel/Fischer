@@ -519,7 +519,7 @@ export default function Home() {
 
       <div className="bg-white dark:bg-dark-950">
         {/* Hero is always first */}
-        <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
+        <section className="relative h-[56vw] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
           {(isMobile && !heroMobileVideoEnabled) ? (
             /* Mobile: static poster image — video is LCP killer on mobile */
             <img
@@ -539,8 +539,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
               )}
               {!videoError && <video
-                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-cover object-center`}
-                style={{ objectPosition: 'center center' }}
+                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
                 autoPlay loop muted playsInline preload="none"
                 onCanPlayThrough={() => setVideoLoaded(true)}
                 onLoadedData={() => setVideoLoaded(true)}
