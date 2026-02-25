@@ -89,8 +89,7 @@ jobs:
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
       # ─── FTP: upload all files ─────────────────────────────────────────────
-      # state-name forces a fresh sync — previous sync state missed new files.
-      # After this succeeds, the v2 state file will be used for future diffs.
+      # state-name v3: force fresh sync — v2 state was stale (missing images/videos)
       - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -100,7 +99,7 @@ jobs:
           protocol: ftps
           local-dir: ./deploy/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          state-name: .ftp-deploy-sync-state-v2.json
+          state-name: .ftp-deploy-sync-state-v3.json
           exclude: |
             **/.git*
             **/.git*/**
