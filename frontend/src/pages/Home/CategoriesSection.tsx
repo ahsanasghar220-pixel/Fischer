@@ -66,11 +66,11 @@ const CategoryShowcase = memo(function CategoryShowcase({
               ease: [0.16, 1, 0.3, 1],
             }
       }
-      className={`grid grid-cols-2 gap-3 sm:gap-5 md:gap-8 lg:gap-14 items-center ${!isEven ? 'flex-row-reverse' : ''}`}
+      className={`grid grid-cols-2 gap-3 sm:gap-5 md:gap-8 lg:gap-14 items-stretch sm:items-center ${!isEven ? 'flex-row-reverse' : ''}`}
     >
-      {/* Video/Image Side */}
+      {/* Video/Image Side — h-full on mobile so image matches text column height */}
       <div ref={videoContainerRef} className={`relative ${!isEven ? 'order-2' : ''}`}>
-        <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-sm sm:shadow-xl bg-dark-100 dark:bg-dark-900">
+        <div className="relative h-full min-h-[90px] sm:aspect-video sm:h-auto rounded-lg sm:rounded-xl overflow-hidden shadow-sm sm:shadow-xl bg-dark-100 dark:bg-dark-900">
           {!isMobile && videoSrc && isNearViewport ? (
             <video
               ref={videoRef}
