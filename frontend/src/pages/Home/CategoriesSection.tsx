@@ -121,20 +121,21 @@ const CategoryShowcase = memo(function CategoryShowcase({
               ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="pt-0 sm:pt-2">
+          {/* CTA — text link on mobile, filled button on sm+ */}
+          <div className="pt-0.5 sm:pt-2">
             <Link
               to={`/category/${category.slug}`}
-              className="inline-flex items-center gap-1 sm:gap-2 px-2.5 py-1 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-md sm:rounded-xl
-                       bg-primary-500 dark:bg-primary-600
-                       text-white text-[10px] sm:text-sm md:text-base font-semibold
-                       hover:bg-primary-600 dark:hover:bg-primary-700
-                       hover:shadow-lg hover:-translate-y-0.5
-                       transition-all duration-300"
+              className="group inline-flex items-center gap-1 sm:gap-2
+                         text-primary-600 dark:text-primary-400 text-[11px] font-semibold
+                         sm:px-5 sm:py-2.5 md:px-6 md:py-3 sm:rounded-xl
+                         sm:bg-primary-500 sm:dark:bg-primary-600 sm:text-white sm:text-sm md:text-base
+                         sm:hover:bg-primary-600 sm:dark:hover:bg-primary-700
+                         sm:hover:shadow-lg sm:hover:-translate-y-0.5
+                         transition-all duration-300"
             >
-              <span className="sm:hidden">Explore</span>
+              <span className="sm:hidden">View all</span>
               <span className="hidden sm:inline">Explore {category.name}</span>
-              <ArrowRightIcon className="w-2.5 h-2.5 sm:w-4 sm:h-4" />
+              <ArrowRightIcon className="w-2.5 h-2.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 sm:group-hover:translate-x-0 transition-transform" />
             </Link>
           </div>
         </div>

@@ -64,6 +64,12 @@ export default function Home() {
     },
   })
 
+  // Always start at top of page — prevents browser scroll-restore from
+  // showing the footer before sections have loaded.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   // Defer hero video loading until after initial paint to avoid blocking LCP
   useEffect(() => {
     if ('requestIdleCallback' in window) {
@@ -561,6 +567,10 @@ export default function Home() {
         </section>
 
         {/* Dynamic sections rendered in sort_order from admin */}
+        {/* While the API is loading, many data-dependent sections (categories,
+            bestsellers, etc.) return null and have no height. Without this
+            placeholder the footer jumps to just below the hero. */}
+        {!data && <div className="min-h-screen" aria-hidden="true" />}
         <Suspense fallback={null}>
           {sortedSectionKeys.map((key) => {
             // Skip hero (rendered above) and sections without a renderer
