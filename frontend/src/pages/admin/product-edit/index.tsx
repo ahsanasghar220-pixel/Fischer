@@ -251,6 +251,14 @@ export default function ProductEdit() {
     }))
   }
 
+  const handleDescriptionChange = (html: string) => {
+    setFormData(prev => ({ ...prev, description: html }))
+  }
+
+  const handleShortDescriptionChange = (html: string) => {
+    setFormData(prev => ({ ...prev, short_description: html }))
+  }
+
   const handleSpecsChange = (html: string) => {
     setFormData(prev => ({ ...prev, specifications: html }))
   }
@@ -319,6 +327,8 @@ export default function ProductEdit() {
             errors={errors}
             categories={categories}
             onChange={handleChange}
+            onDescriptionChange={handleDescriptionChange}
+            onShortDescriptionChange={handleShortDescriptionChange}
             onSpecsChange={handleSpecsChange}
           />
 

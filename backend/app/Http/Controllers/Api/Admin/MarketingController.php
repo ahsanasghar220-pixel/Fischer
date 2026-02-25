@@ -24,7 +24,11 @@ class MarketingController extends Controller
 
     public function integrations(): JsonResponse
     {
-        return response()->json(['data' => $this->integrationService->getAll()]);
+        try {
+            return response()->json(['data' => $this->integrationService->getAll()]);
+        } catch (\Throwable $e) {
+            return response()->json(['data' => []]);
+        }
     }
 
     public function saveIntegration(Request $request): JsonResponse
@@ -46,6 +50,7 @@ class MarketingController extends Controller
 
     public function dashboard(Request $request): JsonResponse
     {
+        try {
         // --- Resolve date ranges -------------------------------------------
         $from = Carbon::parse($request->get('from', now()->subDays(30)->toDateString()))->startOfDay();
         $to   = Carbon::parse($request->get('to', now()->toDateString()))->endOfDay();
@@ -87,6 +92,17 @@ class MarketingController extends Controller
             'abandoned_carts' => $abandonedSummary,
             'device_breakdown' => $deviceBreakdown,
         ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'kpis'             => [],
+                'chart_data'       => [],
+                'by_source'        => [],
+                'funnel'           => ['visitors' => 0, 'product_views' => 0, 'add_to_cart' => 0, 'checkout' => 0, 'purchase' => 0],
+                'top_campaigns'    => [],
+                'abandoned_carts'  => ['total' => 0, 'recovered' => 0, 'recovery_rate' => 0, 'lost_revenue' => 0, 'recovered_revenue' => 0],
+                'device_breakdown' => [],
+            ]);
+        }
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -95,6 +111,7 @@ class MarketingController extends Controller
 
     public function conversions(Request $request): JsonResponse
     {
+        try {
         $query = MarketingConversionLog::query()->orderByDesc('created_at');
 
         if ($platform = $request->get('platform')) {
@@ -147,6 +164,12 @@ class MarketingController extends Controller
             'summary' => $summary,
             'data'    => $logs,
         ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'summary' => ['total' => 0, 'successful' => 0, 'failed' => 0, 'pending' => 0, 'by_platform' => []],
+                'data'    => ['data' => [], 'total' => 0, 'per_page' => 20, 'current_page' => 1, 'last_page' => 1],
+            ]);
+        }
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -155,6 +178,7 @@ class MarketingController extends Controller
 
     public function abandonedCarts(Request $request): JsonResponse
     {
+        try {
         $query = AbandonedCart::query()->orderByDesc('last_activity_at');
 
         // Filters
@@ -194,14 +218,22 @@ class MarketingController extends Controller
             ])
             ->first();
 
-        $summary->recovery_rate = $summary->total > 0
-            ? round(($summary->recovered / $summary->total) * 100, 1)
-            : 0;
+        if ($summary) {
+            $summary->recovery_rate = $summary->total > 0
+                ? round(($summary->recovered / $summary->total) * 100, 1)
+                : 0;
+        }
 
         return response()->json([
             'summary' => $summary,
             'data'    => $carts,
         ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'summary' => ['total' => 0, 'recovered' => 0, 'reminders_sent' => 0, 'total_value' => 0, 'recovered_value' => 0, 'lost_value' => 0, 'avg_cart_value' => 0, 'recovery_rate' => 0],
+                'data'    => ['data' => [], 'total' => 0, 'per_page' => 20, 'current_page' => 1, 'last_page' => 1],
+            ]);
+        }
     }
 
     public function resendReminder(AbandonedCart $cart): JsonResponse

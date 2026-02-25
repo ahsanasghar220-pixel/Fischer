@@ -30,10 +30,12 @@ interface BasicInfoTabProps {
   errors: Record<string, string>
   categories?: Category[]
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  onDescriptionChange: (html: string) => void
+  onShortDescriptionChange: (html: string) => void
   onSpecsChange: (html: string) => void
 }
 
-export default function BasicInfoTab({ formData, errors, categories, onChange, onSpecsChange }: BasicInfoTabProps) {
+export default function BasicInfoTab({ formData, errors, categories, onChange, onDescriptionChange, onShortDescriptionChange, onSpecsChange }: BasicInfoTabProps) {
   return (
     <>
       {/* Basic Info */}
@@ -74,12 +76,13 @@ export default function BasicInfoTab({ formData, errors, categories, onChange, o
             <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
               Short Description
             </label>
-            <textarea
-              name="short_description"
+            <p className="text-xs text-dark-400 dark:text-dark-500 mb-2">
+              Shown on product cards in the shop, category pages, and search results.
+            </p>
+            <RichTextEditor
               value={formData.short_description}
-              onChange={onChange}
-              rows={2}
-              className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onChange={onShortDescriptionChange}
+              placeholder="Brief overview shown on product listings…"
             />
           </div>
 
@@ -87,12 +90,13 @@ export default function BasicInfoTab({ formData, errors, categories, onChange, o
             <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
               Full Description
             </label>
-            <textarea
-              name="description"
+            <p className="text-xs text-dark-400 dark:text-dark-500 mb-2">
+              Shown in the "Description" tab on the product detail page.
+            </p>
+            <RichTextEditor
               value={formData.description}
-              onChange={onChange}
-              rows={5}
-              className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+              onChange={onDescriptionChange}
+              placeholder="Detailed product description…"
             />
           </div>
         </div>
@@ -101,8 +105,11 @@ export default function BasicInfoTab({ formData, errors, categories, onChange, o
       {/* Specifications */}
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-6">
         <h2 className="text-lg font-semibold text-dark-900 dark:text-white mb-1">Product Specifications</h2>
-        <p className="text-sm text-dark-500 dark:text-dark-400 mb-4">
-          Add spec details, feature lists, or tables. Supports bold, headings, bullet lists, and tables.
+        <p className="text-sm text-dark-500 dark:text-dark-400 mb-1">
+          Shown in the "Specifications" tab on the product detail page (only visible when content is added).
+        </p>
+        <p className="text-xs text-dark-400 dark:text-dark-500 mb-4">
+          Supports bold, headings, bullet lists, and tables for structured specs.
         </p>
         <RichTextEditor
           value={formData.specifications}

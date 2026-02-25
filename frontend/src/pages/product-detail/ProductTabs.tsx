@@ -65,12 +65,14 @@ export default function ProductTabs({ product, activeTab, onTabChange, reviewsCo
               <div
                 className="text-dark-700 dark:text-dark-300 leading-relaxed space-y-4"
                 dangerouslySetInnerHTML={{
-                  __html: (product.description || 'No description available.')
-                    .replace(/\n\n/g, '</p><p class="mt-4">')
-                    .replace(/\n/g, '<br>')
-                    .replace(/^/, '<p>')
-                    .replace(/$/, '</p>')
-                    .replace(/\. /g, '. ')
+                  __html: (() => {
+                    const desc = product.description || ''
+                    if (!desc) return '<p>No description available.</p>'
+                    // If content contains HTML tags, render directly
+                    if (/<[a-z][\s\S]*>/i.test(desc)) return desc
+                    // Otherwise convert plain text to paragraphs
+                    return '<p>' + desc.replace(/\n\n/g, '</p><p class="mt-4">').replace(/\n/g, '<br>') + '</p>'
+                  })()
                 }}
               />
               {product.warranty_info && (
