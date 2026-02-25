@@ -131,6 +131,8 @@ const Sale = lazy(() => import('./pages/Sale'))
 // Marketing
 const AdminMarketingDashboard = lazy(() => import('./pages/admin/marketing'))
 const AdminMarketingIntegrations = lazy(() => import('./pages/admin/marketing/integrations'))
+const AdminMarketingAbandonedCarts = lazy(() => import('./pages/admin/marketing/abandoned-carts'))
+const AdminMarketingConversions = lazy(() => import('./pages/admin/marketing/conversions'))
 
 function App() {
   return (
@@ -218,6 +220,8 @@ function App() {
           <Route path="settings" element={<AdminSettings />} />
           <Route path="marketing" element={<AdminMarketingDashboard />} />
           <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
+          <Route path="marketing/abandoned-carts" element={<AdminMarketingAbandonedCarts />} />
+          <Route path="marketing/conversions" element={<AdminMarketingConversions />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

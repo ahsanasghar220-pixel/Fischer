@@ -201,6 +201,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
         Route::get("integrations", [App\Http\Controllers\Api\Admin\MarketingController::class, "integrations"]);
         Route::post("integrations", [App\Http\Controllers\Api\Admin\MarketingController::class, "saveIntegration"]);
         Route::get("dashboard", [App\Http\Controllers\Api\Admin\MarketingController::class, "dashboard"]);
+        Route::get("conversions", [App\Http\Controllers\Api\Admin\MarketingController::class, "conversions"]);
         Route::get("abandoned-carts", [App\Http\Controllers\Api\Admin\MarketingController::class, "abandonedCarts"]);
         Route::post("abandoned-carts/{cart}/resend", [App\Http\Controllers\Api\Admin\MarketingController::class, "resendReminder"]);
     });

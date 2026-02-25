@@ -66,6 +66,28 @@ function injectPixels(config: Record<string, Record<string, string>>) {
     document.head.appendChild(s2)
   }
 
+  // Google Ads — reuses the gtag script if GA4 already loaded it, otherwise loads it
+  if (config.google_ads?.conversion_id) {
+    const conversionId = config.google_ads.conversion_id
+    const gtagExists = document.querySelector(`script[src*="gtag"]`)
+
+    if (!gtagExists) {
+      // Load gtag.js with the Google Ads conversion ID
+      const s1 = document.createElement('script')
+      s1.src = `https://www.googletagmanager.com/gtag/js?id=${conversionId}`
+      s1.async = true
+      document.head.appendChild(s1)
+      const s2 = document.createElement('script')
+      s2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${conversionId}');`
+      document.head.appendChild(s2)
+    } else {
+      // gtag already loaded by GA4 — just add the Google Ads config
+      const s = document.createElement('script')
+      s.innerHTML = `gtag('config','${conversionId}');`
+      document.head.appendChild(s)
+    }
+  }
+
   // TikTok Pixel
   if (config.tiktok?.pixel_id && !window.ttq) {
     const pixelId = config.tiktok.pixel_id
@@ -78,6 +100,38 @@ function injectPixels(config: Record<string, Record<string, string>>) {
       ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
       ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript";o.async=!0;o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
       ttq.load('${pixelId}');ttq.page();}(window,document,'ttq');
+    `
+    document.head.appendChild(script)
+  }
+
+  // Snapchat Pixel
+  if (config.snapchat?.pixel_id && !window.snaptr) {
+    const pixelId = config.snapchat.pixel_id
+    const script = document.createElement('script')
+    script.innerHTML = `
+      (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?
+      a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];
+      var s='script';var r=t.createElement(s);r.async=!0;
+      r.src=n;var u=t.getElementsByTagName(s)[0];
+      u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js');
+      snaptr('init','${pixelId}',{});
+      snaptr('track','PAGE_VIEW');
+    `
+    document.head.appendChild(script)
+  }
+
+  // Pinterest Tag
+  if (config.pinterest?.tag_id && !window.pintrk) {
+    const tagId = config.pinterest.tag_id
+    const script = document.createElement('script')
+    script.innerHTML = `
+      !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};
+      var n=window.pintrk;n.queue=[];n.version="3.0";
+      var t=document.createElement("script");t.async=!0;t.src=e;
+      var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}
+      ("https://s.pinimg.com/ct/core.js");
+      pintrk('load','${tagId}');
+      pintrk('page');
     `
     document.head.appendChild(script)
   }
