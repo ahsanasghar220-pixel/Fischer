@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, ReactNode, CSSProperties } from 'react'
+import { useRef, useState, useEffect, useCallback, ReactNode, CSSProperties } from 'react'
 
 interface AnimatedSectionProps {
   children: ReactNode
@@ -46,14 +46,28 @@ export default function AnimatedSection({
   const [isVisible, setIsVisible] = useState(false)
   const [hasAnimated, setHasAnimated] = useState(false)
   const [shouldRender, setShouldRender] = useState(!lazy)
+  // Track whether this is the very first intersection observation.
+  // On initial page load multiple sections may be in the viewport at once —
+  // we cascade them top-to-bottom instead of animating all simultaneously.
+  const isFirstObsRef = useRef(true)
+
+  const reveal = useCallback(() => {
+    setIsVisible(true)
+    setHasAnimated(true)
+  }, [])
 
   useEffect(() => {
     const element = ref.current
     if (!element) return
 
+    let cascadeTimer: ReturnType<typeof setTimeout> | null = null
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         const inView = entry.isIntersecting
+        const isFirstObs = isFirstObsRef.current
+        // Mark first observation consumed (whether in-view or not)
+        isFirstObsRef.current = false
 
         // Handle lazy loading
         if (lazy && inView && !shouldRender) {
@@ -62,23 +76,31 @@ export default function AnimatedSection({
 
         // Handle visibility
         if (once && hasAnimated) {
-          // If once mode and already animated, keep visible
           setIsVisible(true)
         } else if (animateOut) {
-          // Animate in and out
           setIsVisible(inView)
           if (inView) setHasAnimated(true)
         } else {
-          // Only animate in
           if (inView) {
-            setIsVisible(true)
-            setHasAnimated(true)
+            // On initial page load, cascade sections top-to-bottom based on
+            // their current vertical position in the viewport.
+            if (isFirstObs) {
+              const rect = entry.boundingClientRect
+              const cascadeDelay = Math.min(Math.max(0, Math.round(rect.top * 0.5)), 800)
+              if (cascadeDelay > 40) {
+                cascadeTimer = setTimeout(reveal, cascadeDelay)
+                return
+              }
+            }
+            reveal()
           }
         }
       },
       {
         threshold,
-        rootMargin: '50px 0px -50px 0px', // Trigger slightly before entering viewport
+        // No top expansion — don't pre-trigger sections above the fold.
+        // -30px bottom shrink ensures section is slightly inside viewport before firing.
+        rootMargin: '0px 0px -30px 0px',
       }
     )
 
@@ -86,8 +108,9 @@ export default function AnimatedSection({
 
     return () => {
       observer.disconnect()
+      if (cascadeTimer) clearTimeout(cascadeTimer)
     }
-  }, [threshold, animateOut, once, hasAnimated, lazy, shouldRender])
+  }, [threshold, animateOut, once, hasAnimated, lazy, shouldRender, reveal])
 
   // Get easing curve based on preset or custom value
   const getEasing = (): string => {
@@ -197,25 +220,46 @@ export function StaggeredChildren({
 }: StaggeredChildrenProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const isFirstObsRef = useRef(true)
 
   useEffect(() => {
     const element = ref.current
     if (!element) return
 
+    let cascadeTimer: ReturnType<typeof setTimeout> | null = null
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        const inView = entry.isIntersecting
+        const isFirstObs = isFirstObsRef.current
+        isFirstObsRef.current = false
+
+        if (inView) {
+          if (isFirstObs) {
+            const rect = entry.boundingClientRect
+            const cascadeDelay = Math.min(Math.max(0, Math.round(rect.top * 0.5)), 800)
+            if (cascadeDelay > 40) {
+              cascadeTimer = setTimeout(() => {
+                setIsVisible(true)
+                if (once) observer.disconnect()
+              }, cascadeDelay)
+              return
+            }
+          }
           setIsVisible(true)
           if (once) observer.disconnect()
         } else if (!once) {
           setIsVisible(false)
         }
       },
-      { threshold, rootMargin: '50px 0px' }
+      { threshold, rootMargin: '0px 0px -30px 0px' }
     )
 
     observer.observe(element)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      if (cascadeTimer) clearTimeout(cascadeTimer)
+    }
   }, [threshold, once])
 
   const getEasing = (): string => {
