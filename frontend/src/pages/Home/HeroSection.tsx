@@ -9,7 +9,7 @@ export default function HeroSection({ heroVideoUrl }: HeroSectionProps) {
   const [videoError, setVideoError] = useState(false)
 
   return (
-    <section className="relative h-[50vh] min-h-[450px] sm:h-[65vh] md:h-[75vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
+    <section className="relative h-[56vw] sm:h-[75vh] md:h-[80vh] lg:h-[85vh] xl:h-screen w-full overflow-hidden bg-dark-950">
       {/* Loading placeholder - shows gradient while video loads */}
       <div
         className={`absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-primary-950/30 transition-opacity duration-700 ${
@@ -25,15 +25,12 @@ export default function HeroSection({ heroVideoUrl }: HeroSectionProps) {
         <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
       )}
 
-      {/* Video Background - zoomed out on mobile, cover on desktop */}
+      {/* Video Background - contain on mobile to avoid zoomed-in crop, cover on larger screens */}
       {!videoError && (
         <video
           className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
             videoLoaded ? 'opacity-100' : 'opacity-0'
           } object-contain sm:object-cover object-center`}
-          style={{
-            objectPosition: 'center center',
-          }}
           autoPlay
           loop
           muted

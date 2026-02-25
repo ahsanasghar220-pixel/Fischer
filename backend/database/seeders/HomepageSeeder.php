@@ -284,14 +284,16 @@ class HomepageSeeder extends Seeder
         ];
 
         foreach ($stats as $stat) {
-            DB::table('homepage_stats')->updateOrInsert(
-                ['label' => $stat['label']],
-                array_merge($stat, [
-                    'is_visible' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ])
-            );
+            // Only insert if not exists — preserves admin visibility customizations
+            if (!DB::table('homepage_stats')->where('label', $stat['label'])->exists()) {
+                DB::table('homepage_stats')->insert(
+                    array_merge($stat, [
+                        'is_visible' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])
+                );
+            }
         }
 
         // Default features
@@ -327,14 +329,16 @@ class HomepageSeeder extends Seeder
         ];
 
         foreach ($features as $feature) {
-            DB::table('homepage_features')->updateOrInsert(
-                ['title' => $feature['title']],
-                array_merge($feature, [
-                    'is_visible' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ])
-            );
+            // Only insert if not exists — preserves admin visibility customizations
+            if (!DB::table('homepage_features')->where('title', $feature['title'])->exists()) {
+                DB::table('homepage_features')->insert(
+                    array_merge($feature, [
+                        'is_visible' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])
+                );
+            }
         }
 
         // Default testimonials
@@ -412,8 +416,10 @@ class HomepageSeeder extends Seeder
      */
     private function seedHomepageCategories(): void
     {
-        // Clear existing
-        HomepageCategory::query()->delete();
+        // Only seed if table is empty — preserves admin customizations across deploys
+        if (HomepageCategory::count() > 0) {
+            return;
+        }
 
         $categorySlugs = [
             'built-in-hoods',
@@ -445,8 +451,10 @@ class HomepageSeeder extends Seeder
      */
     private function seedHomepageProducts(): void
     {
-        // Clear existing
-        HomepageProduct::query()->delete();
+        // Only seed if table is empty — preserves admin customizations across deploys
+        if (HomepageProduct::count() > 0) {
+            return;
+        }
 
         // Featured products - hand-picked bestsellers from each category
         $featuredSkus = [
