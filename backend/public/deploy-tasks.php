@@ -8,16 +8,18 @@
 
 header('Content-Type: application/json');
 
-// Authenticate
-$secret   = null;
+// Authenticate — read secret directly from .env to bypass config cache
 $provided = $_SERVER['HTTP_X_DEPLOY_SECRET'] ?? '';
-
-// Bootstrap Laravel (console kernel only — no HTTP routing)
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
-$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-$secret = config('deploy.webhook_secret', '');
+$secret   = '';
+$envFile  = __DIR__ . '/../.env';
+if (file_exists($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if (strpos($line, 'DEPLOY_WEBHOOK_SECRET=') === 0) {
+            $secret = trim(substr($line, strlen('DEPLOY_WEBHOOK_SECRET=')));
+            break;
+        }
+    }
+}
 
 if (empty($secret) || empty($provided) || !hash_equals($secret, $provided)) {
     http_response_code(401);
@@ -26,6 +28,11 @@ if (empty($secret) || empty($provided) || !hash_equals($secret, $provided)) {
 }
 
 set_time_limit(300);
+
+// Bootstrap Laravel (console kernel only — no HTTP routing)
+require __DIR__ . '/../vendor/autoload.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 $output    = [];
 $startTime = time();
