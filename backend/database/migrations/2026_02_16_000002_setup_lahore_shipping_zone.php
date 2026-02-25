@@ -7,15 +7,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Create Lahore shipping zone with free delivery
-        $lahoreZoneId = DB::table('shipping_zones')->insertGetId([
-            'name' => 'Lahore',
-            'cities' => json_encode(['Lahore']),
-            'is_active' => true,
-            'sort_order' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Create Lahore shipping zone with free delivery (idempotent — safe to re-run)
+        $existingLahore = DB::table('shipping_zones')->where('name', 'Lahore')->first();
+
+        if ($existingLahore) {
+            $lahoreZoneId = $existingLahore->id;
+        } else {
+            $lahoreZoneId = DB::table('shipping_zones')->insertGetId([
+                'name' => 'Lahore',
+                'cities' => json_encode(['Lahore']),
+                'is_active' => true,
+                'sort_order' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Remove Lahore from any existing broader zone to avoid conflicts
         $existingZones = DB::table('shipping_zones')
