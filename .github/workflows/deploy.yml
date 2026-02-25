@@ -88,6 +88,41 @@ jobs:
           echo "=== Images: $(du -sh deploy/public/images 2>/dev/null | cut -f1 || echo 'none') ==="
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
+      # ─── FTP: clean up stale temp files from previous failed uploads ───────
+      # FTP-Deploy-Action creates .in.* hidden files during transfer. If a deploy
+      # fails mid-upload, these linger and block the next attempt with error 550.
+      - name: Clean stale FTP temp files
+        run: |
+          sudo apt-get install -qq -y lftp > /dev/null 2>&1
+          echo "Scanning for .in.* temp files from previous failed uploads..."
+
+          # List files under public/, filter for .in.* temp files
+          lftp -u "${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }}" -e "
+            set ftp:ssl-force yes; set ssl:verify-certificate no;
+            find ${{ secrets.FTP_SERVER_DIR }}public/; bye
+          " "${{ secrets.SSH_HOST }}" 2>/dev/null | grep '/\.in\.' > /tmp/temp_files.txt || true
+
+          if [ -s /tmp/temp_files.txt ]; then
+            COUNT=$(wc -l < /tmp/temp_files.txt)
+            echo "Found $COUNT stale temp files — removing..."
+
+            # Build lftp delete script
+            {
+              echo "set ftp:ssl-force yes"
+              echo "set ssl:verify-certificate no"
+              echo "open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ${{ secrets.SSH_HOST }}"
+              while IFS= read -r f; do
+                echo "rm -f \"$f\""
+              done < /tmp/temp_files.txt
+              echo "bye"
+            } > /tmp/cleanup.lftp
+
+            lftp -f /tmp/cleanup.lftp 2>&1 || true
+            echo "✓ Cleanup done"
+          else
+            echo "✓ No stale temp files found"
+          fi
+
       # ─── FTP: upload all files ─────────────────────────────────────────────
       # state-name v3: force fresh sync — v2 state was stale (missing images/videos)
       - name: Deploy via FTPS
