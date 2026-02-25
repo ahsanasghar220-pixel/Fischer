@@ -187,8 +187,6 @@ function App() {
           <Route path="page/:slug" element={<Page />} />
 
           {/* 404 */}
-          <Route path="marketing" element={<AdminMarketingDashboard />} />
-          <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 
