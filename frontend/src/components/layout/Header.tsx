@@ -202,7 +202,7 @@ export default function Header() {
                 alt="Fischer"
                 loading="eager"
                 decoding="async"
-                className={`h-9 w-auto ${
+                className={`h-10 w-auto ${
                   isHomePage && !isScrolled
                     ? 'hidden'
                     : 'dark:hidden'
@@ -213,7 +213,7 @@ export default function Header() {
                 alt="Fischer"
                 loading="eager"
                 decoding="async"
-                className={`h-9 w-auto ${
+                className={`h-10 w-auto ${
                   isHomePage && !isScrolled
                     ? 'block'
                     : 'hidden dark:block'

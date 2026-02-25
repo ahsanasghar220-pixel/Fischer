@@ -112,7 +112,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
             {getCategoryFeatures(category)
               .slice(0, 6)
               .map((feature, i) => (
-                <div key={i} className={`items-center gap-1 sm:gap-3 min-w-0 ${i >= 3 ? 'hidden sm:flex' : 'flex'}`}>
+                <div key={i} className={`items-center gap-1 sm:gap-3 min-w-0 ${i >= 4 ? 'hidden sm:flex' : 'flex'}`}>
                   <div className="w-3 h-3 sm:w-5 sm:h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
                     <CheckCircleIcon className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                   </div>
