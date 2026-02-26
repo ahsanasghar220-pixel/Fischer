@@ -186,7 +186,7 @@ export default function Footer() {
                 alt="Fischer"
                 width={794}
                 height={450}
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
             </Link>
 
@@ -224,11 +224,25 @@ export default function Footer() {
                 marketing@fischerinfo.pk
               </a>
               <a
+                href="mailto:corporatesales@fischerinfo.pk"
+                className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm"
+              >
+                <EnvelopeIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                corporatesales@fischerinfo.pk
+              </a>
+              <a
                 href="mailto:sales@fischerinfo.pk"
                 className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm"
               >
                 <EnvelopeIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
                 sales@fischerinfo.pk
+              </a>
+              <a
+                href="mailto:fischer.few@gmail.com"
+                className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm"
+              >
+                <EnvelopeIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                fischer.few@gmail.com
               </a>
               <div className="flex items-center gap-2.5 text-dark-400 text-sm">
                 <MapPinIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
