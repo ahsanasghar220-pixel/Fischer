@@ -117,7 +117,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
     >
       <Link
         to={product.href}
-        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary-500/20 border border-transparent hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 hover:-translate-y-2 h-full flex flex-col"
+        className="block bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:shadow-primary-500/20 border border-transparent hover:border-primary-200 dark:hover:border-primary-800 transition-all duration-300 [@media(hover:hover)]:hover:-translate-y-2 h-full flex flex-col"
       >
         {/* Image Container with Carousel */}
         <div
@@ -216,7 +216,7 @@ export default function HeroProductBanner({ products: propProducts, title, subti
       </div>
 
       {/* Products Carousel - full-width edge-to-edge, outside container */}
-      <ProductCarousel speed={60} fadeClass="from-dark-50 dark:from-dark-900">
+      <ProductCarousel speed={60}>
         {products.map((product) => (
           <ProductCard key={product.name} product={product} />
         ))}

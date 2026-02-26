@@ -289,7 +289,7 @@ const ProductCard = memo(function ProductCard({
             {/* Price with clean scale-up on hover */}
             <div className="product-price">
               <span
-                className={`inline-block bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent font-black
+                className={`inline-block text-primary-600 dark:text-primary-400 font-black
                            transition-transform duration-300 origin-left
                            ${isHovered && !isTouchDevice ? 'scale-105' : 'scale-100'}`}
                 style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}

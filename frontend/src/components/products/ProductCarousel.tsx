@@ -164,9 +164,11 @@ const ProductCarousel = memo(function ProductCarousel({
     <div
       ref={containerRef}
       className="relative group/carousel overflow-x-clip overflow-y-visible"
+      style={{ touchAction: 'pan-y' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={(e) => {
+        isPausedRef.current = true
         setIsHovered(true)
         touchStartXRef.current = e.touches[0].clientX
         touchStartOffsetRef.current = offsetRef.current
@@ -179,7 +181,10 @@ const ProductCarousel = memo(function ProductCarousel({
         while (next > 0) next -= singleSetWidth
         offsetRef.current = next
       }}
-      onTouchEnd={() => setIsHovered(false)}
+      onTouchEnd={() => {
+        isPausedRef.current = false
+        setIsHovered(false)
+      }}
     >
       {/* Fade edges */}
       {fadeClass !== undefined && (
