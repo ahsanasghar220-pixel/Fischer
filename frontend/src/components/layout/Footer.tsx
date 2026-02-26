@@ -211,10 +211,17 @@ export default function Footer() {
             <div className="space-y-2.5">
               <a
                 href="tel:+923211146642"
-                className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm group"
+                className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm"
               >
                 <PhoneIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
-                +92 321 1146642
+                <span>+92 321 1146642 <span className="text-dark-600 text-xs">Queries</span></span>
+              </a>
+              <a
+                href="tel:09235943091"
+                className="flex items-center gap-2.5 text-dark-400 hover:text-white transition-colors text-sm"
+              >
+                <PhoneIcon className="w-3.5 h-3.5 text-primary-500 flex-shrink-0" />
+                <span>092-35943091-93 <span className="text-dark-600 text-xs">Complaints</span></span>
               </a>
               <a
                 href="mailto:marketing@fischerinfo.pk"
