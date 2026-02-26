@@ -12,7 +12,7 @@ class AttributeController extends Controller
     {
         $attributes = Attribute::with('values')->orderBy('name')->get();
 
-        return $this->success(['data' => $attributes]);
+        return $this->success($attributes);
     }
 
     public function store(Request $request)
