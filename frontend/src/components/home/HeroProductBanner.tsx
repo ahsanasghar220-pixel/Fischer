@@ -232,11 +232,11 @@ export default function HeroProductBanner({ products: propProducts, title, subti
           className="text-center mt-12"
         >
           <Link
-            to="/shop"
+            to="/categories"
             className="inline-flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700
                      text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5"
           >
-            View All Products
+            View All Categories
             <ArrowRightIcon className="w-5 h-5" />
           </Link>
         </motion.div>

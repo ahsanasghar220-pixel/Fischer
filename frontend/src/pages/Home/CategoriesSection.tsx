@@ -126,7 +126,7 @@ const CategoryShowcase = memo(function CategoryShowcase({
               className="group inline-flex items-center gap-1 sm:gap-2
                          text-primary-600 dark:text-primary-400 text-[11px] font-semibold
                          sm:px-5 sm:py-2.5 md:px-6 md:py-3 sm:rounded-xl
-                         sm:bg-primary-500 sm:dark:bg-primary-600 sm:text-white sm:text-sm md:text-base
+                         sm:bg-primary-500 sm:dark:bg-primary-600 sm:text-white sm:dark:text-white sm:text-sm md:text-base
                          sm:hover:bg-primary-600 sm:dark:hover:bg-primary-700
                          sm:hover:shadow-lg sm:hover:-translate-y-0.5
                          transition-all duration-300"

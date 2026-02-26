@@ -127,6 +127,7 @@ const AdminPortfolioVideos = lazy(() => import('./pages/admin/PortfolioVideos'))
 const AdminSales = lazy(() => import('./pages/admin/Sales'))
 const AdminUsers = lazy(() => import('./pages/admin/Users'))
 const Sale = lazy(() => import('./pages/Sale'))
+const Categories = lazy(() => import('./pages/categories'))
 
 // Marketing
 const AdminAttributes = lazy(() => import('./pages/admin/attributes'))
@@ -146,6 +147,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="shop" element={<Shop />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="product/:slug" element={<ProductDetail />} />
           <Route path="category/:slug" element={<Category />} />
           <Route path="bundles" element={<Bundles />} />
