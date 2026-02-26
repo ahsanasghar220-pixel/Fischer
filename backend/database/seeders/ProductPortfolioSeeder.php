@@ -206,7 +206,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Instant Gas Water Heater',
             'sku'               => 'FWH',
-            'category_slug'     => 'water-heaters',
+            'category_slug'     => 'hybrid-geysers',
             'short_description' => 'Compact instant gas water heater with rapid heat-up time. Available in 6L, 8L, and 10L capacities.',
             'description'       => "Fischer Instant Gas Water Heater delivers hot water on demand with no wait time. Compact design makes it ideal for bathrooms and kitchens.\n\n**Key Features:**\n- Instant hot water on demand\n- Gas fuel — cost-efficient operation\n- Compact wall-mount design\n- Auto ignition\n- Overheating protection\n- Capacities: FWH-6L, FWH-8L, FWH-10L\n- 1 Year Warranty",
             'is_new'            => false,

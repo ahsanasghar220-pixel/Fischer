@@ -55,7 +55,7 @@ const ProductCarousel = memo(function ProductCarousel({
     if (!containerRef.current) return
     const w = containerRef.current.offsetWidth
     let cols = 5
-    if (w < 640) cols = 1.5
+    if (w < 640) cols = 2
     else if (w < 768) cols = 2.5
     else if (w < 1024) cols = 4
     else cols = 5
