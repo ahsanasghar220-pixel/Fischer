@@ -111,7 +111,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
 
   return (
     <div
-      className="group h-full py-3"
+      className="group h-full py-1.5 sm:py-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -121,7 +121,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
       >
         {/* Image Container with Carousel */}
         <div
-          className="h-[150px] md:h-[220px] bg-gray-50 relative overflow-hidden flex-shrink-0"
+          className="h-[105px] sm:h-[150px] md:h-[220px] bg-gray-50 relative overflow-hidden flex-shrink-0"
           {...(isTouchDevice ? swipeHandlers : {})}
         >
           <AnimatePresence mode="wait">
@@ -165,7 +165,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
         </div>
 
         {/* Content */}
-        <div className="p-3 md:p-5 flex-grow flex flex-col gap-0.5 md:gap-1">
+        <div className="p-2 sm:p-3 md:p-5 flex-grow flex flex-col gap-0.5 md:gap-1">
           <div className="text-[10px] md:text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wider">
             {product.category}
           </div>

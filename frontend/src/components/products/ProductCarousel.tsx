@@ -131,6 +131,24 @@ const ProductCarousel = memo(function ProductCarousel({
     isPausedRef.current = isHovered
   }, [isHovered])
 
+  // Pause auto-scroll while the page is being scrolled on touch devices
+  useEffect(() => {
+    if (!('ontouchstart' in window)) return
+    let resumeTimer: ReturnType<typeof setTimeout>
+    const onScroll = () => {
+      isPausedRef.current = true
+      clearTimeout(resumeTimer)
+      resumeTimer = setTimeout(() => {
+        isPausedRef.current = false
+      }, 400)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      clearTimeout(resumeTimer)
+    }
+  }, [])
+
   // Arrow nudge — enqueue smooth animated shift by one card width
   const nudge = useCallback(
     (dir: 'left' | 'right') => {
