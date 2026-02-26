@@ -20,7 +20,10 @@
   }
 
   .product-card .product-image img {
-    @apply w-full h-full object-contain transition-transform duration-700 ease-out;
+    @apply w-full object-contain transition-transform duration-700 ease-out;
+    /* height: auto from responsive.css (unlayered) beats @layer utilities h-full,
+       so we enforce 100% explicitly here to keep the image inside aspect-square */
+    height: 100% !important;
   }
 
   .product-card:hover .product-image img {

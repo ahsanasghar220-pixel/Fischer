@@ -10,13 +10,42 @@ export interface ProductImage {
 export interface ProductVariant {
   id: number
   sku: string
-  name: string
+  name?: string
   price: number
   compare_price?: number
+  dealer_price?: number
   stock: number
   stock_quantity?: number
   is_active?: boolean
   attributes?: Record<string, string> | Array<{ attribute: string; value: string }>
+  attribute_values?: Array<{ id: number; value: string; attribute: { id: number; name: string } }>
+}
+
+export interface ConfiguratorAttributeValue {
+  id: number
+  value: string
+  color_code?: string | null
+}
+
+export interface ConfiguratorAttribute {
+  id: number
+  name: string
+  type: 'button' | 'color' | 'select' | 'text' | 'size'
+  values: ConfiguratorAttributeValue[]
+}
+
+export interface ConfiguratorVariant {
+  id: number
+  price: number
+  compare_price?: number | null
+  sku: string
+  stock: number
+  image?: string | null
+}
+
+export interface ProductConfigurator {
+  attributes: ConfiguratorAttribute[]
+  variant_map: Record<string, ConfiguratorVariant>
 }
 
 export interface Review {

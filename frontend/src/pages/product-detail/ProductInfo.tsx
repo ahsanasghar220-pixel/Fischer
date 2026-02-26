@@ -12,11 +12,13 @@ import {
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'
 import { Link } from 'react-router-dom'
 import { formatPrice, formatDescription } from '@/lib/utils'
-import type { Product, ProductVariant } from '@/types'
+import type { Product, ProductVariant, ProductConfigurator as ProductConfiguratorData, ConfiguratorVariant } from '@/types'
+import ProductConfiguratorWidget from './ProductConfigurator'
 
 interface ProductInfoProps {
   product: Product
-  selectedVariant: ProductVariant | null
+  configurator?: ProductConfiguratorData | null
+  selectedVariant: ProductVariant | ConfiguratorVariant | null
   quantity: number
   isInWishlist: boolean
   isAddingToCart: boolean
@@ -24,7 +26,7 @@ interface ProductInfoProps {
   comparePrice: number | null | undefined
   currentStock: number
   discountPercentage: number | null
-  onVariantSelect: (variant: ProductVariant) => void
+  onVariantSelect: (variant: ProductVariant | ConfiguratorVariant | null) => void
   onQuantityChange: (qty: number) => void
   onAddToCart: () => void
   onToggleWishlist: () => void
@@ -33,6 +35,7 @@ interface ProductInfoProps {
 
 export default function ProductInfo({
   product,
+  configurator,
   selectedVariant,
   quantity,
   isInWishlist,
@@ -138,8 +141,10 @@ export default function ProductInfo({
         </motion.div>
       )}
 
-      {/* Variants */}
-      {product.variants && product.variants.length > 0 && (
+      {/* Variants / Configurator */}
+      {configurator ? (
+        <ProductConfiguratorWidget configurator={configurator} onVariantSelect={onVariantSelect} />
+      ) : product.variants && product.variants.length > 0 && (
         <motion.div
           className="mb-6"
           initial={{ opacity: 0, y: 10 }}

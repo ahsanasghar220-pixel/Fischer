@@ -19,7 +19,7 @@ class AttributeController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:attributes,name',
-            'type' => 'nullable|string|in:text,select,color,size',
+            'type' => 'nullable|string|in:text,select,color,size,button',
         ]);
 
         $attribute = Attribute::create($validated);
@@ -39,7 +39,7 @@ class AttributeController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255|unique:attributes,name,' . $id,
-            'type' => 'nullable|string|in:text,select,color,size',
+            'type' => 'nullable|string|in:text,select,color,size,button',
         ]);
 
         $attribute->update($validated);

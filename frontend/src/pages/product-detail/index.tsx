@@ -12,7 +12,7 @@ import AuthModal from '@/components/ui/AuthModal'
 import AddToCartModal from '@/components/cart/AddToCartModal'
 import ScrollReveal from '@/components/effects/ScrollReveal'
 import toast from 'react-hot-toast'
-import type { Product, ProductVariant } from '@/types'
+import type { Product, ProductVariant, ProductConfigurator, ConfiguratorVariant } from '@/types'
 
 import ImageGallery from './ImageGallery'
 import ProductInfo from './ProductInfo'
@@ -23,7 +23,7 @@ import RelatedProducts from './RelatedProducts'
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>()
   const [quantity, setQuantity] = useState(1)
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | ConfiguratorVariant | null>(null)
   const [isInWishlist, setIsInWishlist] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [showCartModal, setShowCartModal] = useState(false)
@@ -36,7 +36,7 @@ export default function ProductDetail() {
   const addItem = useCartStore((state) => state.addItem)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
-  const { data: productData, isLoading, error } = useQuery<{ product: Product; related_products: Product[] }>({
+  const { data: productData, isLoading, error } = useQuery<{ product: Product; related_products: Product[]; configurator?: ProductConfigurator | null }>({
     queryKey: ['product', slug],
     queryFn: async () => {
       const response = await api.get(`/api/products/${slug}`)
@@ -46,6 +46,7 @@ export default function ProductDetail() {
 
   const product = productData?.product
   const relatedProducts = productData?.related_products || []
+  const configurator = productData?.configurator ?? null
 
   // Reset state when navigating between products
   useEffect(() => {
@@ -279,6 +280,7 @@ export default function ProductDetail() {
             {/* Product Info */}
             <ProductInfo
               product={product}
+              configurator={configurator}
               selectedVariant={selectedVariant}
               quantity={quantity}
               isInWishlist={isInWishlist}

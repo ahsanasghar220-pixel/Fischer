@@ -23,8 +23,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
 
     // Product Variants
     Route::post('/products/{product}/variants', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'store']);
+    Route::post('/products/{product}/variants/batch', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'batchStore']);
     Route::put('/products/{product}/variants/{variant}', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'update']);
     Route::delete('/products/{product}/variants/{variant}', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'destroy']);
+    Route::put('/products/{product}/attributes', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'syncAttributes']);
 
     // Categories
     Route::apiResource('categories', App\Http\Controllers\Api\Admin\CategoryController::class);

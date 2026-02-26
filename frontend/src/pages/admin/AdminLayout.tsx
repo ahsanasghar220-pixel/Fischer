@@ -51,6 +51,7 @@ const menuItems: MenuItem[] = [
       { path: '/admin/products', label: 'Products', icon: CubeIcon, permission: 'manage-products' },
       { path: '/admin/bundles', label: 'Bundles', icon: GiftIcon, permission: 'manage-bundles' },
       { path: '/admin/categories', label: 'Categories', icon: TagIcon, permission: 'manage-categories' },
+      { path: '/admin/attributes', label: 'Attributes', icon: AdjustmentsHorizontalIcon, permission: 'manage-products' },
     ]
   },
   {

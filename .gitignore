@@ -42,12 +42,24 @@ yarn-error.log*
 # Build
 *.cache
 .parcel-cache/
-u271928709_fischer.sql
+
+# Database dumps (never commit DB credentials/data)
+*.sql
+!backend/database/migrations/*.sql
 
 # Temp files
 tmpclaude-*
 nul
 *.tmp
+merge_db.py
+sql_schema_compare.txt
+
+# Lighthouse reports
+lh-desktop-latest.json
+lh-mobile-latest.json
+
+# Performance marketing docs (local planning only)
+FISCHER_PERFORMANCE_MARKETING_ENGINE.md
 
 # Raw source assets (not for production)
 frontend/public/images/animations-*/

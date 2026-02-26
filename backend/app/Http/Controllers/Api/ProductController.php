@@ -134,9 +134,57 @@ class ProductController extends Controller
         // Get related products
         $relatedProducts = $product->getRelatedProducts(4);
 
+        // Build Apple-style configurator data if product has attribute-based variants
+        $configurator = null;
+        if ($product->has_variants && $product->variants->isNotEmpty()) {
+            $hasAttributes = $product->variants->some(fn($v) => $v->attributeValues->isNotEmpty());
+
+            if ($hasAttributes) {
+                $configuratorAttributes = $product->attributes->map(function ($attr) use ($product) {
+                    $usedValueIds = $product->variants
+                        ->flatMap(fn($v) => $v->attributeValues->where('attribute_id', $attr->id))
+                        ->pluck('id')
+                        ->unique();
+
+                    $values = $attr->values
+                        ->filter(fn($v) => $usedValueIds->contains($v->id))
+                        ->map(fn($v) => [
+                            'id'         => $v->id,
+                            'value'      => $v->value,
+                            'color_code' => $v->color_code,
+                        ])->values();
+
+                    return ['id' => $attr->id, 'name' => $attr->name, 'type' => $attr->type ?? 'button', 'values' => $values];
+                })->filter(fn($a) => count($a['values']) > 0)->values();
+
+                $variantMap = [];
+                foreach ($product->variants->where('is_active', true) as $variant) {
+                    if ($variant->attributeValues->isNotEmpty()) {
+                        $key = $variant->attributeValues->pluck('id')->sort()->values()->implode(',');
+                        $variantMap[$key] = [
+                            'id'            => $variant->id,
+                            'price'         => (float) ($variant->price ?? $product->price),
+                            'compare_price' => $variant->compare_price ? (float) $variant->compare_price : null,
+                            'sku'           => $variant->sku,
+                            'stock'         => $variant->stock_quantity,
+                            'image'         => $variant->image,
+                        ];
+                    }
+                }
+
+                if (!empty($variantMap)) {
+                    $configurator = [
+                        'attributes'  => $configuratorAttributes,
+                        'variant_map' => $variantMap,
+                    ];
+                }
+            }
+        }
+
         return $this->success([
-            'product' => $product,
+            'product'          => $product,
             'related_products' => $relatedProducts,
+            'configurator'     => $configurator,
         ]);
     }
 
