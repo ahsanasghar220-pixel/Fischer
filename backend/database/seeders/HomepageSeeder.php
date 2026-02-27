@@ -283,9 +283,9 @@ class HomepageSeeder extends Seeder
             ['label' => 'Products Sold', 'value' => '1M+', 'icon' => 'fire', 'sort_order' => 4],
         ];
 
-        foreach ($stats as $stat) {
-            // Only insert if not exists — preserves admin visibility customizations
-            if (!DB::table('homepage_stats')->where('label', $stat['label'])->exists()) {
+        // Only seed if table is empty — admin deletions/additions must be preserved across deploys
+        if (DB::table('homepage_stats')->count() === 0) {
+            foreach ($stats as $stat) {
                 DB::table('homepage_stats')->insert(
                     array_merge($stat, [
                         'is_visible' => true,
@@ -328,9 +328,9 @@ class HomepageSeeder extends Seeder
             ],
         ];
 
-        foreach ($features as $feature) {
-            // Only insert if not exists — preserves admin visibility customizations
-            if (!DB::table('homepage_features')->where('title', $feature['title'])->exists()) {
+        // Only seed if table is empty — admin deletions/additions must be preserved across deploys
+        if (DB::table('homepage_features')->count() === 0) {
+            foreach ($features as $feature) {
                 DB::table('homepage_features')->insert(
                     array_merge($feature, [
                         'is_visible' => true,
@@ -372,16 +372,18 @@ class HomepageSeeder extends Seeder
             ],
         ];
 
-        foreach ($testimonials as $testimonial) {
-            DB::table('testimonials')->updateOrInsert(
-                ['customer_name' => $testimonial['customer_name']],
-                array_merge($testimonial, [
-                    'is_featured' => true,
-                    'is_active' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ])
-            );
+        // Only seed if table is empty — admin changes must be preserved across deploys
+        if (DB::table('testimonials')->count() === 0) {
+            foreach ($testimonials as $testimonial) {
+                DB::table('testimonials')->insert(
+                    array_merge($testimonial, [
+                        'is_featured' => true,
+                        'is_active' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])
+                );
+            }
         }
 
         // Default trust badges
@@ -393,15 +395,17 @@ class HomepageSeeder extends Seeder
             ['title' => 'Eco Friendly', 'sort_order' => 5],
         ];
 
-        foreach ($badges as $badge) {
-            DB::table('homepage_trust_badges')->updateOrInsert(
-                ['title' => $badge['title']],
-                array_merge($badge, [
-                    'is_visible' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ])
-            );
+        // Only seed if table is empty — admin changes must be preserved across deploys
+        if (DB::table('homepage_trust_badges')->count() === 0) {
+            foreach ($badges as $badge) {
+                DB::table('homepage_trust_badges')->insert(
+                    array_merge($badge, [
+                        'is_visible' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])
+                );
+            }
         }
 
         // Seed homepage categories - all 10 featured parent categories
