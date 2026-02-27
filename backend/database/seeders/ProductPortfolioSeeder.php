@@ -90,9 +90,6 @@ class ProductPortfolioSeeder extends Seeder
             'has_variants'      => true,
             'images'            => [
                 '/images/products/fast-electric-water-heaters/Fischer Fast Electric Water Heater F-30 Liter.webp',
-                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-100 Liter.webp',
-                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-140 Liter.webp',
-                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-200 Liter.webp',
             ],
         ], [
             'Capacity' => ['F-30', 'F-40', 'F-50', 'F-60', 'F-80', 'F-100', 'F-140', 'F-200'],
@@ -133,9 +130,6 @@ class ProductPortfolioSeeder extends Seeder
             'has_variants'      => true,
             'images'            => [
                 '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 25 Gallon.webp',
-                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 35 Gallon.webp',
-                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 55 Gallon.webp',
-                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 100 Gallon Heavy Duty.webp',
             ],
         ], [
             'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
@@ -172,7 +166,6 @@ class ProductPortfolioSeeder extends Seeder
             'has_variants'      => true,
             'images'            => [
                 '/images/products/hybrid-geysers/Gas Geyser 35 Gallon.webp',
-                '/images/products/hybrid-geysers/Gas Geyser 55 Gallon.webp',
             ],
         ], [
             'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
@@ -235,10 +228,6 @@ class ProductPortfolioSeeder extends Seeder
             'has_variants'      => true,
             'images'            => [
                 '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 10 Litr.webp',
-                '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 15 Litr.webp',
-                '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 30 Litr.webp',
-                '/images/products/instant-electric-water-heaters/Instant Electric Water Heater with Storage 20 Ltrs.webp',
-                '/images/products/instant-electric-water-heaters/Instant Electric Water Heater with Storage 25 Ltrs.webp',
             ],
         ], [
             'Capacity' => ['FE-10', 'FE-15', 'FE-30'],
