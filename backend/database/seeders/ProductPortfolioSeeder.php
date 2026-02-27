@@ -43,7 +43,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Eco Watt Electric Water Heater',
             'sku'               => 'FEWH',
-            'category_slug'     => 'water-heaters',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => 'Energy-efficient Eco Watt storage electric water heater with Incoloy 840 heating element, overheating protection, and full insulation. Available in Deluxe and Heavy Duty grades from R-30 to R-80.',
             'description'       => "Fischer Eco Watt Electric Water Heater brings you advanced energy-saving technology for reliable hot water. Built with a premium Incoloy 840 heating element for long-lasting performance.\n\n**Key Features:**\n- Eco Watt energy-saving technology\n- Incoloy 840 corrosion-resistant element\n- Full thermal insulation\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades available\n- Available in R-30 to R-80 capacities\n- 1 Year Warranty",
             'is_new'            => true,
@@ -78,7 +78,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer FAST Electric Water Heater',
             'sku'               => 'FAST',
-            'category_slug'     => 'fast-electric-water-heaters',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => 'Fischer FAST electric water heater with single-welded tanks, adjustable wattage, and thermal safety cutout. Fast heating technology for rapid hot water delivery.',
             'description'       => "Fischer FAST Electric Water Heater is designed for rapid hot water delivery with premium single-welded tanks and adjustable wattage options.\n\n**Key Features:**\n- Single welded tanks for extra strength\n- Adjustable wattage control\n- Thermal safety cutout (auto shut-off)\n- Full thermal insulation\n- Incoloy 840 heating element\n- Deluxe and Heavy Duty grades\n- Capacities from F-30 to F-200\n- 1 Year Warranty",
             'is_new'            => false,
@@ -118,7 +118,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Hybrid Electric + Gas Water Heater',
             'sku'               => 'FHG',
-            'category_slug'     => 'hybrid-geysers',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => 'Dual-fuel hybrid water heater operating on both electric and gas. Available in Deluxe and Heavy Duty grades from 15 to 100 gallons.',
             'description'       => "Fischer Hybrid Water Heater gives you the flexibility of both electric and gas fuel sources, ensuring uninterrupted hot water at the lowest operating cost.\n\n**Key Features:**\n- Dual fuel: Electric & Gas modes\n- Imported gas thermostat with auto ignition\n- Imported glass wool insulation\n- Italian electric element + thermostat\n- 9/10 inner tank\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
             'is_new'            => true,
@@ -154,7 +154,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Gas Water Heater (Storage)',
             'sku'               => 'FGWH',
-            'category_slug'     => 'hybrid-geysers',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => 'Fischer gas storage water heater with imported gas thermostat, auto ignition, and full insulation. Available in Deluxe and Heavy Duty grades from 15G to 100G.',
             'description'       => "Fischer Gas Storage Water Heater is built for reliability and long service life. With heavy-gauge steel tanks and full insulation, you get consistent hot water throughout the day.\n\n**Key Features:**\n- Gas fuel — low running cost\n- Imported gas thermostat with auto ignition\n- Imported glass wool insulation\n- 9/10 inner tank\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
             'is_new'            => false,
@@ -190,7 +190,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Instant Gas Water Heater',
             'sku'               => 'FWH',
-            'category_slug'     => 'hybrid-geysers',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => '100% imported instant gas water heater with white front panel, LED indicator, and heavy duty copper heat exchanger. Available in 6L, 8L, and 10L.',
             'description'       => "Fischer Instant Gas Water Heater delivers hot water on demand with no wait time. 100% imported components ensure superior reliability.\n\n**Key Features:**\n- Instant hot water on demand\n- Gas fuel — cost-efficient operation\n- White paint front panel with LED indicator\n- Heavy duty copper heat exchanger\n- Compact wall-mount design\n- Auto ignition\n- Overheating protection\n- Capacities: FWH-6L, FWH-8L, FWH-10L\n- 1 Year Warranty",
             'is_new'            => false,
@@ -216,7 +216,7 @@ class ProductPortfolioSeeder extends Seeder
         $this->seedProduct([
             'name'              => 'Fischer Instant Plus Storage Electric Water Heater',
             'sku'               => 'FE',
-            'category_slug'     => 'instant-electric-water-heaters',
+            'category_slug'     => 'geysers-water-heaters',
             'short_description' => 'Instant-cum-storage electric water heater with quick heating and wattage control. Available in 10, 15, and 30 litre capacities.',
             'description'       => "Fischer Instant Plus Storage Electric Water Heater combines instant heating with storage capacity for a reliable hot water supply. Compact design with wattage control for energy savings.\n\n**Key Features:**\n- Instant cum storage technology\n- Wattage control for energy savings\n- Overheating protection\n- Compact wall-mount design\n- FE-10, FE-15, FE-30 sizes\n- 1 Year Warranty",
             'is_new'            => true,

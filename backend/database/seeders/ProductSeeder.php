@@ -490,7 +490,7 @@ class ProductSeeder extends Seeder
 
     private function seedSlimWaterCoolers(Brand $brand): void
     {
-        $category = Category::where('slug', 'slim-water-coolers')->first();
+        $category = Category::where('slug', 'water-coolers')->first();
 
         $products = [
             [
@@ -610,7 +610,7 @@ class ProductSeeder extends Seeder
 
     private function seedStorageCoolers(Brand $brand): void
     {
-        $category = Category::where('slug', 'storage-coolers')->first();
+        $category = Category::where('slug', 'water-coolers')->first();
 
         $products = [
             [

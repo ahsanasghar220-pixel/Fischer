@@ -24,7 +24,7 @@ class BannerSeeder extends Seeder
                 'title' => 'Geysers & Water Heaters',
                 'subtitle' => 'Stay Warm This Winter',
                 'image' => '/images/banners/banner-geysers.webp',
-                'link_url' => '/category/hybrid-geysers',
+                'link_url' => '/category/geysers-water-heaters',
                 'link_text' => 'View Geysers',
                 'position' => 'home_hero',
                 'is_active' => true,

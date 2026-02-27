@@ -19,8 +19,8 @@ export const kitchenZones = [
   },
   {
     id: 'hob',
-    name: 'Built-in Hobs',
-    categorySlug: 'hobs',
+    name: 'Kitchen Hobs',
+    categorySlug: 'kitchen-hobs',
     tagline: 'Precision Heat, Perfect Meals',
     description: 'From gentle simmering to rapid boiling, Fischer hobs deliver exact temperature control with premium brass burners and tempered glass.',
     features: ['Brass Burners', 'Auto-Ignition', 'Tempered Glass', 'Cast Iron Stands'],
@@ -39,8 +39,8 @@ export const kitchenZones = [
   },
   {
     id: 'geyser',
-    name: 'Geysers',
-    categorySlug: 'geysers',
+    name: 'Geysers & Water Heaters',
+    categorySlug: 'geysers-water-heaters',
     tagline: 'Instant Warmth, Always Ready',
     description: "Gas and electric water heaters engineered for Pakistan's climate. Multiple safety systems ensure worry-free hot water year-round.",
     features: ['Instant Heating', 'Flame Failure', 'Anti-Freeze', 'Copper Heat Exchanger'],

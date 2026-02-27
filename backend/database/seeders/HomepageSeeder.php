@@ -422,16 +422,15 @@ class HomepageSeeder extends Seeder
         }
 
         $categorySlugs = [
-            'built-in-hoods',
-            'built-in-hobs',
-            'oven-toasters',
+            'kitchen-hoods',
+            'kitchen-hobs',
+            'cooking-ranges',
             'air-fryers',
             'water-coolers',
-            'blenders-processors',
+            'geysers-water-heaters',
+            'oven-toasters',
             'water-dispensers',
-            'geysers-heaters',
-            'cooking-ranges',
-            'room-coolers',
+            'accessories',
         ];
 
         foreach ($categorySlugs as $index => $slug) {

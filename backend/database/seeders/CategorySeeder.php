@@ -9,7 +9,7 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // All 14 categories based on product folder structure
+        // Exactly 9 flat categories — no sub-categories
         $categories = [
             [
                 'name' => 'Kitchen Hoods',
@@ -72,25 +72,6 @@ class CategorySeeder extends Seeder
                 'sort_order' => 3,
             ],
             [
-                'name' => 'Oven Toasters',
-                'slug' => 'oven-toasters',
-                'description' => 'Digital and mechanical oven toasters with capacities from 35L to 48L. Features include rotisserie function and convection heating.',
-                'features' => [
-                    'Double Glass Door',
-                    'Inner Lamp',
-                    'Rotisserie Function',
-                    'Convection Function',
-                    'SS Heating Elements',
-                    'Digital Controls',
-                    'Large Capacity',
-                ],
-                'image' => '/images/products/oven-toasters/FOT-2501C/1.webp',
-                'icon' => 'oven',
-                'is_active' => true,
-                'is_featured' => true,
-                'sort_order' => 4,
-            ],
-            [
                 'name' => 'Air Fryers',
                 'slug' => 'air-fryers',
                 'description' => 'Digital air fryers with capacities from 4L to 8L for healthy oil-free cooking. Features dual heating elements for even temperature control.',
@@ -107,12 +88,12 @@ class CategorySeeder extends Seeder
                 'icon' => 'air-fryer',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 5,
+                'sort_order' => 4,
             ],
             [
                 'name' => 'Water Coolers',
                 'slug' => 'water-coolers',
-                'description' => 'Commercial and industrial electric water coolers with capacities from 35L to 300L. Made with food-grade stainless steel.',
+                'description' => 'Commercial and industrial electric water coolers with capacities from 35L to 1000L, including slim and storage models. Made with food-grade stainless steel.',
                 'features' => [
                     'Adjustable Thermostat',
                     'Food-Grade SS Tank',
@@ -125,41 +106,46 @@ class CategorySeeder extends Seeder
                 'icon' => 'water-cooler',
                 'is_active' => true,
                 'is_featured' => true,
+                'sort_order' => 5,
+            ],
+            [
+                'name' => 'Geysers & Water Heaters',
+                'slug' => 'geysers-water-heaters',
+                'description' => 'Electric water heaters, gas geysers, hybrid dual-fuel geysers, and instant water heaters for every need. Incoloy 840 heating elements with overheating protection.',
+                'features' => [
+                    'Dual Fuel Flexibility',
+                    'Overheating Protection',
+                    'Wattage Control',
+                    'Fully Insulated',
+                    'Incoloy 840 Element',
+                    'Imported Brass Safety Valves',
+                    'Eco Watt Technology',
+                    '1 Year Warranty',
+                ],
+                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
+                'icon' => 'electric-geyser',
+                'is_active' => true,
+                'is_featured' => true,
                 'sort_order' => 6,
             ],
             [
-                'name' => 'Slim Water Coolers',
-                'slug' => 'slim-water-coolers',
-                'description' => 'Space-saving slim design water coolers perfect for compact spaces. Available in 35L, 45L, and 65L capacities.',
+                'name' => 'Oven Toasters',
+                'slug' => 'oven-toasters',
+                'description' => 'Digital and mechanical oven toasters with capacities from 35L to 48L. Features include rotisserie function and convection heating.',
                 'features' => [
-                    'Space-Saving Design',
-                    'Adjustable Thermostat',
-                    'Food-Grade SS Tank',
-                    'High-Pressure Compressor',
-                    'Compact Footprint',
+                    'Double Glass Door',
+                    'Inner Lamp',
+                    'Rotisserie Function',
+                    'Convection Function',
+                    'SS Heating Elements',
+                    'Digital Controls',
+                    'Large Capacity',
                 ],
-                'image' => '/images/products/slim-water-coolers/fe-35-slim.webp',
-                'icon' => 'slim-cooler',
+                'image' => '/images/products/oven-toasters/FOT-2501C/1.webp',
+                'icon' => 'oven',
                 'is_active' => true,
-                'is_featured' => false,
+                'is_featured' => true,
                 'sort_order' => 7,
-            ],
-            [
-                'name' => 'Storage Coolers',
-                'slug' => 'storage-coolers',
-                'description' => 'Self-contained storage water coolers with large capacity from 25L to 1000L. Ideal for high-demand environments.',
-                'features' => [
-                    'Food-Grade SS Tanks',
-                    'Brand New Compressors',
-                    'Copper Fan Motors',
-                    'Large Storage Capacity',
-                    'Heavy Duty Construction',
-                ],
-                'image' => '/images/products/water-coolers/SKU FE 200 S.S.webp',
-                'icon' => 'storage-cooler',
-                'is_active' => true,
-                'is_featured' => false,
-                'sort_order' => 8,
             ],
             [
                 'name' => 'Water Dispensers',
@@ -176,78 +162,7 @@ class CategorySeeder extends Seeder
                 'icon' => 'dispenser',
                 'is_active' => true,
                 'is_featured' => true,
-                'sort_order' => 9,
-            ],
-            [
-                'name' => 'Water Heaters',
-                'slug' => 'water-heaters',
-                'description' => 'Electric water heaters with Eco Watt technology for energy-efficient water heating. Various capacities available.',
-                'features' => [
-                    'Eco Watt Technology',
-                    'Energy Efficient',
-                    'Overheating Protection',
-                    'Fully Insulated',
-                    'Incoloy 840 Element',
-                ],
-                'image' => '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
-                'icon' => 'electric-geyser',
-                'is_active' => true,
-                'is_featured' => false,
-                'sort_order' => 10,
-            ],
-            [
-                'name' => 'Fast Electric Water Heaters',
-                'slug' => 'fast-electric-water-heaters',
-                'description' => 'Fast electric water heaters from 30 to 200 liters with adjustable wattage options and thermal safety cutouts.',
-                'features' => [
-                    'Single Welded Tanks',
-                    'Adjustable Wattage',
-                    'Thermal Safety Cutout',
-                    'Full Insulation',
-                    'Incoloy 840 Element',
-                    'Fast Heating',
-                ],
-                'image' => '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-100 Liter.webp',
-                'icon' => 'fast-geyser',
-                'is_active' => true,
-                'is_featured' => false,
-                'sort_order' => 11,
-            ],
-            [
-                'name' => 'Instant Electric Water Heaters',
-                'slug' => 'instant-electric-water-heaters',
-                'description' => 'Instant cum storage electric water heaters from 10 to 60 liters with quick heating technology and compact design.',
-                'features' => [
-                    'Quick Heating',
-                    'Compact Design',
-                    'Overheating Protection',
-                    'Wattage Control',
-                    'Fully Insulated',
-                    'Instant Hot Water',
-                ],
-                'image' => '/images/products/instant-electric-water-heaters/Instant Electric Water Heater with Storage 25 Ltrs.webp',
-                'icon' => 'instant-geyser',
-                'is_active' => true,
-                'is_featured' => false,
-                'sort_order' => 12,
-            ],
-            [
-                'name' => 'Hybrid Geysers',
-                'slug' => 'hybrid-geysers',
-                'description' => 'Hybrid water heaters with both electric and gas heating options for dual fuel flexibility. Capacities from 25 to 100 gallons.',
-                'features' => [
-                    'Dual Fuel Flexibility',
-                    'Overheating Protection',
-                    'Wattage Control',
-                    'Fully Insulated',
-                    'Accurate Volume',
-                    'Incoloy 840 Element',
-                ],
-                'image' => '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 25 Gallon.webp',
-                'icon' => 'hybrid-geyser',
-                'is_active' => true,
-                'is_featured' => false,
-                'sort_order' => 13,
+                'sort_order' => 8,
             ],
             [
                 'name' => 'Accessories',
@@ -263,11 +178,11 @@ class CategorySeeder extends Seeder
                 'icon' => 'accessories',
                 'is_active' => true,
                 'is_featured' => false,
-                'sort_order' => 14,
+                'sort_order' => 9,
             ],
         ];
 
-        // Create all categories (all as parent categories, no hierarchy)
+        // Create / update all 9 categories (restore soft-deleted if needed)
         foreach ($categories as $category) {
             Category::withTrashed()->updateOrCreate(
                 ['slug' => $category['slug']],
@@ -275,21 +190,16 @@ class CategorySeeder extends Seeder
             );
         }
 
-        // Delete old categories that don't match our new structure
+        // Remove any categories not in the new 9-category structure
         Category::whereNotIn('slug', [
             'kitchen-hoods',
             'kitchen-hobs',
             'cooking-ranges',
-            'oven-toasters',
             'air-fryers',
             'water-coolers',
-            'slim-water-coolers',
-            'storage-coolers',
+            'geysers-water-heaters',
+            'oven-toasters',
             'water-dispensers',
-            'water-heaters',
-            'fast-electric-water-heaters',
-            'instant-electric-water-heaters',
-            'hybrid-geysers',
             'accessories',
         ])->delete();
     }
