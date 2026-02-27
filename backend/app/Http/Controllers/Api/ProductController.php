@@ -13,6 +13,8 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::with(['category', 'brand', 'images'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active();
 
         // Search
@@ -246,6 +248,8 @@ class ProductController extends Controller
         $categoryIds = $category->getAllChildrenIds();
 
         $query = Product::with(['category', 'brand', 'images'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->whereIn('category_id', $categoryIds);
 

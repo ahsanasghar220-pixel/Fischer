@@ -294,15 +294,18 @@ const ProductCard = memo(function ProductCard({
                            ${isHovered && !isTouchDevice ? 'scale-105' : 'scale-100'}`}
                 style={{ transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }}
               >
-                {formatPrice(product.price)}
+                {product.has_variants && product.variants_min_price && product.variants_max_price && product.variants_min_price !== product.variants_max_price
+                  ? `${formatPrice(product.variants_min_price)} – ${formatPrice(product.variants_max_price)}`
+                  : formatPrice(product.variants_min_price ?? product.price)
+                }
               </span>
-              {product.compare_price && product.compare_price > product.price && (
+              {!product.has_variants && product.compare_price && product.compare_price > product.price && (
                 <span className="product-price-old">{formatPrice(product.compare_price)}</span>
               )}
             </div>
 
             {/* Low Stock Warning */}
-            {product.stock_status === 'in_stock' && product.stock && product.stock <= 10 && product.stock > 0 && (
+            {product.stock_status === 'in_stock' && product.stock > 0 && product.stock <= 10 && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}

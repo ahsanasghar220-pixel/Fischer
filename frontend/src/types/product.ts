@@ -91,6 +91,9 @@ export interface Product {
   stock_quantity?: number
   low_stock_threshold?: number
   stock_status: string
+  has_variants?: boolean
+  variants_min_price?: number | null
+  variants_max_price?: number | null
   is_new?: boolean
   is_bestseller?: boolean
   is_active?: boolean
