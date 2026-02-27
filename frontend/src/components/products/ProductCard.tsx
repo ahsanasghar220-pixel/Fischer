@@ -305,7 +305,7 @@ const ProductCard = memo(function ProductCard({
             </div>
 
             {/* Low Stock Warning */}
-            {product.stock_status === 'in_stock' && product.stock > 0 && product.stock <= 10 && (
+            {product.stock_status === 'in_stock' && (product.stock ?? 0) > 0 && (product.stock ?? 0) <= 10 && (
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
