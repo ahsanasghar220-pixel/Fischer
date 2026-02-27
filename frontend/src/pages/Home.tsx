@@ -219,20 +219,20 @@ export default function Home() {
                 <div>
                   <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/25 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-sm font-semibold mb-4">
                     <StarIcon className="w-4 h-4 fill-amber-700 dark:fill-amber-500" />
-                    Customer Favorites
+                    Fischer Portfolio
                   </span>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-dark-900 dark:text-white">
-                    Best <span className="text-primary-600 dark:text-primary-500">Sellers</span>
+                    Product <span className="text-primary-600 dark:text-primary-500">Portfolio</span>
                   </h2>
                   <p className="text-xl text-dark-600 dark:text-dark-400 mt-4 max-w-xl">
-                    Top-rated appliances trusted by thousands of Pakistani homes
+                    Our complete range of premium home appliances
                   </p>
                 </div>
                 <Link
-                  to="/shop?bestseller=1"
+                  to="/shop"
                   className="group inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary-500 dark:bg-primary-600 text-white font-semibold text-sm sm:text-base hover:bg-primary-600 dark:hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 hover:scale-105 active:scale-95 transition-all duration-300"
                 >
-                  View All Best Sellers
+                  View Product Range
                   <ArrowRightIcon className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
