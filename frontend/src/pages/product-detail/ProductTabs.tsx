@@ -9,7 +9,8 @@ interface ProductTabsProps {
 }
 
 export default function ProductTabs({ product, activeTab, onTabChange, reviewsContent }: ProductTabsProps) {
-  const hasSpecs = !!product.specifications && product.specifications.trim() !== '' && product.specifications !== '<p></p>'
+  const specsStr = typeof product.specifications === 'string' ? product.specifications : ''
+  const hasSpecs = !!specsStr && specsStr.trim() !== '' && specsStr !== '<p></p>'
 
   const tabs: Array<{ key: 'description' | 'specifications' | 'reviews'; label: string; show: boolean }> = [
     { key: 'description', label: 'Description', show: true },
@@ -100,7 +101,7 @@ export default function ProductTabs({ product, activeTab, onTabChange, reviewsCo
             >
               <div
                 className="text-dark-700 dark:text-dark-300 leading-relaxed specs-content"
-                dangerouslySetInnerHTML={{ __html: product.specifications! }}
+                dangerouslySetInnerHTML={{ __html: specsStr }}
               />
               <style>{`
                 .specs-content table {
