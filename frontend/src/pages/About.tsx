@@ -296,10 +296,10 @@ export default function About() {
       </ScrollReveal>
 
       {/* CTA */}
-      <section className="bg-primary-500 py-16 overflow-hidden">
+      <section className="bg-primary-700 py-16 overflow-hidden">
         <div className="container mx-auto px-4 text-center">
           <motion.h2
-            className="text-3xl font-bold text-dark-900 mb-4"
+            className="text-3xl font-bold text-white mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -307,7 +307,7 @@ export default function About() {
             Ready to Experience Fischer Quality?
           </motion.h2>
           <motion.p
-            className="text-dark-700 mb-8 max-w-2xl mx-auto"
+            className="text-white/75 mb-8 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -323,12 +323,12 @@ export default function About() {
             transition={{ delay: 0.2 }}
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to="/shop" className="btn bg-dark-900 text-white hover:bg-dark-800 px-8">
+              <Link to="/shop" className="btn bg-white text-primary-700 hover:bg-white/90 px-8 font-semibold">
                 Shop Now
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to="/contact" className="btn bg-white text-dark-900 hover:bg-dark-50 px-8">
+              <Link to="/contact" className="btn bg-white/15 text-white border border-white/30 hover:bg-white/25 px-8">
                 Contact Us
               </Link>
             </motion.div>
