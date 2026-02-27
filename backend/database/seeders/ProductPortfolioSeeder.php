@@ -40,32 +40,29 @@ class ProductPortfolioSeeder extends Seeder
             'sku'               => 'FEWH',
             'category_slug'     => 'water-heaters',
             'short_description' => 'Energy-efficient Eco Watt storage electric water heater with Incoloy 840 heating element, overheating protection, and full insulation. Available in Deluxe and Heavy Duty grades.',
-            'description'       => "Fischer Eco Watt Electric Water Heater brings you advanced energy-saving technology for reliable hot water. Built with a premium Incoloy 840 heating element for long-lasting performance.\n\n**Key Features:**\n- Eco Watt energy-saving technology\n- Incoloy 840 corrosion-resistant element\n- Full thermal insulation\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades available\n- Available in R-30 to R-80 capacities\n- 1 Year Warranty",
+            'description'       => "Fischer Eco Watt Electric Water Heater brings you advanced energy-saving technology for reliable hot water. Built with a premium Incoloy 840 heating element for long-lasting performance.\n\n**Key Features:**\n- Eco Watt energy-saving technology\n- Incoloy 840 corrosion-resistant element\n- Full thermal insulation\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades available\n- Available in 30, 40, 50 and 60 litre capacities\n- 1 Year Warranty",
             'is_new'            => true,
             'is_bestseller'     => true,
-            // Base price (Deluxe R-30) — overridden per variant
-            'price'             => 22000,
+            'price'             => 26000,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0, // stock managed per variant
             'has_variants'      => true,
         ], [
-            'Series'    => ['Deluxe', 'Heavy Duty'],
-            'Capacity'  => ['R-30', 'R-40', 'R-50', 'R-60', 'R-80'],
+            // Capacity listed first → displays first in the configurator (matches old fischerpk.com)
+            'Geysers Storage Capacity' => ['30 Litr', '40 Litr', '50 Litr', '60 Litr'],
+            'Model'                    => ['Deluxe', 'Heavy Duty'],
         ], [
-            // [Series, Capacity, price, compare_price, stock]
-            // Deluxe — [ESTIMATED] prices (approximately 15% below Heavy Duty)
-            ['Deluxe', 'R-30', 22000, 26500, 15],
-            ['Deluxe', 'R-40', 24000, 28500, 12],
-            ['Deluxe', 'R-50', 26500, 31500, 10],
-            ['Deluxe', 'R-60', 29000, 34500, 8],
-            ['Deluxe', 'R-80', 35000, 42000, 6],
-            // Heavy Duty — [CONFIRMED] from price list images
-            ['Heavy Duty', 'R-30', 26000, 31000, 15],
-            ['Heavy Duty', 'R-40', 28000, 33500, 12],
-            ['Heavy Duty', 'R-50', 31000, 37000, 10],
-            ['Heavy Duty', 'R-60', 33500, 40000, 8],
-            ['Heavy Duty', 'R-80', 40000, 48000, 6],
+            // [Geysers Storage Capacity, Model, price, compare_price, stock]
+            // [CONFIRMED] prices from fischerpk.com — same price regardless of Model grade
+            ['30 Litr', 'Deluxe',     26000, null, 15],
+            ['30 Litr', 'Heavy Duty', 26000, null, 15],
+            ['40 Litr', 'Deluxe',     28000, null, 12],
+            ['40 Litr', 'Heavy Duty', 28000, null, 12],
+            ['50 Litr', 'Deluxe',     31000, null, 10],
+            ['50 Litr', 'Heavy Duty', 31000, null, 10],
+            ['60 Litr', 'Deluxe',     33500, null,  8],
+            ['60 Litr', 'Heavy Duty', 33500, null,  8],
         ], $av);
 
         // ── 2. Fischer FAST Electric Water Heater ────────────────────────
@@ -340,10 +337,11 @@ class ProductPortfolioSeeder extends Seeder
                     $attrValueLabels = [$attrNames[0] => $cap];
                     $skuSuffix = strtolower(str_replace(['/', ' '], '-', $cap));
                 } elseif ($numAttrs === 2) {
-                    [$series, $cap, $price, $comparePrice, $stock] = $row;
-                    $attrValueLabels = [$attrNames[0] => $series, $attrNames[1] => $cap];
-                    $seriesCode = $series === 'Heavy Duty' ? 'HD' : 'D';
-                    $skuSuffix  = strtolower(str_replace(['/', ' '], '-', "{$cap}-{$seriesCode}"));
+                    [$attr1, $attr2, $price, $comparePrice, $stock] = $row;
+                    $attrValueLabels = [$attrNames[0] => $attr1, $attrNames[1] => $attr2];
+                    $v1 = strtolower(str_replace(['/', ' '], '-', $attr1));
+                    $v2 = strtolower(str_replace(['/', ' '], '-', $attr2));
+                    $skuSuffix = "{$v1}-{$v2}";
                 } else {
                     // 3 attributes
                     [$series, $cap, $wattage, $price, $comparePrice, $stock] = $row;

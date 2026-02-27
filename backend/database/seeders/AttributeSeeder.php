@@ -70,6 +70,30 @@ class AttributeSeeder extends Seeder
                 ],
             ],
 
+            // ── Geysers Storage Capacity ────────────────────────────────────
+            // Used for Eco Watt Electric Water Heater (litre-based, matches old site labels)
+            [
+                'name' => 'Geysers Storage Capacity',
+                'type' => 'button',
+                'values' => [
+                    ['value' => '30 Litr', 'sort_order' => 1],
+                    ['value' => '40 Litr', 'sort_order' => 2],
+                    ['value' => '50 Litr', 'sort_order' => 3],
+                    ['value' => '60 Litr', 'sort_order' => 4],
+                ],
+            ],
+
+            // ── Model ────────────────────────────────────────────────────────
+            // Product grade for Eco Watt (mirrors old site "Model" label)
+            [
+                'name' => 'Model',
+                'type' => 'button',
+                'values' => [
+                    ['value' => 'Deluxe',     'sort_order' => 1],
+                    ['value' => 'Heavy Duty', 'sort_order' => 2],
+                ],
+            ],
+
             // ── Wattage ─────────────────────────────────────────────────────
             // Used for Hybrid geyser and other adjustable-wattage products
             [
