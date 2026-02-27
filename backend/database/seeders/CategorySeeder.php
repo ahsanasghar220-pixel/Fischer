@@ -155,7 +155,7 @@ class CategorySeeder extends Seeder
                     'Large Storage Capacity',
                     'Heavy Duty Construction',
                 ],
-                'image' => '/images/products/storage-coolers/fst-200.webp',
+                'image' => '/images/products/water-coolers/SKU FE 200 S.S.webp',
                 'icon' => 'storage-cooler',
                 'is_active' => true,
                 'is_featured' => false,

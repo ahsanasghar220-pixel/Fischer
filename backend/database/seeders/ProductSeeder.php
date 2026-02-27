@@ -630,7 +630,7 @@ class ProductSeeder extends Seeder
                     'Coiling' => 'Fully Copper',
                     'Refrigerant' => 'CFC-free R134a',
                 ],
-                'image' => '/images/products/storage-coolers/fst-25.webp',
+                'image' => '/images/products/water-coolers/SKU FE 35 S.S.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -649,7 +649,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Stainless Steel',
                     'Coiling' => 'All-Copper',
                 ],
-                'image' => '/images/products/storage-coolers/fst-50.webp',
+                'image' => '/images/products/water-coolers/SKU FE 45 S.S.webp',
                 'stock_status' => 'in_stock',
                 'is_featured' => true,
             ],
@@ -668,7 +668,7 @@ class ProductSeeder extends Seeder
                     'Taps' => '3',
                     'Material' => 'Premium Stainless Steel',
                 ],
-                'image' => '/images/products/storage-coolers/fst-100.webp',
+                'image' => '/images/products/water-coolers/SKU FE 100 S.S.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -686,7 +686,7 @@ class ProductSeeder extends Seeder
                     'Taps' => '4',
                     'Material' => 'Premium Stainless Steel',
                 ],
-                'image' => '/images/products/storage-coolers/fst-200.webp',
+                'image' => '/images/products/water-coolers/SKU FE 200 S.S.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -701,7 +701,7 @@ class ProductSeeder extends Seeder
                     'Taps' => '4',
                     'Material' => 'Commercial Grade Stainless Steel',
                 ],
-                'image' => '/images/products/storage-coolers/fst-400.webp',
+                'image' => '/images/products/water-coolers/SKU FE 300 S.S.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -716,7 +716,7 @@ class ProductSeeder extends Seeder
                     'Taps' => '4+',
                     'Material' => 'Industrial Grade Stainless Steel',
                 ],
-                'image' => '/images/products/storage-coolers/fst-600.webp',
+                'image' => '/images/products/water-coolers/SKU FE 1000 S.S.webp',
                 'stock_status' => 'in_stock',
             ],
             [
@@ -732,7 +732,7 @@ class ProductSeeder extends Seeder
                     'Material' => 'Industrial Grade Stainless Steel',
                     'Type' => 'Maximum Capacity',
                 ],
-                'image' => '/images/products/storage-coolers/fst-1000.webp',
+                'image' => '/images/products/water-coolers/SKU FE 1000 S.S.webp',
                 'stock_status' => 'in_stock',
                 'is_bestseller' => true,
             ],
