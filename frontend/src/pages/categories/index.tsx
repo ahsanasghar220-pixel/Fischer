@@ -89,7 +89,7 @@ export default function CategoriesPage() {
                                transition-all duration-300"
                   >
                     {/* Image */}
-                    <div className="relative aspect-square bg-gray-50 dark:bg-dark-700 overflow-hidden">
+                    <div className="relative aspect-square bg-white dark:bg-white overflow-hidden">
                       {img ? (
                         <img
                           src={img}

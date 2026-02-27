@@ -14,7 +14,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Kitchen Hoods',
                 'slug' => 'kitchen-hoods',
-                'description' => 'Premium built-in kitchen hoods with powerful airflow up to 1500 m³/h. Features include touch control, auto-clean, and energy-efficient BLDC motors.',
+                'description' => 'Built-in kitchen hoods with powerful airflow, auto-clean function, and energy-efficient BLDC motors.',
                 'features' => [
                     'Premium Quality',
                     'BLDC Copper Motor',
@@ -34,7 +34,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Kitchen Hobs',
                 'slug' => 'kitchen-hobs',
-                'description' => 'Built-in kitchen hobs with tempered glass or stainless steel panels. Available in 3 to 5 burner configurations with brass burners and flame failure devices.',
+                'description' => 'Built-in gas hobs in 3 to 5 burner configurations with brass burners and flame failure device.',
                 'features' => [
                     'Complete Brass Burners',
                     'Sabaf Burners',
@@ -54,7 +54,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Cooking Ranges',
                 'slug' => 'cooking-ranges',
-                'description' => 'Professional cooking ranges with 3 to 5 burners. Perfect for modern kitchens with complete brass burners and stainless steel finish.',
+                'description' => 'Professional cooking ranges with brass burners, stainless steel finish, and multiple size options.',
                 'features' => [
                     'Complete Brass Burners',
                     'Sabaf Burners',
@@ -74,7 +74,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Air Fryers',
                 'slug' => 'air-fryers',
-                'description' => 'Digital air fryers with capacities from 4L to 8L for healthy oil-free cooking. Features dual heating elements for even temperature control.',
+                'description' => 'Digital air fryers from 4L to 8L for healthy, oil-free cooking with precise temperature control.',
                 'features' => [
                     'Oil-Free Cooking',
                     'Digital Touch Panel',
@@ -93,7 +93,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Water Coolers',
                 'slug' => 'water-coolers',
-                'description' => 'Commercial and industrial electric water coolers with capacities from 35L to 1000L, including slim and storage models. Made with food-grade stainless steel.',
+                'description' => 'Commercial electric water coolers from 35L to 1000L with food-grade stainless steel tanks.',
                 'features' => [
                     'Adjustable Thermostat',
                     'Food-Grade SS Tank',
@@ -111,7 +111,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Geysers & Water Heaters',
                 'slug' => 'geysers-water-heaters',
-                'description' => 'Electric water heaters, gas geysers, hybrid dual-fuel geysers, and instant water heaters for every need. Incoloy 840 heating elements with overheating protection.',
+                'description' => 'Electric, gas, hybrid, and instant water heaters with Incoloy heating elements and built-in safety protection.',
                 'features' => [
                     'Dual Fuel Flexibility',
                     'Overheating Protection',
@@ -131,7 +131,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Oven Toasters',
                 'slug' => 'oven-toasters',
-                'description' => 'Digital and mechanical oven toasters with capacities from 35L to 48L. Features include rotisserie function and convection heating.',
+                'description' => 'Digital oven toasters from 35L to 48L with rotisserie, convection, and stainless steel heating elements.',
                 'features' => [
                     'Double Glass Door',
                     'Inner Lamp',
@@ -150,7 +150,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Water Dispensers',
                 'slug' => 'water-dispensers',
-                'description' => 'Compact water dispensers for home and office use. Features food-grade stainless steel tanks and eco-friendly refrigerants.',
+                'description' => 'Home and office water dispensers with hot & cold functions and food-grade stainless steel tanks.',
                 'features' => [
                     'Food-Grade SS Tanks',
                     'Eco-Friendly Refrigerants',
@@ -167,7 +167,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Accessories',
                 'slug' => 'accessories',
-                'description' => 'Kitchen and appliance accessories including basket liners, iron racks, and replacement parts.',
+                'description' => 'Fischer-compatible kitchen accessories including basket liners, iron racks, and replacement parts.',
                 'features' => [
                     'Durable Materials',
                     'Fischer Compatible',
