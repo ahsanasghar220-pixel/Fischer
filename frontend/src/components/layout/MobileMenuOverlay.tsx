@@ -204,7 +204,7 @@ export default function MobileMenuOverlay({
                                     {/* Content */}
                                     <div className="relative">
                                       {/* Image Container with Modern Design */}
-                                      <div className="aspect-square mb-3 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-700 dark:to-dark-600 shadow-inner relative">
+                                      <div className="aspect-square mb-3 rounded-xl overflow-hidden bg-white dark:bg-white shadow-inner relative">
                                         {(() => {
                                           const imgSrc = getCategoryProductImage(category.slug, category.image)
                                           return imgSrc ? (

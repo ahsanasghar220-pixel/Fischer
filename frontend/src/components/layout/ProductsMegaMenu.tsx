@@ -150,7 +150,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                         className="block"
                       >
                         {/* Category Image/Icon */}
-                        <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-600 rounded-xl overflow-hidden mb-2 relative flex items-center justify-center">
+                        <div className="aspect-square bg-white dark:bg-white rounded-xl overflow-hidden mb-2 relative flex items-center justify-center">
                           {category.image ? (
                             <img
                               src={category.image}
