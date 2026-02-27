@@ -49,9 +49,8 @@ class AttributeSeeder extends Seeder
                     ['value' => 'F-60', 'sort_order' => 9],
                     ['value' => 'F-80', 'sort_order' => 10],
                     ['value' => 'F-100', 'sort_order' => 11],
-                    ['value' => 'F-120', 'sort_order' => 12],
-                    ['value' => 'F-150', 'sort_order' => 13],
-                    ['value' => 'F-200', 'sort_order' => 14],
+                    ['value' => 'F-140', 'sort_order' => 12],
+                    ['value' => 'F-200', 'sort_order' => 13],
                     // Gas Geyser / Hybrid (gallons)
                     ['value' => '15G', 'sort_order' => 15],
                     ['value' => '25G', 'sort_order' => 16],
@@ -71,15 +70,16 @@ class AttributeSeeder extends Seeder
             ],
 
             // ── Geysers Storage Capacity ────────────────────────────────────
-            // Used for Eco Watt Electric Water Heater (litre-based, matches old site labels)
+            // Used for Eco Watt Electric Water Heater (R-series model codes)
             [
                 'name' => 'Geysers Storage Capacity',
                 'type' => 'button',
                 'values' => [
-                    ['value' => '30 Litr', 'sort_order' => 1],
-                    ['value' => '40 Litr', 'sort_order' => 2],
-                    ['value' => '50 Litr', 'sort_order' => 3],
-                    ['value' => '60 Litr', 'sort_order' => 4],
+                    ['value' => 'R-30', 'sort_order' => 1],
+                    ['value' => 'R-40', 'sort_order' => 2],
+                    ['value' => 'R-50', 'sort_order' => 3],
+                    ['value' => 'R-60', 'sort_order' => 4],
+                    ['value' => 'R-80', 'sort_order' => 5],
                 ],
             ],
 

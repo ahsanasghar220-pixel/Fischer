@@ -15,13 +15,17 @@ use Illuminate\Support\Str;
  * ProductPortfolioSeeder
  *
  * Seeds all 6 Fischer water heater product lines with their
- * full Apple-style configurator variants (Series × Capacity × [Wattage]).
+ * Apple-style configurator variants.
  *
- * Pricing notes:
- *  - Prices marked [CONFIRMED] were verified from physical price list images.
- *  - Prices marked [ESTIMATED] are approximations — update via Admin dashboard.
- *  - MRP (compare_price) = printed price on price list.
- *  - Price (selling) = handwritten red price on price list.
+ * Attribute structure:
+ *   - Eco Watt         → Geysers Storage Capacity (R-xx) × Model (Deluxe / Heavy Duty)
+ *   - FAST             → Capacity (F-xx)           × Model (Deluxe / Heavy Duty)
+ *   - Hybrid           → Capacity (gallon)          × Model (Deluxe / Heavy Duty)
+ *   - Gas Geyser       → Capacity (gallon)          × Model (Deluxe / Heavy Duty)
+ *   - Instant Gas      → Capacity (6L/8L/10L)       [no Model — 100% imported, one grade]
+ *   - FE Instant Store → Capacity (FE-10/15/30)     [no Model — one grade]
+ *
+ * Pricing source: confirmed Fischer price list.
  *
  * Run:
  *   php artisan db:seed --class=AttributeSeeder         (run first)
@@ -39,30 +43,31 @@ class ProductPortfolioSeeder extends Seeder
             'name'              => 'Fischer Eco Watt Electric Water Heater',
             'sku'               => 'FEWH',
             'category_slug'     => 'water-heaters',
-            'short_description' => 'Energy-efficient Eco Watt storage electric water heater with Incoloy 840 heating element, overheating protection, and full insulation. Available in Deluxe and Heavy Duty grades.',
-            'description'       => "Fischer Eco Watt Electric Water Heater brings you advanced energy-saving technology for reliable hot water. Built with a premium Incoloy 840 heating element for long-lasting performance.\n\n**Key Features:**\n- Eco Watt energy-saving technology\n- Incoloy 840 corrosion-resistant element\n- Full thermal insulation\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades available\n- Available in 30, 40, 50 and 60 litre capacities\n- 1 Year Warranty",
+            'short_description' => 'Energy-efficient Eco Watt storage electric water heater with Incoloy 840 heating element, overheating protection, and full insulation. Available in Deluxe and Heavy Duty grades from R-30 to R-80.',
+            'description'       => "Fischer Eco Watt Electric Water Heater brings you advanced energy-saving technology for reliable hot water. Built with a premium Incoloy 840 heating element for long-lasting performance.\n\n**Key Features:**\n- Eco Watt energy-saving technology\n- Incoloy 840 corrosion-resistant element\n- Full thermal insulation\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades available\n- Available in R-30 to R-80 capacities\n- 1 Year Warranty",
             'is_new'            => true,
             'is_bestseller'     => true,
-            'price'             => 26000,
+            'price'             => 24000,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
-            'stock'             => 0, // stock managed per variant
+            'stock'             => 0,
             'has_variants'      => true,
         ], [
-            // Capacity listed first → displays first in the configurator (matches old fischerpk.com)
-            'Geysers Storage Capacity' => ['30 Litr', '40 Litr', '50 Litr', '60 Litr'],
+            // Capacity first → displays first in configurator
+            'Geysers Storage Capacity' => ['R-30', 'R-40', 'R-50', 'R-60', 'R-80'],
             'Model'                    => ['Deluxe', 'Heavy Duty'],
         ], [
             // [Geysers Storage Capacity, Model, price, compare_price, stock]
-            // [CONFIRMED] prices from fischerpk.com — same price regardless of Model grade
-            ['30 Litr', 'Deluxe',     26000, null, 15],
-            ['30 Litr', 'Heavy Duty', 26000, null, 15],
-            ['40 Litr', 'Deluxe',     28000, null, 12],
-            ['40 Litr', 'Heavy Duty', 28000, null, 12],
-            ['50 Litr', 'Deluxe',     31000, null, 10],
-            ['50 Litr', 'Heavy Duty', 31000, null, 10],
-            ['60 Litr', 'Deluxe',     33500, null,  8],
-            ['60 Litr', 'Heavy Duty', 33500, null,  8],
+            ['R-30', 'Deluxe',      24000, null, 15],
+            ['R-30', 'Heavy Duty',  26000, null, 15],
+            ['R-40', 'Deluxe',      26000, null, 12],
+            ['R-40', 'Heavy Duty',  28000, null, 12],
+            ['R-50', 'Deluxe',      28000, null, 10],
+            ['R-50', 'Heavy Duty',  31000, null, 10],
+            ['R-60', 'Deluxe',      30000, null,  8],
+            ['R-60', 'Heavy Duty',  33500, null,  8],
+            ['R-80', 'Deluxe',      36000, null,  6],
+            ['R-80', 'Heavy Duty',  40000, null,  6],
         ], $av);
 
         // ── 2. Fischer FAST Electric Water Heater ────────────────────────
@@ -74,129 +79,98 @@ class ProductPortfolioSeeder extends Seeder
             'description'       => "Fischer FAST Electric Water Heater is designed for rapid hot water delivery with premium single-welded tanks and adjustable wattage options.\n\n**Key Features:**\n- Single welded tanks for extra strength\n- Adjustable wattage control\n- Thermal safety cutout (auto shut-off)\n- Full thermal insulation\n- Incoloy 840 heating element\n- Deluxe and Heavy Duty grades\n- Capacities from F-30 to F-200\n- 1 Year Warranty",
             'is_new'            => false,
             'is_bestseller'     => false,
-            'price'             => 28000,
+            'price'             => 21000,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
         ], [
-            'Series'    => ['Deluxe', 'Heavy Duty'],
-            'Capacity'  => ['F-30', 'F-40', 'F-50', 'F-60', 'F-80', 'F-100', 'F-120', 'F-150', 'F-200'],
+            'Capacity' => ['F-30', 'F-40', 'F-50', 'F-60', 'F-80', 'F-100', 'F-140', 'F-200'],
+            'Model'    => ['Deluxe', 'Heavy Duty'],
         ], [
-            // [Series, Capacity, price, compare_price, stock]
-            // [ESTIMATED] — MRP = selling price for FAST series (no discount)
-            ['Deluxe',     'F-30',  27000,  null,  12],
-            ['Deluxe',     'F-40',  30000,  null,  10],
-            ['Deluxe',     'F-50',  33000,  null,  8],
-            ['Deluxe',     'F-60',  36000,  null,  7],
-            ['Deluxe',     'F-80',  42000,  null,  6],
-            ['Deluxe',     'F-100', 48000,  null,  5],
-            ['Deluxe',     'F-120', 54000,  null,  4],
-            ['Deluxe',     'F-150', 62000,  null,  3],
-            ['Deluxe',     'F-200', 72000,  null,  3],
-            ['Heavy Duty', 'F-30',  31000,  null,  12],
-            ['Heavy Duty', 'F-40',  35000,  null,  10],
-            ['Heavy Duty', 'F-50',  39000,  null,  8],
-            ['Heavy Duty', 'F-60',  43000,  null,  7],
-            ['Heavy Duty', 'F-80',  50000,  null,  6],
-            ['Heavy Duty', 'F-100', 57000,  null,  5],
-            ['Heavy Duty', 'F-120', 65000,  null,  4],
-            ['Heavy Duty', 'F-150', 76000,  null,  3],
-            ['Heavy Duty', 'F-200', 90000,  null,  3],
+            // [Capacity, Model, price, compare_price, stock]
+            ['F-30',  'Deluxe',     21000, null, 12],
+            ['F-30',  'Heavy Duty', 23500, null, 12],
+            ['F-40',  'Deluxe',     22000, null, 10],
+            ['F-40',  'Heavy Duty', 25000, null, 10],
+            ['F-50',  'Deluxe',     23500, null,  8],
+            ['F-50',  'Heavy Duty', 26500, null,  8],
+            ['F-60',  'Deluxe',     24500, null,  7],
+            ['F-60',  'Heavy Duty', 29000, null,  7],
+            ['F-80',  'Deluxe',     28000, null,  6],
+            ['F-80',  'Heavy Duty', 34000, null,  6],
+            ['F-100', 'Deluxe',     40000, null,  5],
+            ['F-100', 'Heavy Duty', 48000, null,  5],
+            ['F-140', 'Deluxe',     46000, null,  4],
+            ['F-140', 'Heavy Duty', 57000, null,  4],
+            ['F-200', 'Deluxe',     54000, null,  3],
+            ['F-200', 'Heavy Duty', 67000, null,  3],
         ], $av);
 
-        // ── 3. Fischer Hybrid Electric+Gas Geyser ─────────────────────────
+        // ── 3. Fischer Hybrid Electric + Gas Water Heater ─────────────────
         $this->seedProduct([
             'name'              => 'Fischer Hybrid Electric + Gas Water Heater',
             'sku'               => 'FHG',
             'category_slug'     => 'hybrid-geysers',
-            'short_description' => 'Dual-fuel hybrid water heater with both electric and gas heating modes. Flexible wattage options and full safety protection for maximum energy savings.',
-            'description'       => "Fischer Hybrid Water Heater gives you the flexibility of both electric and gas fuel sources, ensuring uninterrupted hot water at the lowest operating cost.\n\n**Key Features:**\n- Dual fuel: Electric & Gas modes\n- Selectable wattage (1500W / 2000W / 2500W)\n- Overheating & pressure protection\n- Incoloy 840 element\n- Full thermal insulation\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
+            'short_description' => 'Dual-fuel hybrid water heater operating on both electric and gas. Available in Deluxe and Heavy Duty grades from 15 to 100 gallons.',
+            'description'       => "Fischer Hybrid Water Heater gives you the flexibility of both electric and gas fuel sources, ensuring uninterrupted hot water at the lowest operating cost.\n\n**Key Features:**\n- Dual fuel: Electric & Gas modes\n- Imported gas thermostat with auto ignition\n- Imported glass wool insulation\n- Italian electric element + thermostat\n- 9/10 inner tank\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
             'is_new'            => true,
             'is_bestseller'     => false,
-            'price'             => 45000,
+            'price'             => 43500,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
         ], [
-            'Series'    => ['Deluxe', 'Heavy Duty'],
-            'Capacity'  => ['15G', '25G', '35G', '55G', '65G', '100G'],
-            'Wattage'   => ['1500W', '2000W', '2500W'],
+            'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
+            'Model'    => ['Deluxe', 'Heavy Duty'],
         ], [
-            // [Series, Capacity, Wattage, price, compare_price, stock]
-            // [ESTIMATED] — update via admin dashboard
-            ['Deluxe', '15G', '1500W', 42000, null, 5],
-            ['Deluxe', '15G', '2000W', 44000, null, 5],
-            ['Deluxe', '15G', '2500W', 46000, null, 5],
-            ['Deluxe', '25G', '1500W', 48000, null, 5],
-            ['Deluxe', '25G', '2000W', 50000, null, 5],
-            ['Deluxe', '25G', '2500W', 52000, null, 5],
-            ['Deluxe', '35G', '1500W', 55000, null, 4],
-            ['Deluxe', '35G', '2000W', 57000, null, 4],
-            ['Deluxe', '35G', '2500W', 59000, null, 4],
-            ['Deluxe', '55G', '1500W', 64000, null, 3],
-            ['Deluxe', '55G', '2000W', 66000, null, 3],
-            ['Deluxe', '55G', '2500W', 68000, null, 3],
-            ['Deluxe', '65G', '1500W', 72000, null, 3],
-            ['Deluxe', '65G', '2000W', 74000, null, 3],
-            ['Deluxe', '65G', '2500W', 76000, null, 3],
-            ['Deluxe', '100G', '1500W', 95000, null, 2],
-            ['Deluxe', '100G', '2000W', 97000, null, 2],
-            ['Deluxe', '100G', '2500W', 99000, null, 2],
-            ['Heavy Duty', '15G', '1500W', 47000, null, 5],
-            ['Heavy Duty', '15G', '2000W', 49000, null, 5],
-            ['Heavy Duty', '15G', '2500W', 51000, null, 5],
-            ['Heavy Duty', '25G', '1500W', 54000, null, 5],
-            ['Heavy Duty', '25G', '2000W', 56000, null, 5],
-            ['Heavy Duty', '25G', '2500W', 58000, null, 5],
-            ['Heavy Duty', '35G', '1500W', 62000, null, 4],
-            ['Heavy Duty', '35G', '2000W', 64000, null, 4],
-            ['Heavy Duty', '35G', '2500W', 66000, null, 4],
-            ['Heavy Duty', '55G', '1500W', 72000, null, 3],
-            ['Heavy Duty', '55G', '2000W', 74000, null, 3],
-            ['Heavy Duty', '55G', '2500W', 76000, null, 3],
-            ['Heavy Duty', '65G', '1500W', 80000, null, 3],
-            ['Heavy Duty', '65G', '2000W', 82000, null, 3],
-            ['Heavy Duty', '65G', '2500W', 84000, null, 3],
-            ['Heavy Duty', '100G', '1500W', 108000, null, 2],
-            ['Heavy Duty', '100G', '2000W', 110000, null, 2],
-            ['Heavy Duty', '100G', '2500W', 112000, null, 2],
-        ], $av, true); // 3-attr mode
+            // [Capacity, Model, price, compare_price, stock]
+            // 15G–55G: both Deluxe and Heavy Duty available
+            ['15G',  'Deluxe',      43500,  null, 5],
+            ['15G',  'Heavy Duty',  50500,  null, 5],
+            ['25G',  'Deluxe',      48500,  null, 5],
+            ['25G',  'Heavy Duty',  58000,  null, 5],
+            ['35G',  'Deluxe',      55500,  null, 4],
+            ['35G',  'Heavy Duty',  69000,  null, 4],
+            ['55G',  'Deluxe',      64000,  null, 3],
+            ['55G',  'Heavy Duty',  81000,  null, 3],
+            // 65G and 100G: Heavy Duty only
+            ['65G',  'Heavy Duty',  90000,  null, 3],
+            ['100G', 'Heavy Duty', 150000,  null, 2],
+        ], $av);
 
-        // ── 4. Fischer Gas Geyser ─────────────────────────────────────────
+        // ── 4. Fischer Gas Water Heater (Storage) ─────────────────────────
         $this->seedProduct([
             'name'              => 'Fischer Gas Water Heater (Storage)',
             'sku'               => 'FGWH',
-            'category_slug'     => 'hybrid-geysers', // closest category
-            'short_description' => 'Fischer gas storage water heater with overheating protection and full insulation. Available in Deluxe and Heavy Duty grades from 15G to 100G.',
-            'description'       => "Fischer Gas Storage Water Heater is built for reliability and long service life. With heavy-gauge steel tanks and full insulation, you get consistent hot water throughout the day.\n\n**Key Features:**\n- Gas fuel — low running cost\n- Heavy-gauge single welded tanks\n- Overheating & pressure protection\n- Full thermal insulation\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
+            'category_slug'     => 'hybrid-geysers',
+            'short_description' => 'Fischer gas storage water heater with imported gas thermostat, auto ignition, and full insulation. Available in Deluxe and Heavy Duty grades from 15G to 100G.',
+            'description'       => "Fischer Gas Storage Water Heater is built for reliability and long service life. With heavy-gauge steel tanks and full insulation, you get consistent hot water throughout the day.\n\n**Key Features:**\n- Gas fuel — low running cost\n- Imported gas thermostat with auto ignition\n- Imported glass wool insulation\n- 9/10 inner tank\n- Overheating & pressure protection\n- Deluxe and Heavy Duty grades\n- Capacities: 15G to 100G\n- 1 Year Warranty",
             'is_new'            => false,
             'is_bestseller'     => false,
-            'price'             => 31600,
+            'price'             => 39500,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
         ], [
-            'Series'    => ['Deluxe', 'Heavy Duty'],
-            'Capacity'  => ['15G', '25G', '35G', '55G', '65G', '100G'],
+            'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
+            'Model'    => ['Deluxe', 'Heavy Duty'],
         ], [
-            // [Series, Capacity, price, compare_price, stock]
-            // [CONFIRMED] Deluxe range: 31.6K to 44K
-            ['Deluxe', '15G',  31600, null, 8],
-            ['Deluxe', '25G',  34000, null, 7],
-            ['Deluxe', '35G',  36500, null, 6],
-            ['Deluxe', '55G',  40000, null, 5],
-            ['Deluxe', '65G',  42000, null, 4],
-            ['Deluxe', '100G', 44000, null, 3],
-            // [CONFIRMED] Heavy Duty range: 33.6K to 104K
-            ['Heavy Duty', '15G',  33600, null,  8],
-            ['Heavy Duty', '25G',  38000, null,  7],
-            ['Heavy Duty', '35G',  45000, null,  6],
-            ['Heavy Duty', '55G',  62000, null,  5],
-            ['Heavy Duty', '65G',  80000, null,  4],
-            ['Heavy Duty', '100G', 104000, null, 3],
+            // [Capacity, Model, price, compare_price, stock]
+            // 15G–55G: both Deluxe and Heavy Duty available
+            ['15G',  'Deluxe',      39500,  null, 8],
+            ['15G',  'Heavy Duty',  42000,  null, 8],
+            ['25G',  'Deluxe',      44000,  null, 7],
+            ['25G',  'Heavy Duty',  53000,  null, 7],
+            ['35G',  'Deluxe',      47500,  null, 6],
+            ['35G',  'Heavy Duty',  61000,  null, 6],
+            ['55G',  'Deluxe',      55000,  null, 5],
+            ['55G',  'Heavy Duty',  72000,  null, 5],
+            // 65G and 100G: Heavy Duty only
+            ['65G',  'Heavy Duty',  78000,  null, 4],
+            ['100G', 'Heavy Duty', 130000,  null, 3],
         ], $av);
 
         // ── 5. Instant Gas Water Heater ───────────────────────────────────
@@ -204,11 +178,11 @@ class ProductPortfolioSeeder extends Seeder
             'name'              => 'Fischer Instant Gas Water Heater',
             'sku'               => 'FWH',
             'category_slug'     => 'hybrid-geysers',
-            'short_description' => 'Compact instant gas water heater with rapid heat-up time. Available in 6L, 8L, and 10L capacities.',
-            'description'       => "Fischer Instant Gas Water Heater delivers hot water on demand with no wait time. Compact design makes it ideal for bathrooms and kitchens.\n\n**Key Features:**\n- Instant hot water on demand\n- Gas fuel — cost-efficient operation\n- Compact wall-mount design\n- Auto ignition\n- Overheating protection\n- Capacities: FWH-6L, FWH-8L, FWH-10L\n- 1 Year Warranty",
+            'short_description' => '100% imported instant gas water heater with white front panel, LED indicator, and heavy duty copper heat exchanger. Available in 6L, 8L, and 10L.',
+            'description'       => "Fischer Instant Gas Water Heater delivers hot water on demand with no wait time. 100% imported components ensure superior reliability.\n\n**Key Features:**\n- Instant hot water on demand\n- Gas fuel — cost-efficient operation\n- White paint front panel with LED indicator\n- Heavy duty copper heat exchanger\n- Compact wall-mount design\n- Auto ignition\n- Overheating protection\n- Capacities: FWH-6L, FWH-8L, FWH-10L\n- 1 Year Warranty",
             'is_new'            => false,
             'is_bestseller'     => true,
-            'price'             => 17000,
+            'price'             => 21250,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0,
@@ -217,42 +191,36 @@ class ProductPortfolioSeeder extends Seeder
             'Capacity' => ['6L', '8L', '10L'],
         ], [
             // [Capacity, price, compare_price, stock]
-            // [CONFIRMED]
-            ['6L',  17000, null, 15],
-            ['8L',  22500, null, 12],
-            ['10L', 26000, null, 10],
+            ['6L',  21250, null, 15],
+            ['8L',  28125, null, 12],
+            ['10L', 32500, null, 10],
         ], $av);
 
         // ── 6. FE Series Instant Storage Electric Water Heater ───────────
         $this->seedProduct([
-            'name'              => 'Fischer FE Series Instant Storage Electric Water Heater',
+            'name'              => 'Fischer Instant Plus Storage Electric Water Heater',
             'sku'               => 'FE',
             'category_slug'     => 'instant-electric-water-heaters',
-            'short_description' => 'FE Series instant-cum-storage electric water heater. Quick heating with wattage control. Available in Deluxe and Heavy Duty grades.',
-            'description'       => "Fischer FE Series combines instant heating with storage capacity for a reliable hot water supply. Compact design with adjustable wattage for energy savings.\n\n**Key Features:**\n- Instant cum storage technology\n- Wattage control for energy savings\n- Overheating protection\n- Compact wall-mount design\n- Deluxe and Heavy Duty grades\n- FE-10, FE-15, FE-30 sizes\n- 1 Year Warranty",
+            'short_description' => 'Instant-cum-storage electric water heater with quick heating and wattage control. Available in 10, 15, and 30 litre capacities.',
+            'description'       => "Fischer Instant Plus Storage Electric Water Heater combines instant heating with storage capacity for a reliable hot water supply. Compact design with wattage control for energy savings.\n\n**Key Features:**\n- Instant cum storage technology\n- Wattage control for energy savings\n- Overheating protection\n- Compact wall-mount design\n- FE-10, FE-15, FE-30 sizes\n- 1 Year Warranty",
             'is_new'            => true,
             'is_bestseller'     => false,
-            'price'             => 18000,
+            'price'             => 17000,
             'compare_price'     => null,
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
         ], [
-            'Series'   => ['Deluxe', 'Heavy Duty'],
             'Capacity' => ['FE-10', 'FE-15', 'FE-30'],
         ], [
-            // [Series, Capacity, price, compare_price, stock]
-            // [ESTIMATED] — update via admin dashboard
-            ['Deluxe',     'FE-10', 18000, null, 10],
-            ['Deluxe',     'FE-15', 22000, null, 8],
-            ['Deluxe',     'FE-30', 28000, null, 6],
-            ['Heavy Duty', 'FE-10', 21000, null, 10],
-            ['Heavy Duty', 'FE-15', 25000, null, 8],
-            ['Heavy Duty', 'FE-30', 32000, null, 6],
+            // [Capacity, price, compare_price, stock]
+            ['FE-10', 17000, null, 10],
+            ['FE-15', 19000, null,  8],
+            ['FE-30', 24000, null,  6],
         ], $av);
 
         $this->command->info("\n✓ Product Portfolio seeded successfully.");
-        $this->command->info("  Note: Prices marked [ESTIMATED] should be verified and updated via Admin → Products.");
+        $this->command->info("  Prices are confirmed from the Fischer price list.");
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -279,18 +247,16 @@ class ProductPortfolioSeeder extends Seeder
      *
      * @param array $productData  Product fields
      * @param array $attrConfig   ['AttrName' => ['Value1', 'Value2', ...], ...]
-     * @param array $variantRows  Rows: [Attr1Value, [Attr2Value,] [Attr3Value,] price, compare_price, stock]
+     * @param array $variantRows  Rows: [Attr1Value, [Attr2Value,] price, compare_price, stock]
      * @param array $av           AttributeValue map from loadAttributeValues()
-     * @param bool  $threeAttrs   Whether variantRows have 3 attribute values (vs 1 or 2)
      */
     private function seedProduct(
         array $productData,
         array $attrConfig,
         array $variantRows,
-        array $av,
-        bool  $threeAttrs = false
+        array $av
     ): void {
-        DB::transaction(function () use ($productData, $attrConfig, $variantRows, $av, $threeAttrs) {
+        DB::transaction(function () use ($productData, $attrConfig, $variantRows, $av) {
             // ── Resolve category ─────────────────────────────────────────
             $category = Category::where('slug', $productData['category_slug'])->first();
             if (!$category) {
@@ -300,7 +266,9 @@ class ProductPortfolioSeeder extends Seeder
 
             // ── Create/update product ────────────────────────────────────
             $slug = Str::slug($productData['name']);
-            $slugExists = Product::where('slug', $slug)->exists();
+            $slugExists = Product::where('slug', $slug)->whereNotIn(
+                'sku', [$productData['sku']]
+            )->exists();
 
             $product = Product::updateOrCreate(
                 ['sku' => $productData['sku']],
@@ -331,24 +299,18 @@ class ProductPortfolioSeeder extends Seeder
                 $attrNames = array_keys($attrConfig);
                 $numAttrs  = count($attrNames);
 
-                // Parse row: [attr1val, [attr2val], [attr3val], price, compare_price, stock]
+                // Parse row: [attr1val, [attr2val], price, compare_price, stock]
                 if ($numAttrs === 1) {
                     [$cap, $price, $comparePrice, $stock] = $row;
                     $attrValueLabels = [$attrNames[0] => $cap];
                     $skuSuffix = strtolower(str_replace(['/', ' '], '-', $cap));
-                } elseif ($numAttrs === 2) {
+                } else {
+                    // 2 attributes — both values included in SKU for uniqueness
                     [$attr1, $attr2, $price, $comparePrice, $stock] = $row;
                     $attrValueLabels = [$attrNames[0] => $attr1, $attrNames[1] => $attr2];
                     $v1 = strtolower(str_replace(['/', ' '], '-', $attr1));
                     $v2 = strtolower(str_replace(['/', ' '], '-', $attr2));
                     $skuSuffix = "{$v1}-{$v2}";
-                } else {
-                    // 3 attributes
-                    [$series, $cap, $wattage, $price, $comparePrice, $stock] = $row;
-                    $attrValueLabels = [$attrNames[0] => $series, $attrNames[1] => $cap, $attrNames[2] => $wattage];
-                    $seriesCode = $series === 'Heavy Duty' ? 'HD' : 'D';
-                    $wattCode   = str_replace('W', '', $wattage);
-                    $skuSuffix  = strtolower(str_replace(['/', ' '], '-', "{$cap}-{$seriesCode}-{$wattCode}w"));
                 }
 
                 $variantSku = $productData['sku'] . '-' . $skuSuffix;
@@ -377,7 +339,7 @@ class ProductPortfolioSeeder extends Seeder
                 $variant->attributeValues()->sync($attrValueIds);
             }
 
-            // ── Update product base price from first active variant ──────
+            // ── Update product base price from cheapest active variant ───
             $firstVariant = $product->variants()->where('is_active', true)->orderBy('price')->first();
             if ($firstVariant) {
                 $product->update([
