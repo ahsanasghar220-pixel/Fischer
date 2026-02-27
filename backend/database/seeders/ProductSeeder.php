@@ -1149,29 +1149,27 @@ class ProductSeeder extends Seeder
                 ])
             );
 
-            // Create images (primary + extra) for new products
-            if ($product->wasRecentlyCreated) {
-                if ($imageUrl) {
-                    ProductImage::firstOrCreate(
-                        ['product_id' => $product->id, 'is_primary' => true],
-                        [
-                            'image' => $imageUrl,
-                            'alt_text' => $product->name,
-                            'sort_order' => 0,
-                        ]
-                    );
-                }
+            // Always update primary image so re-running the seeder refreshes image paths
+            if ($imageUrl) {
+                ProductImage::updateOrCreate(
+                    ['product_id' => $product->id, 'is_primary' => true],
+                    [
+                        'image' => $imageUrl,
+                        'alt_text' => $product->name,
+                        'sort_order' => 0,
+                    ]
+                );
+            }
 
-                foreach ($extraImages as $index => $extraImage) {
-                    ProductImage::firstOrCreate(
-                        ['product_id' => $product->id, 'image' => $extraImage],
-                        [
-                            'alt_text' => $product->name . ' - Image ' . ($index + 2),
-                            'is_primary' => false,
-                            'sort_order' => $index + 1,
-                        ]
-                    );
-                }
+            foreach ($extraImages as $index => $extraImage) {
+                ProductImage::firstOrCreate(
+                    ['product_id' => $product->id, 'image' => $extraImage],
+                    [
+                        'alt_text' => $product->name . ' - Image ' . ($index + 2),
+                        'is_primary' => false,
+                        'sort_order' => $index + 1,
+                    ]
+                );
             }
         }
     }
