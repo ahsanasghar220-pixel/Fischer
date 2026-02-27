@@ -6,6 +6,7 @@ use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +53,9 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/water-heaters/Eco Watt Series Electric Water Heater.webp',
+            ],
         ], [
             // Capacity first → displays first in configurator
             'Geysers Storage Capacity' => ['R-30', 'R-40', 'R-50', 'R-60', 'R-80'],
@@ -84,6 +88,12 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Water Heater F-30 Liter.webp',
+                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-100 Liter.webp',
+                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-140 Liter.webp',
+                '/images/products/fast-electric-water-heaters/Fischer Fast Electric Geyser F-200 Liter.webp',
+            ],
         ], [
             'Capacity' => ['F-30', 'F-40', 'F-50', 'F-60', 'F-80', 'F-100', 'F-140', 'F-200'],
             'Model'    => ['Deluxe', 'Heavy Duty'],
@@ -121,6 +131,12 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 25 Gallon.webp',
+                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 35 Gallon.webp',
+                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 55 Gallon.webp',
+                '/images/products/hybrid-geysers/Fischer Hybrid (Electric Gas Geyser) 100 Gallon Heavy Duty.webp',
+            ],
         ], [
             'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
             'Model'    => ['Deluxe', 'Heavy Duty'],
@@ -154,6 +170,10 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/hybrid-geysers/Gas Geyser 35 Gallon.webp',
+                '/images/products/hybrid-geysers/Gas Geyser 55 Gallon.webp',
+            ],
         ], [
             'Capacity' => ['15G', '25G', '35G', '55G', '65G', '100G'],
             'Model'    => ['Deluxe', 'Heavy Duty'],
@@ -187,6 +207,9 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/hybrid-geysers/Instant Gas Water Heater.webp',
+            ],
         ], [
             'Capacity' => ['6L', '8L', '10L'],
         ], [
@@ -210,6 +233,13 @@ class ProductPortfolioSeeder extends Seeder
             'stock_status'      => 'in_stock',
             'stock'             => 0,
             'has_variants'      => true,
+            'images'            => [
+                '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 10 Litr.webp',
+                '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 15 Litr.webp',
+                '/images/products/instant-electric-water-heaters/Instant Cum Storage Electric Water Heater – 30 Litr.webp',
+                '/images/products/instant-electric-water-heaters/Instant Electric Water Heater with Storage 20 Ltrs.webp',
+                '/images/products/instant-electric-water-heaters/Instant Electric Water Heater with Storage 25 Ltrs.webp',
+            ],
         ], [
             'Capacity' => ['FE-10', 'FE-15', 'FE-30'],
         ], [
@@ -273,7 +303,7 @@ class ProductPortfolioSeeder extends Seeder
             $product = Product::updateOrCreate(
                 ['sku' => $productData['sku']],
                 array_merge(
-                    collect($productData)->except(['category_slug'])->toArray(),
+                    collect($productData)->except(['category_slug', 'images', 'stock'])->toArray(),
                     [
                         'slug'               => $slug . ($slugExists ? '-' . Str::random(4) : ''),
                         'category_id'        => $category->id,
@@ -283,6 +313,20 @@ class ProductPortfolioSeeder extends Seeder
                     ]
                 )
             );
+
+            // ── Sync product images ──────────────────────────────────────
+            if (!empty($productData['images'])) {
+                $product->images()->delete();
+                foreach ($productData['images'] as $i => $imagePath) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image'      => $imagePath,
+                        'alt_text'   => $product->name,
+                        'sort_order' => $i,
+                        'is_primary' => $i === 0,
+                    ]);
+                }
+            }
 
             // ── Sync attributes to product ──────────────────────────────
             $attrIds = [];
