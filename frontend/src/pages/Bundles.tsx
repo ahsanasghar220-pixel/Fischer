@@ -220,11 +220,13 @@ export default function Bundles() {
                       to={`/bundle/${bundle.slug}`}
                       className="flex items-center gap-3 md:gap-6 p-4 bg-white dark:bg-dark-800 rounded-2xl border border-dark-100 dark:border-dark-700 hover:border-primary-500 hover:shadow-lg transition-all"
                     >
-                      <img
-                        src={bundle.featured_image || '/images/all-products.webp'}
-                        alt={bundle.name}
-                        className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl"
-                      />
+                      {bundle.featured_image && (
+                        <img
+                          src={bundle.featured_image}
+                          alt={bundle.name}
+                          className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-xl"
+                        />
+                      )}
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <span

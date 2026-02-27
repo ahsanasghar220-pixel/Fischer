@@ -10,10 +10,11 @@ export function toWebP(imagePath: string | null | undefined): string | undefined
 }
 
 /**
- * Get image with webp fallback
+ * Get image src, converting to webp if needed.
+ * Returns the fallback if provided, otherwise undefined when no image is set.
  */
-export function getImageSrc(imagePath: string | null | undefined, fallback?: string): string {
-  if (!imagePath) return fallback || '/images/placeholder.webp'
+export function getImageSrc(imagePath: string | null | undefined, fallback?: string): string | undefined {
+  if (!imagePath) return fallback
 
-  return toWebP(imagePath) || fallback || '/images/placeholder.webp'
+  return toWebP(imagePath) || fallback
 }

@@ -227,7 +227,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
       }
     })
 
-    return images.length > 0 ? images : ['/images/all-products.webp']
+    return images
   }, [bundle])
 
   if (!bundle) return null

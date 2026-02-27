@@ -88,11 +88,13 @@ const BundleBanner = memo(function BundleBanner({
         <div className="flex flex-col md:flex-row">
           {/* Image */}
           <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto">
-            <img
-              src={bundle.featured_image || '/images/all-products.webp'}
-              alt={bundle.name}
-              className="w-full h-full object-cover"
-            />
+            {bundle.featured_image && (
+              <img
+                src={bundle.featured_image}
+                alt={bundle.name}
+                className="w-full h-full object-cover"
+              />
+            )}
             {bundle.badge_label && (
               <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide text-white bg-gradient-to-r ${getBadgeColor(bundle.badge_color)}`}>
                 {bundle.badge_label}

@@ -48,10 +48,7 @@ const BundleCard = memo(function BundleCard({
       imageUrl = bundle.products_preview[0].image
     }
 
-    // Fallback 3: Default placeholder
-    if (!imageUrl) {
-      return '/images/all-products.webp'
-    }
+    if (!imageUrl) return undefined
 
     // For /storage/ paths, prepend the API base URL so they resolve correctly
     if (imageUrl.startsWith('/storage/')) {
@@ -104,19 +101,13 @@ const BundleCard = memo(function BundleCard({
         {/* Image Container */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-dark-100 to-dark-50 dark:from-dark-800 dark:to-dark-900">
           {/* Main Image */}
-          <img
-            src={getImageUrl()}
-            alt={bundle.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            onError={(e) => {
-              const target = e.currentTarget
-              const fallbackUrl = '/images/all-products.webp'
-              // Prevent infinite loop - only set fallback once
-              if (!target.src.includes('all-products.webp')) {
-                target.src = fallbackUrl
-              }
-            }}
-          />
+          {getImageUrl() && (
+            <img
+              src={getImageUrl()}
+              alt={bundle.name}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+          )}
 
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />

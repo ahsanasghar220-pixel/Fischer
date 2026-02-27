@@ -14,63 +14,6 @@ export interface ProductHighlight {
   description: string
 }
 
-const defaultProducts: ProductHighlight[] = [
-  {
-    name: 'Built-in Hood',
-    category: 'Ventilation Solutions',
-    images: [
-      '/images/products/kitchen-hoods/FKH-H90-06S/1.webp',
-      '/images/products/kitchen-hoods/FKH-T90-04SC/1.webp',
-    ],
-    href: '/category/kitchen-hoods',
-    description: 'Powerful airflow up to 1500 m³/h',
-  },
-  {
-    name: 'Built-in Hob',
-    category: 'Cooking Solutions',
-    images: [
-      '/images/products/kitchen-hobs/FBH-G78-3CB/1.webp',
-      '/images/products/kitchen-hobs/FBH-G90-5SBF/1.webp',
-      '/images/products/kitchen-hobs/FBH-SS76-3CB/1.webp',
-    ],
-    href: '/category/kitchen-hobs',
-    description: 'Premium brass burners with auto ignition',
-  },
-  {
-    name: 'Oven Toaster',
-    category: 'Baking Excellence',
-    images: [
-      '/images/products/oven-toasters/FOT-2501C/1.webp',
-      '/images/products/oven-toasters/FOT-2501C/2.webp',
-      '/images/products/oven-toasters/FOT-1901D/1.webp',
-    ],
-    href: '/category/oven-toasters',
-    description: 'Convection technology, 35L-48L capacity',
-  },
-  {
-    name: 'Air Fryer',
-    category: 'Healthy Living',
-    images: [
-      '/images/products/air-fryers/FAF-801WD/1.webp',
-      '/images/products/air-fryers/FAF-601WD/1.webp',
-      '/images/products/air-fryers/FAF-401WD/1.webp',
-    ],
-    href: '/category/air-fryers',
-    description: 'Oil-free frying with digital controls',
-  },
-  {
-    name: 'Water Dispenser',
-    category: 'Water Solutions',
-    images: [
-      '/images/products/water-dispensers/1.webp',
-      '/images/products/water-dispensers/2.webp',
-      '/images/products/water-dispensers/3.webp',
-    ],
-    href: '/category/water-dispensers',
-    description: 'Hot & cold, food-grade stainless steel',
-  },
-]
-
 // Product Card with Image Carousel
 function ProductCard({ product }: { product: ProductHighlight }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -190,7 +133,9 @@ interface HeroProductBannerProps {
 }
 
 export default function HeroProductBanner({ products: propProducts, title, subtitle, badgeText }: HeroProductBannerProps) {
-  const products = propProducts?.length ? propProducts : defaultProducts
+  const products = propProducts ?? []
+
+  if (products.length === 0) return null
 
   return (
     <section className="py-10 md:py-16 lg:py-24 bg-gradient-to-br from-dark-50 via-white to-primary-50/30 dark:from-dark-900 dark:via-dark-900 dark:to-dark-800 overflow-hidden">

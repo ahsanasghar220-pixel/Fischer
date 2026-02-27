@@ -9,7 +9,6 @@ import {
   BoltIcon,
 } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { getCategoryProductImage } from '@/lib/categoryImages'
 import api from '@/lib/api'
 import AnimatedSection, { StaggeredChildren } from '@/components/ui/AnimatedSection'
 import { useHomepageBundles, useAddBundleToCart } from '@/api/bundles'
@@ -29,7 +28,7 @@ import FeaturesSection from './Home/FeaturesSection'
 import CategoriesSection from './Home/CategoriesSection'
 import TestimonialsSection from './Home/TestimonialsSection'
 import BundlesSection from './Home/BundlesSection'
-import { defaultStats, defaultFeatures, defaultTestimonials, defaultCategoryVideos } from './Home/defaults'
+import { defaultStats, defaultFeatures, defaultTestimonials } from './Home/defaults'
 import type { HomeData } from './Home/types'
 
 // Lazy-load below-the-fold components to reduce initial bundle size
@@ -124,8 +123,8 @@ export default function Home() {
     overlay: false,
   }))
 
-  // Hero video URL from section settings
-  const heroVideoUrl = sections.hero?.settings?.video_url || '/videos/hero-video.mp4?v=7'
+  // Hero video URL from section settings — no fallback, admin must set it
+  const heroVideoUrl: string | undefined = sections.hero?.settings?.video_url
   // Admin toggle: play video on mobile (default true)
   const heroMobileVideoEnabled: boolean = sections.hero?.settings?.mobile_video_enabled ?? true
 
@@ -133,8 +132,8 @@ export default function Home() {
   const brandTitle = sections.brand_statement?.title || 'Premium Appliances'
   const brandSubtitle = sections.brand_statement?.subtitle || 'Crafted for Pakistan Since 1990'
 
-  // Category videos from section settings
-  const categoryVideos: Record<string, string> = sections.categories?.settings?.category_videos || defaultCategoryVideos
+  // Category videos from section settings — no fallback, admin must set them
+  const categoryVideos: Record<string, string> = sections.categories?.settings?.category_videos ?? {}
   // Admin toggle: play category videos on mobile (default true)
   const categoryMobileVideosEnabled: boolean = sections.categories?.settings?.mobile_videos_enabled ?? true
 
@@ -150,8 +149,6 @@ export default function Home() {
   // About section from section settings
   const aboutSettings = sections.about?.settings || {}
   const aboutContent = aboutSettings.content || "Established in 1990, Fischer (Fatima Engineering Works) has been at the forefront of manufacturing high-quality home and commercial appliances. With over three decades of excellence, we've become a household name trusted by millions across Pakistan."
-  const aboutImage = aboutSettings.image || '/images/about-factory.webp'
-  const aboutFallbackImage = aboutSettings.fallback_image || '/images/about-fischer.webp'
   const aboutFeatures = aboutSettings.features || [
     'ISO 9001:2015 & PSQCA Certified',
     'Made in Pakistan with premium materials',
@@ -159,11 +156,8 @@ export default function Home() {
     'Dedicated R&D for continuous innovation',
   ]
 
-  // Use categories from API with centralized image fallback mapping
-  const categories = (data?.categories || []).map(cat => ({
-    ...cat,
-    image: getCategoryProductImage(cat.slug, cat.image)
-  }))
+  // Use categories directly from API — no image fallback
+  const categories = data?.categories || []
 
   // ========== SECTION REGISTRY ==========
   // Maps section keys to their render functions for dynamic ordering
@@ -438,11 +432,10 @@ export default function Home() {
                   </div>
                   <div className="relative">
                     <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
-                      <img
-                        src={aboutImage} alt="Fischer Factory - Manufacturing Facility" width={600} height={450} loading="lazy" decoding="async"
+                      {aboutSettings.image && <img
+                        src={aboutSettings.image} alt="Fischer Factory - Manufacturing Facility" width={600} height={450} loading="lazy" decoding="async"
                         className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-300"
-                        onError={(e) => { const target = e.currentTarget; if (!target.dataset.fallback) { target.dataset.fallback = 'true'; target.src = aboutFallbackImage } }}
-                      />
+                      />}
                     </div>
                     <div className="absolute -bottom-8 -right-8 p-8 rounded-3xl bg-white dark:bg-dark-800 shadow-2xl border border-dark-100 dark:border-dark-700">
                       <div className="text-center">
@@ -541,10 +534,10 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer-gpu" />
                 </div>
               </div>
-              {videoError && (
+              {(videoError || !heroVideoUrl) && (
                 <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
               )}
-              {!videoError && <video
+              {!videoError && heroVideoUrl && <video
                 className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
                 autoPlay loop muted playsInline preload="none"
                 onCanPlayThrough={() => setVideoLoaded(true)}
