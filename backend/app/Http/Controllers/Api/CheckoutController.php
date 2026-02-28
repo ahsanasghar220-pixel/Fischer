@@ -165,6 +165,7 @@ class CheckoutController extends Controller
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent();
 
+        try {
         return DB::transaction(function () use ($validated, $cart, $ipAddress, $userAgent) {
             // Try to get authenticated user (works even without auth:sanctum middleware)
             $user = auth('sanctum')->user();
@@ -209,6 +210,16 @@ class CheckoutController extends Controller
                 'payment' => $paymentResult,
             ], 'Order placed successfully', 201);
         });
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->error($e->getMessage(), 422, $e->errors());
+        } catch (\Exception $e) {
+            \Log::error('Order placement failed: ' . $e->getMessage(), [
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return $this->error('Order could not be placed: ' . $e->getMessage(), 500);
+        }
     }
 
     protected function handlePayment(Order $order, string $method, Request $request): array
