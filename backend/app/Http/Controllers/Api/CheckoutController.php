@@ -28,26 +28,50 @@ class CheckoutController extends Controller
             'city' => 'required|string',
         ]);
 
-        $zone = ShippingZone::findByCity($request->city);
-        $methods = ShippingMethod::active()->ordered()->get();
+        try {
+            $zone = ShippingZone::findByCity($request->city);
+            $methods = ShippingMethod::active()->ordered()->get();
 
-        $cart = $this->cartService->getCartForCheckout($request);
-        $subtotal = $cart ? $cart->subtotal : 0;
-        $weight = $cart ? $cart->total_weight : 0;
-        $itemCount = $cart ? $cart->items_count : 0;
+            $cart = $this->cartService->getCartForCheckout($request);
+            $subtotal = $cart ? $cart->subtotal : 0;
+            $weight = $cart ? $cart->total_weight : 0;
+            $itemCount = $cart ? $cart->items_count : 0;
 
-        $formattedMethods = $methods->map(function ($method) use ($subtotal, $weight, $itemCount, $zone) {
-            return [
-                'id' => $method->id,
-                'code' => $method->code,
-                'name' => $method->name,
-                'description' => $method->description,
-                'cost' => $method->calculateCost($subtotal, $weight, $itemCount, $zone),
-                'estimated_delivery' => $method->getEstimatedDelivery($zone),
-            ];
-        });
+            if ($methods->isEmpty()) {
+                return $this->success($this->defaultShippingMethods($request->city));
+            }
 
-        return $this->success($formattedMethods);
+            $formattedMethods = $methods->map(function ($method) use ($subtotal, $weight, $itemCount, $zone) {
+                return [
+                    'id' => $method->id,
+                    'code' => $method->code,
+                    'name' => $method->name,
+                    'description' => $method->description,
+                    'cost' => $method->calculateCost($subtotal, $weight, $itemCount, $zone),
+                    'estimated_delivery' => $method->getEstimatedDelivery($zone),
+                ];
+            });
+
+            return $this->success($formattedMethods);
+        } catch (\Throwable $e) {
+            \Log::error('getShippingMethods error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            return $this->success($this->defaultShippingMethods($request->city));
+        }
+    }
+
+    private function defaultShippingMethods(string $city): array
+    {
+        $isLahore = strtolower(trim($city)) === 'lahore';
+        return [
+            [
+                'id' => null,
+                'code' => 'standard',
+                'name' => 'Standard Delivery',
+                'description' => 'Regular delivery within 3-5 business days',
+                'cost' => $isLahore ? 0 : 200,
+                'estimated_delivery' => '3-5 days',
+            ],
+        ];
     }
 
     public function calculateTotals(Request $request)
