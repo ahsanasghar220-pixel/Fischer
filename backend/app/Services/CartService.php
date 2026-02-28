@@ -165,9 +165,12 @@ class CartService
                 'variant'     => $item->productVariant ? [
                     'id'         => $item->productVariant->id,
                     'sku'        => $item->productVariant->sku,
-                    'name'       => $item->productVariant->name ?? $item->variant_info,
+                    'name'       => $item->productVariant->name
+                        ?? (is_array($item->variant_info)
+                            ? collect($item->variant_info)->map(fn($v) => $v['value'])->implode(' / ')
+                            : ($item->variant_info ?? 'Variant')),
                     'price'      => $item->productVariant->price,
-                    'attributes' => $item->variant_info,
+                    'attributes' => is_array($item->variant_info) ? $item->variant_info : [],
                 ] : null,
                 'quantity'    => $item->quantity,
                 'unit_price'  => $item->unit_price,
