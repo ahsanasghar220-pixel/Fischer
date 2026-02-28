@@ -261,7 +261,7 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                                   onClick={() => close()}
                                   className="flex gap-3 p-2 rounded-lg hover:bg-white dark:hover:bg-dark-800 transition-colors group"
                                 >
-                                  <div className="w-16 h-16 flex-shrink-0 bg-white dark:bg-dark-800 rounded-lg overflow-hidden">
+                                  <div className="w-16 h-16 flex-shrink-0 bg-white dark:bg-white rounded-lg overflow-hidden">
                                     {product.primary_image ? (
                                       <img
                                         src={product.primary_image}
