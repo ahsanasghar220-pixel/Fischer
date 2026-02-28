@@ -34,12 +34,14 @@ class ShippingZone extends Model
         return self::active()
             ->get()
             ->first(function ($zone) use ($city) {
-                return in_array(strtolower($city), array_map('strtolower', $zone->cities));
+                $cities = is_array($zone->cities) ? $zone->cities : [];
+                return in_array(strtolower($city), array_map('strtolower', $cities));
             });
     }
 
     public function containsCity(string $city): bool
     {
-        return in_array(strtolower($city), array_map('strtolower', $this->cities));
+        $cities = is_array($this->cities) ? $this->cities : [];
+        return in_array(strtolower($city), array_map('strtolower', $cities));
     }
 }

@@ -133,6 +133,11 @@ if [ -d "backend" ]; then
     echo "Running database migrations..."
     php artisan migrate --force
 
+    # Seed shipping zones & methods (safe - uses firstOrCreate, idempotent)
+    echo "Seeding shipping zones & methods..."
+    php artisan db:seed --class=ShippingZoneSeeder --force
+    php artisan db:seed --class=ShippingMethodSeeder --force
+
     # Seed roles & permissions (safe - uses firstOrCreate, idempotent)
     echo "Seeding roles & permissions..."
     php artisan db:seed --class=RolePermissionSeeder --force
