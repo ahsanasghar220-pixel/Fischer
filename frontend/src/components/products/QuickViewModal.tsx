@@ -148,7 +148,7 @@ const QuickViewModal = memo(function QuickViewModal({
                 {/* Close button */}
                 <button
                   onClick={onClose}
-                  className="absolute top-4 right-4 z-10 p-2.5 rounded-xl bg-white/80 dark:bg-dark-700/80 backdrop-blur-sm text-dark-500 hover:text-dark-700 dark:hover:text-dark-200 transition-colors"
+                  className="absolute top-4 right-4 z-50 p-2.5 rounded-xl bg-white/80 dark:bg-dark-700/80 backdrop-blur-sm text-dark-500 hover:text-dark-700 dark:hover:text-dark-200 transition-colors"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>

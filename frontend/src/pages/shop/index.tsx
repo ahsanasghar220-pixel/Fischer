@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { FunnelIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/24/outline'
 import api from '@/lib/api'
 import QuickViewModal from '@/components/products/QuickViewModal'
@@ -317,16 +317,12 @@ export default function Shop() {
         </div>
       </div>
 
-      {/* Quick View Modal */}
-      <AnimatePresence>
-        {quickViewProduct && (
-          <QuickViewModal
-            isOpen={!!quickViewProduct}
-            onClose={() => setQuickViewProduct(null)}
-            product={quickViewProduct}
-          />
-        )}
-      </AnimatePresence>
+      {/* Quick View Modal — always mounted so Headless UI can run its exit transition */}
+      <QuickViewModal
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        product={quickViewProduct}
+      />
     </motion.div>
   )
 }
