@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -20,18 +21,22 @@ class OrderCreationService
 {
     /**
      * Re-validate stock availability with row-level locks inside a DB transaction.
-     * Throws \Exception if any item is out of stock or no longer available.
+     * Silently removes stale cart items (deleted/inactive products) rather than
+     * blocking the order. Throws only for genuine stock shortfalls.
      *
      * Must be called INSIDE a DB::transaction() so that lockForUpdate() works.
      */
     public function validateStock(Cart $cart): void
     {
+        $staleItemIds = [];
+
         foreach ($cart->items as $item) {
             if ($item->product_variant_id) {
                 $variant = ProductVariant::lockForUpdate()->find($item->product_variant_id);
 
                 if (!$variant) {
-                    throw new \Exception("Product variant no longer exists");
+                    $staleItemIds[] = $item->id;
+                    continue;
                 }
 
                 $variantProduct = $variant->product;
@@ -47,8 +52,9 @@ class OrderCreationService
                 $product = Product::lockForUpdate()->find($item->product_id);
 
                 if (!$product || !$product->is_active) {
-                    $name = $product?->name ?? $item->product?->name ?? 'A product';
-                    throw new \Exception("Product '{$name}' is no longer available");
+                    // Product was deleted or deactivated — remove from cart silently
+                    $staleItemIds[] = $item->id;
+                    continue;
                 }
 
                 if ($product->track_inventory && !$product->allow_backorders) {
@@ -60,6 +66,20 @@ class OrderCreationService
                     }
                 }
             }
+        }
+
+        // Purge stale items from the cart
+        if (!empty($staleItemIds)) {
+            CartItem::whereIn('id', $staleItemIds)->delete();
+            $cart->refresh();
+            $cart->load('items');
+        }
+
+        // Abort only if the cart is now completely empty
+        if ($cart->items->isEmpty()) {
+            throw new \Exception(
+                "All items in your cart are no longer available. Please browse our shop to find new products."
+            );
         }
     }
 
@@ -193,28 +213,33 @@ class OrderCreationService
     public function createOrderItems(Order $order, Cart $cart): void
     {
         foreach ($cart->items as $item) {
+            $product = $item->product;
+            if (!$product) {
+                continue; // Guard against any stale item that slipped through
+            }
+
             OrderItem::create([
-                'order_id'          => $order->id,
-                'product_id'        => $item->product_id,
+                'order_id'           => $order->id,
+                'product_id'         => $item->product_id,
                 'product_variant_id' => $item->product_variant_id,
-                'product_name'      => $item->product->name,
-                'product_sku'       => $item->productVariant?->sku ?? $item->product->sku,
-                'product_image'     => $item->product->primary_image,
+                'product_name'       => $product->name,
+                'product_sku'        => $item->productVariant?->sku ?? $product->sku,
+                'product_image'      => $product->primary_image,
                 'variant_attributes' => $item->productVariant?->attribute_values_formatted,
-                'quantity'          => $item->quantity,
-                'unit_price'        => $item->unit_price,
-                'total_price'       => $item->total_price,
+                'quantity'           => $item->quantity,
+                'unit_price'         => $item->unit_price,
+                'total_price'        => $item->total_price,
             ]);
 
             // Update stock
             if ($item->product_variant_id) {
-                $item->productVariant->updateStock($item->quantity, 'decrement');
+                $item->productVariant?->updateStock($item->quantity, 'decrement');
             } else {
-                $item->product->updateStock($item->quantity, 'decrement');
+                $product->updateStock($item->quantity, 'decrement');
             }
 
             // Update sales count
-            $item->product->incrementSalesCount($item->quantity);
+            $product->incrementSalesCount($item->quantity);
         }
     }
 
