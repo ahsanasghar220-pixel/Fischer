@@ -97,6 +97,11 @@ export default function ProductDetail() {
   const handleAddToCart = async () => {
     if (!product) return
 
+    if (configurator && !selectedVariant) {
+      toast.error('Please select all options first')
+      return
+    }
+
     if (currentStock === 0 || product.stock_status === 'out_of_stock') {
       toast.error('This product is out of stock')
       return

@@ -301,6 +301,8 @@ class Product extends Model
                 $query->where('category_id', $this->category_id)
                     ->orWhere('brand_id', $this->brand_id);
             })
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->orderByDesc('sales_count')
             ->limit($limit)
             ->get();

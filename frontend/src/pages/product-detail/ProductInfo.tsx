@@ -50,6 +50,15 @@ export default function ProductInfo({
   onToggleWishlist,
   onShare,
 }: ProductInfoProps) {
+  // When a configurator exists but nothing is selected yet, don't show OOS
+  const needsSelection = !!configurator && !selectedVariant
+
+  // Compute price range from the configurator's variant_map
+  const configPrices = configurator ? Object.values(configurator.variant_map).map(v => v.price) : []
+  const configMinPrice = configPrices.length > 0 ? Math.min(...configPrices) : null
+  const configMaxPrice = configPrices.length > 0 ? Math.max(...configPrices) : null
+  const showPriceRange = needsSelection && configMinPrice !== null && configMaxPrice !== null && configMinPrice !== configMaxPrice
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 30 }}
@@ -116,13 +125,35 @@ export default function ProductInfo({
 
       {/* Price */}
       <motion.div
-        className="flex items-center gap-3 mb-6"
+        className="flex items-baseline gap-3 mb-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
       >
-        <span className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white">{formatPrice(currentPrice)}</span>
-        {comparePrice && comparePrice > currentPrice && (
+        <AnimatePresence mode="wait">
+          {showPriceRange ? (
+            <motion.span
+              key="range"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
+            >
+              {formatPrice(configMinPrice!)} – {formatPrice(configMaxPrice!)}
+            </motion.span>
+          ) : (
+            <motion.span
+              key="fixed"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="text-2xl sm:text-3xl font-bold text-dark-900 dark:text-white"
+            >
+              {formatPrice(currentPrice)}
+            </motion.span>
+          )}
+        </AnimatePresence>
+        {!showPriceRange && comparePrice && comparePrice > currentPrice && (
           <span className="text-base sm:text-lg md:text-xl text-dark-400 line-through">{formatPrice(comparePrice)}</span>
         )}
       </motion.div>
@@ -182,26 +213,32 @@ export default function ProductInfo({
       )}
 
       {/* Stock Status */}
-      <motion.div
-        className="mb-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        {currentStock === 0 || product.stock_status === 'out_of_stock' ? (
-          <span className="text-red-600 dark:text-red-400 font-bold text-lg">✕ Out of Stock</span>
-        ) : currentStock <= 10 ? (
-          <motion.span
-            className="text-orange-600 dark:text-orange-400 font-medium"
-            animate={{ opacity: [1, 0.5, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+      <AnimatePresence mode="wait">
+        {!needsSelection && (
+          <motion.div
+            key="stock"
+            className="mb-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.6 }}
           >
-            ⚠ Low Stock
-          </motion.span>
-        ) : (
-          <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock</span>
+            {currentStock === 0 || product.stock_status === 'out_of_stock' ? (
+              <span className="text-red-600 dark:text-red-400 font-bold text-lg">✕ Out of Stock</span>
+            ) : currentStock <= 10 ? (
+              <motion.span
+                className="text-orange-600 dark:text-orange-400 font-medium"
+                animate={{ opacity: [1, 0.5, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                ⚠ Low Stock
+              </motion.span>
+            ) : (
+              <span className="text-green-600 dark:text-green-400 font-medium">✓ In Stock</span>
+            )}
+          </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
 
       {/* Quantity & Add to Cart */}
       <motion.div
@@ -250,16 +287,20 @@ export default function ProductInfo({
 
         <motion.button
           onClick={onAddToCart}
-          disabled={isAddingToCart || currentStock === 0 || product.stock_status === 'out_of_stock'}
+          disabled={isAddingToCart || needsSelection || currentStock === 0 || product.stock_status === 'out_of_stock'}
           className={`flex-1 py-2.5 px-6 rounded-lg font-semibold text-white transition-colors duration-200 ${
-            currentStock === 0 || product.stock_status === 'out_of_stock'
+            needsSelection
+              ? 'bg-dark-300 dark:bg-dark-600 cursor-not-allowed'
+              : currentStock === 0 || product.stock_status === 'out_of_stock'
               ? 'bg-dark-400 dark:bg-dark-600 cursor-not-allowed'
               : 'bg-primary-600 hover:bg-primary-700'
           } ${isAddingToCart ? 'opacity-70' : ''}`}
-          whileHover={currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 1.02 } : {}}
-          whileTap={currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 0.98 } : {}}
+          whileHover={!needsSelection && currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 1.02 } : {}}
+          whileTap={!needsSelection && currentStock > 0 && product.stock_status !== 'out_of_stock' ? { scale: 0.98 } : {}}
         >
-          {currentStock === 0 || product.stock_status === 'out_of_stock'
+          {needsSelection
+            ? 'Select Options'
+            : currentStock === 0 || product.stock_status === 'out_of_stock'
             ? '✕ Out of Stock'
             : isAddingToCart
               ? 'Adding...'

@@ -193,6 +193,8 @@ class ProductController extends Controller
     public function featured()
     {
         $products = Product::with(['category', 'brand', 'images'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->featured()
             ->orderByDesc('created_at')
@@ -205,6 +207,8 @@ class ProductController extends Controller
     public function newArrivals()
     {
         $products = Product::with(['category', 'brand', 'images'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->new()
             ->orderByDesc('created_at')
@@ -217,6 +221,8 @@ class ProductController extends Controller
     public function bestsellers()
     {
         $products = Product::with(['category', 'brand', 'images'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->bestseller()
             ->orderByDesc('sales_count')

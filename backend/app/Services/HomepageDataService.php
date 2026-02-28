@@ -228,7 +228,11 @@ class HomepageDataService
             return HomepageProduct::visible()
                 ->section('featured')
                 ->ordered()
-                ->with(['product.images', 'product.category'])
+                ->with(['product' => function ($q) {
+                    $q->with(['images', 'category'])
+                        ->withMin('variants', 'price')
+                        ->withMax('variants', 'price');
+                }])
                 ->take($count)
                 ->get()
                 ->map(fn($hp) => $hp->product)
@@ -237,6 +241,8 @@ class HomepageDataService
         }
 
         return Product::with(['images', 'category'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->featured()
             ->orderByDesc('created_at')
@@ -254,7 +260,11 @@ class HomepageDataService
             return HomepageProduct::visible()
                 ->section('new_arrivals')
                 ->ordered()
-                ->with(['product.images', 'product.category'])
+                ->with(['product' => function ($q) {
+                    $q->with(['images', 'category'])
+                        ->withMin('variants', 'price')
+                        ->withMax('variants', 'price');
+                }])
                 ->take($count)
                 ->get()
                 ->map(fn($hp) => $hp->product)
@@ -263,6 +273,8 @@ class HomepageDataService
         }
 
         return Product::with(['images', 'category'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->new()
             ->orderByDesc('created_at')
@@ -280,7 +292,11 @@ class HomepageDataService
             return HomepageProduct::visible()
                 ->section('bestsellers')
                 ->ordered()
-                ->with(['product.images', 'product.category'])
+                ->with(['product' => function ($q) {
+                    $q->with(['images', 'category'])
+                        ->withMin('variants', 'price')
+                        ->withMax('variants', 'price');
+                }])
                 ->take($count)
                 ->get()
                 ->map(fn($hp) => $hp->product)
@@ -289,6 +305,8 @@ class HomepageDataService
         }
 
         return Product::with(['images', 'category'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->bestseller()
             ->orderByDesc('sales_count')
@@ -463,6 +481,9 @@ class HomepageDataService
             'slug' => $product->slug,
             'price' => $product->price,
             'compare_price' => $product->compare_price,
+            'has_variants' => $product->has_variants,
+            'variants_min_price' => $product->variants_min_price,
+            'variants_max_price' => $product->variants_max_price,
             'primary_image' => $product->primary_image,
             'images' => $product->images ? $product->images->map(fn($img) => [
                 'id' => $img->id,
