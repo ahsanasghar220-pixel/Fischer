@@ -28,35 +28,45 @@ class CheckoutController extends Controller
             'city' => 'required|string',
         ]);
 
+        // Step 1: query shipping data — only fall back here if tables are missing
         try {
-            $zone = ShippingZone::findByCity($request->city);
+            $zone    = ShippingZone::findByCity($request->city);
             $methods = ShippingMethod::active()->ordered()->get();
-
-            $cart = $this->cartService->getCartForCheckout($request);
-            $subtotal = $cart ? $cart->subtotal : 0;
-            $weight = $cart ? $cart->total_weight : 0;
-            $itemCount = $cart ? $cart->items_count : 0;
-
-            if ($methods->isEmpty()) {
-                return $this->success($this->defaultShippingMethods($request->city));
-            }
-
-            $formattedMethods = $methods->map(function ($method) use ($subtotal, $weight, $itemCount, $zone) {
-                return [
-                    'id' => $method->id,
-                    'code' => $method->code,
-                    'name' => $method->name,
-                    'description' => $method->description,
-                    'cost' => $method->calculateCost($subtotal, $weight, $itemCount, $zone),
-                    'estimated_delivery' => $method->getEstimatedDelivery($zone),
-                ];
-            });
-
-            return $this->success($formattedMethods);
         } catch (\Throwable $e) {
-            \Log::error('getShippingMethods error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            \Log::error('Shipping tables query error: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             return $this->success($this->defaultShippingMethods($request->city));
         }
+
+        if ($methods->isEmpty()) {
+            return $this->success($this->defaultShippingMethods($request->city));
+        }
+
+        // Step 2: get cart totals for cost calculation — failure here must NOT
+        // cause a 500; we just use 0 and still return real shipping method IDs.
+        $subtotal  = 0;
+        $weight    = 0;
+        $itemCount = 0;
+        try {
+            $cart      = $this->cartService->getCartForCheckout($request);
+            $subtotal  = $cart ? $cart->subtotal  : 0;
+            $weight    = $cart ? $cart->total_weight : 0;
+            $itemCount = $cart ? $cart->items_count  : 0;
+        } catch (\Throwable $e) {
+            \Log::warning('Cart lookup failed in getShippingMethods (using cost=0): ' . $e->getMessage());
+        }
+
+        $formattedMethods = $methods->map(function ($method) use ($subtotal, $weight, $itemCount, $zone) {
+            return [
+                'id'                 => $method->id,
+                'code'               => $method->code,
+                'name'               => $method->name,
+                'description'        => $method->description,
+                'cost'               => $method->calculateCost($subtotal, $weight, $itemCount, $zone),
+                'estimated_delivery' => $method->getEstimatedDelivery($zone),
+            ];
+        });
+
+        return $this->success($formattedMethods);
     }
 
     private function defaultShippingMethods(string $city): array
