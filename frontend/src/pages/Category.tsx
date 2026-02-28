@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import api from '@/lib/api'
 import ProductCard from '@/components/products/ProductCard'
 import QuickViewModal from '@/components/products/QuickViewModal'
@@ -250,16 +250,12 @@ export default function Category() {
         )}
       </div>
 
-      {/* Quick View Modal */}
-      <AnimatePresence>
-        {quickViewProduct && (
-          <QuickViewModal
-            isOpen={!!quickViewProduct}
-            onClose={() => setQuickViewProduct(null)}
-            product={quickViewProduct}
-          />
-        )}
-      </AnimatePresence>
+      {/* Quick View Modal — always mounted so Headless UI can run its exit transition */}
+      <QuickViewModal
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        product={quickViewProduct}
+      />
     </motion.div>
   )
 }

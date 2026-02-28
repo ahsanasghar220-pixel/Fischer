@@ -19,6 +19,7 @@ import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
 import api from '@/lib/api'
 import ProductConfigurator from '@/pages/product-detail/ProductConfigurator'
+import AddToCartModal from '@/components/cart/AddToCartModal'
 import type { Product, ProductConfigurator as ConfiguratorType, ConfiguratorVariant } from '@/types'
 
 interface QuickViewModalProps {
@@ -40,6 +41,8 @@ const QuickViewModal = memo(function QuickViewModal({
   const [selectedImage, setSelectedImage] = useState(0)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [selectedVariant, setSelectedVariant] = useState<ConfiguratorVariant | null>(null)
+  const [showCartModal, setShowCartModal] = useState(false)
+  const [addedProduct, setAddedProduct] = useState<{ id: number; name: string; primary_image?: string; price: number; quantity: number } | null>(null)
   const { addItem } = useCartStore()
 
   // Reset variant selection when modal opens with a new product
@@ -80,13 +83,22 @@ const QuickViewModal = memo(function QuickViewModal({
     setIsAddingToCart(true)
     try {
       await addItem(product.id, quantity, selectedVariant?.id ?? null)
-      onClose()
+      // Show success modal instead of closing immediately
+      const price = selectedVariant?.price ?? product.price
+      setAddedProduct({
+        id: product.id,
+        name: product.name,
+        primary_image: product.primary_image || undefined,
+        price,
+        quantity,
+      })
+      setShowCartModal(true)
     } catch {
       // Error handled in store
     } finally {
       setIsAddingToCart(false)
     }
-  }, [product, quantity, selectedVariant, addItem, onClose])
+  }, [product, quantity, selectedVariant, addItem])
 
   const handleWishlistClick = useCallback(() => {
     if (onWishlistToggle) {
@@ -113,6 +125,7 @@ const QuickViewModal = memo(function QuickViewModal({
   const canAddToCart = !isVariantProduct || selectedVariant !== null
 
   return (
+    <>
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         {/* Backdrop */}
@@ -432,6 +445,17 @@ const QuickViewModal = memo(function QuickViewModal({
         </div>
       </Dialog>
     </Transition.Root>
+
+    {/* Cart success modal — appears on top after adding to cart */}
+    <AddToCartModal
+      isOpen={showCartModal}
+      onClose={() => {
+        setShowCartModal(false)
+        onClose()
+      }}
+      product={addedProduct}
+    />
+    </>
   )
 })
 

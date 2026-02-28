@@ -57,8 +57,11 @@ class CategoryController extends Controller
         // Get products in this category with pagination (fixed: was loading ALL products)
         $perPage = min($request->per_page ?? 24, 50);
         $products = \App\Models\Product::with(['images', 'category', 'brand'])
+            ->withMin('variants', 'price')
+            ->withMax('variants', 'price')
             ->active()
             ->whereIn('category_id', $categoryIds)
+            ->orderByRaw("CASE WHEN stock_status = 'out_of_stock' THEN 1 ELSE 0 END ASC")
             ->orderByDesc('created_at')
             ->paginate($perPage);
 

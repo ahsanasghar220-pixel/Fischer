@@ -74,12 +74,20 @@ class CheckoutController extends Controller
         $isLahore = strtolower(trim($city)) === 'lahore';
         return [
             [
-                'id' => null,
-                'code' => 'standard',
-                'name' => 'Standard Delivery',
-                'description' => 'Regular delivery within 3-5 business days',
-                'cost' => $isLahore ? 0 : 200,
+                'id'                 => null,
+                'code'               => 'standard',
+                'name'               => 'Standard Delivery',
+                'description'        => 'Free delivery in Lahore. Rs. 200 for other cities.',
+                'cost'               => $isLahore ? 0 : 200,
                 'estimated_delivery' => '3-5 days',
+            ],
+            [
+                'id'                 => null,
+                'code'               => 'express',
+                'name'               => 'Express Delivery',
+                'description'        => 'Priority handling + express courier. Delivery in 1–2 business days.',
+                'cost'               => $isLahore ? 300 : 500,
+                'estimated_delivery' => '1-2 days',
             ],
         ];
     }
