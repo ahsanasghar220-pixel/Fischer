@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '@/lib/api'
+import { useCartStore } from '@/stores/cartStore'
 
 interface Address {
   id: number
@@ -79,6 +80,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           })
+          // Sync cart from server after login (user cart may differ from session cart)
+          await useCartStore.getState().fetchCart()
         } catch (error) {
           set({ isLoading: false })
           throw error
@@ -100,6 +103,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           })
+          // Sync cart from server after registration (session cart has been merged)
+          await useCartStore.getState().fetchCart()
         } catch (error) {
           set({ isLoading: false })
           throw error
@@ -119,6 +124,8 @@ export const useAuthStore = create<AuthState>()(
             token: null,
             isAuthenticated: false,
           })
+          // Reset frontend cart display to empty (server cart is preserved for next login)
+          useCartStore.setState({ items: [] })
         }
       },
 
