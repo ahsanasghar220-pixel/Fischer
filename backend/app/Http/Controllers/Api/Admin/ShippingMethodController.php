@@ -33,9 +33,13 @@ class ShippingMethodController extends Controller
             'description' => 'nullable|string',
             'base_cost' => 'required|numeric|min:0',
             'free_shipping_threshold' => 'nullable|numeric|min:0',
-            'estimated_days' => 'nullable|string|max:50',
+            'min_delivery_days' => 'nullable|integer|min:1',
+            'max_delivery_days' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
         ]);
+
+        $validated['code'] = \Str::slug($validated['name']);
+        $validated['calculation_type'] = 'flat';
 
         $method = ShippingMethod::create($validated);
 
@@ -57,7 +61,8 @@ class ShippingMethodController extends Controller
             'description' => 'nullable|string',
             'base_cost' => 'sometimes|numeric|min:0',
             'free_shipping_threshold' => 'nullable|numeric|min:0',
-            'estimated_days' => 'nullable|string|max:50',
+            'min_delivery_days' => 'nullable|integer|min:1',
+            'max_delivery_days' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
         ]);
 

@@ -75,6 +75,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
 
     // Shipping
     Route::apiResource('shipping-zones', App\Http\Controllers\Api\Admin\ShippingZoneController::class);
+    Route::put('shipping-zones/{zone}/rates', [App\Http\Controllers\Api\Admin\ShippingZoneRateController::class, 'sync']);
     Route::apiResource('shipping-methods', App\Http\Controllers\Api\Admin\ShippingMethodController::class);
 
     // Settings
