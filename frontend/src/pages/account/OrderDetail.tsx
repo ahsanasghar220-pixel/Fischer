@@ -150,7 +150,11 @@ export default function OrderDetail() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-dark-900 dark:text-white">{item.product_name}</p>
                 {item.variant_attributes && (
-                  <p className="text-sm text-dark-500 dark:text-dark-400">{item.variant_attributes}</p>
+                  <p className="text-sm text-dark-500 dark:text-dark-400">
+                    {Array.isArray(item.variant_attributes)
+                      ? item.variant_attributes.map(a => a.value).join(' / ')
+                      : item.variant_attributes}
+                  </p>
                 )}
                 <p className="text-sm text-dark-500 dark:text-dark-400">SKU: {item.product_sku}</p>
                 <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">

@@ -35,7 +35,11 @@ export default function OrderItems({ order }: OrderItemsProps) {
                 SKU: {item.product_sku || item.product?.sku || '-'}
               </p>
               {item.variant_attributes && (
-                <p className="text-sm text-dark-500 dark:text-dark-400">{item.variant_attributes}</p>
+                <p className="text-sm text-dark-500 dark:text-dark-400">
+                  {Array.isArray(item.variant_attributes)
+                    ? item.variant_attributes.map(a => a.value).join(' / ')
+                    : item.variant_attributes}
+                </p>
               )}
             </div>
             <div className="text-right">

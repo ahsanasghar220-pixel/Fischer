@@ -101,7 +101,9 @@ class OrderController extends Controller
                         'primary_image' => $item->product_image,
                     ],
                     'variant' => $item->variant_attributes ? [
-                        'name' => $item->variant_attributes,
+                        'name' => is_array($item->variant_attributes)
+                            ? implode(' / ', array_column($item->variant_attributes, 'value'))
+                            : $item->variant_attributes,
                     ] : null,
                     'quantity' => $item->quantity,
                     'price' => $item->unit_price,

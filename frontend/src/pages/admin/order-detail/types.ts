@@ -11,7 +11,7 @@ export interface OrderItem {
   product_name: string
   product_sku: string
   product_image?: string
-  variant_attributes?: string
+  variant_attributes?: string | Array<{ attribute: string; value: string; color_code?: string | null }>
   quantity: number
   unit_price: string
   total_price: string
