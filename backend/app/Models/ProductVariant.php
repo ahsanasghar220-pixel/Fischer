@@ -60,7 +60,7 @@ class ProductVariant extends Model
     {
         return $this->attributeValues->map(function ($value) {
             return [
-                'attribute' => $value->attribute->name,
+                'attribute' => $value->attribute?->name ?? 'Unknown',
                 'value' => $value->value,
                 'color_code' => $value->color_code,
             ];

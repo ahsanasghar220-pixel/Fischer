@@ -34,10 +34,11 @@ class OrderCreationService
                     throw new \Exception("Product variant no longer exists");
                 }
 
-                if ($variant->product->track_inventory && !$variant->product->allow_backorders) {
+                $variantProduct = $variant->product;
+                if ($variantProduct && $variantProduct->track_inventory && !$variantProduct->allow_backorders) {
                     if ($variant->stock_quantity < $item->quantity) {
                         throw new \Exception(
-                            "'{$item->product->name}' only has {$variant->stock_quantity} items available, " .
+                            "'{$variantProduct->name}' only has {$variant->stock_quantity} items available, " .
                             "but you requested {$item->quantity}"
                         );
                     }
@@ -46,7 +47,8 @@ class OrderCreationService
                 $product = Product::lockForUpdate()->find($item->product_id);
 
                 if (!$product || !$product->is_active) {
-                    throw new \Exception("Product '{$item->product->name}' is no longer available");
+                    $name = $product?->name ?? $item->product?->name ?? 'A product';
+                    throw new \Exception("Product '{$name}' is no longer available");
                 }
 
                 if ($product->track_inventory && !$product->allow_backorders) {
@@ -80,12 +82,9 @@ class OrderCreationService
         // Shipping
         $shippingMethod = ShippingMethod::find($validated['shipping_method_id']);
         $zone = ShippingZone::findByCity($validated['shipping_city']);
-        $shippingAmount = $shippingMethod->calculateCost(
-            $subtotal,
-            $cart->total_weight,
-            $cart->items_count,
-            $zone
-        );
+        $shippingAmount = $shippingMethod
+            ? $shippingMethod->calculateCost($subtotal, $cart->total_weight, $cart->items_count, $zone)
+            : 0;
 
         // Free shipping coupon
         if ($cart->coupon_code) {
@@ -173,7 +172,7 @@ class OrderCreationService
             'billing_address_line_1' => $validated['billing_address_line_1'] ?? null,
             'billing_city'           => $validated['billing_city'] ?? null,
 
-            'shipping_method' => $totals['shipping_method']->name,
+            'shipping_method' => $totals['shipping_method']?->name ?? 'Standard Delivery',
 
             'coupon_code' => $cart->coupon_code,
             'coupon_id'   => $cart->coupon?->id,
