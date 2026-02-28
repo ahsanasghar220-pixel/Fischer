@@ -16,6 +16,7 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, productName }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
 
   // Reset selected image when images change (product navigation)
   useEffect(() => {
@@ -35,6 +36,23 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
     return () => window.removeEventListener('keydown', handleKey)
   }, [lightboxOpen, images?.length])
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return
+    const diff = touchStartX - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        setSelectedImage((prev) => (prev >= images.length - 1 ? 0 : prev + 1))
+      } else {
+        setSelectedImage((prev) => (prev <= 0 ? images.length - 1 : prev - 1))
+      }
+    }
+    setTouchStartX(null)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -30 }}
@@ -42,7 +60,11 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
       transition={{ delay: 0.15, duration: 0.5 }}
     >
       {/* Main Image with Arrows */}
-      <div className="relative aspect-square bg-dark-100 dark:bg-dark-800 rounded-xl overflow-hidden mb-4 group">
+      <div
+        className="relative aspect-square bg-dark-100 dark:bg-dark-800 rounded-xl overflow-hidden mb-4 group"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <AnimatePresence mode="wait">
           {images && images.length > 0 ? (
             <motion.img
@@ -70,14 +92,14 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
           <>
             <button
               onClick={() => setSelectedImage((prev) => (prev <= 0 ? images.length - 1 : prev - 1))}
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-700 dark:text-dark-200 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-700 dark:text-dark-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
               aria-label="Previous image"
             >
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
             <button
               onClick={() => setSelectedImage((prev) => (prev >= images.length - 1 ? 0 : prev + 1))}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-700 dark:text-dark-200 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-700 dark:text-dark-200 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
               aria-label="Next image"
             >
               <ChevronRightIcon className="w-5 h-5" />
@@ -89,7 +111,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
         {images && images.length > 0 && (
           <button
             onClick={() => setLightboxOpen(true)}
-            className="absolute top-3 right-3 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-600 dark:text-dark-300 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
+            className="absolute top-3 right-3 p-2 rounded-full bg-white/80 dark:bg-dark-800/80 backdrop-blur-sm text-dark-600 dark:text-dark-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-dark-700 shadow-lg"
             aria-label="View full size"
           >
             <MagnifyingGlassPlusIcon className="w-5 h-5" />

@@ -219,7 +219,7 @@ const BundleCard = memo(function BundleCard({
                   title={hasOutOfStockItems ? 'Cannot add to cart - contains out-of-stock items' : 'Add to cart'}
                   className={`p-2.5 rounded-full text-white transition-all shadow-lg ${
                     hasOutOfStockItems
-                      ? 'bg-gray-400 cursor-not-allowed'
+                      ? 'bg-dark-400 dark:bg-dark-600 cursor-not-allowed'
                       : 'bg-primary-500 hover:bg-primary-600 hover:scale-110'
                   }`}
                   whileHover={hasOutOfStockItems ? {} : { scale: 1.1 }}

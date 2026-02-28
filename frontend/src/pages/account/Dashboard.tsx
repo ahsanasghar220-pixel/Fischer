@@ -213,5 +213,5 @@ function getStatusColor(status: string): string {
     delivered: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
     cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400',
   }
-  return colors[status] || 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-400'
+  return colors[status] || 'bg-dark-100 dark:bg-dark-700 text-dark-800 dark:text-dark-300'
 }

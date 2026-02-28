@@ -27,13 +27,13 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
         ? 'border-green-500 dark:border-green-500/50'
         : slot.is_required
         ? 'border-orange-500 dark:border-orange-500/50'
-        : 'border-gray-200 dark:border-dark-700'
+        : 'border-dark-200 dark:border-dark-700'
     }`}>
       {/* Header */}
       <div className={`px-4 py-3 flex items-center justify-between ${
         isComplete
           ? 'bg-green-50 dark:bg-green-900/20'
-          : 'bg-gray-50 dark:bg-dark-800'
+          : 'bg-dark-50 dark:bg-dark-800'
       }`}>
         <div>
           <h4 className="font-semibold text-dark-900 dark:text-white flex items-center gap-2">
@@ -79,13 +79,13 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
                 isSelected
                   ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                   : canSelect
-                  ? 'border-gray-200 dark:border-dark-600 hover:border-primary-300 dark:hover:border-primary-700'
-                  : 'border-gray-100 dark:border-dark-700 opacity-50 cursor-not-allowed'
+                  ? 'border-dark-200 dark:border-dark-600 hover:border-primary-300 dark:hover:border-primary-700'
+                  : 'border-dark-100 dark:border-dark-700 opacity-50 cursor-not-allowed'
               }`}
               whileHover={canSelect ? { scale: 1.02 } : {}}
               whileTap={canSelect ? { scale: 0.98 } : {}}
             >
-              <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 dark:bg-dark-700 flex-shrink-0">
+              <div className="w-14 h-14 rounded-lg overflow-hidden bg-dark-100 dark:bg-dark-700 flex-shrink-0">
                 {slotProduct.product.image ? (
                   <img
                     src={slotProduct.product.image}
@@ -93,7 +93,7 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <div className="w-full h-full flex items-center justify-center text-dark-400">
                     <GiftIcon className="w-5 h-5" />
                   </div>
                 )}
@@ -111,7 +111,7 @@ function SlotSelector({ slot, selectedProductIds, onSelect }: SlotSelectorProps)
               <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                 isSelected
                   ? 'border-primary-500 bg-primary-500'
-                  : 'border-gray-300 dark:border-dark-500'
+                  : 'border-dark-300 dark:border-dark-500'
               }`}>
                 {isSelected && <CheckIcon className="w-4 h-4 text-white" />}
               </div>
@@ -137,7 +137,7 @@ export default function BundleConfig({ bundle, selections, onSlotSelect }: Bundl
       {/* Fixed Bundle - Products List */}
       {bundle.bundle_type === 'fixed' && bundle.items.length > 0 && (
         <div className="border dark:border-dark-700 rounded-xl overflow-hidden">
-          <div className="bg-gray-50 dark:bg-dark-800 px-4 py-3 border-b dark:border-dark-700">
+          <div className="bg-dark-50 dark:bg-dark-800 px-4 py-3 border-b dark:border-dark-700">
             <h3 className="font-semibold text-dark-900 dark:text-white flex items-center gap-2">
               <GiftIcon className="w-5 h-5 text-primary-500" />
               What's Included ({bundle.items.length} items)
@@ -146,7 +146,7 @@ export default function BundleConfig({ bundle, selections, onSlotSelect }: Bundl
           <div className="divide-y dark:divide-dark-700">
             {bundle.items.map((item) => (
               <div key={item.id} className="flex items-center gap-4 p-4">
-                <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-dark-700 flex-shrink-0">
+                <div className="w-16 h-16 rounded-lg overflow-hidden bg-dark-100 dark:bg-dark-700 flex-shrink-0">
                   {item.product.image ? (
                     <img
                       src={item.product.image}
@@ -154,7 +154,7 @@ export default function BundleConfig({ bundle, selections, onSlotSelect }: Bundl
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center text-dark-400">
                       <GiftIcon className="w-6 h-6" />
                     </div>
                   )}

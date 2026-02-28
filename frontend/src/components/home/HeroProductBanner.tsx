@@ -64,7 +64,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
       >
         {/* Image Container with Carousel */}
         <div
-          className="h-[105px] sm:h-[150px] md:h-[220px] bg-gray-50 relative overflow-hidden flex-shrink-0"
+          className="h-[105px] sm:h-[150px] md:h-[220px] bg-dark-50 dark:bg-dark-800 relative overflow-hidden flex-shrink-0"
           {...(isTouchDevice ? swipeHandlers : {})}
         >
           <AnimatePresence mode="wait">
@@ -96,7 +96,7 @@ function ProductCard({ product }: { product: ProductHighlight }) {
                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                     idx === currentImageIndex
                       ? 'bg-primary-500 w-4'
-                      : 'bg-gray-500 dark:bg-dark-400'
+                      : 'bg-dark-400 dark:bg-dark-500'
                   }`}
                 />
               ))}

@@ -314,7 +314,7 @@ export default function Contact() {
                   <motion.button
                     type="submit"
                     disabled={mutation.isPending}
-                    className="btn btn-primary py-3 px-8 flex items-center gap-2"
+                    className="w-full sm:w-auto btn btn-primary py-3 px-8 min-h-[44px] flex items-center justify-center gap-2"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >

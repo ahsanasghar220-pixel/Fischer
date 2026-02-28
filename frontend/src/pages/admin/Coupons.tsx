@@ -180,7 +180,7 @@ export default function AdminCoupons() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Coupons</h1>
         <button onClick={() => openModal()}
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium text-sm">
@@ -286,7 +286,7 @@ export default function AdminCoupons() {
                   className="w-full px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-600 bg-white dark:bg-dark-900 text-dark-900 dark:text-white focus:ring-2 focus:ring-primary-500" />
                 <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Optional notes about this coupon's purpose</p>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Type *</label>
                   <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as any })}
@@ -308,7 +308,7 @@ export default function AdminCoupons() {
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Min Order (Rs.)</label>
                   <input type="number" value={form.minimum_order_amount} onChange={e => setForm({ ...form, minimum_order_amount: e.target.value })} min="0" placeholder="e.g. 5000"
@@ -322,7 +322,7 @@ export default function AdminCoupons() {
                   <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">Maximum discount cap in Rs. (useful for percentage coupons)</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Usage Limit</label>
                   <input type="number" value={form.usage_limit} onChange={e => setForm({ ...form, usage_limit: e.target.value })} min="1" placeholder="e.g. 100"
@@ -336,7 +336,7 @@ export default function AdminCoupons() {
                   <p className="text-xs text-dark-400 dark:text-dark-500 mt-1">How many times a single customer can use this coupon</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Start Date</label>
                   <input type="date" value={form.starts_at} onChange={e => setForm({ ...form, starts_at: e.target.value })}

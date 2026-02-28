@@ -31,9 +31,9 @@ export default function StatusTimeline({
   return (
     <>
       {/* Status Banner */}
-      <div className={`rounded-xl p-4 flex items-center justify-between ${status.color}`}>
+      <div className={`rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${status.color}`}>
         <div className="flex items-center gap-3">
-          <StatusIcon className="w-6 h-6" />
+          <StatusIcon className="w-6 h-6 shrink-0" />
           <div>
             <p className="font-semibold">Order Status: {status.label}</p>
             {order.tracking_number && (

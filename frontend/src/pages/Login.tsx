@@ -112,7 +112,7 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -134,7 +134,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn btn-primary py-3 flex items-center justify-center"
+              className="w-full btn btn-primary py-3 min-h-[44px] flex items-center justify-center"
             >
               {isLoading ? (
                 <>

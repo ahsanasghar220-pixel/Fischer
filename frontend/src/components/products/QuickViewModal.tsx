@@ -408,14 +408,14 @@ const QuickViewModal = memo(function QuickViewModal({
                     </div>
 
                     {/* Features */}
-                    <div className="grid grid-cols-2 gap-4 pt-6 border-t border-dark-100 dark:border-dark-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-6 border-t border-dark-100 dark:border-dark-700">
                       <div className="flex items-center gap-3 px-1">
                         <div className="w-11 h-11 flex-shrink-0 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                           <TruckIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-dark-900 dark:text-white">Free Delivery in Lahore</p>
-                          <p className="text-xs text-dark-500 dark:text-dark-400">Standard delivery charges apply for other cities</p>
+                          <p className="text-xs text-dark-500 dark:text-dark-400 leading-tight">Standard delivery charges for other cities</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 px-1">

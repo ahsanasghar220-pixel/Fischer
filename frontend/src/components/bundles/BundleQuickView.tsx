@@ -274,7 +274,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
 
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   {/* Left - Image Gallery */}
-                  <div className="relative bg-gray-100 dark:bg-dark-900">
+                  <div className="relative bg-dark-100 dark:bg-dark-900">
                     {/* Main Image */}
                     <div className="relative aspect-square">
                       <motion.img
@@ -336,7 +336,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                             className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
                               selectedImageIndex === idx
                                 ? 'border-primary-500'
-                                : 'border-transparent hover:border-gray-300 dark:hover:border-dark-600'
+                                : 'border-transparent hover:border-dark-300 dark:hover:border-dark-600'
                             }`}
                           >
                             <img src={img} alt="" className="w-full h-full object-cover" />
@@ -397,11 +397,11 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                                 className={`flex items-center gap-3 p-2 rounded-lg ${
                                   isOOS
                                     ? 'bg-red-50 dark:bg-red-900/10 opacity-75'
-                                    : 'bg-gray-50 dark:bg-dark-700'
+                                    : 'bg-dark-50 dark:bg-dark-700'
                                 }`}
                               >
                                 <div className={`w-10 h-10 rounded overflow-hidden flex-shrink-0 ${
-                                  isOOS ? 'bg-gray-200 dark:bg-dark-600 grayscale' : 'bg-white dark:bg-dark-600'
+                                  isOOS ? 'bg-dark-200 dark:bg-dark-600 grayscale' : 'bg-white dark:bg-dark-600'
                                 }`}>
                                   {item.product.image ? (
                                     <img
@@ -411,7 +411,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                                     />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center">
-                                      <GiftIcon className="w-4 h-4 text-gray-400" />
+                                      <GiftIcon className="w-4 h-4 text-dark-400" />
                                     </div>
                                   )}
                                 </div>
@@ -466,7 +466,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                         }
                         className={`w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                           isAddToCartDisabled
-                            ? 'bg-gray-300 dark:bg-dark-600 text-gray-500 cursor-not-allowed'
+                            ? 'bg-dark-200 dark:bg-dark-600 text-dark-400 dark:text-dark-500 cursor-not-allowed'
                             : 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25'
                         }`}
                       >
@@ -486,7 +486,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                       <Link
                         to={`/bundle/${bundle.slug}`}
                         onClick={onClose}
-                        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 border border-gray-300 dark:border-dark-600 rounded-lg font-semibold text-sm text-dark-700 dark:text-dark-200 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 px-5 py-2.5 border border-dark-200 dark:border-dark-600 rounded-lg font-semibold text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
                       >
                         View Full Details
                         <ArrowTopRightOnSquareIcon className="w-4 h-4" />

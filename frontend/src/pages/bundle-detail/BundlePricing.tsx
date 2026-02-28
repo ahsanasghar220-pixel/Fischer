@@ -72,7 +72,7 @@ export default function BundlePricing({
       )}
 
       {/* Price Block */}
-      <div className="bg-gray-50 dark:bg-dark-800 rounded-xl p-6">
+      <div className="bg-dark-50 dark:bg-dark-800 rounded-xl p-6">
         <div className="flex items-end gap-4 mb-2">
           <span className="text-4xl font-bold text-dark-900 dark:text-white">
             {formatPrice(displayPrice)}

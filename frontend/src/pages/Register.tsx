@@ -282,7 +282,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn btn-primary py-3 flex items-center justify-center"
+              className="w-full btn btn-primary py-3 min-h-[44px] flex items-center justify-center"
             >
               {isLoading ? (
                 <>

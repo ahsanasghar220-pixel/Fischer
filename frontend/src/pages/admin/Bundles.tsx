@@ -94,7 +94,7 @@ export default function AdminBundles() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
           <p className="text-sm text-dark-500 dark:text-dark-400">Total Bundles</p>
           <p className="text-2xl font-bold text-dark-900 dark:text-white">{meta?.total || 0}</p>

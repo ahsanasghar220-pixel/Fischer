@@ -62,7 +62,7 @@ export default function OrderItems({ order }: OrderItemsProps) {
           </div>
           <div className="flex justify-between text-dark-600 dark:text-dark-400">
             <span>Shipping</span>
-            <span>{formatPrice(parseFloat(order.shipping_cost))}</span>
+            <span>{formatPrice(parseFloat(order.shipping_amount))}</span>
           </div>
           {parseFloat(order.discount) > 0 && (
             <div className="flex justify-between text-green-600 dark:text-green-400">

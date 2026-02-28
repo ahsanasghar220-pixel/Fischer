@@ -134,7 +134,7 @@ export default function PortfolioVideos() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Portfolio Videos</h1>
           <p className="text-dark-500 dark:text-dark-400">Manage video content on the portfolio page</p>

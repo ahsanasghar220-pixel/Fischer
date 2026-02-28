@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '@/stores/cartStore'
+import { formatPrice } from '@/lib/utils'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import CartItemRow from './CartItemRow'
 import CartSummary from './CartSummary'
@@ -82,7 +83,7 @@ export default function Cart() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 sm:py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8 pb-24 lg:pb-8">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Cart Items */}
           <motion.div
@@ -148,6 +149,21 @@ export default function Cart() {
               removeCoupon={removeCoupon}
             />
           </motion.div>
+        </div>
+      </div>
+      {/* Sticky Mobile Checkout Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-dark-800 border-t border-dark-200 dark:border-dark-700 px-4 py-3 shadow-lg">
+        <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
+          <div>
+            <p className="text-xs text-dark-500 dark:text-dark-400">Total</p>
+            <p className="text-lg font-bold text-dark-900 dark:text-white">{formatPrice(total)}</p>
+          </div>
+          <Link
+            to="/checkout"
+            className="flex-1 max-w-[200px] bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl text-center transition-colors"
+          >
+            Checkout
+          </Link>
         </div>
       </div>
     </motion.div>

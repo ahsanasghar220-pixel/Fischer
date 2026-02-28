@@ -46,11 +46,13 @@ interface Summary {
 
 interface AbandonedCartsResponse {
   summary: Summary
-  data: AbandonedCart[]
-  current_page: number
-  last_page: number
-  per_page: number
-  total: number
+  data: {
+    data: AbandonedCart[]
+    current_page: number
+    last_page: number
+    total: number
+    per_page: number
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -128,15 +130,15 @@ export default function AbandonedCarts() {
   const [dateTo, setDateTo] = useState('')
   const [minCartValue, setMinCartValue] = useState('')
 
-  const { data, isLoading } = useQuery<AbandonedCartsResponse>({
+  const { data, isLoading, isError, error } = useQuery<AbandonedCartsResponse>({
     queryKey: ['abandoned-carts', page, recoveryFilter, dateFrom, dateTo, minCartValue],
     queryFn: async () => {
       const params = new URLSearchParams()
       params.set('page', page.toString())
-      if (recoveryFilter !== 'all') params.set('recovered', recoveryFilter === 'recovered' ? '1' : '0')
+      if (recoveryFilter !== 'all') params.set('is_recovered', recoveryFilter === 'recovered' ? '1' : '0')
       if (dateFrom) params.set('from', dateFrom)
       if (dateTo) params.set('to', dateTo)
-      if (minCartValue) params.set('min_cart_value', minCartValue)
+      if (minCartValue) params.set('min_total', minCartValue)
       const res = await api.get(`/api/admin/marketing/abandoned-carts?${params.toString()}`)
       return res.data
     },
@@ -152,7 +154,7 @@ export default function AbandonedCarts() {
   })
 
   const summary = data?.summary
-  const carts = data?.data || []
+  const carts = data?.data.data || []
 
   return (
     <div className="space-y-6">
@@ -272,7 +274,16 @@ export default function AbandonedCarts() {
 
       {/* Table */}
       <div className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm overflow-hidden">
-        {isLoading ? (
+        {isError ? (
+          <div className="p-12 text-center">
+            <InboxIcon className="w-12 h-12 text-red-300 dark:text-red-600 mx-auto mb-3" />
+            <p className="text-dark-900 dark:text-white font-semibold mb-1">Failed to load abandoned carts</p>
+            <p className="text-sm text-dark-500 dark:text-dark-400">
+              {(error as { response?: { data?: { message?: string } } })?.response?.data?.message
+                || (error instanceof Error ? error.message : 'An error occurred')}
+            </p>
+          </div>
+        ) : isLoading ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-dark-50 dark:bg-dark-900">
@@ -398,10 +409,10 @@ export default function AbandonedCarts() {
             </div>
 
             {/* Pagination */}
-            {data && data.last_page > 1 && (
+            {data && data.data.last_page > 1 && (
               <div className="p-4 border-t border-dark-200 dark:border-dark-700 flex items-center justify-between">
                 <p className="text-sm text-dark-500 dark:text-dark-400">
-                  Showing {((page - 1) * data.per_page) + 1} to {Math.min(page * data.per_page, data.total)} of {data.total} carts
+                  Showing {((page - 1) * data.data.per_page) + 1} to {Math.min(page * data.data.per_page, data.data.total)} of {data.data.total} carts
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -412,11 +423,11 @@ export default function AbandonedCarts() {
                     Previous
                   </button>
                   <span className="text-sm text-dark-500 dark:text-dark-400">
-                    {page} / {data.last_page}
+                    {page} / {data.data.last_page}
                   </span>
                   <button
                     onClick={() => setPage(page + 1)}
-                    disabled={page === data.last_page}
+                    disabled={page === data.data.last_page}
                     className="px-3 py-1.5 border border-dark-200 dark:border-dark-600 rounded-lg text-sm text-dark-700 dark:text-dark-300 disabled:opacity-50 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
                   >
                     Next

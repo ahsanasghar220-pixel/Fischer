@@ -40,7 +40,7 @@ export default function BundlePriceSummary({
       )}
 
       {/* Pricing */}
-      <div className="mt-4 p-4 bg-gray-50 dark:bg-dark-700 rounded-xl">
+      <div className="mt-4 p-4 bg-dark-50 dark:bg-dark-700 rounded-xl">
         <div className="flex items-baseline gap-3">
           <span className="text-3xl font-bold text-dark-900 dark:text-white">
             {formatPrice(displayPrice)}

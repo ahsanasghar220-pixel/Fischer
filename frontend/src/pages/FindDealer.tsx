@@ -98,7 +98,7 @@ export default function FindDealer() {
 
             {/* Dealers Grid */}
             {filteredDealers.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredDealers.map((dealer, index) => (
                   <div
                     key={index}
@@ -153,13 +153,13 @@ export default function FindDealer() {
         )}
 
         {/* Become a Dealer CTA */}
-        <div className="mt-12 bg-primary-500 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-dark-900 mb-2">Want to Become a Dealer?</h2>
-          <p className="text-dark-700 mb-6 max-w-2xl mx-auto">
+        <div className="mt-12 bg-primary-500 rounded-xl p-6 sm:p-8 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-dark-900 mb-2">Want to Become a Dealer?</h2>
+          <p className="text-sm sm:text-base text-dark-700 mb-6 max-w-2xl mx-auto">
             Join our network of authorized dealers and grow your business with Fischer's
             quality products and excellent support.
           </p>
-          <Link to="/become-dealer" className="btn bg-dark-900 text-white hover:bg-dark-800 px-8">
+          <Link to="/become-dealer" className="btn bg-dark-900 text-white hover:bg-dark-800 px-8 min-h-[44px] inline-flex items-center">
             Apply Now
           </Link>
         </div>

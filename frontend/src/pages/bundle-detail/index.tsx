@@ -310,9 +310,9 @@ export default function BundleDetail() {
                   <motion.button
                     onClick={handleAddToCart}
                     disabled={isAddingToCart || !bundle.is_available || (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)}
-                    className={`w-full flex items-center justify-center gap-2.5 px-6 py-3 rounded-lg font-semibold text-base transition-all ${
+                    className={`w-full flex items-center justify-center gap-2.5 px-6 py-3 min-h-[48px] rounded-lg font-semibold text-base transition-all ${
                       isAddingToCart || !bundle.is_available || (bundle.bundle_type === 'configurable' && !allRequiredSlotsFilled)
-                        ? 'bg-gray-300 dark:bg-dark-600 text-gray-500 dark:text-dark-400 cursor-not-allowed'
+                        ? 'bg-dark-200 dark:bg-dark-600 text-dark-400 dark:text-dark-500 cursor-not-allowed'
                         : 'bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25 hover:scale-[1.02]'
                     }`}
                     whileTap={{ scale: 0.98 }}
@@ -338,7 +338,7 @@ export default function BundleDetail() {
                 </div>
 
                 {/* Trust Badges */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 pt-4 border-t dark:border-dark-700">
+                <div className="grid grid-cols-3 gap-2 md:gap-4 pt-4 border-t dark:border-dark-700">
                   <div className="text-center">
                     <TruckIcon className="w-8 h-8 mx-auto text-primary-500 mb-2" />
                     <p className="text-xs text-dark-600 dark:text-dark-400">Free Delivery in Lahore</p>
@@ -372,7 +372,7 @@ export default function BundleDetail() {
 
         {/* Related Bundles */}
         {relatedBundles && relatedBundles.length > 0 && (
-          <section className="bg-gray-50 dark:bg-dark-800/50 py-16">
+          <section className="bg-dark-50 dark:bg-dark-800/50 py-16">
             <div className="container mx-auto px-4">
               <ScrollReveal>
                 <h2 className="text-2xl lg:text-3xl font-bold text-dark-900 dark:text-white mb-8">

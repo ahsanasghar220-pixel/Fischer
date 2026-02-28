@@ -94,10 +94,10 @@ export default function Checkout() {
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
+      <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700 overflow-hidden">
         <div className="container mx-auto px-4 py-4">
           <motion.div
-            className="flex items-center justify-center gap-4"
+            className="flex items-center justify-center gap-2 sm:gap-4 overflow-x-auto"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}

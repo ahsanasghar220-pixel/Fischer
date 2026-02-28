@@ -62,7 +62,7 @@ export default function OrderSuccess() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-50 via-white to-dark-50 dark:from-dark-950 dark:via-dark-900 dark:to-dark-950 py-12 transition-colors overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-dark-50 via-white to-dark-50 dark:from-dark-950 dark:via-dark-900 dark:to-dark-950 py-6 sm:py-12 transition-colors overflow-hidden">
       {/* Confetti Effect */}
       {showConfetti && <ConfettiEffect />}
 

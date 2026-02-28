@@ -229,7 +229,7 @@ export default function AdminShipping() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Shipping</h1>
         <button
           onClick={() => activeTab === 'zones' ? openZoneModal() : openMethodModal()}
@@ -271,6 +271,7 @@ export default function AdminShipping() {
                 No shipping zones yet. Create one to configure city-specific rates.
               </div>
             ) : (
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-dark-50 dark:bg-dark-900 border-b border-dark-200 dark:border-dark-700">
@@ -324,6 +325,7 @@ export default function AdminShipping() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </div>
@@ -341,6 +343,7 @@ export default function AdminShipping() {
             ) : methods.length === 0 ? (
               <div className="p-8 text-center text-dark-500">No shipping methods yet</div>
             ) : (
+              <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-dark-50 dark:bg-dark-900 border-b border-dark-200 dark:border-dark-700">
@@ -392,6 +395,7 @@ export default function AdminShipping() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </div>

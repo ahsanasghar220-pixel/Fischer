@@ -79,11 +79,11 @@ export function DeliveryStep({
         </div>
       )}
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-wrap gap-3 justify-between">
         <motion.button
           type="button"
           onClick={onBack}
-          className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8"
+          className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8 min-h-[44px]"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -92,7 +92,7 @@ export function DeliveryStep({
         <motion.button
           type="button"
           onClick={onNext}
-          className="btn btn-primary px-8"
+          className="btn btn-primary px-8 min-h-[44px]"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -212,11 +212,11 @@ export default function PaymentStep({
         />
       </div>
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-wrap gap-3 justify-between">
         <motion.button
           type="button"
           onClick={onBack}
-          className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8"
+          className="btn btn-outline dark:border-dark-600 dark:text-dark-300 dark:hover:bg-dark-700 px-8 min-h-[44px]"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -225,7 +225,7 @@ export default function PaymentStep({
         <motion.button
           type="submit"
           disabled={isPending}
-          className="btn btn-primary px-8"
+          className="btn btn-primary px-6 sm:px-8 min-h-[44px] flex items-center gap-2"
           whileHover={{ scale: isPending ? 1 : 1.02 }}
           whileTap={{ scale: isPending ? 1 : 0.98 }}
         >

@@ -151,7 +151,7 @@ export default function OrderSummaryCard({ order, onShare }: OrderSummaryCardPro
           style={{ animationDelay: '1s', animationFillMode: 'forwards' }}
         >
           <p className="text-sm text-dark-500 dark:text-dark-400 mb-1">Order Number</p>
-          <p className="text-xl md:text-3xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
+          <p className="text-lg sm:text-xl md:text-3xl font-black bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent">
             {order.order_number}
           </p>
         </div>
@@ -322,7 +322,7 @@ export default function OrderSummaryCard({ order, onShare }: OrderSummaryCardPro
 
       {/* Actions */}
       <div
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0"
+        className="flex flex-col sm:flex-row items-center justify-center gap-4 pb-8 animate-fade-in-up opacity-0"
         style={{ animationDelay: '1.4s', animationFillMode: 'forwards' }}
       >
         <Link

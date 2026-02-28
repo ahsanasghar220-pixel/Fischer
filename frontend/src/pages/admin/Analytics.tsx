@@ -112,7 +112,7 @@ export default function AdminAnalytics() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-dark-900 dark:text-white">Analytics</h1>
           <p className="text-dark-500 dark:text-dark-400">Insights and performance metrics</p>
@@ -120,7 +120,7 @@ export default function AdminAnalytics() {
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white"
+          className="px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white self-start sm:self-auto"
         >
           <option value="7days">Last 7 Days</option>
           <option value="30days">Last 30 Days</option>

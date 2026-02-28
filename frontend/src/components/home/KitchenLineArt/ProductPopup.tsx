@@ -133,7 +133,7 @@ export default function ProductPopup({
           {/* Arrow pointing to hotspot - hidden on small screens */}
           {!isSmallScreen && (
             <div
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-dark-800 rotate-45 border-r border-b border-gray-200 dark:border-dark-700"
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-dark-800 rotate-45 border-r border-b border-dark-200 dark:border-dark-700"
             />
           )}
 
@@ -147,17 +147,17 @@ export default function ProductPopup({
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-gray-100 dark:bg-dark-700
-                        hover:bg-gray-200 dark:hover:bg-dark-600 transition-all duration-200
+              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-dark-100 dark:bg-dark-700
+                        hover:bg-dark-200 dark:hover:bg-dark-600 transition-all duration-200
                         hover:scale-110 active:scale-95"
             >
-              <XMarkIcon className="w-4 h-4 text-gray-500 dark:text-dark-400" />
+              <XMarkIcon className="w-4 h-4 text-dark-500 dark:text-dark-400" />
             </button>
 
             {product ? (
               <>
                 {/* Product Image */}
-                <div className="aspect-[4/3] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-700 dark:to-dark-800 relative overflow-hidden">
+                <div className="aspect-[4/3] bg-gradient-to-br from-dark-50 to-dark-100 dark:from-dark-700 dark:to-dark-800 relative overflow-hidden">
                   {/* Shimmer overlay */}
                   <div
                     className="absolute inset-0 pointer-events-none overflow-hidden"
@@ -284,7 +284,7 @@ export default function ProductPopup({
               /* No product available - show category link */
               <div className="p-6 text-center bg-white dark:bg-dark-800 relative z-10">
                 <div
-                  className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-dark-700 rounded-full flex items-center justify-center"
+                  className="w-16 h-16 mx-auto mb-4 bg-dark-100 dark:bg-dark-700 rounded-full flex items-center justify-center"
                   style={{
                     animation: 'fade-slide-up 0.3s ease-out 0.1s both',
                   }}

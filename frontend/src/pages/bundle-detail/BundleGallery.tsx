@@ -39,7 +39,7 @@ export default function BundleGallery({
     <ScrollReveal animation="fadeUp">
       <div className="lg:sticky lg:top-24">
         {/* Main Image */}
-        <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-800 mb-4">
+        <div className="relative aspect-square rounded-2xl overflow-hidden bg-dark-100 dark:bg-dark-800 mb-4">
           {isVideoPlaying && videoUrl ? (
             <video
               src={videoUrl}
@@ -115,7 +115,7 @@ export default function BundleGallery({
                 className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                   selectedIndex === idx
                     ? 'border-primary-500 ring-2 ring-primary-500/30'
-                    : 'border-transparent hover:border-gray-300 dark:hover:border-dark-600'
+                    : 'border-transparent hover:border-dark-300 dark:hover:border-dark-600'
                 }`}
               >
                 <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />

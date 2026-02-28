@@ -93,7 +93,7 @@ export default function Experience() {
         </section>
 
         {/* Features Grid */}
-        <section className="py-16 lg:py-24 bg-gray-50 dark:bg-dark-800">
+        <section className="py-16 lg:py-24 bg-dark-50 dark:bg-dark-800">
           <div className="container-xl">
             <div className="text-center mb-12 lg:mb-16">
               <h2 className="text-3xl lg:text-4xl font-bold text-dark-900 dark:text-white font-display mb-4">
@@ -149,7 +149,7 @@ export default function Experience() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-800 dark:to-dark-700
+                  className="aspect-[4/3] bg-gradient-to-br from-dark-100 to-dark-200 dark:from-dark-800 dark:to-dark-700
                            rounded-2xl overflow-hidden group cursor-pointer"
                 >
                   <div className="w-full h-full flex items-center justify-center text-dark-400 dark:text-dark-500">
@@ -168,7 +168,7 @@ export default function Experience() {
         </section>
 
         {/* Locations Section */}
-        <section id="locations" className="py-16 lg:py-24 bg-gray-50 dark:bg-dark-800">
+        <section id="locations" className="py-16 lg:py-24 bg-dark-50 dark:bg-dark-800">
           <div className="container-xl">
             <div className="text-center mb-12 lg:mb-16">
               <h2 className="text-3xl lg:text-4xl font-bold text-dark-900 dark:text-white font-display mb-4">

@@ -20,10 +20,10 @@ export function QuickSlotSelector({ slot, selectedProductIds, onSelect }: QuickS
         ? 'border-green-500/50'
         : slot.is_required
         ? 'border-orange-500/50'
-        : 'border-gray-200 dark:border-dark-600'
+        : 'border-dark-200 dark:border-dark-600'
     }`}>
       <div className={`px-3 py-2 text-sm font-medium flex items-center justify-between ${
-        isComplete ? 'bg-green-50 dark:bg-green-900/20' : 'bg-gray-50 dark:bg-dark-700'
+        isComplete ? 'bg-green-50 dark:bg-green-900/20' : 'bg-dark-50 dark:bg-dark-700'
       }`}>
         <span className="flex items-center gap-2">
           {slot.name}
@@ -48,12 +48,12 @@ export function QuickSlotSelector({ slot, selectedProductIds, onSelect }: QuickS
               title={isOOS ? `${slotProduct.product.name} is out of stock` : undefined}
               className={`flex items-center gap-2 px-2 py-1.5 rounded-lg border text-sm transition-all ${
                 isOOS
-                  ? 'border-gray-200 dark:border-dark-700 bg-gray-100 dark:bg-dark-800 opacity-50 cursor-not-allowed'
+                  ? 'border-dark-200 dark:border-dark-700 bg-dark-100 dark:bg-dark-800 opacity-50 cursor-not-allowed'
                   : isSelected
                   ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                   : canSelect
-                  ? 'border-gray-200 dark:border-dark-600 hover:border-primary-300'
-                  : 'border-gray-100 dark:border-dark-700 opacity-50 cursor-not-allowed'
+                  ? 'border-dark-200 dark:border-dark-600 hover:border-primary-300'
+                  : 'border-dark-100 dark:border-dark-700 opacity-50 cursor-not-allowed'
               }`}
             >
               {slotProduct.product.image && (

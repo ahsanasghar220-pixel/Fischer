@@ -99,9 +99,9 @@ export default function VariantsTab({ product }: VariantsTabProps) {
     } else if ((product.variants ?? []).length > 0) {
       setMode('simple')
     }
-  // Only re-run when product id changes, not on every render
+  // Re-run when product id, variants, or globalAttrs change
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.id, globalAttrs.length])
+  }, [product?.id, product?.variants?.length, globalAttrs.length])
 
   // ── Selected attributes (full objects with their values) ─────────────────
   const selectedAttrs = useMemo(
@@ -118,10 +118,14 @@ export default function VariantsTab({ product }: VariantsTabProps) {
     const combinations = cartesian(valueSets)
 
     // Build lookup from existing variants by their attr-value key
+    // Laravel JSON serialises the `attributeValues` relationship as `attribute_values` (snake_case),
+    // so we check both names to be safe.
     const existingByKey: Record<string, ExistingVariant> = {}
     for (const v of existing) {
-      if (v.attributeValues && v.attributeValues.length > 0) {
-        const key = makeKey(v.attributeValues.map(av => av.id))
+      const attrVals: Array<{ id: number }> =
+        v.attributeValues ?? (v as any).attribute_values ?? []
+      if (attrVals.length > 0) {
+        const key = makeKey(attrVals.map(av => av.id))
         existingByKey[key] = v
       }
     }

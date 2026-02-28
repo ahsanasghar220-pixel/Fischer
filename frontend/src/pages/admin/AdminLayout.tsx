@@ -68,7 +68,7 @@ const menuItems: MenuItem[] = [
     icon: MegaphoneIcon,
     permission: 'manage-sales',
     children: [
-      { path: '/admin/marketing', label: 'Dashboard', icon: PresentationChartLineIcon, permission: 'manage-sales' },
+      { path: '/admin/marketing', label: 'Dashboard', icon: PresentationChartLineIcon, exact: true, permission: 'manage-sales' },
       { path: '/admin/marketing/integrations', label: 'Integrations', icon: AdjustmentsHorizontalIcon, permission: 'manage-sales' },
       { path: '/admin/marketing/abandoned-carts', label: 'Abandoned Carts', icon: ShoppingCartIcon, permission: 'manage-sales' },
       { path: '/admin/marketing/conversions', label: 'Conversions', icon: SignalIcon, permission: 'manage-sales' },

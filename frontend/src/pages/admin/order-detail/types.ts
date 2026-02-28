@@ -31,7 +31,7 @@ export interface Order {
   payment_status: string
   payment_method: string
   subtotal: string
-  shipping_cost: string
+  shipping_amount: string
   discount: string
   tax: string
   total: string
@@ -83,5 +83,5 @@ export const paymentStatusConfig: Record<string, { label: string; color: string 
   pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
   paid: { label: 'Paid', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
   failed: { label: 'Failed', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
-  refunded: { label: 'Refunded', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400' },
+  refunded: { label: 'Refunded', color: 'bg-dark-100 text-dark-800 dark:bg-dark-700 dark:text-dark-400' },
 }

@@ -96,16 +96,16 @@ export default function OrderDetail() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
           <Link
             to="/account/orders"
-            className="p-2 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
+            className="p-2 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
             <ArrowLeftIcon className="w-5 h-5 text-dark-600 dark:text-dark-400" />
           </Link>
           <div>
-            <h2 className="text-xl font-semibold text-dark-900 dark:text-white">
+            <h2 className="text-lg sm:text-xl font-semibold text-dark-900 dark:text-white">
               Order #{order.order_number}
             </h2>
             <p className="text-sm text-dark-500 dark:text-dark-400">
@@ -119,7 +119,7 @@ export default function OrderDetail() {
           </span>
           <button
             onClick={() => window.print()}
-            className="p-2 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
+            className="p-2 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
             <PrinterIcon className="w-5 h-5 text-dark-600 dark:text-dark-400" />
           </button>
@@ -275,18 +275,18 @@ export default function OrderDetail() {
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3">
         {['pending', 'confirmed'].includes(order.status) && (
           <button
             onClick={() => setCancelModalOpen(true)}
-            className="px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="px-4 py-2.5 min-h-[44px] text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
             Cancel Order
           </button>
         )}
         <Link
           to="/account/orders"
-          className="px-4 py-2 text-sm text-dark-600 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white font-medium border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+          className="px-4 py-2.5 min-h-[44px] inline-flex items-center text-sm text-dark-600 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white font-medium border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
         >
           Back to Orders
         </Link>
@@ -305,18 +305,18 @@ export default function OrderDetail() {
             <p className="text-dark-600 dark:text-dark-400 mb-6">
               Are you sure you want to cancel order <span className="font-semibold text-dark-900 dark:text-white">#{order.order_number}</span>? This action cannot be undone.
             </p>
-            <div className="flex items-center gap-3 justify-end">
+            <div className="flex flex-wrap items-center gap-3 justify-end">
               <button
                 onClick={() => setCancelModalOpen(false)}
                 disabled={cancelMutation.isPending}
-                className="px-4 py-2 text-sm font-medium text-dark-600 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                className="px-4 py-2.5 min-h-[44px] text-sm font-medium text-dark-600 dark:text-dark-400 hover:text-dark-900 dark:hover:text-white border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
               >
                 Keep Order
               </button>
               <button
                 onClick={() => cancelMutation.mutate()}
                 disabled={cancelMutation.isPending}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2.5 min-h-[44px] text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {cancelMutation.isPending ? (
                   <>

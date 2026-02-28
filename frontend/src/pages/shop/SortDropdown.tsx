@@ -23,7 +23,7 @@ export default function SortDropdown({ sort, onChange }: SortDropdownProps) {
         <select
           value={sort}
           onChange={(e) => onChange(e.target.value)}
-          className="appearance-none bg-transparent pr-8 py-2 text-sm font-medium text-dark-900 dark:text-white cursor-pointer focus:outline-none"
+          className="appearance-none bg-transparent pr-8 py-2.5 min-h-[44px] text-sm font-medium text-dark-900 dark:text-white cursor-pointer focus:outline-none"
         >
           {sortOptions.map((option) => (
             <option key={option.value} value={option.value} className="bg-white dark:bg-dark-800">

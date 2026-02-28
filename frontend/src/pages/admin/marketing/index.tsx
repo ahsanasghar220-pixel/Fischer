@@ -409,8 +409,8 @@ export default function MarketingDashboard() {
             const prevValue = i > 0 ? funnelSteps[i - 1].value : null
             const dropPct = prevValue && prevValue > 0 ? ((1 - step.value / prevValue) * 100).toFixed(1) : null
             return (
-              <div key={step.label} className="flex items-center gap-4">
-                <span className="w-28 text-sm font-medium text-dark-700 dark:text-dark-300 shrink-0 text-right">
+              <div key={step.label} className="flex items-center gap-2 sm:gap-4">
+                <span className="w-20 sm:w-28 text-xs sm:text-sm font-medium text-dark-700 dark:text-dark-300 shrink-0 text-right">
                   {step.label}
                 </span>
                 <div className="flex-1 relative h-8 bg-dark-50 dark:bg-dark-700/50 rounded-lg overflow-hidden">
@@ -420,7 +420,7 @@ export default function MarketingDashboard() {
                     {step.value.toLocaleString()}
                   </span>
                 </div>
-                <span className="w-16 text-xs text-dark-400 dark:text-dark-500 shrink-0">
+                <span className="w-12 sm:w-16 text-xs text-dark-400 dark:text-dark-500 shrink-0">
                   {dropPct !== null ? (
                     <span className="text-rose-500 dark:text-rose-400">-{dropPct}%</span>
                   ) : (
@@ -552,9 +552,9 @@ export default function MarketingDashboard() {
                   <Icon className={`w-5 h-5 ${meta.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-dark-900 dark:text-white capitalize">{d.device}</span>
-                    <div className="flex items-center gap-3 text-xs text-dark-500 dark:text-dark-400">
+                  <div className="flex items-start justify-between mb-1 gap-2">
+                    <span className="text-sm font-medium text-dark-900 dark:text-white capitalize shrink-0">{d.device}</span>
+                    <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-0.5 text-xs text-dark-500 dark:text-dark-400">
                       <span>{d.visitors.toLocaleString()} visitors</span>
                       <span>{d.orders} orders</span>
                       <span className="font-semibold text-dark-900 dark:text-white">{formatPrice(d.revenue)}</span>

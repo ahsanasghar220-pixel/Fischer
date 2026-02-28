@@ -192,7 +192,7 @@ export default function AdminOrderDetail() {
           </tr>
           <tr>
             <td>Shipping:</td>
-            <td class="text-right">Rs. ${parseFloat(order?.shipping_cost || '0').toLocaleString()}</td>
+            <td class="text-right">Rs. ${parseFloat(order?.shipping_amount || '0').toLocaleString()}</td>
           </tr>
           ${parseFloat(order?.discount || '0') > 0 ? `
           <tr>

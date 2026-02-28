@@ -379,8 +379,8 @@ const BundleBanner = memo(function BundleBanner({
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gray-200 dark:bg-dark-600 flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">No image</span>
+                          <div className="w-full h-full bg-dark-200 dark:bg-dark-600 flex items-center justify-center">
+                            <span className="text-dark-400 text-xs">No image</span>
                           </div>
                         )}
                       </div>

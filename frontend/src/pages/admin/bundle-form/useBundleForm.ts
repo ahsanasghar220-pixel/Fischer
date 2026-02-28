@@ -203,7 +203,19 @@ export function useBundleForm() {
         navigate(`/admin/bundles/${newBundle.id}`)
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Failed to save bundle'
+      // Extract the real error message from the Laravel response if available
+      const err = error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }
+      const apiErrors = err.response?.data?.errors
+      const apiMessage = err.response?.data?.message
+      let message: string
+      if (apiErrors) {
+        // Show the first validation error field message
+        message = Object.values(apiErrors).flat()[0] || apiMessage || 'Validation failed'
+      } else if (apiMessage) {
+        message = apiMessage
+      } else {
+        message = error instanceof Error ? error.message : 'Failed to save bundle'
+      }
       toast.error(message)
     }
   }

@@ -110,7 +110,7 @@ export default function ProductCardImage({
           )}
         </>
       ) : (
-        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+        <div className="w-full h-full bg-dark-50 dark:bg-dark-800 flex items-center justify-center">
           <span className="text-sm font-medium text-dark-400 dark:text-dark-500 text-center px-4">{product.name}</span>
         </div>
       )}

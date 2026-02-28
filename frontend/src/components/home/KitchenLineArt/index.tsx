@@ -117,7 +117,7 @@ export default function KitchenLineArt() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-16 lg:py-24 bg-gray-100 dark:bg-dark-900 overflow-hidden"
+      className="relative py-16 lg:py-24 bg-dark-100 dark:bg-dark-900 overflow-hidden"
       onMouseMove={isMobile ? undefined : handleMouseMove}
     >
       {/* Animated morphing background blobs - DESKTOP ONLY */}

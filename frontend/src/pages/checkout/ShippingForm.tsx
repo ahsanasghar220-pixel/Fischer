@@ -214,7 +214,7 @@ export default function ShippingForm({
         <motion.button
           type="button"
           onClick={onNext}
-          className="btn btn-primary px-8"
+          className="w-full sm:w-auto btn btn-primary px-8 min-h-[44px]"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

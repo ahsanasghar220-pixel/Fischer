@@ -45,7 +45,7 @@ export default function Account() {
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-dark-200 dark:border-dark-700">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-dark-500 dark:text-dark-400 mb-4">
             <Link to="/" className="hover:text-primary-600 dark:hover:text-primary-400">Home</Link>
             <span>/</span>
             <span className="text-dark-900 dark:text-white">My Account</span>
@@ -58,7 +58,7 @@ export default function Account() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Sidebar - Desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden sticky top-4">
@@ -108,12 +108,12 @@ export default function Account() {
           </aside>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden mb-4 w-full">
+          <div className="lg:hidden w-full order-first">
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="w-full bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4 flex items-center justify-between"
+              className="w-full bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4 sm:p-5 flex items-center justify-between"
             >
-              <span className="font-medium text-dark-900 dark:text-white">Account Menu</span>
+              <span className="font-medium text-dark-900 dark:text-white">{menuItems.find(item => isActive(item.path, item.exact))?.label || 'Account Menu'}</span>
               <svg
                 className={`w-5 h-5 text-dark-600 dark:text-dark-400 transition-transform ${showMobileMenu ? 'rotate-180' : ''}`}
                 fill="none"
@@ -133,7 +133,7 @@ export default function Account() {
                       key={item.path}
                       to={item.path}
                       onClick={() => setShowMobileMenu(false)}
-                      className={`flex items-center gap-3 px-4 py-3 border-b border-dark-200 dark:border-dark-700 last:border-0 ${
+                      className={`flex items-center gap-3 px-4 py-4 min-h-[52px] border-b border-dark-200 dark:border-dark-700 last:border-0 ${
                         isActive(item.path, item.exact)
                           ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
                           : 'text-dark-600 dark:text-dark-300'
@@ -146,7 +146,7 @@ export default function Account() {
                 })}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 w-full text-left text-red-600 dark:text-red-400"
+                  className="flex items-center gap-3 px-4 py-4 min-h-[52px] w-full text-left text-red-600 dark:text-red-400"
                 >
                   <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   Logout
@@ -156,7 +156,7 @@ export default function Account() {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <Outlet />
           </div>
         </div>

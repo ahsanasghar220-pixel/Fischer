@@ -253,6 +253,7 @@ export default function AdminReports() {
 
           {/* Product Table */}
           <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-dark-50 dark:bg-dark-700 border-b border-dark-200 dark:border-dark-600">
                 <tr>
@@ -281,6 +282,7 @@ export default function AdminReports() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}
@@ -339,6 +341,7 @@ export default function AdminReports() {
 
           {/* Customer Table */}
           <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-dark-50 dark:bg-dark-700 border-b border-dark-200 dark:border-dark-600">
                 <tr>
@@ -356,7 +359,7 @@ export default function AdminReports() {
                         segment.segment === 'VIP' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
                         segment.segment === 'Returning' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                         segment.segment === 'New' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                        'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                        'bg-dark-100 text-dark-700 dark:bg-dark-700 dark:text-dark-400'
                       }`}>
                         {segment.segment}
                       </span>
@@ -370,6 +373,7 @@ export default function AdminReports() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}
