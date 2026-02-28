@@ -144,6 +144,12 @@ const ProductCard = memo(function ProductCard({
       return
     }
 
+    // Variant products need option selection — open quick view instead
+    if (product.has_variants) {
+      onQuickView?.(product)
+      return
+    }
+
     setIsAddingToCart(true)
     try {
       await addItem(product.id)
@@ -162,7 +168,7 @@ const ProductCard = memo(function ProductCard({
     } finally {
       setIsAddingToCart(false)
     }
-  }, [product.id, product.name, product.primary_image, product.price, product.stock_status, addItem])
+  }, [product, onQuickView, addItem])
 
   const handleToggleWishlist = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()

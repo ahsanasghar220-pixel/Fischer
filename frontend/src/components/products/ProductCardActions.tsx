@@ -37,6 +37,8 @@ export default function ProductCardActions({
           ? 'Out of Stock'
           : isAddingToCart
             ? 'Adding...'
+            : product.has_variants
+            ? 'Select Options'
             : 'Add to Cart'
         }
       </button>

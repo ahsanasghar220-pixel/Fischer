@@ -1,4 +1,4 @@
-import { Fragment, memo, useState, useCallback } from 'react'
+import { Fragment, memo, useState, useCallback, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import {
@@ -13,10 +13,13 @@ import {
   ShieldCheckIcon,
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarSolidIcon, HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
+import { useQuery } from '@tanstack/react-query'
 import { useCartStore } from '@/stores/cartStore'
 import { formatPrice, formatDescription } from '@/lib/utils'
 import toast from 'react-hot-toast'
-import type { Product } from '@/types'
+import api from '@/lib/api'
+import ProductConfigurator from '@/pages/product-detail/ProductConfigurator'
+import type { Product, ProductConfigurator as ConfiguratorType, ConfiguratorVariant } from '@/types'
 
 interface QuickViewModalProps {
   isOpen: boolean
@@ -36,25 +39,54 @@ const QuickViewModal = memo(function QuickViewModal({
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
+  const [selectedVariant, setSelectedVariant] = useState<ConfiguratorVariant | null>(null)
   const { addItem } = useCartStore()
+
+  // Reset variant selection when modal opens with a new product
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedVariant(null)
+      setQuantity(1)
+      setSelectedImage(0)
+    }
+  }, [isOpen, product?.id])
+
+  // Fetch configurator data for variant products
+  const { data: configuratorData, isLoading: configuratorLoading } = useQuery({
+    queryKey: ['product-quickview', product?.slug],
+    queryFn: async () => {
+      const res = await api.get(`/api/products/${product!.slug}`)
+      return res.data.data as { product: Product; configurator?: ConfiguratorType | null }
+    },
+    enabled: isOpen && !!product?.slug && !!product?.has_variants,
+    staleTime: 60_000,
+  })
+
+  const configurator = configuratorData?.configurator ?? null
 
   const handleQuantityChange = useCallback((delta: number) => {
     setQuantity((prev) => Math.max(1, Math.min(prev + delta, product?.stock || 99)))
   }, [product?.stock])
 
   const handleAddToCart = useCallback(async () => {
-    if (!product || product.stock_status === 'out_of_stock') return
+    if (!product) return
+    // For variant products, require a variant to be selected
+    if (product.has_variants && !selectedVariant) {
+      toast.error('Please select all options first')
+      return
+    }
+    if (product.stock_status === 'out_of_stock') return
 
     setIsAddingToCart(true)
     try {
-      await addItem(product.id, quantity)
+      await addItem(product.id, quantity, selectedVariant?.id ?? null)
       onClose()
     } catch {
       // Error handled in store
     } finally {
       setIsAddingToCart(false)
     }
-  }, [product, quantity, addItem, onClose])
+  }, [product, quantity, selectedVariant, addItem, onClose])
 
   const handleWishlistClick = useCallback(() => {
     if (onWishlistToggle) {
@@ -76,7 +108,9 @@ const QuickViewModal = memo(function QuickViewModal({
     ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
     : null
 
-  const isOutOfStock = product.stock_status === 'out_of_stock'
+  const isVariantProduct = !!product.has_variants
+  const isOutOfStock = selectedVariant ? selectedVariant.stock === 0 : product.stock_status === 'out_of_stock'
+  const canAddToCart = !isVariantProduct || selectedVariant !== null
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -240,9 +274,12 @@ const QuickViewModal = memo(function QuickViewModal({
                     {/* Price */}
                     <div className="flex items-center gap-3 mb-4">
                       <span className="text-3xl font-black text-primary-600 dark:text-primary-400">
-                        {formatPrice(product.price)}
+                        {isVariantProduct && !selectedVariant && product.variants_min_price && product.variants_max_price && product.variants_min_price !== product.variants_max_price
+                          ? `${formatPrice(product.variants_min_price)} – ${formatPrice(product.variants_max_price)}`
+                          : formatPrice(selectedVariant?.price ?? product.variants_min_price ?? product.price)
+                        }
                       </span>
-                      {product.compare_price && product.compare_price > product.price && (
+                      {!isVariantProduct && product.compare_price && product.compare_price > product.price && (
                         <span className="text-lg text-dark-400 line-through">
                           {formatPrice(product.compare_price)}
                         </span>
@@ -258,21 +295,43 @@ const QuickViewModal = memo(function QuickViewModal({
                       </div>
                     )}
 
+                    {/* Variant Configurator */}
+                    {isVariantProduct && (
+                      <div className="mb-4">
+                        {configuratorLoading ? (
+                          <div className="flex items-center gap-2 py-4">
+                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary-500 border-t-transparent" />
+                            <span className="text-sm text-dark-500 dark:text-dark-400">Loading options...</span>
+                          </div>
+                        ) : configurator ? (
+                          <ProductConfigurator
+                            configurator={configurator}
+                            onVariantSelect={setSelectedVariant}
+                          />
+                        ) : null}
+                      </div>
+                    )}
+
                     {/* Stock Status */}
                     <div className="flex items-center gap-2 mb-6">
                       {isOutOfStock ? (
                         <span className="text-red-500 font-medium">Out of Stock</span>
-                      ) : (
+                      ) : selectedVariant || !isVariantProduct ? (
                         <>
                           <CheckIcon className="w-5 h-5 text-green-500" />
                           <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
-                          {product.stock && product.stock <= 10 && (
+                          {!isVariantProduct && product.stock && product.stock <= 10 && (
                             <span className="text-orange-600 dark:text-orange-400 text-sm">
                               (Only {product.stock} left)
                             </span>
                           )}
+                          {selectedVariant && selectedVariant.stock > 0 && selectedVariant.stock <= 10 && (
+                            <span className="text-orange-600 dark:text-orange-400 text-sm">
+                              (Only {selectedVariant.stock} left)
+                            </span>
+                          )}
                         </>
-                      )}
+                      ) : null}
                     </div>
 
                     {/* Quantity & Add to Cart */}
@@ -301,11 +360,21 @@ const QuickViewModal = memo(function QuickViewModal({
                       {/* Add to Cart Button */}
                       <button
                         onClick={handleAddToCart}
-                        disabled={isOutOfStock || isAddingToCart}
-                        className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 disabled:bg-dark-300 dark:disabled:bg-dark-600 text-white font-semibold text-sm rounded-lg transition-colors"
+                        disabled={isOutOfStock || isAddingToCart || !canAddToCart}
+                        className={`flex-1 flex items-center justify-center gap-2 px-5 py-2.5 text-white font-semibold text-sm rounded-lg transition-colors ${
+                          isOutOfStock || !canAddToCart
+                            ? 'bg-dark-300 dark:bg-dark-600 cursor-not-allowed'
+                            : 'bg-primary-500 hover:bg-primary-600'
+                        }`}
                       >
                         <ShoppingCartIcon className="w-4 h-4" />
-                        {isAddingToCart ? 'Adding...' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                        {isAddingToCart
+                          ? 'Adding...'
+                          : isOutOfStock
+                          ? 'Out of Stock'
+                          : !canAddToCart
+                          ? 'Select Options'
+                          : 'Add to Cart'}
                       </button>
 
                       {/* Wishlist Button */}
