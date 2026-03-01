@@ -26,7 +26,7 @@ export default function AdminBundles() {
   const [typeFilter, setTypeFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
-  const { data, isLoading } = useAdminBundles({
+  const { data, isLoading, isError, error } = useAdminBundles({
     search: search || undefined,
     type: typeFilter as 'fixed' | 'configurable' | undefined,
     is_active: statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined,
@@ -155,7 +155,15 @@ export default function AdminBundles() {
 
       {/* Table */}
       <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm overflow-hidden">
-        {isLoading ? (
+        {isError ? (
+          <div className="p-12 text-center">
+            <p className="text-dark-900 dark:text-white font-semibold mb-1">Failed to load bundles</p>
+            <p className="text-sm text-red-500 dark:text-red-400">
+              {(error as { response?: { data?: { message?: string } } })?.response?.data?.message
+                || (error instanceof Error ? error.message : 'An error occurred')}
+            </p>
+          </div>
+        ) : isLoading ? (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
           </div>
