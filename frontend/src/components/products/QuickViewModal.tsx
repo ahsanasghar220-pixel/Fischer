@@ -45,6 +45,12 @@ const QuickViewModal = memo(function QuickViewModal({
   const [addedProduct, setAddedProduct] = useState<{ id: number; name: string; primary_image?: string; price: number; quantity: number } | null>(null)
   const { addItem } = useCartStore()
 
+  // Lock body scroll while modal is open so the page never scrolls behind it
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
   // Reset variant selection when modal opens with a new product
   useEffect(() => {
     if (isOpen) {
@@ -141,7 +147,7 @@ const QuickViewModal = memo(function QuickViewModal({
           <div className="fixed inset-0 bg-dark-900/60 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 overflow-y-auto overscroll-y-contain">
           <div className="flex min-h-full items-end sm:items-center justify-center sm:p-4">
             <Transition.Child
               as={Fragment}
@@ -152,7 +158,7 @@ const QuickViewModal = memo(function QuickViewModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative w-full max-w-4xl transform overflow-hidden rounded-t-3xl sm:rounded-3xl bg-white dark:bg-dark-800 shadow-2xl transition-all max-h-[90vh] overflow-y-auto">
+              <Dialog.Panel className="relative w-full max-w-4xl transform rounded-t-3xl sm:rounded-3xl bg-white dark:bg-dark-800 shadow-2xl transition-all max-h-[90vh] overflow-y-auto overscroll-y-contain">
                 {/* Drag handle indicator on mobile */}
                 <div className="sm:hidden flex justify-center pt-3 pb-1">
                   <div className="w-10 h-1 rounded-full bg-dark-300 dark:bg-dark-600" />

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -57,6 +58,12 @@ export default function FilterSidebar({
   setShowFilters,
   totalCount,
 }: FilterSidebarProps) {
+  // Lock body scroll while mobile drawer is open
+  useEffect(() => {
+    if (showFilters) document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [showFilters])
+
   return (
     <>
       {/* Sidebar Filters - Desktop */}
@@ -200,7 +207,7 @@ export default function FilterSidebar({
         {showFilters && (
           <div className="lg:hidden fixed inset-0 bg-black/50 z-50">
             <motion.div
-              className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-white dark:bg-dark-800 overflow-y-auto flex flex-col"
+              className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-white dark:bg-dark-800 overflow-y-auto overscroll-contain flex flex-col"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -212,7 +219,7 @@ export default function FilterSidebar({
                   <XMarkIcon className="w-6 h-6" />
                 </button>
               </div>
-              <div className="p-4 space-y-6 flex-1 overflow-y-auto">
+              <div className="p-4 space-y-6 flex-1 overflow-y-auto overscroll-contain">
                 {/* Categories */}
                 <div>
                   <h4 className="font-medium text-dark-900 dark:text-white mb-2">Categories</h4>

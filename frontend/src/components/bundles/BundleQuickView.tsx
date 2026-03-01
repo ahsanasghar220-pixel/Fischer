@@ -42,6 +42,12 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
   const calculatePrice = useCalculateBundlePrice()
   const addBundleToCart = useAddBundleToCart()
 
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
   // Reset state when bundle changes
   useEffect(() => {
     if (bundle) {
@@ -252,7 +258,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
+        <div className="fixed inset-0 overflow-y-auto overscroll-y-contain">
           <div className="flex min-h-full items-center justify-center p-4">
             <Transition.Child
               as={Fragment}
@@ -347,7 +353,7 @@ export default function BundleQuickView({ bundle, isOpen, onClose }: BundleQuick
                   </div>
 
                   {/* Right - Details */}
-                  <div className="p-6 max-h-[600px] overflow-y-auto">
+                  <div className="p-6 max-h-[600px] overflow-y-auto overscroll-contain">
                     {/* Type Badge */}
                     <span className={`inline-block px-2 py-1 text-xs font-semibold uppercase tracking-wider rounded ${
                       bundle.bundle_type === 'fixed'
