@@ -103,9 +103,9 @@ jobs:
               set ftp:ssl-force yes;
               set ftp:ssl-protect-data yes;
               set ssl:verify-certificate no;
-              set net:max-retries 5;
-              set net:timeout 120;
-              set net:reconnect-interval 15;
+              set net:max-retries 3;
+              set net:timeout 60;
+              set net:reconnect-interval-base 10;
               set net:reconnect-interval-multiplier 1;
               open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }};
               mirror --reverse --verbose --only-newer --no-perms --parallel=2 --exclude-glob .git* --exclude-glob .env --exclude-glob node_modules/ ./deploy/ ${{ secrets.FTP_SERVER_DIR }};
@@ -114,8 +114,8 @@ jobs:
               break
             fi
             if [ $attempt -lt 3 ]; then
-              echo "Attempt $attempt failed — retrying in 30s..."
-              sleep 30
+              echo "Attempt $attempt failed — retrying in 15s..."
+              sleep 15
             else
               echo "All 3 FTP attempts failed"
               exit 1
