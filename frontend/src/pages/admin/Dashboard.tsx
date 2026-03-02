@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CurrencyDollarIcon,
@@ -101,6 +102,23 @@ export default function AdminDashboard() {
       return response.data.data
     },
   })
+
+  const [b2bStats, setB2bStats] = useState<any>(null)
+  const [complaintStats, setComplaintStats] = useState<{ open: number; assigned: number; in_progress: number; resolved: number; closed: number } | null>(null)
+
+  useEffect(() => {
+    api.get('/api/production/dashboard')
+      .then(r => setB2bStats(r.data?.data?.kpis ?? null))
+      .catch(() => {})
+    api.get('/api/complaints', { params: { page: 1, per_page: 1 } })
+      .then(() => {
+        // Fetch counts for each status in parallel
+        const statuses = ['open', 'assigned', 'in_progress', 'resolved', 'closed'] as const
+        Promise.all(statuses.map(s => api.get('/api/complaints', { params: { status: s, page: 1 } }).then(r => ({ [s]: r.data?.data?.total ?? r.data?.meta?.total ?? 0 })).catch(() => ({ [s]: 0 }))))
+          .then(results => setComplaintStats(Object.assign({}, ...results)))
+      })
+      .catch(() => {})
+  }, [])
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] })
@@ -430,6 +448,69 @@ export default function AdminDashboard() {
               <CheckCircleIcon className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-dark-600 dark:text-dark-400">All products are well-stocked</p>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── B2B & Complaints Summary Widget ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-semibold text-dark-900 dark:text-white">B2B Orders</h3>
+            <Link to="/admin/production" className="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">View All →</Link>
+          </div>
+          {b2bStats ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-2xl font-black text-dark-900 dark:text-white">{b2bStats.pending_orders ?? 0}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Pending Orders</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-dark-900 dark:text-white">{b2bStats.units_to_manufacture ?? 0}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Units to Manufacture</p>
+              </div>
+              <div>
+                <p className={`text-2xl font-black ${(b2bStats.skus_with_shortage ?? 0) > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                  {b2bStats.skus_with_shortage ?? 0}
+                </p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">SKUs with Shortage</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-dark-900 dark:text-white">{b2bStats.delivered_today ?? 0}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Delivered Today</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-dark-400 dark:text-dark-500">No production data available</div>
+          )}
+        </div>
+
+        <div className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-semibold text-dark-900 dark:text-white">Complaints</h3>
+            <Link to="/admin/complaints" className="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">View All →</Link>
+          </div>
+          {complaintStats ? (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-2xl font-black text-rose-600 dark:text-rose-400">{complaintStats.open}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Open</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-orange-600 dark:text-orange-400">{complaintStats.assigned + complaintStats.in_progress}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">In Progress</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{complaintStats.resolved}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Resolved</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-dark-500 dark:text-dark-400">{complaintStats.closed}</p>
+                <p className="text-xs text-dark-500 dark:text-dark-400">Closed</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-dark-400 dark:text-dark-500">No complaints data available</div>
           )}
         </div>
       </div>

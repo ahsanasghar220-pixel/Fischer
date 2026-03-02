@@ -33,6 +33,10 @@ class RolePermissionSeeder extends Seeder
             'manage-users',
             'view-analytics',
             'view-dashboard',
+            'place-b2b-orders',
+            'file-complaints',
+            'manage-production',
+            'manage-complaints',
         ];
 
         foreach ($permissions as $permission) {
@@ -77,6 +81,18 @@ class RolePermissionSeeder extends Seeder
         // Ensure customer and dealer roles exist
         Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'dealer', 'guard_name' => 'web']);
+
+        // Salesperson role
+        $salesperson = Role::firstOrCreate(['name' => 'salesperson', 'guard_name' => 'web']);
+        $salesperson->syncPermissions(['place-b2b-orders', 'file-complaints']);
+
+        // Production Manager role
+        $productionManager = Role::firstOrCreate(['name' => 'production_manager', 'guard_name' => 'web']);
+        $productionManager->syncPermissions(['manage-production', 'view-dashboard']);
+
+        // Complaints Manager role
+        $complaintsManager = Role::firstOrCreate(['name' => 'complaints_manager', 'guard_name' => 'web']);
+        $complaintsManager->syncPermissions(['manage-complaints', 'view-dashboard']);
 
         // Clear cache again after all changes
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

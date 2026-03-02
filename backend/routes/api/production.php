@@ -1,0 +1,27 @@
+<?php
+
+use App\Http\Controllers\Api\Production\SalesOrderController;
+use App\Http\Controllers\Api\Production\ProductionDashboardController;
+use App\Http\Controllers\Api\Production\ProductionInventoryController;
+use Illuminate\Support\Facades\Route;
+
+// Salesperson routes — can place and view own orders
+Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin|production_manager|complaints_manager'])->group(function () {
+    Route::get('/production/products/search', [SalesOrderController::class, 'searchProducts']);
+});
+
+Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group(function () {
+    Route::get('/production/my-orders', [SalesOrderController::class, 'myOrders']);
+    Route::post('/production/orders', [SalesOrderController::class, 'store']);
+    Route::get('/production/orders/{order}', [SalesOrderController::class, 'show']);
+});
+
+// Production manager routes — view all orders, update status, manage inventory
+Route::middleware(['auth:sanctum', 'role:production_manager|admin|super-admin'])->group(function () {
+    Route::get('/production/dashboard', [ProductionDashboardController::class, 'index']);
+    Route::get('/production/orders', [SalesOrderController::class, 'index']);
+    Route::put('/production/orders/{order}/status', [SalesOrderController::class, 'updateStatus']);
+    Route::get('/production/inventory', [ProductionInventoryController::class, 'index']);
+    Route::post('/production/inventory', [ProductionInventoryController::class, 'store']);
+    Route::put('/production/inventory/{inventory}', [ProductionInventoryController::class, 'update']);
+});

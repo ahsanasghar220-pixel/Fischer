@@ -27,6 +27,11 @@ import {
   MegaphoneIcon,
   PresentationChartLineIcon,
   AdjustmentsHorizontalIcon,
+  BriefcaseIcon,
+  DevicePhoneMobileIcon,
+  ArchiveBoxIcon,
+  ExclamationTriangleIcon,
+  WrenchIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -61,6 +66,31 @@ const menuItems: MenuItem[] = [
     children: [
       { path: '/admin/customers', label: 'All Customers', icon: UsersIcon, permission: 'manage-customers' },
       { path: '/admin/dealers', label: 'Dealers', icon: TruckIcon, permission: 'manage-dealers' },
+    ]
+  },
+  {
+    label: 'B2B Sales',
+    icon: BriefcaseIcon,
+    permission: 'place-b2b-orders',
+    children: [
+      { path: '/admin/sales-portal', label: 'Field Portal', icon: DevicePhoneMobileIcon, permission: 'place-b2b-orders' },
+    ]
+  },
+  {
+    label: 'Production',
+    icon: WrenchIcon,
+    permission: 'manage-production',
+    children: [
+      { path: '/admin/production', label: 'Dashboard', icon: ChartBarIcon, permission: 'manage-production' },
+      { path: '/admin/production/inventory', label: 'Inventory', icon: ArchiveBoxIcon, permission: 'manage-production' },
+    ]
+  },
+  {
+    label: 'Complaints',
+    icon: ExclamationTriangleIcon,
+    permission: 'manage-complaints',
+    children: [
+      { path: '/admin/complaints', label: 'All Complaints', icon: ExclamationTriangleIcon, permission: 'manage-complaints' },
     ]
   },
   {

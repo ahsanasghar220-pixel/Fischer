@@ -12,10 +12,10 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     return <Navigate to="/login" replace />
   }
 
-  const isAdmin = user?.is_admin ||
-    user?.roles?.some(r => ['admin', 'super-admin', 'order-manager', 'content-manager'].includes(r))
+  const canAccessAdmin = user?.is_admin ||
+    user?.roles?.some(r => ['admin', 'super-admin', 'order-manager', 'content-manager', 'salesperson', 'production_manager', 'complaints_manager'].includes(r))
 
-  if (!isAdmin) {
+  if (!canAccessAdmin) {
     return <Navigate to="/" replace />
   }
 

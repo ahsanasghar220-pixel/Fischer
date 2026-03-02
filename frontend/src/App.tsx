@@ -137,6 +137,14 @@ const AdminMarketingIntegrations = lazy(() => import('./pages/admin/marketing/in
 const AdminMarketingAbandonedCarts = lazy(() => import('./pages/admin/marketing/abandoned-carts'))
 const AdminMarketingConversions = lazy(() => import('./pages/admin/marketing/conversions'))
 
+// B2B / Production / Complaints
+const AdminSalesPortal = lazy(() => import('./pages/admin/sales-portal/index'))
+const AdminProduction = lazy(() => import('./pages/admin/production/index'))
+const AdminProductionInventory = lazy(() => import('./pages/admin/production/inventory'))
+const AdminComplaints = lazy(() => import('./pages/admin/complaints/index'))
+const AdminComplaintDetail = lazy(() => import('./pages/admin/complaints/ComplaintDetail'))
+const TrackComplaint = lazy(() => import('./pages/track-complaint/index'))
+
 function App() {
   return (
     <ErrorBoundary>
@@ -157,6 +165,7 @@ function App() {
           <Route path="checkout" element={<Checkout />} />
           <Route path="order-success/:orderNumber" element={<OrderSuccess />} />
           <Route path="track-order" element={<TrackOrder />} />
+          <Route path="track-complaint" element={<TrackComplaint />} />
 
           {/* Auth routes */}
           <Route path="login" element={<Login />} />
@@ -228,6 +237,11 @@ function App() {
           <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
           <Route path="marketing/abandoned-carts" element={<AdminMarketingAbandonedCarts />} />
           <Route path="marketing/conversions" element={<AdminMarketingConversions />} />
+          <Route path="sales-portal" element={<AdminSalesPortal />} />
+          <Route path="production" element={<AdminProduction />} />
+          <Route path="production/inventory" element={<AdminProductionInventory />} />
+          <Route path="complaints" element={<AdminComplaints />} />
+          <Route path="complaints/:id" element={<AdminComplaintDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
