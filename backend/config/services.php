@@ -46,6 +46,12 @@ return [
         'sandbox' => env('EASYPAISA_SANDBOX', true),
     ],
 
+    'telr' => [
+        'store_id' => env('TELR_STORE_ID'),
+        'auth_key' => env('TELR_AUTH_KEY'),
+        'sandbox'  => env('TELR_SANDBOX', true),
+    ],
+
     'sms' => [
         'api_key' => env('SMS_API_KEY'),
         'sender_id' => env('SMS_SENDER_ID', 'Fischer'),

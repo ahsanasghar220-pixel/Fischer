@@ -97,9 +97,39 @@ class PaymentService
 
     protected function createCardPayment(Order $order): string
     {
-        // This would integrate with a card payment gateway like Stripe or local gateway
-        // For now, returning a placeholder
-        return url("/checkout/card-payment?order_id={$order->id}");
+        $config = config('services.telr');
+
+        $response = Http::timeout(15)->post('https://secure.telr.com/gateway/order.json', [
+            'ivp_method'  => 'create',
+            'ivp_store'   => $config['store_id'],
+            'ivp_authkey' => $config['auth_key'],
+            'ivp_cart'    => $order->order_number,
+            'ivp_test'    => $config['sandbox'] ? 1 : 0,
+            'ivp_amount'  => number_format($order->total, 2, '.', ''),
+            'ivp_currency'=> 'PKR',
+            'ivp_desc'    => "Fischer Order #{$order->order_number}",
+            'ivp_lang'    => 'en',
+            'return_auth' => url("/api/payments/card/callback/{$order->id}?status=auth"),
+            'return_decl' => url("/api/payments/card/callback/{$order->id}?status=decl"),
+            'return_can'  => url("/api/payments/card/callback/{$order->id}?status=can"),
+            'bill_fname'  => $order->shipping_first_name ?? '',
+            'bill_lname'  => $order->shipping_last_name  ?? '',
+            'bill_email'  => $order->shipping_email       ?? '',
+            'bill_phone'  => $order->shipping_phone       ?? '',
+            'bill_addr1'  => $order->shipping_address_line_1 ?? '',
+            'bill_city'   => $order->shipping_city        ?? '',
+            'bill_country'=> 'PK',
+        ]);
+
+        $paymentUrl = $response->json('order.url');
+
+        if ($response->failed() || !$paymentUrl) {
+            throw new \RuntimeException(
+                'Telr payment initiation failed: ' . $response->body()
+            );
+        }
+
+        return $paymentUrl;
     }
 
     public function handleCallback(string $method, array $data, Order $order): array
@@ -107,6 +137,7 @@ class PaymentService
         return match ($method) {
             'jazzcash' => $this->handleJazzCashCallback($data, $order),
             'easypaisa' => $this->handleEasypaisaCallback($data, $order),
+            'card'      => $this->handleTelrCallback($data, $order),
             default => ['success' => false, 'message' => 'Unknown payment method'],
         };
     }
@@ -162,6 +193,52 @@ class PaymentService
         return [
             'success' => false,
             'message' => $data['desc'] ?? 'Payment failed',
+        ];
+    }
+
+    protected function handleTelrCallback(array $data, Order $order): array
+    {
+        $status = $data['status'] ?? '';
+
+        // Only 'auth' means a successful redirect from Telr
+        if ($status !== 'auth') {
+            return [
+                'success' => false,
+                'message' => $status === 'can' ? 'Payment was cancelled.' : 'Payment was declined.',
+            ];
+        }
+
+        // Server-side verification — never trust the redirect URL alone
+        $config = config('services.telr');
+        $response = Http::timeout(15)->post('https://secure.telr.com/gateway/order.json', [
+            'ivp_method'  => 'check',
+            'ivp_store'   => $config['store_id'],
+            'ivp_authkey' => $config['auth_key'],
+            'ivp_cart'    => $order->order_number,
+        ]);
+
+        // Telr status code 3 = Authorised / Paid
+        $statusCode = (string) $response->json('order.status.code');
+
+        if ($statusCode === '3') {
+            $order->markAsPaid($response->json('order.ref'));
+            $order->updateStatus('confirmed', 'Payment received via Credit/Debit Card (Telr)');
+
+            if ($order->user_id && $order->loyalty_points_earned > 0) {
+                $order->user->addLoyaltyPoints(
+                    $order->loyalty_points_earned,
+                    "Earned from order #{$order->order_number}",
+                    Order::class,
+                    $order->id
+                );
+            }
+
+            return ['success' => true, 'message' => 'Card payment successful.'];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Payment verification failed. Please contact support.',
         ];
     }
 

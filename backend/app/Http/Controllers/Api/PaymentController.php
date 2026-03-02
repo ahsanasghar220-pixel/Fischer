@@ -49,6 +49,21 @@ class PaymentController extends Controller
         return redirect("{$frontendUrl}/order-failed/{$order->order_number}?error=" . urlencode($result['message']));
     }
 
+    public function telrCallback(Request $request, $orderId)
+    {
+        $order = Order::findOrFail($orderId);
+
+        $result = $this->paymentService->handleCallback('card', $request->all(), $order);
+
+        $frontendUrl = config('app.frontend_url', config('app.url'));
+
+        if ($result['success']) {
+            return redirect("{$frontendUrl}/order-success/{$order->order_number}");
+        }
+
+        return redirect("{$frontendUrl}/order-failed/{$order->order_number}?error=" . urlencode($result['message']));
+    }
+
     public function verifyBankTransfer(Request $request, Order $order)
     {
         $this->authorize('update', $order);
