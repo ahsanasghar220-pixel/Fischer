@@ -60,9 +60,11 @@ class PaymentSettingsSeeder extends Seeder
             ['key' => 'payment.easypaisa_enabled', 'value' => 'false', 'group' => 'payment'],
             ['key' => 'payment.easypaisa_sandbox',  'value' => 'true',  'group' => 'payment'],
 
-            // Card (Checkout.com) — disabled until keys are set
-            ['key' => 'payment.card_enabled',      'value' => 'false', 'group' => 'payment'],
-            ['key' => 'payment.checkout_sandbox',  'value' => 'true',  'group' => 'payment'],
+            // Card (Checkout.com) — keys come from .env (patch-production-env.py runs before seeder)
+            ['key' => 'payment.card_enabled',          'value' => 'false',                              'group' => 'payment'],
+            ['key' => 'payment.checkout_sandbox',      'value' => 'true',                               'group' => 'payment'],
+            ['key' => 'payment.checkout_public_key',   'value' => env('CHECKOUT_PUBLIC_KEY', ''),       'group' => 'payment'],
+            ['key' => 'payment.checkout_secret_key',   'value' => env('CHECKOUT_SECRET_KEY', ''),       'group' => 'payment'],
         ];
 
         foreach ($defaults as $item) {

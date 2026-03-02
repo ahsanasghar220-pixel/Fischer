@@ -122,10 +122,33 @@ jobs:
             fi
           done
 
-      # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────
+      # ─── Patch production .env settings via SSH ────────────────────────────────
+      # Runs BEFORE deploy-tasks so that env() is populated when seeders run.
+      # Reads the live .env, replaces MAIL_* and CHECKOUT_* keys, writes it back.
+      - name: Patch production .env settings
+        env:
+          SSH_HOST:            ${{ secrets.SSH_HOST }}
+          SSH_PORT:            "65002"
+          SSH_USER:            ${{ secrets.SSH_USERNAME }}
+          SSH_PASS:            ${{ secrets.SSH_PASSWORD }}
+          SERVER_ENV_PATH:     ${{ secrets.SERVER_ENV_PATH }}
+          MAIL_MAILER:         "smtp"
+          MAIL_HOST:           ${{ secrets.MAIL_HOST }}
+          MAIL_PORT:           ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME:       ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD:       ${{ secrets.MAIL_PASSWORD }}
+          MAIL_ENCRYPTION:     ${{ secrets.MAIL_ENCRYPTION }}
+          MAIL_FROM_ADDRESS:   ${{ secrets.MAIL_FROM_ADDRESS }}
+          CHECKOUT_PUBLIC_KEY: "pk_sbox_dfprv2nosgcw4nw3iwd7fvu2gi4"
+          CHECKOUT_SECRET_KEY: "633C70ADFEDF1C399905C35A1F40A778"
+          CHECKOUT_SANDBOX:    "true"
+        run: |
+          pip install paramiko -q
+          python3 scripts/patch-production-env.py
+
+      # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────────
+      # Runs AFTER the .env patch so seeders can read env() values (e.g. checkout keys).
       # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
-      # This is why it works — previous webhook failed because FTP-Deploy-Action
-      # never actually uploaded the PHP file due to .in.* rename failures.
       - name: Run post-deployment tasks
         run: |
           echo "Running migrations, seeders, and cache rebuild..."
@@ -152,32 +175,6 @@ jobs:
             echo "WARNING: Post-deploy tasks reported failure — check output above"
             exit 1
           fi
-
-      # ─── Patch production .env mail settings via SSH ───────────────────────────
-      # Reads the live .env, replaces MAIL_* keys, writes it back.
-      # Only runs when MAIL_HOST secret is set — safe to skip if not configured.
-      # Required new GitHub secrets: MAIL_HOST, MAIL_PORT, MAIL_USERNAME,
-      #   MAIL_PASSWORD, MAIL_ENCRYPTION, MAIL_FROM_ADDRESS, SERVER_ENV_PATH
-      - name: Patch production .env settings
-        env:
-          SSH_HOST:            ${{ secrets.SSH_HOST }}
-          SSH_PORT:            "65002"
-          SSH_USER:            ${{ secrets.SSH_USERNAME }}
-          SSH_PASS:            ${{ secrets.SSH_PASSWORD }}
-          SERVER_ENV_PATH:     ${{ secrets.SERVER_ENV_PATH }}
-          MAIL_MAILER:         "smtp"
-          MAIL_HOST:           ${{ secrets.MAIL_HOST }}
-          MAIL_PORT:           ${{ secrets.MAIL_PORT }}
-          MAIL_USERNAME:       ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD:       ${{ secrets.MAIL_PASSWORD }}
-          MAIL_ENCRYPTION:     ${{ secrets.MAIL_ENCRYPTION }}
-          MAIL_FROM_ADDRESS:   ${{ secrets.MAIL_FROM_ADDRESS }}
-          CHECKOUT_PUBLIC_KEY: "pk_sbox_dfprv2nosgcw4nw3iwd7fvu2gi4"
-          CHECKOUT_SECRET_KEY: "633C70ADFEDF1C399905C35A1F40A778"
-          CHECKOUT_SANDBOX:    "true"
-        run: |
-          pip install paramiko -q
-          python3 scripts/patch-production-env.py
 
       - name: Notify on success
         if: success()
