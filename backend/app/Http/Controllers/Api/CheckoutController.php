@@ -209,7 +209,7 @@ class CheckoutController extends Controller
                 }
             );
 
-            // Defer notification emails until after the HTTP response is sent
+            // Defer notification emails until after the HTTP response is sent,
             // so the user gets an instant response without waiting for SMTP.
             defer(fn () => $this->orderService->sendOrderNotifications($order, $user));
 
