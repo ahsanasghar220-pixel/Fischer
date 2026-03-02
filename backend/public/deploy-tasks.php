@@ -61,6 +61,7 @@ try {
         'ShippingMethodSeeder',
         'RolePermissionSeeder',
         'PortfolioVideoSeeder',
+        'PaymentSettingsSeeder',
     ];
 
     foreach ($seeders as $seeder) {
