@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   PhotoIcon,
   GlobeAltIcon,
@@ -35,7 +35,12 @@ const tabs = [
 ]
 
 export default function AdminSettings() {
-  const [activeTab, setActiveTab] = useState('general')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const VALID_TABS = tabs.map(t => t.id)
+  const tabParam = searchParams.get('tab')
+  const activeTab = VALID_TABS.includes(tabParam || '') ? tabParam! : 'general'
+  const setActiveTab = (tab: string) =>
+    setSearchParams(prev => { const n = new URLSearchParams(prev); n.set('tab', tab); return n }, { replace: true })
 
   const {
     isLoading,

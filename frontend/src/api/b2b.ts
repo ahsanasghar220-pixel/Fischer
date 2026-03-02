@@ -31,6 +31,7 @@ export async function getAllOrders(params?: {
   date_from?: string
   date_to?: string
   page?: number
+  per_page?: number
 }): Promise<PaginatedB2bOrders> {
   const response = await api.get('/api/production/orders', { params })
   return response.data.data

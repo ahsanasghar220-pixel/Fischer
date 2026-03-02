@@ -49,13 +49,22 @@ class PaymentController extends Controller
         return redirect("{$frontendUrl}/order-failed/{$order->order_number}?error=" . urlencode($result['message']));
     }
 
-    public function checkoutComCallback(Request $request, $orderId)
+    public function cardCallback(Request $request)
     {
-        $order = Order::findOrFail($orderId);
+        $frontendUrl = config('app.frontend_url', config('app.url'));
+
+        // Paymob sends merchant_order_id (= our order_number) in the GET params
+        $orderNumber = $request->query('merchant_order_id');
+        if (!$orderNumber) {
+            return redirect("{$frontendUrl}/order-failed?error=" . urlencode('Invalid payment callback. Order reference missing.'));
+        }
+
+        $order = Order::where('order_number', $orderNumber)->first();
+        if (!$order) {
+            return redirect("{$frontendUrl}/order-failed?error=" . urlencode('Order not found.'));
+        }
 
         $result = $this->paymentService->handleCallback('card', $request->all(), $order);
-
-        $frontendUrl = config('app.frontend_url', config('app.url'));
 
         if ($result['success']) {
             return redirect("{$frontendUrl}/order-success/{$order->order_number}");

@@ -421,11 +421,11 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
         </InfoBox>
       </PaymentMethodCard>
 
-      {/* ── 4. Credit/Debit Card (Checkout.com) ── */}
+      {/* ── 4. Credit/Debit Card (Paymob Pakistan) ── */}
       <PaymentMethodCard
         icon={<span className="text-2xl">💳</span>}
         name="Credit / Debit Card"
-        description="Visa, Mastercard and more via Checkout.com"
+        description="Visa, Mastercard and more via Paymob Pakistan"
         enabled={paymentSettings.card_enabled}
         onToggle={(v) => set('card_enabled', v)}
         accentColor="purple"
@@ -434,58 +434,98 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
         <div>
           <SectionLabel>Mode</SectionLabel>
           <ModeToggle
-            sandbox={paymentSettings.checkout_sandbox}
-            onChange={(v) => set('checkout_sandbox', v)}
+            sandbox={paymentSettings.paymob_sandbox}
+            onChange={(v) => set('paymob_sandbox', v)}
           />
+          <p className="text-xs text-dark-400 dark:text-dark-500 mt-2">
+            Test mode uses your Paymob test integration. Switch to Live when you are ready to accept real payments.
+          </p>
         </div>
 
-        {/* API Keys */}
+        {/* Credentials */}
         <div>
-          <SectionLabel>API Keys</SectionLabel>
+          <SectionLabel>Credentials</SectionLabel>
           <div className="space-y-4">
             <div>
-              <FieldLabel required>Public Key</FieldLabel>
-              <input
-                type="text"
-                value={paymentSettings.checkout_public_key}
-                onChange={(e) => set('checkout_public_key', e.target.value)}
-                placeholder={paymentSettings.checkout_sandbox ? 'pk_sbox_...' : 'pk_live_...'}
-                className={fieldClassMono}
-                autoComplete="off"
-              />
-              <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
-                This key is safe to include in your frontend code.
-              </p>
-            </div>
-            <div>
-              <FieldLabel required>Secret Key</FieldLabel>
+              <FieldLabel required>API Key</FieldLabel>
               <input
                 type="password"
-                value={paymentSettings.checkout_secret_key}
-                onChange={(e) => set('checkout_secret_key', e.target.value)}
-                placeholder={paymentSettings.checkout_sandbox ? 'sk_sbox_...' : 'sk_live_...'}
+                value={paymentSettings.paymob_api_key}
+                onChange={(e) => set('paymob_api_key', e.target.value)}
+                placeholder="Your Paymob API Key"
                 className={fieldClassMono}
                 autoComplete="new-password"
               />
+              <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
+                Found in Paymob Dashboard → Settings → Account Info → API Key.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <FieldLabel required>Integration ID</FieldLabel>
+                <input
+                  type="text"
+                  value={paymentSettings.paymob_integration_id}
+                  onChange={(e) => set('paymob_integration_id', e.target.value)}
+                  placeholder="e.g. 123456"
+                  className={fieldClassMono}
+                  autoComplete="off"
+                />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
+                  Found in Paymob Dashboard → Integrations → Card Payment → Integration ID.
+                </p>
+              </div>
+              <div>
+                <FieldLabel required>iFrame ID</FieldLabel>
+                <input
+                  type="text"
+                  value={paymentSettings.paymob_iframe_id}
+                  onChange={(e) => set('paymob_iframe_id', e.target.value)}
+                  placeholder="e.g. 78901"
+                  className={fieldClassMono}
+                  autoComplete="off"
+                />
+                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
+                  Found in Paymob Dashboard → Integrations → iFrames → iFrame ID.
+                </p>
+              </div>
+            </div>
+            <div>
+              <FieldLabel required>HMAC Secret</FieldLabel>
+              <input
+                type="password"
+                value={paymentSettings.paymob_hmac_secret}
+                onChange={(e) => set('paymob_hmac_secret', e.target.value)}
+                placeholder="Your Paymob HMAC Secret"
+                className={fieldClassMono}
+                autoComplete="new-password"
+              />
+              <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
+                Found in Paymob Dashboard → Settings → Account Info → HMAC Secret. Used to verify payment callbacks.
+              </p>
             </div>
           </div>
         </div>
 
         <WarningBox>
-          <strong>Security Notice:</strong> Never expose your Secret Key in client-side code or version control. It must only be used server-side.
+          <strong>Callback URL to configure in Paymob Dashboard:</strong>{' '}
+          Set both the <em>Processed Callback URL</em> and <em>Response URL</em> in your Paymob integration to:{' '}
+          <code className="text-xs bg-amber-100 dark:bg-amber-900/30 px-1 rounded">
+            {window.location.origin.replace(':5173', '').replace('localhost', '').trim() || 'https://yoursite.com'}/api/payments/card/callback
+          </code>
         </WarningBox>
 
         <InfoBox>
-          <strong>Setup Guide:</strong> Get your API keys from the{' '}
+          <strong>Setup Guide:</strong> Register at{' '}
           <a
-            href="https://dashboard.checkout.com/developers/keys"
+            href="https://pakistan.paymob.com/portal2/en/register"
             target="_blank"
             rel="noopener noreferrer"
             className="underline font-semibold hover:text-blue-900 dark:hover:text-blue-200 transition-colors"
           >
-            Checkout.com Dashboard
+            Paymob Pakistan
           </a>
-          . Use sandbox keys during development and testing.
+          , complete KYC (2-3 days), then create a Card payment integration to get your Integration ID and iFrame ID.
         </InfoBox>
       </PaymentMethodCard>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import NewOrderForm from './NewOrderForm'
 import MyOrders from './MyOrders'
 import NewComplaintForm from './NewComplaintForm'
@@ -20,7 +20,11 @@ const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
 ]
 
 export default function SalesPortal() {
-  const [activeTab, setActiveTab] = useState<TabId>('new_order')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const VALID_TABS: TabId[] = ['new_order', 'my_orders', 'new_complaint', 'my_complaints']
+  const tabParam = searchParams.get('tab') as TabId | null
+  const activeTab: TabId = (tabParam && VALID_TABS.includes(tabParam)) ? tabParam : 'new_order'
+  const setActiveTab = (tab: TabId) => setSearchParams({ tab }, { replace: true })
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">

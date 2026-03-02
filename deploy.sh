@@ -154,6 +154,10 @@ if [ -d "backend" ]; then
     echo "Correcting water cooler product data..."
     php artisan db:seed --class=ProductCorrectionSeeder --force
 
+    # Seed payment settings defaults (safe - firstOrCreate, never overwrites admin-configured values)
+    echo "Seeding payment settings..."
+    php artisan db:seed --class=PaymentSettingsSeeder --force
+
     # Clear permission cache so Spatie picks up fresh data
     php artisan cache:clear
 

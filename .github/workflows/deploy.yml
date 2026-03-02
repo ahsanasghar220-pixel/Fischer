@@ -123,8 +123,8 @@ jobs:
           done
 
       # ─── Patch production .env settings via SSH ────────────────────────────────
-      # Runs BEFORE deploy-tasks so that env() is populated when seeders run.
-      # Reads the live .env, replaces MAIL_* and CHECKOUT_* keys, writes it back.
+      # Reads the live .env, replaces MAIL_* keys, writes it back.
+      # Note: Paymob credentials are stored in the DB via Admin → Settings → Payment.
       - name: Patch production .env settings
         env:
           SSH_HOST:            ${{ secrets.SSH_HOST }}
@@ -139,15 +139,12 @@ jobs:
           MAIL_PASSWORD:       ${{ secrets.MAIL_PASSWORD }}
           MAIL_ENCRYPTION:     ${{ secrets.MAIL_ENCRYPTION }}
           MAIL_FROM_ADDRESS:   ${{ secrets.MAIL_FROM_ADDRESS }}
-          CHECKOUT_PUBLIC_KEY: "pk_sbox_dfprv2nosgcw4nw3iwd7fvu2gi4"
-          CHECKOUT_SECRET_KEY: "633C70ADFEDF1C399905C35A1F40A778"
-          CHECKOUT_SANDBOX:    "true"
         run: |
           pip install paramiko -q
           python3 scripts/patch-production-env.py
 
       # ─── Post-deploy: migrate, seed, cache ─────────────────────────────────────
-      # Runs AFTER the .env patch so seeders can read env() values (e.g. checkout keys).
+      # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
       # Hits deploy-tasks.php directly (standalone PHP, no Laravel routing).
       - name: Run post-deployment tasks
         run: |

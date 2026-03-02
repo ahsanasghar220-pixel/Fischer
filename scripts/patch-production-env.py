@@ -57,16 +57,13 @@ def main():
         "MAIL_PASSWORD":        os.environ.get("MAIL_PASSWORD", ""),
         "MAIL_ENCRYPTION":      os.environ.get("MAIL_ENCRYPTION", ""),
         "MAIL_FROM_ADDRESS":    os.environ.get("MAIL_FROM_ADDRESS", ""),
-        # Checkout.com payment gateway
-        "CHECKOUT_PUBLIC_KEY":  os.environ.get("CHECKOUT_PUBLIC_KEY", ""),
-        "CHECKOUT_SECRET_KEY":  os.environ.get("CHECKOUT_SECRET_KEY", ""),
-        "CHECKOUT_SANDBOX":     os.environ.get("CHECKOUT_SANDBOX", ""),
+        # Note: Paymob credentials are stored in the DB via Admin → Settings → Payment
+        # and do NOT need to be in .env
     }
 
-    # Skip entirely if neither mail nor payment credentials are provided
+    # Skip entirely if no mail credentials are provided
     has_mail = any([updates["MAIL_HOST"], updates["MAIL_USERNAME"]])
-    has_checkout = any([updates["CHECKOUT_PUBLIC_KEY"], updates["CHECKOUT_SECRET_KEY"]])
-    if not has_mail and not has_checkout:
+    if not has_mail:
         print("No credentials to patch — skipping .env patch.")
         return
 

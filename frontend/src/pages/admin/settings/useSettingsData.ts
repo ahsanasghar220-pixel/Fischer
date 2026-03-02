@@ -30,9 +30,11 @@ export interface PaymentSettings {
   easypaisa_hash_key: string
   easypaisa_return_url: string
   card_enabled: boolean
-  checkout_sandbox: boolean
-  checkout_public_key: string
-  checkout_secret_key: string
+  paymob_sandbox: boolean
+  paymob_api_key: string
+  paymob_integration_id: string
+  paymob_iframe_id: string
+  paymob_hmac_secret: string
   bank_transfer_enabled: boolean
   bank_name: string
   bank_branch: string
@@ -134,9 +136,11 @@ export function useSettingsData() {
     easypaisa_hash_key: '',
     easypaisa_return_url: '',
     card_enabled: false,
-    checkout_sandbox: true,
-    checkout_public_key: '',
-    checkout_secret_key: '',
+    paymob_sandbox: true,
+    paymob_api_key: '',
+    paymob_integration_id: '',
+    paymob_iframe_id: '',
+    paymob_hmac_secret: '',
     bank_transfer_enabled: true,
     bank_name: '',
     bank_branch: '',

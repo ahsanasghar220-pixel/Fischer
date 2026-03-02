@@ -60,11 +60,13 @@ class PaymentSettingsSeeder extends Seeder
             ['key' => 'payment.easypaisa_enabled', 'value' => 'false', 'group' => 'payment'],
             ['key' => 'payment.easypaisa_sandbox',  'value' => 'true',  'group' => 'payment'],
 
-            // Card (Checkout.com) — keys come from .env (patch-production-env.py runs before seeder)
-            ['key' => 'payment.card_enabled',          'value' => 'false',                              'group' => 'payment'],
-            ['key' => 'payment.checkout_sandbox',      'value' => 'true',                               'group' => 'payment'],
-            ['key' => 'payment.checkout_public_key',   'value' => env('CHECKOUT_PUBLIC_KEY', ''),       'group' => 'payment'],
-            ['key' => 'payment.checkout_secret_key',   'value' => env('CHECKOUT_SECRET_KEY', ''),       'group' => 'payment'],
+            // Card (Paymob Pakistan) — keys are entered via Admin → Settings → Payment
+            ['key' => 'payment.card_enabled',            'value' => 'false', 'group' => 'payment'],
+            ['key' => 'payment.paymob_sandbox',          'value' => 'true',  'group' => 'payment'],
+            ['key' => 'payment.paymob_api_key',          'value' => '',      'group' => 'payment'],
+            ['key' => 'payment.paymob_integration_id',   'value' => '',      'group' => 'payment'],
+            ['key' => 'payment.paymob_iframe_id',        'value' => '',      'group' => 'payment'],
+            ['key' => 'payment.paymob_hmac_secret',      'value' => '',      'group' => 'payment'],
         ];
 
         foreach ($defaults as $item) {

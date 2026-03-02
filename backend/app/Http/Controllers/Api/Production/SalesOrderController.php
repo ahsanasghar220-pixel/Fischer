@@ -74,7 +74,8 @@ class SalesOrderController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $orders = $query->paginate(20);
+        $perPage = min((int) $request->get('per_page', 20), 5000);
+        $orders = $query->paginate($perPage);
 
         // Append salesperson name to each order
         $orders->getCollection()->transform(function ($order) {

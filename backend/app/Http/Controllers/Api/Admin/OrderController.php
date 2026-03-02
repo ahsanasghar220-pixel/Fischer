@@ -19,7 +19,7 @@ class OrderController extends Controller
             $paymentStatus = $request->get('payment_status');
             $from = $request->get('from');
             $to = $request->get('to');
-            $perPage = 15;
+            $perPage = min((int) $request->get('per_page', 15), 5000);
 
             // Build raw query for maximum performance
             $query = DB::table('orders')
