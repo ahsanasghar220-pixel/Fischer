@@ -6,6 +6,7 @@ import type {
   ProductionDashboard,
   ProductionInventoryItem,
   ProductSearchResult,
+  ProductVariantData,
 } from '@/types/b2b'
 
 export interface PaginatedB2bOrders {
@@ -80,5 +81,15 @@ export async function updateInventoryEntry(
 
 export async function searchProducts(q: string): Promise<ProductSearchResult[]> {
   const response = await api.get('/production/products/search', { params: { q } })
+  return Array.isArray(response.data.data) ? response.data.data : []
+}
+
+export async function browseProducts(params?: { q?: string; category?: string }): Promise<ProductSearchResult[]> {
+  const response = await api.get('/production/products', { params })
+  return Array.isArray(response.data.data) ? response.data.data : []
+}
+
+export async function getProductVariants(productId: number): Promise<ProductVariantData> {
+  const response = await api.get(`/production/products/${productId}/variants`)
   return response.data.data
 }

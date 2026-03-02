@@ -1,13 +1,12 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { createComplaint, uploadComplaintAttachment } from '@/api/complaints'
-import { searchProducts } from '@/api/b2b'
 import type {
   ComplainantType,
   ComplaintCategory,
   PurchaseChannel,
   CreateComplaintPayload,
 } from '@/types/complaints'
-import type { ProductSearchResult } from '@/types/b2b'
+import ProductPickerModal, { type PickedProduct } from './ProductPickerModal'
 
 const PAKISTAN_CITIES = [
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
@@ -94,12 +93,11 @@ export default function NewComplaintForm() {
   const [onlineOrderRef, setOnlineOrderRef] = useState('')
 
   // Step 3: Product info
-  const [productSearchQuery, setProductSearchQuery] = useState('')
-  const [productSearchResults, setProductSearchResults] = useState<ProductSearchResult[]>([])
-  const [isProductSearching, setIsProductSearching] = useState(false)
-  const [showProductDropdown, setShowProductDropdown] = useState(false)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
   const [selectedProductName, setSelectedProductName] = useState('')
+  const [selectedProductImage, setSelectedProductImage] = useState<string | null>(null)
+  const [selectedProductSku, setSelectedProductSku] = useState('')
   const [useManualProduct, setUseManualProduct] = useState(false)
   const [manualSku, setManualSku] = useState('')
   const [manualProductName, setManualProductName] = useState('')
@@ -119,53 +117,19 @@ export default function NewComplaintForm() {
   const [successInfo, setSuccessInfo] = useState<{ number: string } | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
 
-  const searchDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const productDropdownRef = useRef<HTMLDivElement | null>(null)
-
-  // Close product dropdown on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (productDropdownRef.current && !productDropdownRef.current.contains(e.target as Node)) {
-        setShowProductDropdown(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+  const handlePickerSelect = useCallback((picked: PickedProduct) => {
+    setSelectedProductId(picked.product.id)
+    setSelectedProductName(picked.displayName)
+    setSelectedProductImage(picked.product.image_url)
+    setSelectedProductSku(picked.sku)
+    setPickerOpen(false)
   }, [])
 
-  const handleProductSearch = useCallback((value: string) => {
-    setProductSearchQuery(value)
+  const handleClearProduct = useCallback(() => {
     setSelectedProductId(null)
     setSelectedProductName('')
-    setShowProductDropdown(value.length >= 2)
-
-    if (searchDebounceTimer.current) clearTimeout(searchDebounceTimer.current)
-
-    if (value.length < 2) {
-      setProductSearchResults([])
-      setIsProductSearching(false)
-      return
-    }
-
-    setIsProductSearching(true)
-    searchDebounceTimer.current = setTimeout(async () => {
-      try {
-        const results = await searchProducts(value)
-        setProductSearchResults(results)
-        setIsProductSearching(false)
-        setShowProductDropdown(true)
-      } catch {
-        setIsProductSearching(false)
-      }
-    }, 300)
-  }, [])
-
-  const handleSelectProduct = useCallback((product: ProductSearchResult) => {
-    setSelectedProductId(product.id)
-    setSelectedProductName(product.name)
-    setProductSearchQuery(product.name)
-    setShowProductDropdown(false)
-    setProductSearchResults([])
+    setSelectedProductImage(null)
+    setSelectedProductSku('')
   }, [])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,10 +149,10 @@ export default function NewComplaintForm() {
     setComplainantPhone('')
     setComplainantCity('')
     setOnlineOrderRef('')
-    setProductSearchQuery('')
-    setProductSearchResults([])
     setSelectedProductId(null)
     setSelectedProductName('')
+    setSelectedProductImage(null)
+    setSelectedProductSku('')
     setUseManualProduct(false)
     setManualSku('')
     setManualProductName('')
@@ -276,6 +240,7 @@ export default function NewComplaintForm() {
     purchaseChannel === 'dealer' || purchaseChannel === 'retailer'
 
   return (
+    <>
     <div className="space-y-5 max-w-2xl mx-auto">
       {/* Success */}
       {successInfo && (
@@ -413,7 +378,7 @@ export default function NewComplaintForm() {
 
       {/* Step 3 — Product Info */}
       <SectionCard title="Product Information">
-        {/* Toggle: search vs manual */}
+        {/* Toggle: browse vs manual */}
         <div className="flex gap-2">
           <button
             onClick={() => {
@@ -428,14 +393,15 @@ export default function NewComplaintForm() {
                 : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700',
             ].join(' ')}
           >
-            Search Product
+            Browse Products
           </button>
           <button
             onClick={() => {
               setUseManualProduct(true)
               setSelectedProductId(null)
               setSelectedProductName('')
-              setProductSearchQuery('')
+              setSelectedProductImage(null)
+              setSelectedProductSku('')
             }}
             className={[
               'flex-1 py-2 rounded-lg text-sm font-medium border transition-colors',
@@ -449,61 +415,67 @@ export default function NewComplaintForm() {
         </div>
 
         {!useManualProduct && (
-          <div ref={productDropdownRef} className="relative">
-            <label className={LABEL_CLS}>Search Product</label>
-            <input
-              type="text"
-              value={productSearchQuery}
-              onChange={(e) => handleProductSearch(e.target.value)}
-              placeholder="Search by name or SKU..."
-              className={INPUT_CLS}
-            />
-            {showProductDropdown && (
-              <div className="absolute z-20 left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg overflow-hidden max-h-48 overflow-y-auto">
-                {isProductSearching && (
-                  <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                    Searching...
-                  </div>
-                )}
-                {!isProductSearching && productSearchResults.length === 0 && (
-                  <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                    No products found
-                  </div>
-                )}
-                {!isProductSearching &&
-                  productSearchResults.map((product) => (
-                    <button
-                      key={product.id}
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        handleSelectProduct(product)
-                      }}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-0"
-                    >
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {product.name}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        SKU: {product.sku}
-                      </div>
-                    </button>
-                  ))}
+          <div>
+            {selectedProductId ? (
+              /* Selected product card */
+              <div className="flex items-center gap-3 bg-white dark:bg-gray-700 border border-blue-200 dark:border-blue-600 rounded-xl p-3">
+                <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-600">
+                  {selectedProductImage ? (
+                    <img src={selectedProductImage} alt={selectedProductName} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-5 h-5 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2">
+                    {selectedProductName}
+                  </p>
+                  {selectedProductSku && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">SKU: {selectedProductSku}</p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1 flex-shrink-0">
+                  <button
+                    onClick={() => setPickerOpen(true)}
+                    className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Change
+                  </button>
+                  <button
+                    onClick={handleClearProduct}
+                    className="text-xs font-medium text-red-500 dark:text-red-400 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-            )}
-            {selectedProductId && (
-              <div className="mt-2 flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2">
-                <svg
-                  className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            ) : (
+              /* Browse button */
+              <button
+                onClick={() => setPickerOpen(true)}
+                className="w-full flex items-center gap-3 p-3.5 bg-white dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 flex-shrink-0">
+                  <svg className="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+                    Browse Products
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                    Browse catalog with images &amp; variants
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">
-                  {selectedProductName}
-                </p>
-              </div>
+              </button>
             )}
           </div>
         )}
@@ -718,5 +690,14 @@ export default function NewComplaintForm() {
         {submitting ? 'Submitting Complaint...' : 'Submit Complaint'}
       </button>
     </div>
+
+    {/* Product Picker Modal */}
+    <ProductPickerModal
+      isOpen={pickerOpen}
+      onClose={() => setPickerOpen(false)}
+      onSelect={handlePickerSelect}
+      title="Select Product"
+    />
+    </>
   )
 }

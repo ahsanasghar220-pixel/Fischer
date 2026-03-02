@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { createOrder, searchProducts } from '@/api/b2b'
-import type { BrandName, NewOrderItem, ProductSearchResult } from '@/types/b2b'
+import { useState, useCallback } from 'react'
+import { createOrder } from '@/api/b2b'
+import type { BrandName, NewOrderItem } from '@/types/b2b'
+import ProductPickerModal, { type PickedProduct } from './ProductPickerModal'
 
 const PAKISTAN_CITIES = [
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
@@ -15,12 +16,11 @@ interface OrderItemDraft {
   product_id: number | null
   sku: string
   product_name: string
+  image_url: string | null
+  category_name: string | null
+  unit_price: string | number | null
   quantity: number
   notes: string
-  searchQuery: string
-  searchResults: ProductSearchResult[]
-  isSearching: boolean
-  showDropdown: boolean
 }
 
 function makeEmptyItem(): OrderItemDraft {
@@ -29,12 +29,11 @@ function makeEmptyItem(): OrderItemDraft {
     product_id: null,
     sku: '',
     product_name: '',
+    image_url: null,
+    category_name: null,
+    unit_price: null,
     quantity: 1,
     notes: '',
-    searchQuery: '',
-    searchResults: [],
-    isSearching: false,
-    showDropdown: false,
   }
 }
 
@@ -43,6 +42,13 @@ const INPUT_CLS =
 const LABEL_CLS = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
 const CARD_CLS =
   'bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm'
+
+function formatPrice(price: string | number | null | undefined): string {
+  if (price == null || price === '') return ''
+  const num = typeof price === 'string' ? parseFloat(price) : price
+  if (isNaN(num)) return ''
+  return `Rs. ${num.toLocaleString()}`
+}
 
 export default function NewOrderForm() {
   const [dealerName, setDealerName] = useState('')
@@ -54,84 +60,48 @@ export default function NewOrderForm() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
-  const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({})
-
-  // Close dropdowns on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      setItems((prev) =>
-        prev.map((item) => {
-          const ref = dropdownRefs.current[item.id]
-          if (ref && !ref.contains(e.target as Node)) {
-            return { ...item, showDropdown: false }
-          }
-          return item
-        }),
-      )
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
+  // Product picker modal state
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [activeItemId, setActiveItemId] = useState<string | null>(null)
 
   const updateItem = useCallback((id: string, patch: Partial<OrderItemDraft>) => {
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)))
   }, [])
 
-  const handleSearchChange = useCallback(
-    (id: string, value: string) => {
-      updateItem(id, {
-        searchQuery: value,
-        product_id: null,
-        sku: '',
-        product_name: '',
-        showDropdown: value.length >= 2,
+  const handleOpenPicker = useCallback((itemId: string) => {
+    setActiveItemId(itemId)
+    setPickerOpen(true)
+  }, [])
+
+  const handlePickerSelect = useCallback(
+    (picked: PickedProduct) => {
+      if (!activeItemId) return
+      updateItem(activeItemId, {
+        product_id: picked.product.id,
+        sku: picked.sku,
+        product_name: picked.displayName,
+        image_url: picked.product.image_url,
+        category_name: picked.product.category_name,
+        unit_price: picked.price,
       })
-
-      if (debounceTimers.current[id]) clearTimeout(debounceTimers.current[id])
-
-      if (value.length < 2) {
-        updateItem(id, { searchResults: [], isSearching: false })
-        return
-      }
-
-      updateItem(id, { isSearching: true })
-      debounceTimers.current[id] = setTimeout(async () => {
-        try {
-          const results = await searchProducts(value)
-          updateItem(id, { searchResults: results, isSearching: false, showDropdown: true })
-        } catch {
-          updateItem(id, { isSearching: false })
-        }
-      }, 300)
+      setPickerOpen(false)
+      setActiveItemId(null)
     },
-    [updateItem],
+    [activeItemId, updateItem],
   )
 
-  const handleSelectProduct = useCallback(
-    (id: string, product: ProductSearchResult) => {
-      updateItem(id, {
-        product_id: product.id,
-        sku: product.sku,
-        product_name: product.name,
-        searchQuery: product.name,
-        showDropdown: false,
-        searchResults: [],
-      })
-    },
-    [updateItem],
-  )
+  const handlePickerClose = useCallback(() => {
+    setPickerOpen(false)
+    setActiveItemId(null)
+  }, [])
 
-  const handleQuantityChange = useCallback(
-    (id: string, delta: number) => {
-      setItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item,
-        ),
-      )
-    },
-    [],
-  )
+  const handleQuantityChange = useCallback((id: string, delta: number) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item,
+      ),
+    )
+  }, [])
 
   const handleRemoveItem = useCallback((id: string) => {
     setItems((prev) => (prev.length > 1 ? prev.filter((item) => item.id !== id) : prev))
@@ -139,6 +109,16 @@ export default function NewOrderForm() {
 
   const handleAddItem = useCallback(() => {
     setItems((prev) => [...prev, makeEmptyItem()])
+  }, [])
+
+  const handleClearProduct = useCallback((id: string) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, product_id: null, sku: '', product_name: '', image_url: null, category_name: null, unit_price: null }
+          : item,
+      ),
+    )
   }, [])
 
   const handleSubmit = async () => {
@@ -158,13 +138,6 @@ export default function NewOrderForm() {
     if (validItems.length === 0) {
       setErrorMessage('Please add at least one product.')
       return
-    }
-
-    for (const item of validItems) {
-      if (!item.product_name.trim()) {
-        setErrorMessage('Each product must have a name.')
-        return
-      }
     }
 
     setSubmitting(true)
@@ -202,237 +175,245 @@ export default function NewOrderForm() {
   }
 
   return (
-    <div className="space-y-5 max-w-2xl mx-auto">
-      {/* Success Banner */}
-      {successMessage && (
-        <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4">
-          <p className="text-green-800 dark:text-green-200 font-semibold text-base">
-            {successMessage}
-          </p>
-          <p className="text-green-700 dark:text-green-300 text-sm mt-1">
-            The order has been submitted for production.
-          </p>
+    <>
+      <div className="space-y-5 max-w-2xl mx-auto">
+        {/* Success Banner */}
+        {successMessage && (
+          <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4">
+            <p className="text-green-800 dark:text-green-200 font-semibold text-base">
+              {successMessage}
+            </p>
+            <p className="text-green-700 dark:text-green-300 text-sm mt-1">
+              The order has been submitted for production.
+            </p>
+          </div>
+        )}
+
+        {/* Error Banner */}
+        {errorMessage && (
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4">
+            <p className="text-red-800 dark:text-red-200 text-sm">{errorMessage}</p>
+          </div>
+        )}
+
+        {/* Dealer Info Card */}
+        <div className={`${CARD_CLS} p-4 space-y-4`}>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Dealer Information</h2>
+
+          <div>
+            <label className={LABEL_CLS}>Dealer Name *</label>
+            <input
+              type="text"
+              value={dealerName}
+              onChange={(e) => setDealerName(e.target.value)}
+              placeholder="Enter dealer name"
+              className={INPUT_CLS}
+            />
+          </div>
+
+          <div>
+            <label className={LABEL_CLS}>City *</label>
+            <select value={city} onChange={(e) => setCity(e.target.value)} className={INPUT_CLS}>
+              <option value="">Select city</option>
+              {PAKISTAN_CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={LABEL_CLS}>Brand</label>
+            <select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value as BrandName)}
+              className={INPUT_CLS}
+            >
+              <option value="Fischer">Fischer</option>
+              <option value="OEM">OEM</option>
+              <option value="ODM">ODM</option>
+            </select>
+          </div>
         </div>
-      )}
 
-      {/* Error Banner */}
-      {errorMessage && (
-        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4">
-          <p className="text-red-800 dark:text-red-200 text-sm">{errorMessage}</p>
-        </div>
-      )}
+        {/* Products Card */}
+        <div className={`${CARD_CLS} p-4 space-y-4`}>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h2>
 
-      {/* Dealer Info Card */}
-      <div className={`${CARD_CLS} p-4 space-y-4`}>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Dealer Information</h2>
+          {items.map((item, index) => (
+            <div
+              key={item.id}
+              className="border border-gray-200 dark:border-gray-600 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-900"
+            >
+              {/* Item header */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Item {index + 1}
+                </span>
+                {items.length > 1 && (
+                  <button
+                    onClick={() => handleRemoveItem(item.id)}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    aria-label="Remove item"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
 
-        <div>
-          <label className={LABEL_CLS}>Dealer Name *</label>
-          <input
-            type="text"
-            value={dealerName}
-            onChange={(e) => setDealerName(e.target.value)}
-            placeholder="Enter dealer name"
-            className={INPUT_CLS}
-          />
-        </div>
-
-        <div>
-          <label className={LABEL_CLS}>City *</label>
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className={INPUT_CLS}
-          >
-            <option value="">Select city</option>
-            {PAKISTAN_CITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className={LABEL_CLS}>Brand</label>
-          <select
-            value={brand}
-            onChange={(e) => setBrand(e.target.value as BrandName)}
-            className={INPUT_CLS}
-          >
-            <option value="Fischer">Fischer</option>
-            <option value="OEM">OEM</option>
-            <option value="ODM">ODM</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Products Card */}
-      <div className={`${CARD_CLS} p-4 space-y-4`}>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h2>
-
-        {items.map((item, index) => (
-          <div
-            key={item.id}
-            className="border border-gray-200 dark:border-gray-600 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-900"
-          >
-            {/* Item header */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Item {index + 1}
-              </span>
-              {items.length > 1 && (
+              {/* Product selection */}
+              {item.product_id ? (
+                /* Selected product card */
+                <div className="flex items-center gap-3 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700 rounded-xl p-3">
+                  {/* Thumbnail */}
+                  <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-700">
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.product_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg className="w-6 h-6 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    {item.category_name && (
+                      <p className="text-xs font-medium text-blue-600 dark:text-blue-400 truncate">
+                        {item.category_name}
+                      </p>
+                    )}
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2">
+                      {item.product_name}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">SKU: {item.sku}</p>
+                    {item.unit_price && (
+                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-0.5">
+                        {formatPrice(item.unit_price)}
+                      </p>
+                    )}
+                  </div>
+                  {/* Change button */}
+                  <div className="flex flex-col gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => handleOpenPicker(item.id)}
+                      className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Change
+                    </button>
+                    <button
+                      onClick={() => handleClearProduct(item.id)}
+                      className="text-xs font-medium text-red-500 dark:text-red-400 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Pick product button */
                 <button
-                  onClick={() => handleRemoveItem(item.id)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                  aria-label="Remove item"
+                  onClick={() => handleOpenPicker(item.id)}
+                  className="w-full flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 flex-shrink-0">
+                    <svg className="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+                      Choose Product
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                      Browse catalog with images &amp; variants
+                    </p>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               )}
-            </div>
 
-            {/* Product Search */}
-            <div
-              ref={(el) => { dropdownRefs.current[item.id] = el }}
-              className="relative"
-            >
-              <label className={LABEL_CLS}>Product *</label>
-              <input
-                type="text"
-                value={item.searchQuery}
-                onChange={(e) => handleSearchChange(item.id, e.target.value)}
-                placeholder="Search by name or SKU..."
-                className={INPUT_CLS}
-              />
-
-              {/* Dropdown */}
-              {item.showDropdown && (
-                <div className="absolute z-20 left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg overflow-hidden max-h-48 overflow-y-auto">
-                  {item.isSearching && (
-                    <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                      Searching...
-                    </div>
-                  )}
-                  {!item.isSearching && item.searchResults.length === 0 && (
-                    <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                      No products found
-                    </div>
-                  )}
-                  {!item.isSearching &&
-                    item.searchResults.map((product) => (
-                      <button
-                        key={product.id}
-                        onMouseDown={(e) => {
-                          e.preventDefault()
-                          handleSelectProduct(item.id, product)
-                        }}
-                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-0"
-                      >
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {product.name}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                          SKU: {product.sku} &bull; Rs.{' '}
-                          {typeof product.price === 'number'
-                            ? product.price.toLocaleString()
-                            : product.price}
-                        </div>
-                      </button>
-                    ))}
-                </div>
-              )}
-            </div>
-
-            {/* Selected product pill */}
-            {item.product_id && (
-              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg px-3 py-2">
-                <svg
-                  className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100 truncate">
-                    {item.product_name}
-                  </p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300">SKU: {item.sku}</p>
+              {/* Quantity Stepper */}
+              <div>
+                <label className={LABEL_CLS}>Quantity</label>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleQuantityChange(item.id, -1)}
+                    className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span className="text-xl font-semibold text-gray-900 dark:text-white w-10 text-center tabular-nums">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => handleQuantityChange(item.id, 1)}
+                    className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            )}
 
-            {/* Quantity Stepper */}
-            <div>
-              <label className={LABEL_CLS}>Quantity</label>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => handleQuantityChange(item.id, -1)}
-                  className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
-                  aria-label="Decrease quantity"
-                >
-                  -
-                </button>
-                <span className="text-xl font-semibold text-gray-900 dark:text-white w-10 text-center tabular-nums">
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={() => handleQuantityChange(item.id, 1)}
-                  className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
+              {/* Notes */}
+              <div>
+                <label className={LABEL_CLS}>Notes (optional)</label>
+                <input
+                  type="text"
+                  value={item.notes}
+                  onChange={(e) => updateItem(item.id, { notes: e.target.value })}
+                  placeholder="e.g. colour preference, special packing..."
+                  className={INPUT_CLS}
+                />
               </div>
             </div>
+          ))}
 
-            {/* Notes */}
-            <div>
-              <label className={LABEL_CLS}>Notes (optional)</label>
-              <input
-                type="text"
-                value={item.notes}
-                onChange={(e) => updateItem(item.id, { notes: e.target.value })}
-                placeholder="e.g. colour preference, special packing..."
-                className={INPUT_CLS}
-              />
-            </div>
-          </div>
-        ))}
+          {/* Add Another Product */}
+          <button
+            onClick={handleAddItem}
+            className="w-full py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            + Add Another Product
+          </button>
+        </div>
 
-        {/* Add Another Product */}
+        {/* Remarks Card */}
+        <div className={`${CARD_CLS} p-4`}>
+          <label className={LABEL_CLS}>Order Remarks (optional)</label>
+          <textarea
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            rows={3}
+            placeholder="Any additional notes about this order..."
+            className={`${INPUT_CLS} resize-none`}
+          />
+        </div>
+
+        {/* Submit */}
         <button
-          onClick={handleAddItem}
-          className="w-full py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 text-lg font-semibold transition-colors disabled:opacity-50"
         >
-          + Add Another Product
+          {submitting ? 'Submitting Order...' : 'Submit Order'}
         </button>
       </div>
 
-      {/* Remarks Card */}
-      <div className={`${CARD_CLS} p-4`}>
-        <label className={LABEL_CLS}>Order Remarks (optional)</label>
-        <textarea
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          rows={3}
-          placeholder="Any additional notes about this order..."
-          className={`${INPUT_CLS} resize-none`}
-        />
-      </div>
-
-      {/* Submit */}
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 text-lg font-semibold transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Submitting Order...' : 'Submit Order'}
-      </button>
-    </div>
+      {/* Product Picker Modal */}
+      <ProductPickerModal
+        isOpen={pickerOpen}
+        onClose={handlePickerClose}
+        onSelect={handlePickerSelect}
+        title="Choose Product"
+      />
+    </>
   )
 }

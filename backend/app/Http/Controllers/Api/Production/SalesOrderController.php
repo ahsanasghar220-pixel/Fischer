@@ -176,16 +176,129 @@ class SalesOrderController extends Controller
             return response()->json(['data' => []]);
         }
 
-        $products = Product::where('is_active', true)
+        $products = Product::with(['images' => fn($q) => $q->where('is_primary', true)->orderBy('sort_order'), 'category'])
+            ->where('is_active', true)
             ->where(function ($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%")
                       ->orWhere('sku', 'like', "%{$q}%")
                       ->orWhere('model_number', 'like', "%{$q}%");
             })
-            ->select('id', 'sku', 'name', 'price', 'dealer_price', 'stock_quantity', 'stock_status')
             ->limit(20)
             ->get();
 
-        return response()->json(['data' => $products]);
+        return response()->json([
+            'data' => $products->map(fn($p) => [
+                'id'            => $p->id,
+                'sku'           => $p->sku,
+                'slug'          => $p->slug,
+                'name'          => $p->name,
+                'price'         => $p->price,
+                'dealer_price'  => $p->dealer_price,
+                'has_variants'  => (bool) $p->has_variants,
+                'stock_status'  => $p->stock_status,
+                'category_name' => $p->category?->name,
+                'category_slug' => $p->category?->slug,
+                'image_url'     => $p->images->first()?->image,
+            ]),
+        ]);
+    }
+
+    /**
+     * GET /api/production/products
+     * Browse all active products — returns catalog for the product picker UI.
+     */
+    public function browseProducts(Request $request): JsonResponse
+    {
+        $query = Product::with([
+            'images' => fn($q) => $q->where('is_primary', true)->orderBy('sort_order'),
+            'category',
+        ])->where('is_active', true)->orderBy('name');
+
+        if ($request->filled('q')) {
+            $term = $request->q;
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                  ->orWhere('sku', 'like', "%{$term}%")
+                  ->orWhere('model_number', 'like', "%{$term}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
+        }
+
+        $products = $query->get();
+
+        return response()->json([
+            'data' => $products->map(fn($p) => [
+                'id'            => $p->id,
+                'sku'           => $p->sku,
+                'slug'          => $p->slug,
+                'name'          => $p->name,
+                'price'         => $p->price,
+                'dealer_price'  => $p->dealer_price,
+                'has_variants'  => (bool) $p->has_variants,
+                'stock_status'  => $p->stock_status,
+                'category_name' => $p->category?->name,
+                'category_slug' => $p->category?->slug,
+                'image_url'     => $p->images->first()?->image,
+            ]),
+        ]);
+    }
+
+    /**
+     * GET /api/production/products/{product}/variants
+     * Returns attribute dimensions + variants for the product picker variant selector.
+     */
+    public function getProductVariants(Product $product): JsonResponse
+    {
+        if (! $product->is_active) {
+            abort(404);
+        }
+
+        $variants = $product->variants()
+            ->where('is_active', true)
+            ->with(['attributeValues.attribute'])
+            ->orderBy('sku')
+            ->get();
+
+        // Build attribute dimension map (name → unique values)
+        $attributeMap = [];
+        foreach ($variants as $variant) {
+            foreach ($variant->attributeValues as $av) {
+                $attrName = $av->attribute?->name ?? 'Option';
+                if (! isset($attributeMap[$attrName])) {
+                    $attributeMap[$attrName] = [];
+                }
+                if (! in_array($av->value, $attributeMap[$attrName])) {
+                    $attributeMap[$attrName][] = $av->value;
+                }
+            }
+        }
+
+        $attributes = array_map(
+            fn($name, $values) => ['name' => $name, 'values' => $values],
+            array_keys($attributeMap),
+            array_values($attributeMap),
+        );
+
+        $variantList = $variants->map(fn($v) => [
+            'id'               => $v->id,
+            'sku'              => $v->sku,
+            'name'             => $v->name,
+            'price'            => $v->price,
+            'dealer_price'     => $v->dealer_price,
+            'attribute_values' => $v->attributeValues->map(fn($av) => [
+                'attribute' => $av->attribute?->name,
+                'value'     => $av->value,
+            ])->values(),
+        ]);
+
+        return response()->json([
+            'data' => [
+                'attributes' => array_values($attributes),
+                'variants'   => $variantList,
+            ],
+        ]);
     }
 }

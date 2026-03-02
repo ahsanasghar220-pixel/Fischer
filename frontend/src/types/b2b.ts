@@ -64,8 +64,29 @@ export interface ProductionInventoryItem {
 export interface ProductSearchResult {
   id: number
   sku: string
+  slug: string
   name: string
   price: string | number
+  dealer_price: string | number | null
+  has_variants: boolean
+  stock_status: string
+  category_name: string | null
+  category_slug: string | null
+  image_url: string | null
+}
+
+export interface ProductVariantOption {
+  id: number
+  sku: string
+  name: string | null
+  price: string | number | null
+  dealer_price: string | number | null
+  attribute_values: Array<{ attribute: string; value: string }>
+}
+
+export interface ProductVariantData {
+  attributes: Array<{ name: string; values: string[] }>
+  variants: ProductVariantOption[]
 }
 
 export interface NewOrderItem {

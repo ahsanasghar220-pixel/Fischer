@@ -5,9 +5,11 @@ use App\Http\Controllers\Api\Production\ProductionDashboardController;
 use App\Http\Controllers\Api\Production\ProductionInventoryController;
 use Illuminate\Support\Facades\Route;
 
-// Salesperson routes — can place and view own orders
+// Product catalog routes — accessible to all portal roles
 Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin|production_manager|complaints_manager'])->group(function () {
     Route::get('/production/products/search', [SalesOrderController::class, 'searchProducts']);
+    Route::get('/production/products', [SalesOrderController::class, 'browseProducts']);
+    Route::get('/production/products/{product}/variants', [SalesOrderController::class, 'getProductVariants']);
 });
 
 Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group(function () {
