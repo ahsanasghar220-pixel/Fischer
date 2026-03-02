@@ -18,7 +18,7 @@ export interface PaginatedB2bOrders {
 }
 
 export async function getMyOrders(page = 1): Promise<PaginatedB2bOrders> {
-  const response = await api.get('/production/my-orders', { params: { page } })
+  const response = await api.get('/api/production/my-orders', { params: { page } })
   return response.data.data
 }
 
@@ -28,17 +28,17 @@ export async function getAllOrders(params?: {
   salesperson_id?: number
   page?: number
 }): Promise<PaginatedB2bOrders> {
-  const response = await api.get('/production/orders', { params })
+  const response = await api.get('/api/production/orders', { params })
   return response.data.data
 }
 
 export async function getOrder(id: number): Promise<B2bOrder> {
-  const response = await api.get(`/production/orders/${id}`)
+  const response = await api.get(`/api/production/orders/${id}`)
   return response.data.data
 }
 
 export async function createOrder(payload: CreateB2bOrderPayload): Promise<B2bOrder> {
-  const response = await api.post('/production/orders', payload)
+  const response = await api.post('/api/production/orders', payload)
   return response.data.data
 }
 
@@ -46,24 +46,24 @@ export async function updateOrderStatus(
   id: number,
   payload: UpdateOrderStatusPayload,
 ): Promise<B2bOrder> {
-  const response = await api.put(`/production/orders/${id}/status`, payload)
+  const response = await api.put(`/api/production/orders/${id}/status`, payload)
   return response.data.data
 }
 
 export async function getProductionDashboard(): Promise<ProductionDashboard> {
-  const response = await api.get('/production/dashboard')
+  const response = await api.get('/api/production/dashboard')
   return response.data.data
 }
 
 export async function getProductionInventory(): Promise<ProductionInventoryItem[]> {
-  const response = await api.get('/production/inventory')
+  const response = await api.get('/api/production/inventory')
   return response.data.data
 }
 
 export async function createInventoryEntry(
   data: Partial<ProductionInventoryItem>,
 ): Promise<ProductionInventoryItem> {
-  const response = await api.post('/production/inventory', data)
+  const response = await api.post('/api/production/inventory', data)
   return response.data.data
 }
 
@@ -75,21 +75,21 @@ export async function updateInventoryEntry(
     product_name?: string
   },
 ): Promise<ProductionInventoryItem> {
-  const response = await api.put(`/production/inventory/${id}`, data)
+  const response = await api.put(`/api/production/inventory/${id}`, data)
   return response.data.data
 }
 
 export async function searchProducts(q: string): Promise<ProductSearchResult[]> {
-  const response = await api.get('/production/products/search', { params: { q } })
+  const response = await api.get('/api/production/products/search', { params: { q } })
   return Array.isArray(response.data.data) ? response.data.data : []
 }
 
 export async function browseProducts(params?: { q?: string; category?: string }): Promise<ProductSearchResult[]> {
-  const response = await api.get('/production/products', { params })
+  const response = await api.get('/api/production/products', { params })
   return Array.isArray(response.data.data) ? response.data.data : []
 }
 
 export async function getProductVariants(productId: number): Promise<ProductVariantData> {
-  const response = await api.get(`/production/products/${productId}/variants`)
+  const response = await api.get(`/api/production/products/${productId}/variants`)
   return response.data.data
 }
