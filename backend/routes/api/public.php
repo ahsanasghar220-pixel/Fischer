@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public settings — used by frontend for dynamic theming
 Route::get('/settings/brand-color', [AdminSettingController::class, 'brandColor']);
+Route::get('/settings/payment', [AdminSettingController::class, 'getPublicPaymentSettings']);
 
 // Home page data
 Route::get('/home', [HomeController::class, 'index']);

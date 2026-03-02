@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { CreditCardIcon, TruckIcon, ArrowUpTrayIcon, CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { formatPrice } from '@/lib/utils'
@@ -129,6 +129,28 @@ export default function PaymentStep({
   const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Payment methods and bank details loaded from API, with hardcoded fallback
+  const [paymentMethods, setPaymentMethods] = useState(PAYMENT_METHODS)
+  const [bankDetails, setBankDetails] = useState<{
+    bank_name: string
+    bank_branch: string
+    account_title: string
+    account_number: string
+    iban: string
+  } | null>(null)
+
+  useEffect(() => {
+    api.get('/api/public/payment-settings')
+      .then(res => {
+        const data = res.data?.data
+        if (Array.isArray(data?.methods) && data.methods.length > 0) {
+          setPaymentMethods(data.methods)
+        }
+        if (data?.bank_details) setBankDetails(data.bank_details)
+      })
+      .catch(() => { /* keep hardcoded fallback */ })
+  }, [])
+
   const handleReceiptChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -182,7 +204,7 @@ export default function PaymentStep({
       </h2>
 
       <div className="space-y-3">
-        {PAYMENT_METHODS.map((method) => (
+        {paymentMethods.map((method) => (
           <div
             key={method.id}
             onClick={() => onPaymentSelect(method.id)}
@@ -211,28 +233,41 @@ export default function PaymentStep({
             Bank Transfer Details
           </h3>
 
-          {/* Bank details */}
+          {/* Bank details - dynamic from settings */}
           <div className="bg-white dark:bg-dark-700 rounded-lg p-4 space-y-2 text-sm">
-            <div className="flex justify-between gap-2">
-              <span className="text-dark-500 dark:text-dark-400 shrink-0">Bank</span>
-              <span className="font-medium text-dark-900 dark:text-white text-right">Meezan Bank — The Premier Islamic Bank</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-dark-500 dark:text-dark-400 shrink-0">Branch</span>
-              <span className="font-medium text-dark-900 dark:text-white text-right">(0292) Haider Road Township Branch, Lahore</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-dark-500 dark:text-dark-400 shrink-0">Account Name</span>
-              <span className="font-medium text-dark-900 dark:text-white text-right">Fatima Engineering Works</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-dark-500 dark:text-dark-400 shrink-0">Account No.</span>
-              <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">0292-0103728472</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-dark-500 dark:text-dark-400 shrink-0">IBAN</span>
-              <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">PK22 MEZN 0002 9201 0372 8472</span>
-            </div>
+            {bankDetails?.bank_name && (
+              <div className="flex justify-between gap-2">
+                <span className="text-dark-500 dark:text-dark-400 shrink-0">Bank</span>
+                <span className="font-medium text-dark-900 dark:text-white text-right">{bankDetails.bank_name}</span>
+              </div>
+            )}
+            {bankDetails?.bank_branch && (
+              <div className="flex justify-between gap-2">
+                <span className="text-dark-500 dark:text-dark-400 shrink-0">Branch</span>
+                <span className="font-medium text-dark-900 dark:text-white text-right">{bankDetails.bank_branch}</span>
+              </div>
+            )}
+            {bankDetails?.account_title && (
+              <div className="flex justify-between gap-2">
+                <span className="text-dark-500 dark:text-dark-400 shrink-0">Account Name</span>
+                <span className="font-medium text-dark-900 dark:text-white text-right">{bankDetails.account_title}</span>
+              </div>
+            )}
+            {bankDetails?.account_number && (
+              <div className="flex justify-between gap-2">
+                <span className="text-dark-500 dark:text-dark-400 shrink-0">Account No.</span>
+                <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">{bankDetails.account_number}</span>
+              </div>
+            )}
+            {bankDetails?.iban && (
+              <div className="flex justify-between gap-2">
+                <span className="text-dark-500 dark:text-dark-400 shrink-0">IBAN</span>
+                <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">{bankDetails.iban}</span>
+              </div>
+            )}
+            {!bankDetails && (
+              <p className="text-dark-500 dark:text-dark-400 text-center py-2">Loading bank details...</p>
+            )}
           </div>
 
           <p className="text-xs text-dark-500 dark:text-dark-400">

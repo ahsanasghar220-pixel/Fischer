@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 
 class PaymentService
@@ -19,7 +20,11 @@ class PaymentService
 
     protected function createJazzCashPayment(Order $order): string
     {
-        $config = config('services.jazzcash');
+        // Read from DB settings, fall back to env config
+        $merchantId    = Setting::get('payment.jazzcash_merchant_id') ?: config('services.jazzcash.merchant_id');
+        $password      = Setting::get('payment.jazzcash_password') ?: config('services.jazzcash.password');
+        $integritySalt = Setting::get('payment.jazzcash_integrity_salt') ?: config('services.jazzcash.integrity_salt');
+        $sandbox       = (bool) (Setting::get('payment.jazzcash_sandbox') ?? config('services.jazzcash.sandbox', true));
 
         $txnDateTime = now()->format('YmdHis');
         $txnExpiryDateTime = now()->addHours(24)->format('YmdHis');
@@ -28,9 +33,9 @@ class PaymentService
             'pp_Version' => '1.1',
             'pp_TxnType' => 'MWALLET',
             'pp_Language' => 'EN',
-            'pp_MerchantID' => $config['merchant_id'],
+            'pp_MerchantID' => $merchantId,
             'pp_SubMerchantID' => '',
-            'pp_Password' => $config['password'],
+            'pp_Password' => $password,
             'pp_BankID' => '',
             'pp_ProductID' => '',
             'pp_TxnRefNo' => 'T' . $txnDateTime . rand(1000, 9999),
@@ -49,13 +54,12 @@ class PaymentService
         ];
 
         // Generate hash
-        $hashString = $config['integrity_salt'] . '&';
+        $hashString = $integritySalt . '&';
         $sortedData = collect($data)->filter()->sortKeys()->all();
         $hashString .= implode('&', $sortedData);
-        $data['pp_SecureHash'] = hash_hmac('sha256', $hashString, $config['integrity_salt']);
+        $data['pp_SecureHash'] = hash_hmac('sha256', $hashString, $integritySalt);
 
-        // In production, this would redirect to JazzCash
-        if ($config['sandbox']) {
+        if ($sandbox) {
             return 'https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform?' . http_build_query($data);
         }
 
@@ -64,15 +68,16 @@ class PaymentService
 
     protected function createEasypaisaPayment(Order $order): string
     {
-        $config = config('services.easypaisa');
+        // Read from DB settings, fall back to env config
+        $storeId = Setting::get('payment.easypaisa_store_id') ?: config('services.easypaisa.store_id');
+        $hashKey = Setting::get('payment.easypaisa_hash_key') ?: config('services.easypaisa.hash_key');
+        $sandbox = (bool) (Setting::get('payment.easypaisa_sandbox') ?? config('services.easypaisa.sandbox', true));
 
         $orderId = $order->order_number;
         $amount = number_format($order->total, 2, '.', '');
-        $storeId = $config['store_id'];
         $postBackUrl = url("/api/payments/easypaisa/callback?order_id={$order->id}");
 
         // Generate hash
-        $hashKey = $config['hash_key'];
         $hashString = "amount={$amount}&orderRefNum={$orderId}&postBackURL={$postBackUrl}&storeId={$storeId}";
         $hash = hash_hmac('sha256', $hashString, $hashKey);
 
@@ -88,7 +93,7 @@ class PaymentService
             'merchantHashedReq' => $hash,
         ];
 
-        $endpoint = $config['sandbox']
+        $endpoint = $sandbox
             ? 'https://easypay.easypaisa.com.pk/easypay/Index.jsf'
             : 'https://easypay.easypaisa.com.pk/easypay/Index.jsf';
 
@@ -97,16 +102,18 @@ class PaymentService
 
     protected function createCardPayment(Order $order): string
     {
-        $config = config('services.checkout');
+        // Read from DB settings, fall back to env config
+        $secretKey = Setting::get('payment.checkout_secret_key') ?: config('services.checkout.secret_key');
+        $sandbox   = (bool) (Setting::get('payment.checkout_sandbox') ?? config('services.checkout.sandbox', true));
 
-        $baseUrl = $config['sandbox']
+        $baseUrl = $sandbox
             ? 'https://api.sandbox.checkout.com'
             : 'https://api.checkout.com';
 
         $response = Http::timeout(15)
-            ->withToken($config['secret_key'])
+            ->withToken($secretKey)
             ->post("{$baseUrl}/hosted-payments", [
-                'amount'      => intval($order->total * 100), // PKR → paisa
+                'amount'      => intval(round($order->total * 100)),
                 'currency'    => 'PKR',
                 'reference'   => $order->order_number,
                 'description' => "Fischer Order #{$order->order_number}",
@@ -129,8 +136,14 @@ class PaymentService
         $redirectUrl = $response->json('_links.redirect.href');
 
         if ($response->failed() || !$redirectUrl) {
+            $errorBody = $response->body();
+            \Log::error('Checkout.com payment initiation failed', [
+                'status' => $response->status(),
+                'body'   => substr($errorBody, 0, 500),
+                'order'  => $order->order_number,
+            ]);
             throw new \RuntimeException(
-                'Checkout.com payment initiation failed: ' . $response->body()
+                'Checkout.com payment initiation failed (HTTP ' . $response->status() . '). Check that your secret key (sk_sbox_...) is correct in Payment Settings.'
             );
         }
 
@@ -218,13 +231,15 @@ class PaymentService
             return ['success' => false, 'message' => 'Payment verification failed. Missing session.'];
         }
 
-        $config = config('services.checkout');
-        $baseUrl = $config['sandbox']
+        // Read from DB settings, fall back to env config
+        $secretKey = Setting::get('payment.checkout_secret_key') ?: config('services.checkout.secret_key');
+        $sandbox   = (bool) (Setting::get('payment.checkout_sandbox') ?? config('services.checkout.sandbox', true));
+        $baseUrl = $sandbox
             ? 'https://api.sandbox.checkout.com'
             : 'https://api.checkout.com';
 
         $response = Http::timeout(15)
-            ->withToken($config['secret_key'])
+            ->withToken($secretKey)
             ->get("{$baseUrl}/payments/{$sessionId}");
 
         $paymentStatus = $response->json('status');

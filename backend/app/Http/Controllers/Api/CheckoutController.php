@@ -188,6 +188,13 @@ class CheckoutController extends Controller
         $ipAddress = $request->ip();
         $userAgent = $request->userAgent();
 
+        // Check if payment method is enabled
+        $method = $validated['payment_method'];
+        $enabledMethods = $this->getEnabledPaymentMethodIds();
+        if (!in_array($method, $enabledMethods)) {
+            return $this->error('This payment method is not currently available.', 422);
+        }
+
         try {
             // Run all DB writes in a single atomic transaction.
             // sendOrderNotifications is intentionally called AFTER commit so that
@@ -235,11 +242,16 @@ class CheckoutController extends Controller
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->error($e->getMessage(), 422, $e->errors());
+        } catch (\RuntimeException $e) {
+            \Log::error('Payment gateway error: ' . $e->getMessage());
+            return $this->error(
+                'Payment gateway error. Please try a different payment method or contact support.',
+                422
+            );
         } catch (\Exception $e) {
             \Log::error('Order placement failed: ' . $e->getMessage(), [
                 'file'  => $e->getFile(),
                 'line'  => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
             ]);
             return $this->error('Order could not be placed: ' . $e->getMessage(), 500);
         }
@@ -267,10 +279,11 @@ class CheckoutController extends Controller
                     'message' => 'Order received. Payment verification pending.',
                     'instructions' => 'Your transaction ID has been recorded. Admin will verify your payment and confirm your order.',
                     'bank_details' => [
-                        'bank_name' => Setting::get('bank.bank_name', 'HBL - Habib Bank Limited'),
-                        'account_title' => Setting::get('bank.account_title', 'Fischer Pakistan'),
-                        'account_number' => Setting::get('bank.account_number', 'Contact us for details'),
-                        'iban' => Setting::get('bank.iban', ''),
+                        'bank_name'      => Setting::get('payment.bank_name', 'HBL - Habib Bank Limited'),
+                        'bank_branch'    => Setting::get('payment.bank_branch', ''),
+                        'account_title'  => Setting::get('payment.bank_account_title', 'Fischer Pakistan'),
+                        'account_number' => Setting::get('payment.bank_account_number', 'Contact us for details'),
+                        'iban'           => Setting::get('payment.bank_iban', ''),
                     ],
                 ];
 
@@ -290,6 +303,17 @@ class CheckoutController extends Controller
             default:
                 return ['method' => $method, 'message' => 'Unknown payment method'];
         }
+    }
+
+    private function getEnabledPaymentMethodIds(): array
+    {
+        $enabled = [];
+        if ((bool) Setting::get('payment.cod_enabled', true)) $enabled[] = 'cod';
+        if ((bool) Setting::get('payment.bank_transfer_enabled', true)) $enabled[] = 'bank_transfer';
+        if ((bool) Setting::get('payment.jazzcash_enabled', false)) $enabled[] = 'jazzcash';
+        if ((bool) Setting::get('payment.easypaisa_enabled', false)) $enabled[] = 'easypaisa';
+        if ((bool) Setting::get('payment.card_enabled', false)) $enabled[] = 'card';
+        return $enabled;
     }
 
 }

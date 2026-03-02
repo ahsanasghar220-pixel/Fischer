@@ -30,12 +30,12 @@ export interface PaymentSettings {
   easypaisa_hash_key: string
   easypaisa_return_url: string
   card_enabled: boolean
-  stripe_sandbox: boolean
-  stripe_publishable_key: string
-  stripe_secret_key: string
-  stripe_webhook_secret: string
+  checkout_sandbox: boolean
+  checkout_public_key: string
+  checkout_secret_key: string
   bank_transfer_enabled: boolean
   bank_name: string
+  bank_branch: string
   bank_account_title: string
   bank_account_number: string
   bank_iban: string
@@ -134,12 +134,12 @@ export function useSettingsData() {
     easypaisa_hash_key: '',
     easypaisa_return_url: '',
     card_enabled: false,
-    stripe_sandbox: true,
-    stripe_publishable_key: '',
-    stripe_secret_key: '',
-    stripe_webhook_secret: '',
+    checkout_sandbox: true,
+    checkout_public_key: '',
+    checkout_secret_key: '',
     bank_transfer_enabled: true,
     bank_name: '',
+    bank_branch: '',
     bank_account_title: '',
     bank_account_number: '',
     bank_iban: '',

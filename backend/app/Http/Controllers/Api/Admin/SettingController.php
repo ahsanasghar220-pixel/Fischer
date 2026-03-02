@@ -38,25 +38,25 @@ class SettingController extends Controller
                     // JazzCash
                     'jazzcash_enabled' => false,
                     'jazzcash_sandbox' => true,
-                    'jazzcash_merchant_id' => '',
-                    'jazzcash_password' => '',
-                    'jazzcash_integrity_salt' => '',
+                    'jazzcash_merchant_id' => env('JAZZCASH_MERCHANT_ID', ''),
+                    'jazzcash_password' => env('JAZZCASH_PASSWORD', ''),
+                    'jazzcash_integrity_salt' => env('JAZZCASH_INTEGRITY_SALT', ''),
                     'jazzcash_return_url' => '',
                     // EasyPaisa
                     'easypaisa_enabled' => false,
                     'easypaisa_sandbox' => true,
-                    'easypaisa_store_id' => '',
-                    'easypaisa_hash_key' => '',
+                    'easypaisa_store_id' => env('EASYPAISA_STORE_ID', ''),
+                    'easypaisa_hash_key' => env('EASYPAISA_HASH_KEY', env('EASYPAISA_PASSWORD', '')),
                     'easypaisa_return_url' => '',
-                    // Stripe/Card payments
+                    // Credit/Debit Card via Checkout.com
                     'card_enabled' => false,
-                    'stripe_sandbox' => true,
-                    'stripe_publishable_key' => '',
-                    'stripe_secret_key' => '',
-                    'stripe_webhook_secret' => '',
+                    'checkout_sandbox' => env('CHECKOUT_SANDBOX', true),
+                    'checkout_public_key' => env('CHECKOUT_PUBLIC_KEY', ''),
+                    'checkout_secret_key' => env('CHECKOUT_SECRET_KEY', ''),
                     // Bank Transfer
                     'bank_transfer_enabled' => true,
                     'bank_name' => '',
+                    'bank_branch' => '',
                     'bank_account_title' => '',
                     'bank_account_number' => '',
                     'bank_iban' => '',
@@ -195,5 +195,49 @@ class SettingController extends Controller
         });
 
         return response()->json(['brand_color' => $color]);
+    }
+
+    /**
+     * Public endpoint — returns enabled payment methods and bank details.
+     * No auth required. Does NOT expose any API keys or secrets.
+     */
+    public function getPublicPaymentSettings()
+    {
+        $get = fn(string $key, $default = null) => Setting::get($key, $default);
+
+        $methods = [];
+        if (filter_var($get('payment.cod_enabled', true), FILTER_VALIDATE_BOOLEAN)) {
+            $methods[] = ['id' => 'cod', 'name' => 'Cash on Delivery', 'description' => 'Pay cash when your order arrives', 'icon' => '💵'];
+        }
+        if (filter_var($get('payment.jazzcash_enabled', false), FILTER_VALIDATE_BOOLEAN)) {
+            $methods[] = ['id' => 'jazzcash', 'name' => 'JazzCash', 'description' => 'Instant payment via JazzCash mobile wallet', 'icon' => '📱'];
+        }
+        if (filter_var($get('payment.easypaisa_enabled', false), FILTER_VALIDATE_BOOLEAN)) {
+            $methods[] = ['id' => 'easypaisa', 'name' => 'EasyPaisa', 'description' => 'Instant payment via EasyPaisa mobile wallet', 'icon' => '📱'];
+        }
+        if (filter_var($get('payment.bank_transfer_enabled', true), FILTER_VALIDATE_BOOLEAN)) {
+            $methods[] = ['id' => 'bank_transfer', 'name' => 'Bank Transfer', 'description' => 'Transfer to our bank account (Requires verification)', 'icon' => '🏦'];
+        }
+        if (filter_var($get('payment.card_enabled', false), FILTER_VALIDATE_BOOLEAN)) {
+            $methods[] = ['id' => 'card', 'name' => 'Credit/Debit Card', 'description' => 'Pay securely with Visa or Mastercard via Checkout.com', 'icon' => '💳'];
+        }
+
+        $bankDetails = null;
+        if (filter_var($get('payment.bank_transfer_enabled', true), FILTER_VALIDATE_BOOLEAN)) {
+            $bankDetails = [
+                'bank_name'      => $get('payment.bank_name', ''),
+                'bank_branch'    => $get('payment.bank_branch', ''),
+                'account_title'  => $get('payment.bank_account_title', ''),
+                'account_number' => $get('payment.bank_account_number', ''),
+                'iban'           => $get('payment.bank_iban', ''),
+            ];
+        }
+
+        return response()->json([
+            'data' => [
+                'methods'      => $methods,
+                'bank_details' => $bankDetails,
+            ],
+        ]);
     }
 }

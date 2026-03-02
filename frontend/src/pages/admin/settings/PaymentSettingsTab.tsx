@@ -226,7 +226,7 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
         )}
       </div>
 
-      {/* Credit/Debit Cards (Stripe) */}
+      {/* Credit/Debit Card (Checkout.com) */}
       <div className="border border-dark-200 dark:border-dark-600 rounded-xl overflow-hidden">
         <label className="flex items-center justify-between p-4 bg-white dark:bg-dark-700 cursor-pointer">
           <div className="flex items-center gap-3">
@@ -234,8 +234,8 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
               <span className="text-xl">💳</span>
             </div>
             <div>
-              <span className="font-medium text-dark-900 dark:text-white">Credit/Debit Cards</span>
-              <p className="text-sm text-dark-500 dark:text-dark-400">Visa, Mastercard via Stripe</p>
+              <span className="font-medium text-dark-900 dark:text-white">Credit/Debit Card</span>
+              <p className="text-sm text-dark-500 dark:text-dark-400">Visa, Mastercard via Checkout.com</p>
             </div>
           </div>
           <input
@@ -251,24 +251,24 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
               <label className="flex items-center gap-2 text-sm text-dark-700 dark:text-dark-300">
                 <input
                   type="checkbox"
-                  checked={paymentSettings.stripe_sandbox}
-                  onChange={(e) => setPaymentSettings({ ...paymentSettings, stripe_sandbox: e.target.checked })}
+                  checked={paymentSettings.checkout_sandbox}
+                  onChange={(e) => setPaymentSettings({ ...paymentSettings, checkout_sandbox: e.target.checked })}
                   className="w-4 h-4 rounded text-primary-500"
                 />
-                Test Mode
+                Sandbox/Test Mode
               </label>
-              <span className={`px-2 py-1 text-xs rounded-full ${paymentSettings.stripe_sandbox ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
-                {paymentSettings.stripe_sandbox ? 'Test Mode' : 'Live Mode'}
+              <span className={`px-2 py-1 text-xs rounded-full ${paymentSettings.checkout_sandbox ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                {paymentSettings.checkout_sandbox ? 'Test Mode' : 'Live Mode'}
               </span>
             </div>
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Publishable Key *</label>
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Public Key *</label>
                 <input
                   type="text"
-                  value={paymentSettings.stripe_publishable_key}
-                  onChange={(e) => setPaymentSettings({ ...paymentSettings, stripe_publishable_key: e.target.value })}
-                  placeholder={paymentSettings.stripe_sandbox ? "pk_test_..." : "pk_live_..."}
+                  value={paymentSettings.checkout_public_key}
+                  onChange={(e) => setPaymentSettings({ ...paymentSettings, checkout_public_key: e.target.value })}
+                  placeholder={paymentSettings.checkout_sandbox ? "pk_sbox_..." : "pk_live_..."}
                   className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
@@ -276,32 +276,21 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
                 <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Secret Key *</label>
                 <input
                   type="password"
-                  value={paymentSettings.stripe_secret_key}
-                  onChange={(e) => setPaymentSettings({ ...paymentSettings, stripe_secret_key: e.target.value })}
-                  placeholder={paymentSettings.stripe_sandbox ? "sk_test_..." : "sk_live_..."}
+                  value={paymentSettings.checkout_secret_key}
+                  onChange={(e) => setPaymentSettings({ ...paymentSettings, checkout_secret_key: e.target.value })}
+                  placeholder={paymentSettings.checkout_sandbox ? "sk_sbox_..." : "sk_live_..."}
                   className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <p className="text-xs text-dark-500 dark:text-dark-400 mt-1">Never share this key. Keep it secure on server-side only.</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Webhook Secret</label>
-                <input
-                  type="password"
-                  value={paymentSettings.stripe_webhook_secret}
-                  onChange={(e) => setPaymentSettings({ ...paymentSettings, stripe_webhook_secret: e.target.value })}
-                  placeholder="whsec_..."
-                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <p className="text-xs text-dark-500 dark:text-dark-400 mt-1">Required for payment confirmations. Get it from Stripe Dashboard &rarr; Webhooks.</p>
               </div>
             </div>
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <p className="text-sm text-blue-700 dark:text-blue-300">
                 <strong>Setup Guide:</strong> Get your API keys from{' '}
-                <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="underline">
-                  Stripe Dashboard
+                <a href="https://dashboard.checkout.com/developers/keys" target="_blank" rel="noopener noreferrer" className="underline">
+                  Checkout.com Dashboard
                 </a>
-                . Use test keys during development.
+                . Use sandbox keys during development.
               </p>
             </div>
           </div>
@@ -340,6 +329,16 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
                   value={paymentSettings.bank_name}
                   onChange={(e) => setPaymentSettings({ ...paymentSettings, bank_name: e.target.value })}
                   placeholder="HBL, MCB, UBL, etc."
+                  className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Bank Branch</label>
+                <input
+                  type="text"
+                  value={paymentSettings.bank_branch}
+                  onChange={(e) => setPaymentSettings({ ...paymentSettings, bank_branch: e.target.value })}
+                  placeholder="e.g. (0292) Haider Road Township Branch, Lahore"
                   className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
