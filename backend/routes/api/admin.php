@@ -13,13 +13,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
     Route::get('/dashboard', [App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
     Route::get('/analytics', [App\Http\Controllers\Api\Admin\DashboardController::class, 'analytics']);
 
-    // Products
+    // Products (import/export must come BEFORE apiResource to avoid {product} wildcard capturing them)
+    Route::post('/products/import', [App\Http\Controllers\Api\Admin\ProductController::class, 'import']);
+    Route::get('/products/export', [App\Http\Controllers\Api\Admin\ProductController::class, 'export']);
     Route::apiResource('products', App\Http\Controllers\Api\Admin\ProductController::class);
     Route::post('/products/{product}/images', [App\Http\Controllers\Api\Admin\ProductController::class, 'uploadImages']);
     Route::delete('/products/{product}/images/{image}', [App\Http\Controllers\Api\Admin\ProductController::class, 'deleteImage']);
     Route::put('/products/{product}/images/{image}/primary', [App\Http\Controllers\Api\Admin\ProductController::class, 'setPrimaryImage']);
-    Route::post('/products/import', [App\Http\Controllers\Api\Admin\ProductController::class, 'import']);
-    Route::get('/products/export', [App\Http\Controllers\Api\Admin\ProductController::class, 'export']);
 
     // Product Variants
     Route::post('/products/{product}/variants', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'store']);
@@ -28,10 +28,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
     Route::delete('/products/{product}/variants/{variant}', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'destroy']);
     Route::put('/products/{product}/attributes', [App\Http\Controllers\Api\Admin\ProductVariantController::class, 'syncAttributes']);
 
-    // Categories
-    Route::apiResource('categories', App\Http\Controllers\Api\Admin\CategoryController::class);
+    // Categories (import/export must come BEFORE apiResource to avoid {category} wildcard capturing them)
     Route::post('/categories/import', [App\Http\Controllers\Api\Admin\CategoryController::class, 'import']);
     Route::get('/categories/export', [App\Http\Controllers\Api\Admin\CategoryController::class, 'export']);
+    Route::apiResource('categories', App\Http\Controllers\Api\Admin\CategoryController::class);
 
     // Brands
     Route::apiResource('brands', App\Http\Controllers\Api\Admin\BrandController::class);
