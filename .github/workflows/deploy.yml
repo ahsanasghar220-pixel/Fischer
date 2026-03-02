@@ -4,10 +4,9 @@ name: Deploy to Hostinger
 # How this works:
 #
 #   1. Build frontend (Vite)
-#   2. Upload EVERYTHING via rsync over SSH (port 65002)
-#      • Single TCP connection — no passive-mode data ports that can get blocked
-#      • rsync --checksum differential sync — only changed files transfer
-#      • Far more reliable than FTPS which randomly hangs on passive data ports
+#   2. Upload EVERYTHING via FTPS (port 21 — not blocked from GitHub Actions)
+#      • lftp mirror does differential sync — only newer files transfer
+#      • rsync over SSH port 65002 times out from GitHub Actions IPs
 #
 # Required GitHub secrets:
 #   SSH_HOST            — Hostinger server hostname
@@ -90,44 +89,35 @@ jobs:
           echo "=== Images: $(du -sh deploy/public/images 2>/dev/null | cut -f1 || echo 'none') ==="
           echo "=== Videos: $(du -sh deploy/public/videos 2>/dev/null | cut -f1 || echo 'none') ==="
 
-      # ─── Upload via rsync over SSH port 65002 ────────────────────────────────
-      # Why rsync over SSH instead of FTPS:
-      #   FTPS needs TWO connections — control (port 21) + data (random passive ports).
-      #   Those passive ports get randomly blocked from GitHub Actions IPs, causing lftp
-      #   to hang indefinitely with no timeout. rsync over SSH uses a SINGLE connection
-      #   on port 65002 which is always reachable. Clean fail if unreachable, never hangs.
-      - name: Deploy via rsync over SSH
-        env:
-          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+      # ─── FTP: upload via lftp mirror ──────────────────────────────────────
+      - name: Deploy via FTPS
         run: |
-          sudo apt-get install -qq -y sshpass > /dev/null 2>&1
+          sudo apt-get install -qq -y lftp > /dev/null 2>&1
 
-          SSH_OPTS="-p 65002 -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o ServerAliveInterval=15 -o ServerAliveCountMax=4"
-          DEST="${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.FTP_SERVER_DIR }}"
+          echo "Uploading deploy package to ${{ secrets.FTP_SERVER_DIR }}..."
 
-          echo "Uploading to ${{ secrets.SSH_HOST }}:${{ secrets.FTP_SERVER_DIR }}..."
-          echo "Package size: $(du -sh deploy | cut -f1)"
-
+          # Retry up to 3 times — Hostinger FTP can be flaky from GitHub Actions
           for attempt in 1 2 3; do
-            echo "--- rsync attempt $attempt/3 ---"
-            if timeout 600 sshpass -e rsync \
-                -az \
-                --delete \
-                --timeout=120 \
-                -e "ssh $SSH_OPTS" \
-                --exclude='.git*' \
-                --exclude='.env' \
-                --exclude='node_modules/' \
-                ./deploy/ \
-                "$DEST"; then
-              echo "✓ rsync upload complete"
+            echo "--- FTP attempt $attempt/3 ---"
+            if lftp -e "
+              set ftp:ssl-force yes;
+              set ftp:ssl-protect-data yes;
+              set ssl:verify-certificate no;
+              set net:max-retries 3;
+              set net:timeout 60;
+              set net:reconnect-interval-base 10;
+              set net:reconnect-interval-multiplier 1;
+              open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }};
+              mirror --reverse --verbose --only-newer --no-perms --parallel=2 --exclude-glob .git* --exclude-glob .env --exclude-glob node_modules/ ./deploy/ ${{ secrets.FTP_SERVER_DIR }};
+              bye"; then
+              echo "✓ FTP upload complete"
               break
             fi
             if [ $attempt -lt 3 ]; then
-              echo "Attempt $attempt failed — retrying in 10s..."
-              sleep 10
+              echo "Attempt $attempt failed — retrying in 15s..."
+              sleep 15
             else
-              echo "All 3 rsync attempts failed"
+              echo "All 3 FTP attempts failed"
               exit 1
             fi
           done
