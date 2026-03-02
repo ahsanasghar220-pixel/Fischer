@@ -18,8 +18,8 @@
 
         <!-- ══ HEADER ══════════════════════════════════════════════════ -->
         <tr>
-          <td bgcolor="#7c0d0d" style="background:#7c0d0d;padding:44px 40px 36px;text-align:center;">
-            <img src="https://fischer.codeformulator.com/images/logo/Fischer-electronics-logo-white.svg"
+          <td bgcolor="#1d7dd7" style="background:#1d7dd7;padding:44px 40px 36px;text-align:center;">
+            <img src="https://fischer.codeformulator.com/images/logo-light.webp"
                  alt="Fischer Pakistan" width="210" height="auto"
                  style="display:block;margin:0 auto 28px;width:210px;max-width:100%;" />
 
@@ -65,7 +65,7 @@
         @endphp
         <tr>
           <td style="padding:32px 40px 0;">
-            <p style="margin:0 0 20px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 20px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Order Progress</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -78,7 +78,7 @@
                     <tr>
                       <td width="34" height="34" align="center" valign="middle"
                           style="width:34px;height:34px;min-width:34px;border-radius:17px;
-                                 background:{{ $i <= $currentIdx ? '#7c0d0d' : '#e8e8e8' }};
+                                 background:{{ $i <= $currentIdx ? '#1d7dd7' : '#e8e8e8' }};
                                  color:{{ $i <= $currentIdx ? '#ffffff' : '#aaaaaa' }};
                                  font-size:13px;font-weight:700;text-align:center;line-height:34px;">
                         @if($i < $currentIdx)&#10003;@elseif($i === $currentIdx)&#10003;@else{{ $i + 1 }}@endif
@@ -87,7 +87,7 @@
                   </table>
                   <p style="margin:0;font-size:10px;line-height:1.4;white-space:nowrap;
                              font-weight:{{ $i === $currentIdx ? '700' : '500' }};
-                             color:{{ $i <= $currentIdx ? '#7c0d0d' : '#bbbbbb' }};">
+                             color:{{ $i <= $currentIdx ? '#1d7dd7' : '#bbbbbb' }};">
                     {{ $labels[$i] }}
                   </p>
                 </td>
@@ -96,8 +96,8 @@
                 <td width="6%" style="vertical-align:top;padding-top:17px;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td height="2" bgcolor="{{ $i < $currentIdx ? '#7c0d0d' : '#e8e8e8' }}"
-                          style="background:{{ $i < $currentIdx ? '#7c0d0d' : '#e8e8e8' }};
+                      <td height="2" bgcolor="{{ $i < $currentIdx ? '#1d7dd7' : '#e8e8e8' }}"
+                          style="background:{{ $i < $currentIdx ? '#1d7dd7' : '#e8e8e8' }};
                                  height:2px;font-size:0;line-height:0;">&nbsp;</td>
                     </tr>
                   </table>
@@ -123,7 +123,7 @@
         <!-- ══ ORDER ITEMS ══════════════════════════════════════════════ -->
         <tr>
           <td style="padding:24px 40px 0;">
-            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Order Summary</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0"
@@ -194,15 +194,15 @@
                 <td colspan="2" style="padding:4px 0;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td height="2" bgcolor="#7c0d0d"
-                          style="height:2px;font-size:0;line-height:0;background:#7c0d0d;">&nbsp;</td>
+                      <td height="2" bgcolor="#1d7dd7"
+                          style="height:2px;font-size:0;line-height:0;background:#1d7dd7;">&nbsp;</td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
                 <td style="padding:10px 0 0;font-size:17px;color:#111111;font-weight:800;">Order Total</td>
-                <td style="text-align:right;padding:10px 0 0;font-size:22px;color:#7c0d0d;
+                <td style="text-align:right;padding:10px 0 0;font-size:22px;color:#1d7dd7;
                             font-weight:800;white-space:nowrap;">
                   Rs.&nbsp;{{ number_format($order->total) }}
                 </td>
@@ -225,7 +225,7 @@
         <!-- ══ DELIVERY ADDRESS ════════════════════════════════════════ -->
         <tr>
           <td style="padding:24px 40px 0;">
-            <p style="margin:0 0 14px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 14px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Delivery Address</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -251,7 +251,7 @@
         <tr>
           <td style="padding:32px 40px 0;text-align:center;">
             <a href="https://fischer.codeformulator.com/track-order"
-               style="display:inline-block;background:#7c0d0d;color:#ffffff;padding:15px 52px;
+               style="display:inline-block;background:#1d7dd7;color:#ffffff;padding:15px 52px;
                       border-radius:6px;text-decoration:none;font-size:14px;font-weight:700;
                       letter-spacing:0.5px;">
               Track Your Order &rarr;
@@ -264,13 +264,13 @@
           <td style="padding:24px 40px 0;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td bgcolor="#fff8f8" style="background:#fff8f8;border:1px solid #f5d5d5;
+                <td bgcolor="#f0f7ff" style="background:#f0f7ff;border:1px solid #c2ddf5;
                             border-radius:8px;padding:18px 20px;text-align:center;">
                   <p style="margin:0 0 4px;font-size:13px;color:#666666;">
                     Questions about your order? Simply reply to this email.
                   </p>
                   <a href="mailto:fischer.few@gmail.com"
-                     style="font-size:14px;font-weight:700;color:#7c0d0d;text-decoration:none;">
+                     style="font-size:14px;font-weight:700;color:#1d7dd7;text-decoration:none;">
                     fischer.few@gmail.com
                   </a>
                 </td>

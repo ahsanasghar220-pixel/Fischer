@@ -19,14 +19,14 @@
         <!-- ══ HEADER ══════════════════════════════════════════════════ -->
         <tr>
           <td bgcolor="#111111" style="background:#111111;padding:36px 40px 30px;text-align:center;">
-            <img src="https://fischer.codeformulator.com/images/logo/Fischer-electronics-logo-white.svg"
+            <img src="https://fischer.codeformulator.com/images/logo-light.webp"
                  alt="Fischer Pakistan" width="180" height="auto"
                  style="display:block;margin:0 auto 24px;width:180px;max-width:100%;" />
 
             <!-- alert badge -->
             <table cellpadding="0" cellspacing="0" border="0" align="center">
               <tr>
-                <td bgcolor="#7c0d0d" style="background:#7c0d0d;border-radius:50px;
+                <td bgcolor="#1d7dd7" style="background:#1d7dd7;border-radius:50px;
                             padding:8px 22px;text-align:center;">
                   <span style="font-size:12px;color:#ffffff;font-weight:700;
                                text-transform:uppercase;letter-spacing:2px;">
@@ -47,7 +47,7 @@
 
         <!-- ══ QUICK STATS ROW ════════════════════════════════════════ -->
         <tr>
-          <td bgcolor="#7c0d0d" style="background:#7c0d0d;padding:0;">
+          <td bgcolor="#1d7dd7" style="background:#1d7dd7;padding:0;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td width="33%" style="padding:18px 0;text-align:center;
@@ -84,7 +84,7 @@
         <!-- ══ CUSTOMER DETAILS ════════════════════════════════════════ -->
         <tr>
           <td style="padding:32px 40px 0;">
-            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Customer Details</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0"
@@ -146,7 +146,7 @@
         <!-- ══ ORDER ITEMS ══════════════════════════════════════════════ -->
         <tr>
           <td style="padding:24px 40px 0;">
-            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 16px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Order Items</p>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0"
@@ -240,15 +240,15 @@
                 <td colspan="2" style="padding:4px 0;">
                   <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td height="2" bgcolor="#7c0d0d"
-                          style="height:2px;font-size:0;line-height:0;background:#7c0d0d;">&nbsp;</td>
+                      <td height="2" bgcolor="#1d7dd7"
+                          style="height:2px;font-size:0;line-height:0;background:#1d7dd7;">&nbsp;</td>
                     </tr>
                   </table>
                 </td>
               </tr>
               <tr>
                 <td style="padding:10px 0 0;font-size:17px;color:#111111;font-weight:800;">Grand Total</td>
-                <td style="text-align:right;padding:10px 0 0;font-size:22px;color:#7c0d0d;
+                <td style="text-align:right;padding:10px 0 0;font-size:22px;color:#1d7dd7;
                             font-weight:800;white-space:nowrap;">
                   Rs.&nbsp;{{ number_format($order->total) }}
                 </td>
@@ -261,7 +261,7 @@
         <!-- ══ NOTES ════════════════════════════════════════════════════ -->
         <tr>
           <td style="padding:24px 40px 0;">
-            <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#7c0d0d;
+            <p style="margin:0 0 10px;font-size:11px;font-weight:700;color:#1d7dd7;
                        text-transform:uppercase;letter-spacing:1.5px;">Customer Notes</p>
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
