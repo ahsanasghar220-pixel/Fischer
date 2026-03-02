@@ -224,9 +224,9 @@ class CheckoutController extends Controller
                 }
             );
 
-            // Defer notification emails until after the HTTP response is sent,
-            // so the user gets an instant response without waiting for SMTP.
-            defer(fn () => $this->orderService->sendOrderNotifications($order, $user));
+            // Send notification emails synchronously.
+            // defer() does not execute on Hostinger PHP-FPM (process terminates early).
+            $this->orderService->sendOrderNotifications($order, $user);
 
             return $this->success([
                 'order'   => $order,
