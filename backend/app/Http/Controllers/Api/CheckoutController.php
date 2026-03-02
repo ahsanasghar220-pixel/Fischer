@@ -209,8 +209,9 @@ class CheckoutController extends Controller
                 }
             );
 
-            // Send notification emails after the transaction has committed.
-            $this->orderService->sendOrderNotifications($order, $user);
+            // Defer notification emails until after the HTTP response is sent
+            // so the user gets an instant response without waiting for SMTP.
+            defer(fn () => $this->orderService->sendOrderNotifications($order, $user));
 
             return $this->success([
                 'order'   => $order,

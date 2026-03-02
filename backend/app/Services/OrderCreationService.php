@@ -311,7 +311,8 @@ class OrderCreationService
 
                 foreach ($emails as $email) {
                     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        Mail::to($email)->queue(new OrderPlacedNotification($order));
+                        Mail::to($email)->send(new OrderPlacedNotification($order));
+                        Log::info("Order notification sent to admin: {$email} for order #{$order->order_number}");
                     }
                 }
             }
@@ -320,10 +321,16 @@ class OrderCreationService
             $customerEmail        = $order->shipping_email ?? $user?->email;
 
             if ($customerConfirmation && $customerEmail) {
-                Mail::to($customerEmail)->queue(new OrderConfirmation($order));
+                Mail::to($customerEmail)->send(new OrderConfirmation($order));
+                Log::info("Order confirmation sent to customer: {$customerEmail} for order #{$order->order_number}");
             }
         } catch (\Exception $e) {
-            Log::error('Failed to send order notification emails: ' . $e->getMessage());
+            Log::error('Failed to send order notification emails: ' . $e->getMessage(), [
+                'order_number' => $order->order_number,
+                'smtp_host' => config('mail.mailers.smtp.host'),
+                'smtp_port' => config('mail.mailers.smtp.port'),
+                'from' => config('mail.from.address'),
+            ]);
         }
     }
 }

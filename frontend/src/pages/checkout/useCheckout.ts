@@ -115,8 +115,17 @@ export function useCheckout() {
       return response.data
     },
     onSuccess: (data) => {
-      // Clear frontend cart state immediately — the backend already wiped the DB
-      // cart inside the order transaction, so no extra API call is needed.
+      // Navigate FIRST, then clear cart — otherwise the checkout page
+      // briefly flashes "Your cart is empty" before the redirect fires.
+      if (data.data?.payment?.redirect_url) {
+        window.location.href = data.data.payment.redirect_url
+      } else {
+        const orderNum = data.data?.order?.order_number
+        navigate(`/order-success/${orderNum}`, { replace: true })
+      }
+
+      // Clear frontend cart state after navigation is scheduled.
+      // The backend already wiped the DB cart inside the order transaction.
       useCartStore.setState({
         items: [],
         subtotal: 0,
@@ -125,13 +134,6 @@ export function useCheckout() {
         total: 0,
         items_count: 0,
       })
-
-      if (data.data?.payment?.redirect_url) {
-        window.location.href = data.data.payment.redirect_url
-      } else {
-        const orderNum = data.data?.order?.order_number
-        navigate(`/order-success/${orderNum}`)
-      }
     },
     onError: (error: Error & { response?: { data?: { message?: string } } }) => {
       toast.error(error.response?.data?.message || 'Failed to place order')
