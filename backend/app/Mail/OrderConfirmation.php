@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -24,6 +25,9 @@ class OrderConfirmation extends Mailable
     {
         return new Envelope(
             subject: "Order Confirmed #{$this->order->order_number} - Fischer Pakistan",
+            replyTo: [
+                new Address('fischer.few@gmail.com', 'Fischer Pakistan Support'),
+            ],
         );
     }
 
