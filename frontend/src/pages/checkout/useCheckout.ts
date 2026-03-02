@@ -41,6 +41,7 @@ export interface CheckoutForm {
   shipping_method_id: number | null
   payment_method: string
   transaction_id: string
+  payment_proof: string
   notes: string
 }
 
@@ -71,6 +72,7 @@ export function useCheckout() {
     shipping_method_id: null,
     payment_method: 'cod',
     transaction_id: '',
+    payment_proof: '',
     notes: '',
   })
 
@@ -224,17 +226,9 @@ export function useCheckout() {
       }
     }
     if (stepNum === 3) {
-      if (form.payment_method === 'bank_transfer') {
-        if (!form.transaction_id.trim()) {
-          toast.error('Please enter your bank transfer transaction ID')
-          return false
-        }
-        // Validate transaction ID format (alphanumeric, 8-30 characters)
-        const transactionIdRegex = /^[A-Z0-9]{8,30}$/i
-        if (!transactionIdRegex.test(form.transaction_id.trim())) {
-          toast.error('Transaction ID must be 8-30 alphanumeric characters')
-          return false
-        }
+      if (form.payment_method === 'bank_transfer' && !form.payment_proof) {
+        toast.error('Please upload your payment receipt to continue')
+        return false
       }
     }
     return true

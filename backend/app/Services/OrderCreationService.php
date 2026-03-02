@@ -167,6 +167,7 @@ class OrderCreationService
             'payment_status'  => 'pending',
             'payment_method'  => $validated['payment_method'],
             'transaction_id'  => $validated['transaction_id'] ?? null,
+            'payment_proof'   => $validated['payment_proof'] ?? null,
 
             'subtotal'        => $totals['subtotal'],
             'discount_amount' => $totals['discount'],

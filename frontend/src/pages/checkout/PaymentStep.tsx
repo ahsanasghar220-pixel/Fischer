@@ -1,10 +1,12 @@
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { CreditCardIcon, TruckIcon } from '@heroicons/react/24/outline'
+import { CreditCardIcon, TruckIcon, ArrowUpTrayIcon, CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { formatPrice } from '@/lib/utils'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { PAYMENT_METHODS } from '@/data'
 import type { ShippingMethod } from '@/types'
 import type { CheckoutForm } from './useCheckout'
+import api from '@/lib/api'
 
 interface DeliveryStepProps {
   form: CheckoutForm
@@ -110,6 +112,7 @@ interface PaymentStepProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void
   onBack: () => void
   onPaymentSelect: (methodId: string) => void
+  onReceiptUpload: (path: string) => void
 }
 
 export default function PaymentStep({
@@ -119,7 +122,51 @@ export default function PaymentStep({
   handleInputChange,
   onBack,
   onPaymentSelect,
+  onReceiptUpload,
 }: PaymentStepProps) {
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleReceiptChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Show local preview for images
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = (ev) => setReceiptPreview(ev.target?.result as string)
+      reader.readAsDataURL(file)
+    } else {
+      setReceiptPreview(null)
+    }
+
+    setUploadError(null)
+    setUploadLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('receipt', file)
+      const res = await api.post('/api/checkout/upload-receipt', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      onReceiptUpload(res.data.data.path)
+    } catch {
+      setUploadError('Upload failed. Please try again.')
+      setReceiptPreview(null)
+      onReceiptUpload('')
+    } finally {
+      setUploadLoading(false)
+    }
+  }
+
+  const handleRemoveReceipt = () => {
+    setReceiptPreview(null)
+    setUploadError(null)
+    onReceiptUpload('')
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   return (
     <motion.div
       key="step3"
@@ -156,33 +203,125 @@ export default function PaymentStep({
         ))}
       </div>
 
-      {/* Bank Transfer Instructions & Transaction ID */}
+      {/* Bank Transfer Instructions & Receipt Upload */}
       {form.payment_method === 'bank_transfer' && (
-        <div className="mt-6 p-6 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-200 dark:border-blue-800 rounded-lg">
-          <h3 className="font-semibold text-dark-900 dark:text-white mb-3 flex items-center gap-2">
+        <div className="mt-6 p-6 bg-blue-50 dark:bg-blue-900/10 border-2 border-blue-200 dark:border-blue-800 rounded-lg space-y-4">
+          <h3 className="font-semibold text-dark-900 dark:text-white flex items-center gap-2">
             <span className="text-2xl">🏦</span>
             Bank Transfer Details
           </h3>
-          <div className="space-y-2 text-sm text-dark-700 dark:text-dark-300 mb-4">
-            <p><strong>Bank Name:</strong> HBL - Habib Bank Limited</p>
-            <p><strong>Account Title:</strong> Fischer Pakistan</p>
-            <p><strong>Account Number:</strong> Contact: 0321-1234567</p>
-            <p className="text-xs text-dark-500 dark:text-dark-400 mt-3">
-              ⚠️ After transferring, enter your transaction ID below. Your order will be confirmed after admin verification.
-            </p>
+
+          {/* Bank details */}
+          <div className="bg-white dark:bg-dark-700 rounded-lg p-4 space-y-2 text-sm">
+            <div className="flex justify-between gap-2">
+              <span className="text-dark-500 dark:text-dark-400 shrink-0">Bank</span>
+              <span className="font-medium text-dark-900 dark:text-white text-right">Meezan Bank — The Premier Islamic Bank</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span className="text-dark-500 dark:text-dark-400 shrink-0">Branch</span>
+              <span className="font-medium text-dark-900 dark:text-white text-right">(0292) Haider Road Township Branch, Lahore</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span className="text-dark-500 dark:text-dark-400 shrink-0">Account Name</span>
+              <span className="font-medium text-dark-900 dark:text-white text-right">Fatima Engineering Works</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span className="text-dark-500 dark:text-dark-400 shrink-0">Account No.</span>
+              <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">0292-0103728472</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span className="text-dark-500 dark:text-dark-400 shrink-0">IBAN</span>
+              <span className="font-mono font-semibold text-dark-900 dark:text-white text-right">PK22 MEZN 0002 9201 0372 8472</span>
+            </div>
           </div>
+
+          <p className="text-xs text-dark-500 dark:text-dark-400">
+            After transferring, upload your payment receipt below. Your order will be confirmed after admin verification.
+          </p>
+
+          {/* Receipt upload */}
           <div>
             <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
-              Transaction ID / Reference Number <span className="text-red-500">*</span>
+              Upload Payment Receipt <span className="text-red-500">*</span>
+            </label>
+
+            {form.payment_proof && !uploadError ? (
+              <div className="border-2 border-green-400 dark:border-green-600 rounded-lg p-3 bg-green-50 dark:bg-green-900/10">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    {receiptPreview ? (
+                      <img src={receiptPreview} alt="Receipt preview" className="w-16 h-16 object-cover rounded-lg shrink-0 border border-green-200" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-lg bg-green-100 dark:bg-green-800 flex items-center justify-center shrink-0">
+                        <span className="text-2xl">📄</span>
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <CheckCircleIcon className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400">Receipt uploaded</span>
+                      </div>
+                      <p className="text-xs text-dark-500 dark:text-dark-400 mt-0.5">Tap to replace</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveReceipt}
+                    className="p-1.5 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 shrink-0"
+                    title="Remove receipt"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => !uploadLoading && fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                  uploadError
+                    ? 'border-red-400 bg-red-50 dark:bg-red-900/10'
+                    : 'border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-500 bg-white dark:bg-dark-700'
+                }`}
+              >
+                {uploadLoading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <LoadingSpinner size="sm" />
+                    <span className="text-sm text-dark-500 dark:text-dark-400">Uploading receipt…</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <ArrowUpTrayIcon className="w-8 h-8 text-blue-400 dark:text-blue-500" />
+                    <span className="text-sm font-medium text-dark-700 dark:text-dark-300">
+                      {uploadError ? 'Try again — tap to select file' : 'Tap to upload receipt'}
+                    </span>
+                    <span className="text-xs text-dark-400">JPG, PNG or PDF · Max 5 MB</span>
+                    {uploadError && <span className="text-xs text-red-500">{uploadError}</span>}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/jpg,application/pdf"
+              className="hidden"
+              onChange={handleReceiptChange}
+            />
+          </div>
+
+          {/* Optional transaction reference */}
+          <div>
+            <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
+              Transaction ID / Reference <span className="text-dark-400 font-normal">(optional)</span>
             </label>
             <input
               type="text"
               name="transaction_id"
               value={form.transaction_id}
               onChange={handleInputChange}
-              required
-              placeholder="Enter your transaction ID or reference number"
-              className="w-full px-4 py-3 border-2 border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="e.g. TXN123456"
+              className="w-full px-4 py-3 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
         </div>

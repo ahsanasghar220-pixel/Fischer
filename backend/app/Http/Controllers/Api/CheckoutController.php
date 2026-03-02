@@ -14,6 +14,7 @@ use App\Services\PaymentService;
 use App\Http\Requests\PlaceOrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CheckoutController extends Controller
 {
@@ -21,6 +22,20 @@ class CheckoutController extends Controller
         private CartService $cartService,
         private OrderCreationService $orderService,
     ) {}
+
+    public function uploadReceipt(Request $request)
+    {
+        $request->validate([
+            'receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        $path = $request->file('receipt')->store('payment-proofs', 'public');
+
+        return $this->success([
+            'path' => $path,
+            'url'  => Storage::url($path),
+        ]);
+    }
 
     public function getShippingMethods(Request $request)
     {

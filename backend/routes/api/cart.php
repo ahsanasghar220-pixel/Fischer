@@ -30,5 +30,6 @@ Route::get('/shipping/methods', [CheckoutController::class, 'getShippingMethods'
 Route::prefix('checkout')->group(function () {
     Route::post('/shipping-methods', [CheckoutController::class, 'getShippingMethods']);
     Route::post('/calculate-totals', [CheckoutController::class, 'calculateTotals']);
+    Route::post('/upload-receipt', [CheckoutController::class, 'uploadReceipt']);
     Route::post('/place-order', [CheckoutController::class, 'placeOrder']);
 });

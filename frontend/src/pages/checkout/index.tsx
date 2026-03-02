@@ -190,6 +190,7 @@ export default function Checkout() {
                     handleInputChange={handleInputChange}
                     onBack={() => setStep(2)}
                     onPaymentSelect={(methodId) => setForm(prev => ({ ...prev, payment_method: methodId }))}
+                    onReceiptUpload={(path) => setForm(prev => ({ ...prev, payment_proof: path }))}
                   />
                 )}
               </AnimatePresence>

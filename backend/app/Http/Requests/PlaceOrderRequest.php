@@ -37,8 +37,8 @@ class PlaceOrderRequest extends FormRequest
 
             // Payment
             'payment_method' => 'required|in:cod,bank_transfer,jazzcash,easypaisa,card',
-            'transaction_id' => 'required_if:payment_method,bank_transfer|nullable|string|max:255',
-            'payment_proof' => 'nullable|string', // Base64 image or URL
+            'transaction_id' => 'nullable|string|max:255',
+            'payment_proof'  => 'nullable|string|max:500',
 
             // Shipping method
             'shipping_method_id' => 'required|exists:shipping_methods,id',
