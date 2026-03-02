@@ -139,6 +139,7 @@ const AdminMarketingConversions = lazy(() => import('./pages/admin/marketing/con
 
 // B2B / Production / Complaints
 const AdminSalesPortal = lazy(() => import('./pages/admin/sales-portal/index'))
+const AdminB2BOrders = lazy(() => import('./pages/admin/b2b-orders/index'))
 const AdminProduction = lazy(() => import('./pages/admin/production/index'))
 const AdminProductionInventory = lazy(() => import('./pages/admin/production/inventory'))
 const AdminComplaints = lazy(() => import('./pages/admin/complaints/index'))
@@ -238,6 +239,7 @@ function App() {
           <Route path="marketing/abandoned-carts" element={<AdminMarketingAbandonedCarts />} />
           <Route path="marketing/conversions" element={<AdminMarketingConversions />} />
           <Route path="sales-portal" element={<AdminSalesPortal />} />
+          <Route path="b2b-orders" element={<AdminB2BOrders />} />
           <Route path="production" element={<AdminProduction />} />
           <Route path="production/inventory" element={<AdminProductionInventory />} />
           <Route path="complaints" element={<AdminComplaints />} />

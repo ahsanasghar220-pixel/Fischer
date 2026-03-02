@@ -32,6 +32,7 @@ import {
   ArchiveBoxIcon,
   ExclamationTriangleIcon,
   WrenchIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/react/24/outline'
 import { useAuthStore } from '@/stores/authStore'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -74,6 +75,7 @@ const menuItems: MenuItem[] = [
     permission: 'place-b2b-orders',
     children: [
       { path: '/admin/sales-portal', label: 'Field Portal', icon: DevicePhoneMobileIcon, permission: 'place-b2b-orders' },
+      { path: '/admin/b2b-orders', label: 'All B2B Orders', icon: ClipboardDocumentListIcon, permission: 'manage-production' },
     ]
   },
   {

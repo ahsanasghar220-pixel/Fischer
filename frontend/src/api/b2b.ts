@@ -26,9 +26,40 @@ export async function getAllOrders(params?: {
   status?: string
   city?: string
   salesperson_id?: number
+  brand_name?: string
+  search?: string
+  date_from?: string
+  date_to?: string
   page?: number
 }): Promise<PaginatedB2bOrders> {
   const response = await api.get('/api/production/orders', { params })
+  return response.data.data
+}
+
+export interface OrderStats {
+  totals: {
+    total: number
+    pending: number
+    in_production: number
+    ready: number
+    delivered: number
+    cancelled: number
+  }
+  by_salesperson: Array<{
+    id: number
+    name: string
+    total: number
+    pending: number
+    in_production: number
+    ready: number
+    delivered: number
+    cancelled: number
+  }>
+  salespersons: Array<{ id: number; name: string }>
+}
+
+export async function getOrderStats(): Promise<OrderStats> {
+  const response = await api.get('/api/production/orders/stats')
   return response.data.data
 }
 

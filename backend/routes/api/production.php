@@ -21,6 +21,7 @@ Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group
 // Production manager routes — view all orders, update status, manage inventory
 Route::middleware(['auth:sanctum', 'role:production_manager|admin|super-admin'])->group(function () {
     Route::get('/production/dashboard', [ProductionDashboardController::class, 'index']);
+    Route::get('/production/orders/stats', [SalesOrderController::class, 'orderStats']); // must be before {order}
     Route::get('/production/orders', [SalesOrderController::class, 'index']);
     Route::put('/production/orders/{order}/status', [SalesOrderController::class, 'updateStatus']);
     Route::get('/production/inventory', [ProductionInventoryController::class, 'index']);

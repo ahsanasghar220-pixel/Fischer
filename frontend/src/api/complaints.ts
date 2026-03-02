@@ -17,6 +17,21 @@ export interface PaginatedComplaints {
   total: number
 }
 
+// Backend returns { success, data: items[], meta: { current_page, last_page, ... } }
+// Flatten into PaginatedComplaints so callers get a consistent shape.
+function flattenPaginated(raw: {
+  data: ComplaintListItem[]
+  meta: { current_page: number; last_page: number; per_page: number; total: number }
+}): PaginatedComplaints {
+  return {
+    data: raw.data,
+    current_page: raw.meta.current_page,
+    last_page: raw.meta.last_page,
+    per_page: raw.meta.per_page,
+    total: raw.meta.total,
+  }
+}
+
 export async function getAllComplaints(params?: {
   status?: string
   category?: string
@@ -26,12 +41,12 @@ export async function getAllComplaints(params?: {
   page?: number
 }): Promise<PaginatedComplaints> {
   const response = await api.get('/api/complaints', { params })
-  return response.data.data
+  return flattenPaginated(response.data)
 }
 
 export async function getMyComplaints(page = 1): Promise<PaginatedComplaints> {
   const response = await api.get('/api/complaints/my-complaints', { params: { page } })
-  return response.data.data
+  return flattenPaginated(response.data)
 }
 
 export async function getComplaint(id: number): Promise<Complaint> {

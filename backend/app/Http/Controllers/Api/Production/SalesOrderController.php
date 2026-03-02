@@ -66,6 +66,14 @@ class SalesOrderController extends Controller
             });
         }
 
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         $orders = $query->paginate(20);
 
         // Append salesperson name to each order
@@ -77,6 +85,51 @@ class SalesOrderController extends Controller
         });
 
         return response()->json(['data' => $orders]);
+    }
+
+    /**
+     * GET /api/production/orders/stats
+     * Admin summary: totals by status + breakdown by salesperson.
+     */
+    public function orderStats(): JsonResponse
+    {
+        $statuses = ['pending', 'in_production', 'ready', 'delivered', 'cancelled'];
+
+        // Overall totals
+        $totals = B2bOrder::selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        $totalSummary = array_merge(array_fill_keys($statuses, 0), $totals);
+        $totalSummary['total'] = array_sum($totalSummary);
+
+        // Per-salesperson breakdown
+        $byPerson = B2bOrder::join('users', 'b2b_orders.salesperson_id', '=', 'users.id')
+            ->selectRaw(
+                'users.id,
+                 CONCAT(users.first_name, " ", users.last_name) AS name,
+                 COUNT(*) AS total,
+                 SUM(CASE WHEN b2b_orders.status = "pending"       THEN 1 ELSE 0 END) AS pending,
+                 SUM(CASE WHEN b2b_orders.status = "in_production" THEN 1 ELSE 0 END) AS in_production,
+                 SUM(CASE WHEN b2b_orders.status = "ready"         THEN 1 ELSE 0 END) AS ready,
+                 SUM(CASE WHEN b2b_orders.status = "delivered"     THEN 1 ELSE 0 END) AS delivered,
+                 SUM(CASE WHEN b2b_orders.status = "cancelled"     THEN 1 ELSE 0 END) AS cancelled'
+            )
+            ->groupBy('users.id', 'users.first_name', 'users.last_name')
+            ->orderByDesc('total')
+            ->get();
+
+        // Salesperson list for filter dropdowns
+        $salespersons = $byPerson->map(fn($r) => ['id' => $r->id, 'name' => $r->name]);
+
+        return response()->json([
+            'data' => [
+                'totals'       => $totalSummary,
+                'by_salesperson' => $byPerson,
+                'salespersons'   => $salespersons,
+            ],
+        ]);
     }
 
     /**
