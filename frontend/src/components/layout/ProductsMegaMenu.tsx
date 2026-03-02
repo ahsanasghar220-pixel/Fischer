@@ -279,7 +279,9 @@ export default function ProductsMegaMenu({ isHomePage, isScrolled }: ProductsMeg
                                       {product.name}
                                     </h5>
                                     <p className="text-sm font-bold text-primary-600 dark:text-primary-400 mt-1">
-                                      {formatPrice(product.price)}
+                                      {product.has_variants && product.variants_min_price && product.variants_max_price && product.variants_min_price !== product.variants_max_price
+                                        ? `${formatPrice(product.variants_min_price)} – ${formatPrice(product.variants_max_price)}`
+                                        : formatPrice(product.variants_min_price ?? product.price)}
                                     </p>
                                   </div>
                                 </Link>

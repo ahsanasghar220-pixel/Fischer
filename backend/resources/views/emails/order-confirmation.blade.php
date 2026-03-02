@@ -19,7 +19,7 @@
         <!-- ══ HEADER ══════════════════════════════════════════════════ -->
         <tr>
           <td bgcolor="#1d7dd7" style="background:#1d7dd7;padding:44px 40px 36px;text-align:center;">
-            <img src="https://fischer.codeformulator.com/images/logo-light.webp"
+            <img src="https://fischer.codeformulator.com/images/logo-light.png"
                  alt="Fischer Pakistan" width="210" height="auto"
                  style="display:block;margin:0 auto 28px;width:210px;max-width:100%;" />
 

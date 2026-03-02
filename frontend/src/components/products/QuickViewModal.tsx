@@ -147,7 +147,7 @@ const QuickViewModal = memo(function QuickViewModal({
           <div className="fixed inset-0 bg-dark-900/60 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className="fixed inset-0 z-50 overflow-y-auto overscroll-y-contain">
+        <div className="fixed inset-0 z-50 overflow-hidden">
           <div className="flex min-h-full items-end sm:items-center justify-center sm:p-4">
             <Transition.Child
               as={Fragment}
