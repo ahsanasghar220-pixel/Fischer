@@ -80,7 +80,7 @@ export default function CustomerInfo({ order, onUpdatePayment }: CustomerInfoPro
           <div className="flex justify-between">
             <span className="text-dark-600 dark:text-dark-400">Method</span>
             <span className="font-medium text-dark-900 dark:text-white capitalize">
-              {order.payment_method?.replace('_', ' ') || 'COD'}
+              {order.payment_method?.replace(/_/g, ' ') || 'COD'}
             </span>
           </div>
           <div className="flex justify-between items-center">

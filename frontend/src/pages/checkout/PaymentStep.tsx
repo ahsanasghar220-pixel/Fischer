@@ -140,7 +140,7 @@ export default function PaymentStep({
   } | null>(null)
 
   useEffect(() => {
-    api.get('/api/public/payment-settings')
+    api.get('/api/settings/payment')
       .then(res => {
         const data = res.data?.data
         if (Array.isArray(data?.methods) && data.methods.length > 0) {
