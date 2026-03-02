@@ -2,6 +2,15 @@ import { useState, useCallback } from 'react'
 import { createOrder } from '@/api/b2b'
 import type { BrandName, NewOrderItem } from '@/types/b2b'
 import ProductPickerModal, { type PickedProduct } from './ProductPickerModal'
+import {
+  PlusIcon,
+  TrashIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  ShoppingBagIcon,
+  BuildingStorefrontIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/24/outline'
 
 const PAKISTAN_CITIES = [
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
@@ -37,18 +46,269 @@ function makeEmptyItem(): OrderItemDraft {
   }
 }
 
-const INPUT_CLS =
-  'w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400'
-const LABEL_CLS = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
-const CARD_CLS =
-  'bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm'
-
 function formatPrice(price: string | number | null | undefined): string {
   if (price == null || price === '') return ''
   const num = typeof price === 'string' ? parseFloat(price) : price
   if (isNaN(num)) return ''
   return `Rs. ${num.toLocaleString()}`
 }
+
+function parseNumericPrice(price: string | number | null | undefined): number {
+  if (price == null || price === '') return 0
+  const num = typeof price === 'string' ? parseFloat(price) : price
+  return isNaN(num) ? 0 : num
+}
+
+// ─── Shared class tokens ──────────────────────────────────────────────────────
+
+const INPUT_CLS =
+  'w-full px-3.5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm transition-colors'
+
+const LABEL_CLS =
+  'block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5'
+
+const SECTION_CLS =
+  'bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden'
+
+// ─── Product Image Placeholder ────────────────────────────────────────────────
+
+function ImagePlaceholder() {
+  return (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+      <ShoppingBagIcon className="w-6 h-6 text-gray-300 dark:text-gray-500" />
+    </div>
+  )
+}
+
+// ─── Individual Order Item Card ───────────────────────────────────────────────
+
+interface ItemCardProps {
+  item: OrderItemDraft
+  index: number
+  totalItems: number
+  onOpenPicker: (id: string) => void
+  onRemove: (id: string) => void
+  onQuantityChange: (id: string, delta: number) => void
+  onNotesChange: (id: string, notes: string) => void
+  onClearProduct: (id: string) => void
+}
+
+function ItemCard({
+  item,
+  index,
+  totalItems,
+  onOpenPicker,
+  onRemove,
+  onQuantityChange,
+  onNotesChange,
+  onClearProduct,
+}: ItemCardProps) {
+  const hasProduct = !!item.product_id
+
+  return (
+    <div className="border border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-900/50">
+      {/* Item header bar */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Item {index + 1}
+        </span>
+        {totalItems > 1 && (
+          <button
+            onClick={() => onRemove(item.id)}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            aria-label="Remove item"
+          >
+            <TrashIcon className="w-3.5 h-3.5" />
+            Remove
+          </button>
+        )}
+      </div>
+
+      <div className="p-4 space-y-4">
+        {/* Product Selection */}
+        {hasProduct ? (
+          /* Selected product display */
+          <div className="flex items-center gap-3 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700/50 rounded-2xl p-3 group">
+            {/* Thumbnail */}
+            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100 dark:border-gray-700">
+              {item.image_url ? (
+                <img
+                  src={item.image_url}
+                  alt={item.product_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <ImagePlaceholder />
+              )}
+            </div>
+
+            {/* Product info */}
+            <div className="flex-1 min-w-0">
+              {item.category_name && (
+                <p className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide truncate mb-0.5">
+                  {item.category_name}
+                </p>
+              )}
+              <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2">
+                {item.product_name}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{item.sku}</p>
+              {item.unit_price != null && (
+                <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mt-1">
+                  {formatPrice(item.unit_price)}
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+              <button
+                onClick={() => onOpenPicker(item.id)}
+                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+              >
+                Change
+              </button>
+              <button
+                onClick={() => onClearProduct(item.id)}
+                className="text-xs font-medium text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Pick product CTA */
+          <button
+            onClick={() => onOpenPicker(item.id)}
+            className="w-full flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
+              <PlusIcon className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                Choose a Product
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                Browse catalog — all products &amp; variants
+              </p>
+            </div>
+            <ChevronRightIcon className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+          </button>
+        )}
+
+        {/* Quantity stepper */}
+        <div>
+          <p className={LABEL_CLS}>Quantity</p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onQuantityChange(item.id, -1)}
+              className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all disabled:opacity-40"
+              disabled={item.quantity <= 1}
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <div className="flex-1 text-center">
+              <span className="text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
+                {item.quantity}
+              </span>
+              {item.unit_price != null && item.quantity > 0 && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  = {formatPrice(parseNumericPrice(item.unit_price) * item.quantity)}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => onQuantityChange(item.id, 1)}
+              className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div>
+          <p className={LABEL_CLS}>Notes (optional)</p>
+          <input
+            type="text"
+            value={item.notes}
+            onChange={(e) => onNotesChange(item.id, e.target.value)}
+            placeholder="e.g. colour preference, special packing..."
+            className={INPUT_CLS}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Order Summary ────────────────────────────────────────────────────────────
+
+interface SummaryProps {
+  items: OrderItemDraft[]
+}
+
+function OrderSummary({ items }: SummaryProps) {
+  const filledItems = items.filter((i) => i.product_id && i.unit_price != null)
+  const totalQty = filledItems.reduce((s, i) => s + i.quantity, 0)
+  const totalValue = filledItems.reduce(
+    (s, i) => s + parseNumericPrice(i.unit_price) * i.quantity,
+    0,
+  )
+  const hasTotal = totalValue > 0
+
+  if (filledItems.length === 0) return null
+
+  return (
+    <div className={`${SECTION_CLS}`}>
+      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Order Summary
+        </p>
+      </div>
+      <div className="divide-y divide-gray-100 dark:divide-gray-700">
+        {filledItems.map((item) => (
+          <div key={item.id} className="flex items-center gap-3 px-4 py-3">
+            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 dark:border-gray-700">
+              {item.image_url ? (
+                <img src={item.image_url} alt={item.product_name} className="w-full h-full object-cover" />
+              ) : (
+                <ImagePlaceholder />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                {item.product_name}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {formatPrice(item.unit_price)} &times; {item.quantity}
+              </p>
+            </div>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white flex-shrink-0">
+              {formatPrice(parseNumericPrice(item.unit_price) * item.quantity)}
+            </p>
+          </div>
+        ))}
+      </div>
+      {hasTotal && (
+        <div className="flex items-center justify-between px-4 py-3.5 bg-gray-50 dark:bg-gray-900/30 border-t border-gray-200 dark:border-gray-600">
+          <div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {filledItems.length} product{filledItems.length !== 1 ? 's' : ''} · {totalQty} unit{totalQty !== 1 ? 's' : ''}
+            </p>
+            <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Dealer Price Total</p>
+          </div>
+          <p className="text-xl font-bold text-gray-900 dark:text-white">{formatPrice(totalValue)}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Main Form Component ──────────────────────────────────────────────────────
 
 export default function NewOrderForm() {
   const [dealerName, setDealerName] = useState('')
@@ -115,11 +375,23 @@ export default function NewOrderForm() {
     setItems((prev) =>
       prev.map((item) =>
         item.id === id
-          ? { ...item, product_id: null, sku: '', product_name: '', image_url: null, category_name: null, unit_price: null }
+          ? {
+              ...item,
+              product_id: null,
+              sku: '',
+              product_name: '',
+              image_url: null,
+              category_name: null,
+              unit_price: null,
+            }
           : item,
       ),
     )
   }, [])
+
+  const handleNotesChange = useCallback((id: string, notes: string) => {
+    updateItem(id, { notes })
+  }, [updateItem])
 
   const handleSubmit = async () => {
     setErrorMessage('')
@@ -174,240 +446,156 @@ export default function NewOrderForm() {
     }
   }
 
+  const filledItemCount = items.filter((i) => i.product_id).length
+
   return (
     <>
-      <div className="space-y-5 max-w-2xl mx-auto">
-        {/* Success Banner */}
+      <div className="space-y-5 max-w-2xl mx-auto pb-8">
+
+        {/* ── Success Banner ──────────────────────────────── */}
         {successMessage && (
-          <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4">
-            <p className="text-green-800 dark:text-green-200 font-semibold text-base">
-              {successMessage}
-            </p>
-            <p className="text-green-700 dark:text-green-300 text-sm mt-1">
-              The order has been submitted for production.
-            </p>
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-2xl p-4 flex items-start gap-3">
+            <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-bold text-green-800 dark:text-green-200">{successMessage}</p>
+              <p className="text-sm text-green-700 dark:text-green-300 mt-0.5">
+                Your order has been submitted for production.
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Error Banner */}
+        {/* ── Error Banner ────────────────────────────────── */}
         {errorMessage && (
-          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4">
-            <p className="text-red-800 dark:text-red-200 text-sm">{errorMessage}</p>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-2xl p-4 flex items-start gap-3">
+            <ExclamationCircleIcon className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-800 dark:text-red-200">{errorMessage}</p>
           </div>
         )}
 
-        {/* Dealer Info Card */}
-        <div className={`${CARD_CLS} p-4 space-y-4`}>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Dealer Information</h2>
-
-          <div>
-            <label className={LABEL_CLS}>Dealer Name *</label>
-            <input
-              type="text"
-              value={dealerName}
-              onChange={(e) => setDealerName(e.target.value)}
-              placeholder="Enter dealer name"
-              className={INPUT_CLS}
-            />
+        {/* ── Dealer Info Card ────────────────────────────── */}
+        <div className={SECTION_CLS}>
+          <div className="flex items-center gap-2.5 px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+            <BuildingStorefrontIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Dealer Information
+            </p>
           </div>
+          <div className="p-4 space-y-4">
+            <div>
+              <label className={LABEL_CLS}>Dealer Name <span className="text-red-400">*</span></label>
+              <input
+                type="text"
+                value={dealerName}
+                onChange={(e) => setDealerName(e.target.value)}
+                placeholder="Enter dealer / shop name"
+                className={INPUT_CLS}
+              />
+            </div>
 
-          <div>
-            <label className={LABEL_CLS}>City *</label>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className={INPUT_CLS}>
-              <option value="">Select city</option>
-              {PAKISTAN_CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className={LABEL_CLS}>Brand</label>
-            <select
-              value={brand}
-              onChange={(e) => setBrand(e.target.value as BrandName)}
-              className={INPUT_CLS}
-            >
-              <option value="Fischer">Fischer</option>
-              <option value="OEM">OEM</option>
-              <option value="ODM">ODM</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Products Card */}
-        <div className={`${CARD_CLS} p-4 space-y-4`}>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Products</h2>
-
-          {items.map((item, index) => (
-            <div
-              key={item.id}
-              className="border border-gray-200 dark:border-gray-600 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-900"
-            >
-              {/* Item header */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Item {index + 1}
-                </span>
-                {items.length > 1 && (
-                  <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                    aria-label="Remove item"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-
-              {/* Product selection */}
-              {item.product_id ? (
-                /* Selected product card */
-                <div className="flex items-center gap-3 bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-700 rounded-xl p-3">
-                  {/* Thumbnail */}
-                  <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-700">
-                    {item.image_url ? (
-                      <img src={item.image_url} alt={item.product_name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    {item.category_name && (
-                      <p className="text-xs font-medium text-blue-600 dark:text-blue-400 truncate">
-                        {item.category_name}
-                      </p>
-                    )}
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2">
-                      {item.product_name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">SKU: {item.sku}</p>
-                    {item.unit_price && (
-                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-0.5">
-                        {formatPrice(item.unit_price)}
-                      </p>
-                    )}
-                  </div>
-                  {/* Change button */}
-                  <div className="flex flex-col gap-1 flex-shrink-0">
-                    <button
-                      onClick={() => handleOpenPicker(item.id)}
-                      className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      Change
-                    </button>
-                    <button
-                      onClick={() => handleClearProduct(item.id)}
-                      className="text-xs font-medium text-red-500 dark:text-red-400 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Pick product button */
-                <button
-                  onClick={() => handleOpenPicker(item.id)}
-                  className="w-full flex items-center gap-3 p-3.5 bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 flex-shrink-0">
-                    <svg className="w-5 h-5 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-700 dark:group-hover:text-blue-300">
-                      Choose Product
-                    </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                      Browse catalog with images &amp; variants
-                    </p>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              )}
-
-              {/* Quantity Stepper */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={LABEL_CLS}>Quantity</label>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => handleQuantityChange(item.id, -1)}
-                    className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
-                    aria-label="Decrease quantity"
-                  >
-                    -
-                  </button>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-white w-10 text-center tabular-nums">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => handleQuantityChange(item.id, 1)}
-                    className="w-11 h-11 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors active:scale-95"
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
+                <label className={LABEL_CLS}>City <span className="text-red-400">*</span></label>
+                <select value={city} onChange={(e) => setCity(e.target.value)} className={INPUT_CLS}>
+                  <option value="">Select city</option>
+                  {PAKISTAN_CITIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
               </div>
-
-              {/* Notes */}
               <div>
-                <label className={LABEL_CLS}>Notes (optional)</label>
-                <input
-                  type="text"
-                  value={item.notes}
-                  onChange={(e) => updateItem(item.id, { notes: e.target.value })}
-                  placeholder="e.g. colour preference, special packing..."
+                <label className={LABEL_CLS}>Brand</label>
+                <select
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value as BrandName)}
                   className={INPUT_CLS}
-                />
+                >
+                  <option value="Fischer">Fischer</option>
+                  <option value="OEM">OEM</option>
+                  <option value="ODM">ODM</option>
+                </select>
               </div>
             </div>
-          ))}
-
-          {/* Add Another Product */}
-          <button
-            onClick={handleAddItem}
-            className="w-full py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-          >
-            + Add Another Product
-          </button>
+          </div>
         </div>
 
-        {/* Remarks Card */}
-        <div className={`${CARD_CLS} p-4`}>
-          <label className={LABEL_CLS}>Order Remarks (optional)</label>
-          <textarea
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            rows={3}
-            placeholder="Any additional notes about this order..."
-            className={`${INPUT_CLS} resize-none`}
-          />
+        {/* ── Products Section ────────────────────────────── */}
+        <div className={SECTION_CLS}>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+            <div className="flex items-center gap-2.5">
+              <ShoppingBagIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                Products
+              </p>
+            </div>
+            {filledItemCount > 0 && (
+              <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+                {filledItemCount} selected
+              </span>
+            )}
+          </div>
+
+          <div className="p-4 space-y-4">
+            {items.map((item, index) => (
+              <ItemCard
+                key={item.id}
+                item={item}
+                index={index}
+                totalItems={items.length}
+                onOpenPicker={handleOpenPicker}
+                onRemove={handleRemoveItem}
+                onQuantityChange={handleQuantityChange}
+                onNotesChange={handleNotesChange}
+                onClearProduct={handleClearProduct}
+              />
+            ))}
+
+            {/* Add another product */}
+            <button
+              onClick={handleAddItem}
+              className="w-full flex items-center justify-center gap-2 py-3.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all"
+            >
+              <PlusIcon className="w-4 h-4" />
+              Add Another Product
+            </button>
+          </div>
         </div>
 
-        {/* Submit */}
+        {/* ── Order Summary ───────────────────────────────── */}
+        <OrderSummary items={items} />
+
+        {/* ── Remarks Card ────────────────────────────────── */}
+        <div className={SECTION_CLS}>
+          <div className="p-4">
+            <label className={LABEL_CLS}>Order Remarks (optional)</label>
+            <textarea
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              rows={3}
+              placeholder="Any additional notes about this order..."
+              className={`${INPUT_CLS} resize-none`}
+            />
+          </div>
+        </div>
+
+        {/* ── Submit Button ───────────────────────────────── */}
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-4 text-lg font-semibold transition-colors disabled:opacity-50"
+          className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-2xl py-4 text-base font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
-          {submitting ? 'Submitting Order...' : 'Submit Order'}
+          {submitting ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              Submitting Order...
+            </span>
+          ) : (
+            'Submit Order'
+          )}
         </button>
       </div>
 
-      {/* Product Picker Modal */}
+      {/* ── Product Picker Modal ────────────────────────── */}
       <ProductPickerModal
         isOpen={pickerOpen}
         onClose={handlePickerClose}
