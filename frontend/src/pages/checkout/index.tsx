@@ -30,7 +30,7 @@ export default function Checkout() {
     handleSubmit,
   } = useCheckout()
 
-  if (!items || items.length === 0) {
+  if ((!items || items.length === 0) && !placeOrderMutation.isPending && !placeOrderMutation.isSuccess) {
     return (
       <motion.div
         className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center transition-colors"
