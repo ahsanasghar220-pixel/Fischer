@@ -17,7 +17,7 @@ interface AnimatedSectionProps {
   once?: boolean
   /** Lazy load children - only render when in view */
   lazy?: boolean
-  /** Distance to translate from (px) */
+  /** Distance to translate from (px) — controls how far elements travel on entrance */
   distance?: number
   /** Custom style overrides */
   style?: CSSProperties
@@ -32,15 +32,15 @@ export default function AnimatedSection({
   className = '',
   animation = 'fade-up',
   delay = 0,
-  duration = 1000, // Slower, smoother default
-  threshold = 0.1, // Trigger earlier for smoother experience
+  duration = 1000,
+  threshold = 0.1,
   animateOut = false,
   once = false,
   lazy = false,
-  distance = 36, // Subtle travel distance — enough to notice, not jarring
+  distance = 44, // Enough travel to feel deliberate, not jarring
   style,
   id,
-  easing = 'gentle', // Default to gentle easing
+  easing = 'smooth',
 }: AnimatedSectionProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -116,11 +116,11 @@ export default function AnimatedSection({
   const getEasing = (): string => {
     switch (easing) {
       case 'smooth':
-        return 'cubic-bezier(0.22, 1, 0.36, 1)' // Smooth decelerate
+        return 'cubic-bezier(0.16, 1, 0.3, 1)' // easeOutQuint — snappy, Apple-like
       case 'bouncy':
         return 'cubic-bezier(0.34, 1.56, 0.64, 1)' // Slight overshoot
       case 'gentle':
-        return 'cubic-bezier(0.25, 0.1, 0.25, 1)' // Very smooth, slow ease
+        return 'cubic-bezier(0.33, 1, 0.68, 1)' // easeOutCubic — softer deceleration
       default:
         return easing // Custom cubic-bezier string
     }
@@ -211,12 +211,12 @@ export function StaggeredChildren({
   className = '',
   childClassName = '',
   animation = 'fade-up',
-  staggerDelay = 120, // Slightly longer stagger for elegance
-  duration = 800, // Slower, smoother
+  staggerDelay = 120,
+  duration = 800,
   threshold = 0.05,
   once = true,
-  distance = 28,
-  easing = 'gentle',
+  distance = 32,
+  easing = 'smooth',
 }: StaggeredChildrenProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -265,11 +265,11 @@ export function StaggeredChildren({
   const getEasing = (): string => {
     switch (easing) {
       case 'smooth':
-        return 'cubic-bezier(0.22, 1, 0.36, 1)'
+        return 'cubic-bezier(0.16, 1, 0.3, 1)'
       case 'bouncy':
         return 'cubic-bezier(0.34, 1.56, 0.64, 1)'
       case 'gentle':
-        return 'cubic-bezier(0.25, 0.1, 0.25, 1)'
+        return 'cubic-bezier(0.33, 1, 0.68, 1)'
       default:
         return easing
     }

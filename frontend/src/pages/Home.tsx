@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
@@ -48,6 +48,7 @@ export default function Home() {
   const [introComplete, setIntroComplete] = useState(() => {
     try { return !!sessionStorage.getItem('fischer-intro-seen') } catch { return false }
   })
+  const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
   const [videoSrcReady, setVideoSrcReady] = useState(false)
@@ -63,22 +64,43 @@ export default function Home() {
     },
   })
 
-  // Always start at top of page — prevents browser scroll-restore from
-  // showing the footer before sections have loaded.
+  // Always start at top of page — disable browser scroll-restore so the
+  // footer never briefly appears before sections have loaded.
   useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
-  }, [])
-
-  // Defer hero video loading until after initial paint to avoid blocking LCP
-  useEffect(() => {
-    if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(() => setVideoSrcReady(true))
-      return () => cancelIdleCallback(id)
-    } else {
-      const timer = setTimeout(() => setVideoSrcReady(true), 1500)
-      return () => clearTimeout(timer)
+    return () => {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'auto'
     }
   }, [])
+
+  // Yield the first paint, then mark video source as ready.
+  // requestIdleCallback can fire very late (or never) under heavy load — a
+  // short fixed timeout is more reliable while still allowing LCP to paint first.
+  useEffect(() => {
+    const timer = setTimeout(() => setVideoSrcReady(true), 300)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Video event handlers — useCallback to avoid stale closures.
+  const handleVideoPlaying = useCallback(() => setVideoLoaded(true), [])
+  const handleVideoError = useCallback(() => { setVideoError(true); setVideoLoaded(true) }, [])
+
+  // Load and play the hero video once both the idle timer has fired and the
+  // URL is available from the API.  Setting video.src + calling load() is far
+  // more reliable than dynamically injecting a <source> child — some browsers
+  // silently ignore dynamically added <source> elements.
+  useEffect(() => {
+    const url: string | undefined = data?.sections?.hero?.settings?.video_url
+    if (!videoSrcReady || !url || !videoRef.current) return
+    const video = videoRef.current
+    video.src = url
+    video.load()
+    video.play().catch(() => {
+      // Autoplay blocked (rare for muted video) — show the static first frame
+      setVideoLoaded(true)
+    })
+  }, [videoSrcReady, data])
 
   // Fetch homepage bundles
   const { data: homepageBundles } = useHomepageBundles()
@@ -538,14 +560,12 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-primary-950/40 to-dark-950" />
               )}
               {!videoError && heroVideoUrl && <video
+                ref={videoRef}
                 className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'} object-contain sm:object-cover object-center`}
-                autoPlay loop muted playsInline preload="none"
-                onCanPlayThrough={() => setVideoLoaded(true)}
-                onLoadedData={() => setVideoLoaded(true)}
-                onError={() => { setVideoError(true); setVideoLoaded(true) }}
-              >
-                {videoSrcReady && <source src={heroVideoUrl} type="video/mp4" />}
-              </video>}
+                loop muted playsInline preload="none"
+                onPlaying={handleVideoPlaying}
+                onError={handleVideoError}
+              />}
             </>
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-dark-950/30 via-transparent to-dark-950/60" />
