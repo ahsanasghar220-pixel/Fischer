@@ -86,8 +86,8 @@
                     <tr>
                         <td>
                             {{ $item->product_name }}
-                            @if($item->variant_attributes)
-                                <br><small style="color: #999;">{{ $item->variant_attributes }}</small>
+                            @if($item->variant_name)
+                                <br><small style="color: #999;">{{ $item->variant_name }}</small>
                             @endif
                         </td>
                         <td style="text-align: center;">{{ $item->quantity }}</td>
