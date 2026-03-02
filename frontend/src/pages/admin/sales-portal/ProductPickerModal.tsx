@@ -153,7 +153,7 @@ function VariantPanel({ product, onBack, onClose, onConfirm }: VariantPanelProps
     : false
 
   return (
-    <div className="absolute inset-0 z-10 flex flex-col bg-white dark:bg-gray-900 animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-0 z-[60] flex flex-col bg-white dark:bg-gray-900">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 bg-white dark:bg-gray-900">
         <button
@@ -398,9 +398,23 @@ function ProductCard({
         <p className="text-xs font-semibold text-gray-900 dark:text-white leading-tight line-clamp-2 min-h-[2.5rem]">
           {product.name}
         </p>
-        <p className="text-sm font-bold text-gray-900 dark:text-white">
-          {formatPrice(product.dealer_price ?? product.price)}
-        </p>
+        {product.has_variants && product.price_min != null ? (
+          <div>
+            <p className="text-[9px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide leading-none mb-0.5">
+              From
+            </p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white">
+              {formatPrice(product.price_min)}
+              {product.price_max != null &&
+                Number(product.price_max) !== Number(product.price_min) &&
+                ` – ${formatPrice(product.price_max)}`}
+            </p>
+          </div>
+        ) : (
+          <p className="text-sm font-bold text-gray-900 dark:text-white">
+            {formatPrice(product.dealer_price ?? product.price)}
+          </p>
+        )}
         <p className="text-[10px] text-gray-400 dark:text-gray-500 font-mono truncate">{product.sku}</p>
       </div>
     </button>
@@ -595,7 +609,7 @@ export default function ProductPickerModal({
       )}
 
       {/* ── Product Grid ────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto overscroll-contain relative">
+      <div className="flex-1 overflow-y-auto overscroll-contain">
         {loading && (
           <div className="p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -643,17 +657,17 @@ export default function ProductPickerModal({
             ))}
           </div>
         )}
-
-        {/* Variant panel slides over the grid */}
-        {variantProduct && (
-          <VariantPanel
-            product={variantProduct}
-            onBack={() => setVariantProduct(null)}
-            onClose={onClose}
-            onConfirm={handleVariantConfirm}
-          />
-        )}
       </div>
+
+      {/* Variant panel — absolute over the entire modal (not just the scrollable grid) */}
+      {variantProduct && (
+        <VariantPanel
+          product={variantProduct}
+          onBack={() => setVariantProduct(null)}
+          onClose={onClose}
+          onConfirm={handleVariantConfirm}
+        />
+      )}
     </div>
   )
 }

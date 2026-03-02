@@ -68,6 +68,10 @@ export interface ProductSearchResult {
   name: string
   price: string | number
   dealer_price: string | number | null
+  /** Minimum variant dealer_price (only set when has_variants=true) */
+  price_min: string | number | null
+  /** Maximum variant dealer_price (only set when has_variants=true) */
+  price_max: string | number | null
   has_variants: boolean
   stock_status: string
   category_name: string | null

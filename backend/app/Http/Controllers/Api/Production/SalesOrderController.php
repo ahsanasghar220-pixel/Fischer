@@ -210,8 +210,9 @@ class SalesOrderController extends Controller
     public function browseProducts(Request $request): JsonResponse
     {
         $query = Product::with([
-            'images' => fn($q) => $q->where('is_primary', true)->orderBy('sort_order'),
+            'images'   => fn($q) => $q->where('is_primary', true)->orderBy('sort_order'),
             'category',
+            'variants' => fn($q) => $q->where('is_active', true)->select('id', 'product_id', 'price', 'dealer_price'),
         ])->where('is_active', true)->orderBy('name');
 
         if ($request->filled('q')) {
@@ -230,19 +231,36 @@ class SalesOrderController extends Controller
         $products = $query->get();
 
         return response()->json([
-            'data' => $products->map(fn($p) => [
-                'id'            => $p->id,
-                'sku'           => $p->sku,
-                'slug'          => $p->slug,
-                'name'          => $p->name,
-                'price'         => $p->price,
-                'dealer_price'  => $p->dealer_price,
-                'has_variants'  => (bool) $p->has_variants,
-                'stock_status'  => $p->stock_status,
-                'category_name' => $p->category?->name,
-                'category_slug' => $p->category?->slug,
-                'image_url'     => $p->images->first()?->image,
-            ]),
+            'data' => $products->map(function ($p) {
+                // For products with variants, compute dealer-price range across active variants
+                $priceMin = null;
+                $priceMax = null;
+                if ($p->has_variants && $p->variants->isNotEmpty()) {
+                    $variantPrices = $p->variants->map(
+                        fn($v) => $v->dealer_price ?? $v->price
+                    )->filter()->values();
+                    if ($variantPrices->isNotEmpty()) {
+                        $priceMin = $variantPrices->min();
+                        $priceMax = $variantPrices->max();
+                    }
+                }
+
+                return [
+                    'id'            => $p->id,
+                    'sku'           => $p->sku,
+                    'slug'          => $p->slug,
+                    'name'          => $p->name,
+                    'price'         => $p->price,
+                    'dealer_price'  => $p->dealer_price,
+                    'price_min'     => $priceMin,
+                    'price_max'     => $priceMax,
+                    'has_variants'  => (bool) $p->has_variants,
+                    'stock_status'  => $p->stock_status,
+                    'category_name' => $p->category?->name,
+                    'category_slug' => $p->category?->slug,
+                    'image_url'     => $p->images->first()?->image,
+                ];
+            }),
         ]);
     }
 
