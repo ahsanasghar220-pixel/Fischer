@@ -174,50 +174,49 @@ class CheckoutController extends Controller
         $userAgent = $request->userAgent();
 
         try {
-        return DB::transaction(function () use ($validated, $cart, $ipAddress, $userAgent) {
-            // Try to get authenticated user (works even without auth:sanctum middleware)
-            $user = auth('sanctum')->user();
+            // Run all DB writes in a single atomic transaction.
+            // sendOrderNotifications is intentionally called AFTER commit so that
+            // queue jobs are never inserted inside an uncommitted transaction — a
+            // race condition that causes "order not found" errors with database queue.
+            [$order, $paymentResult, $user] = DB::transaction(
+                function () use ($validated, $cart, $ipAddress, $userAgent) {
+                    $user = auth('sanctum')->user();
 
-            // Re-validate stock inside transaction with row-level locks
-            $this->orderService->validateStock($cart);
+                    $this->orderService->validateStock($cart);
+                    $totals = $this->orderService->calculateTotals($cart, $validated, $user);
 
-            // Calculate subtotal, shipping, loyalty discounts, and total
-            $totals = $this->orderService->calculateTotals($cart, $validated, $user);
+                    $order = $this->orderService->createOrder(
+                        $user, $cart, $totals, $validated, $ipAddress, $userAgent
+                    );
 
-            // Persist the order
-            $order = $this->orderService->createOrder(
-                $user, $cart, $totals, $validated, $ipAddress, $userAgent
+                    $this->orderService->createOrderItems($order, $cart);
+                    $this->orderService->handleCouponUsage($cart, $order, $user, $totals['discount']);
+                    $this->orderService->handleLoyaltyPoints(
+                        $order,
+                        $user,
+                        $totals['loyalty_points_used'],
+                        $totals['total'],
+                        $totals['loyalty_enabled']
+                    );
+
+                    $cart->clear();
+
+                    $paymentResult = $this->handlePayment(
+                        $order, $validated['payment_method'], request()
+                    );
+
+                    return [$order->fresh()->load('items'), $paymentResult, $user];
+                }
             );
 
-            // Create order items, decrement stock, update sales counts
-            $this->orderService->createOrderItems($order, $cart);
-
-            // Record coupon usage
-            $this->orderService->handleCouponUsage($cart, $order, $user, $totals['discount']);
-
-            // Deduct redeemed loyalty points and record points earned
-            $this->orderService->handleLoyaltyPoints(
-                $order,
-                $user,
-                $totals['loyalty_points_used'],
-                $totals['total'],
-                $totals['loyalty_enabled']
-            );
-
-            // Clear cart
-            $cart->clear();
-
-            // Queue order notification emails
+            // Send notification emails after the transaction has committed.
             $this->orderService->sendOrderNotifications($order, $user);
 
-            // Handle payment
-            $paymentResult = $this->handlePayment($order, $validated['payment_method'], request());
-
             return $this->success([
-                'order'   => $order->fresh()->load('items'),
+                'order'   => $order,
                 'payment' => $paymentResult,
             ], 'Order placed successfully', 201);
-        });
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->error($e->getMessage(), 422, $e->errors());
         } catch (\Exception $e) {
