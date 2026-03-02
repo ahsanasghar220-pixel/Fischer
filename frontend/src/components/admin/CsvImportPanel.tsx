@@ -86,9 +86,26 @@ export default function CsvImportPanel({
     },
   })
 
-  const handleExport = () => {
-    // Let the browser handle the file download via direct navigation
-    window.location.href = exportUrl
+  const [isExporting, setIsExporting] = useState(false)
+
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const response = await api.get(exportUrl, { responseType: 'blob' })
+      const blob = new Blob([response.data], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      const disposition = response.headers['content-disposition'] as string | undefined
+      const match = disposition?.match(/filename="?([^"]+)"?/)
+      a.download = match?.[1] || 'export.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      toast.error('Export failed')
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
@@ -100,10 +117,11 @@ export default function CsvImportPanel({
           <button
             type="button"
             onClick={handleExport}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-dark-700 dark:text-dark-200 bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 rounded-lg transition-colors"
+            disabled={isExporting}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-dark-700 dark:text-dark-200 bg-dark-100 dark:bg-dark-700 hover:bg-dark-200 dark:hover:bg-dark-600 rounded-lg transition-colors disabled:opacity-50"
           >
             <ArrowDownTrayIcon className="w-4 h-4" />
-            Export CSV
+            {isExporting ? 'Exporting…' : 'Export CSV'}
           </button>
           <button
             type="button"
