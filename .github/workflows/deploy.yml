@@ -158,20 +158,23 @@ jobs:
       # Only runs when MAIL_HOST secret is set — safe to skip if not configured.
       # Required new GitHub secrets: MAIL_HOST, MAIL_PORT, MAIL_USERNAME,
       #   MAIL_PASSWORD, MAIL_ENCRYPTION, MAIL_FROM_ADDRESS, SERVER_ENV_PATH
-      - name: Patch production mail settings
+      - name: Patch production .env settings
         env:
-          SSH_HOST:         ${{ secrets.SSH_HOST }}
-          SSH_PORT:         "65002"
-          SSH_USER:         ${{ secrets.SSH_USERNAME }}
-          SSH_PASS:         ${{ secrets.SSH_PASSWORD }}
-          SERVER_ENV_PATH:  ${{ secrets.SERVER_ENV_PATH }}
-          MAIL_MAILER:      "smtp"
-          MAIL_HOST:        ${{ secrets.MAIL_HOST }}
-          MAIL_PORT:        ${{ secrets.MAIL_PORT }}
-          MAIL_USERNAME:    ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD:    ${{ secrets.MAIL_PASSWORD }}
-          MAIL_ENCRYPTION:  ${{ secrets.MAIL_ENCRYPTION }}
-          MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
+          SSH_HOST:            ${{ secrets.SSH_HOST }}
+          SSH_PORT:            "65002"
+          SSH_USER:            ${{ secrets.SSH_USERNAME }}
+          SSH_PASS:            ${{ secrets.SSH_PASSWORD }}
+          SERVER_ENV_PATH:     ${{ secrets.SERVER_ENV_PATH }}
+          MAIL_MAILER:         "smtp"
+          MAIL_HOST:           ${{ secrets.MAIL_HOST }}
+          MAIL_PORT:           ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME:       ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD:       ${{ secrets.MAIL_PASSWORD }}
+          MAIL_ENCRYPTION:     ${{ secrets.MAIL_ENCRYPTION }}
+          MAIL_FROM_ADDRESS:   ${{ secrets.MAIL_FROM_ADDRESS }}
+          CHECKOUT_PUBLIC_KEY: "pk_sbox_dfprv2nosgcw4nw3iwd7fvu2gi4"
+          CHECKOUT_SECRET_KEY: "633C70ADFEDF1C399905C35A1F40A778"
+          CHECKOUT_SANDBOX:    "true"
         run: |
           pip install paramiko -q
           python3 scripts/patch-production-env.py

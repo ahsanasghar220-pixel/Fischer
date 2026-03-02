@@ -50,18 +50,24 @@ def main():
     env_path = os.environ["SERVER_ENV_PATH"]   # e.g. ~/domains/example.com/public_html/fischer/.env
 
     updates = {
-        "MAIL_MAILER":       os.environ.get("MAIL_MAILER", "smtp"),
-        "MAIL_HOST":         os.environ.get("MAIL_HOST", ""),
-        "MAIL_PORT":         os.environ.get("MAIL_PORT", ""),
-        "MAIL_USERNAME":     os.environ.get("MAIL_USERNAME", ""),
-        "MAIL_PASSWORD":     os.environ.get("MAIL_PASSWORD", ""),
-        "MAIL_ENCRYPTION":   os.environ.get("MAIL_ENCRYPTION", ""),
-        "MAIL_FROM_ADDRESS": os.environ.get("MAIL_FROM_ADDRESS", ""),
+        "MAIL_MAILER":          os.environ.get("MAIL_MAILER", "smtp"),
+        "MAIL_HOST":            os.environ.get("MAIL_HOST", ""),
+        "MAIL_PORT":            os.environ.get("MAIL_PORT", ""),
+        "MAIL_USERNAME":        os.environ.get("MAIL_USERNAME", ""),
+        "MAIL_PASSWORD":        os.environ.get("MAIL_PASSWORD", ""),
+        "MAIL_ENCRYPTION":      os.environ.get("MAIL_ENCRYPTION", ""),
+        "MAIL_FROM_ADDRESS":    os.environ.get("MAIL_FROM_ADDRESS", ""),
+        # Checkout.com payment gateway
+        "CHECKOUT_PUBLIC_KEY":  os.environ.get("CHECKOUT_PUBLIC_KEY", ""),
+        "CHECKOUT_SECRET_KEY":  os.environ.get("CHECKOUT_SECRET_KEY", ""),
+        "CHECKOUT_SANDBOX":     os.environ.get("CHECKOUT_SANDBOX", ""),
     }
 
-    # Skip entirely if no mail credentials provided
-    if not any([updates["MAIL_HOST"], updates["MAIL_USERNAME"]]):
-        print("No MAIL_HOST or MAIL_USERNAME set — skipping .env mail patch.")
+    # Skip entirely if neither mail nor payment credentials are provided
+    has_mail = any([updates["MAIL_HOST"], updates["MAIL_USERNAME"]])
+    has_checkout = any([updates["CHECKOUT_PUBLIC_KEY"], updates["CHECKOUT_SECRET_KEY"]])
+    if not has_mail and not has_checkout:
+        print("No credentials to patch — skipping .env patch.")
         return
 
     print(f"Connecting to {host}:{port} as {username}...")
