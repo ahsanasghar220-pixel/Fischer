@@ -326,7 +326,7 @@ export default function OrderSummaryCard({ order, onShare }: OrderSummaryCardPro
         style={{ animationDelay: '1.4s', animationFillMode: 'forwards' }}
       >
         <Link
-          to="/account/orders"
+          to={`/track-order?order=${order.order_number}`}
           className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-400 hover:from-primary-400 hover:to-primary-400 text-dark-900 font-bold rounded-2xl text-center transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary-500/30"
         >
           Track Order

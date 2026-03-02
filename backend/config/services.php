@@ -46,10 +46,10 @@ return [
         'sandbox' => env('EASYPAISA_SANDBOX', true),
     ],
 
-    'telr' => [
-        'store_id' => env('TELR_STORE_ID'),
-        'auth_key' => env('TELR_AUTH_KEY'),
-        'sandbox'  => env('TELR_SANDBOX', true),
+    'checkout' => [
+        'secret_key' => env('CHECKOUT_SECRET_KEY'),
+        'public_key' => env('CHECKOUT_PUBLIC_KEY'),
+        'sandbox'    => env('CHECKOUT_SANDBOX', true),
     ],
 
     'sms' => [

@@ -97,39 +97,44 @@ class PaymentService
 
     protected function createCardPayment(Order $order): string
     {
-        $config = config('services.telr');
+        $config = config('services.checkout');
 
-        $response = Http::timeout(15)->post('https://secure.telr.com/gateway/order.json', [
-            'ivp_method'  => 'create',
-            'ivp_store'   => $config['store_id'],
-            'ivp_authkey' => $config['auth_key'],
-            'ivp_cart'    => $order->order_number,
-            'ivp_test'    => $config['sandbox'] ? 1 : 0,
-            'ivp_amount'  => number_format($order->total, 2, '.', ''),
-            'ivp_currency'=> 'PKR',
-            'ivp_desc'    => "Fischer Order #{$order->order_number}",
-            'ivp_lang'    => 'en',
-            'return_auth' => url("/api/payments/card/callback/{$order->id}?status=auth"),
-            'return_decl' => url("/api/payments/card/callback/{$order->id}?status=decl"),
-            'return_can'  => url("/api/payments/card/callback/{$order->id}?status=can"),
-            'bill_fname'  => $order->shipping_first_name ?? '',
-            'bill_lname'  => $order->shipping_last_name  ?? '',
-            'bill_email'  => $order->shipping_email       ?? '',
-            'bill_phone'  => $order->shipping_phone       ?? '',
-            'bill_addr1'  => $order->shipping_address_line_1 ?? '',
-            'bill_city'   => $order->shipping_city        ?? '',
-            'bill_country'=> 'PK',
-        ]);
+        $baseUrl = $config['sandbox']
+            ? 'https://api.sandbox.checkout.com'
+            : 'https://api.checkout.com';
 
-        $paymentUrl = $response->json('order.url');
+        $response = Http::timeout(15)
+            ->withToken($config['secret_key'])
+            ->post("{$baseUrl}/hosted-payments", [
+                'amount'      => intval($order->total * 100), // PKR → paisa
+                'currency'    => 'PKR',
+                'reference'   => $order->order_number,
+                'description' => "Fischer Order #{$order->order_number}",
+                'customer'    => [
+                    'email' => $order->shipping_email ?? '',
+                    'name'  => trim(($order->shipping_first_name ?? '') . ' ' . ($order->shipping_last_name ?? '')),
+                ],
+                'billing' => [
+                    'address' => [
+                        'address_line1' => $order->shipping_address_line_1 ?? '',
+                        'city'          => $order->shipping_city ?? '',
+                        'country'       => 'PK',
+                    ],
+                ],
+                'success_url' => url("/api/payments/card/callback/{$order->id}?status=success"),
+                'cancel_url'  => url("/api/payments/card/callback/{$order->id}?status=cancel"),
+                'failure_url' => url("/api/payments/card/callback/{$order->id}?status=failure"),
+            ]);
 
-        if ($response->failed() || !$paymentUrl) {
+        $redirectUrl = $response->json('_links.redirect.href');
+
+        if ($response->failed() || !$redirectUrl) {
             throw new \RuntimeException(
-                'Telr payment initiation failed: ' . $response->body()
+                'Checkout.com payment initiation failed: ' . $response->body()
             );
         }
 
-        return $paymentUrl;
+        return $redirectUrl;
     }
 
     public function handleCallback(string $method, array $data, Order $order): array
@@ -137,7 +142,7 @@ class PaymentService
         return match ($method) {
             'jazzcash' => $this->handleJazzCashCallback($data, $order),
             'easypaisa' => $this->handleEasypaisaCallback($data, $order),
-            'card'      => $this->handleTelrCallback($data, $order),
+            'card'      => $this->handleCheckoutComCallback($data, $order),
             default => ['success' => false, 'message' => 'Unknown payment method'],
         };
     }
@@ -196,33 +201,43 @@ class PaymentService
         ];
     }
 
-    protected function handleTelrCallback(array $data, Order $order): array
+    protected function handleCheckoutComCallback(array $data, Order $order): array
     {
         $status = $data['status'] ?? '';
 
-        // Only 'auth' means a successful redirect from Telr
-        if ($status !== 'auth') {
+        if ($status !== 'success') {
             return [
                 'success' => false,
-                'message' => $status === 'can' ? 'Payment was cancelled.' : 'Payment was declined.',
+                'message' => $status === 'cancel' ? 'Payment was cancelled.' : 'Payment failed.',
             ];
         }
 
-        // Server-side verification — never trust the redirect URL alone
-        $config = config('services.telr');
-        $response = Http::timeout(15)->post('https://secure.telr.com/gateway/order.json', [
-            'ivp_method'  => 'check',
-            'ivp_store'   => $config['store_id'],
-            'ivp_authkey' => $config['auth_key'],
-            'ivp_cart'    => $order->order_number,
-        ]);
+        // Server-side verification — use cko-session-id from redirect URL
+        $sessionId = $data['cko-session-id'] ?? '';
+        if (!$sessionId) {
+            return ['success' => false, 'message' => 'Payment verification failed. Missing session.'];
+        }
 
-        // Telr status code 3 = Authorised / Paid
-        $statusCode = (string) $response->json('order.status.code');
+        $config = config('services.checkout');
+        $baseUrl = $config['sandbox']
+            ? 'https://api.sandbox.checkout.com'
+            : 'https://api.checkout.com';
 
-        if ($statusCode === '3') {
-            $order->markAsPaid($response->json('order.ref'));
-            $order->updateStatus('confirmed', 'Payment received via Credit/Debit Card (Telr)');
+        $response = Http::timeout(15)
+            ->withToken($config['secret_key'])
+            ->get("{$baseUrl}/payments/{$sessionId}");
+
+        $paymentStatus = $response->json('status');
+        $reference     = $response->json('reference');
+
+        // Verify the reference matches our order
+        if ($reference !== $order->order_number) {
+            return ['success' => false, 'message' => 'Payment verification failed. Order mismatch.'];
+        }
+
+        if (in_array($paymentStatus, ['Captured', 'Authorized', 'Paid'])) {
+            $order->markAsPaid($response->json('id'));
+            $order->updateStatus('confirmed', 'Payment received via Credit/Debit Card (Checkout.com)');
 
             if ($order->user_id && $order->loyalty_points_earned > 0) {
                 $order->user->addLoyaltyPoints(

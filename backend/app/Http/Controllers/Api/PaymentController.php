@@ -49,7 +49,7 @@ class PaymentController extends Controller
         return redirect("{$frontendUrl}/order-failed/{$order->order_number}?error=" . urlencode($result['message']));
     }
 
-    public function telrCallback(Request $request, $orderId)
+    public function checkoutComCallback(Request $request, $orderId)
     {
         $order = Order::findOrFail($orderId);
 

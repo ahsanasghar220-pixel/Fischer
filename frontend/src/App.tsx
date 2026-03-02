@@ -99,6 +99,7 @@ const Portfolio = lazy(() => import('./pages/Portfolio'))
 const Page = lazy(() => import('./pages/Page'))
 const Bundles = lazy(() => import('./pages/Bundles'))
 const BundleDetail = lazy(() => import('./pages/bundle-detail'))
+const TrackOrder = lazy(() => import('./pages/track-order'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Admin pages
@@ -155,6 +156,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="order-success/:orderNumber" element={<OrderSuccess />} />
+          <Route path="track-order" element={<TrackOrder />} />
 
           {/* Auth routes */}
           <Route path="login" element={<Login />} />

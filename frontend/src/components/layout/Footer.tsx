@@ -8,7 +8,7 @@ const footerNavigation = {
   support: [
     { name: 'Contact Us', href: '/contact' },
     { name: 'Service Request', href: '/service-request' },
-    { name: 'Track Order', href: '/contact' },
+    { name: 'Track Order', href: '/track-order' },
     { name: 'Track Service', href: '/service-request' },
     { name: 'FAQs', href: '/page/faqs' },
   ],
