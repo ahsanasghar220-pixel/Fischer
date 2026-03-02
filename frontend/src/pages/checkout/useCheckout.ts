@@ -115,6 +115,17 @@ export function useCheckout() {
       return response.data
     },
     onSuccess: (data) => {
+      // Clear frontend cart state immediately — the backend already wiped the DB
+      // cart inside the order transaction, so no extra API call is needed.
+      useCartStore.setState({
+        items: [],
+        subtotal: 0,
+        discount: 0,
+        couponCode: null,
+        total: 0,
+        items_count: 0,
+      })
+
       if (data.data?.payment?.redirect_url) {
         window.location.href = data.data.payment.redirect_url
       } else {
