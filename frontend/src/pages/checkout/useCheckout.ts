@@ -179,6 +179,9 @@ export function useCheckout() {
     }
   }, [shippingMethods, form.shipping_method_id])
 
+  // True once methods have loaded AND there is exactly one — delivery step is redundant
+  const shouldSkipDeliveryStep = shippingMethods !== undefined && shippingMethods.length <= 1
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
     setForm(prev => ({
@@ -235,7 +238,11 @@ export function useCheckout() {
   }
 
   const nextStep = () => {
-    if (validateStep(step)) {
+    if (!validateStep(step)) return
+    // Skip the delivery step when there is only one shipping method
+    if (step === 1 && shouldSkipDeliveryStep) {
+      setStep(3)
+    } else {
       setStep(step + 1)
     }
   }
@@ -279,6 +286,8 @@ export function useCheckout() {
     grandTotal,
     // Mutation
     placeOrderMutation,
+    // Computed
+    shouldSkipDeliveryStep,
     // Handlers
     handleInputChange,
     handleAddressSelect,

@@ -24,11 +24,17 @@ export default function Checkout() {
     selectedShippingMethod,
     grandTotal,
     placeOrderMutation,
+    shouldSkipDeliveryStep,
     handleInputChange,
     handleAddressSelect,
     nextStep,
     handleSubmit,
   } = useCheckout()
+
+  // Delivery step is hidden when only one shipping method exists — show 2 steps instead of 3
+  const progressSteps = shouldSkipDeliveryStep
+    ? [{ label: 'Shipping', internalStep: 1 }, { label: 'Payment', internalStep: 3 }]
+    : [{ label: 'Shipping', internalStep: 1 }, { label: 'Delivery', internalStep: 2 }, { label: 'Payment', internalStep: 3 }]
 
   if ((!items || items.length === 0) && !placeOrderMutation.isPending && !placeOrderMutation.isSuccess) {
     return (
@@ -102,13 +108,9 @@ export default function Checkout() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
           >
-            {[
-              { num: 1, label: 'Shipping' },
-              { num: 2, label: 'Delivery' },
-              { num: 3, label: 'Payment' },
-            ].map((s, i) => (
+            {progressSteps.map((s, i) => (
               <motion.div
-                key={s.num}
+                key={s.internalStep}
                 className="flex items-center"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -116,25 +118,23 @@ export default function Checkout() {
               >
                 <motion.div
                   className={`flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full text-xs md:text-sm font-medium ${
-                    step > s.num
+                    step > s.internalStep
                       ? 'bg-green-500 text-white'
-                      : step === s.num
+                      : step === s.internalStep
                       ? 'bg-primary-500 text-white'
                       : 'bg-dark-200 dark:bg-dark-600 text-dark-500 dark:text-dark-400'
                   }`}
-                  animate={{
-                    scale: step === s.num ? [1, 1.1, 1] : 1,
-                  }}
+                  animate={{ scale: step === s.internalStep ? [1, 1.1, 1] : 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {step > s.num ? <CheckCircleIcon className="w-4 h-4 md:w-5 md:h-5" /> : s.num}
+                  {step > s.internalStep ? <CheckCircleIcon className="w-4 h-4 md:w-5 md:h-5" /> : i + 1}
                 </motion.div>
-                <span className={`ml-2 hidden sm:inline ${step >= s.num ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
+                <span className={`ml-2 hidden sm:inline ${step >= s.internalStep ? 'text-dark-900 dark:text-white font-medium' : 'text-dark-400'}`}>
                   {s.label}
                 </span>
-                {i < 2 && (
+                {i < progressSteps.length - 1 && (
                   <motion.div
-                    className={`w-8 sm:w-16 h-0.5 mx-2 sm:mx-4 ${step > s.num ? 'bg-green-500' : 'bg-dark-200 dark:bg-dark-700'}`}
+                    className={`w-8 sm:w-16 h-0.5 mx-2 sm:mx-4 ${step > s.internalStep ? 'bg-green-500' : 'bg-dark-200 dark:bg-dark-700'}`}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.3 + i * 0.1 }}
@@ -188,7 +188,7 @@ export default function Checkout() {
                     grandTotal={grandTotal}
                     isPending={placeOrderMutation.isPending}
                     handleInputChange={handleInputChange}
-                    onBack={() => setStep(2)}
+                    onBack={() => setStep(shouldSkipDeliveryStep ? 1 : 2)}
                     onPaymentSelect={(methodId) => setForm(prev => ({ ...prev, payment_method: methodId }))}
                     onReceiptUpload={(path) => setForm(prev => ({ ...prev, payment_proof: path }))}
                   />
