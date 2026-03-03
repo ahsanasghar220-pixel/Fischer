@@ -42,16 +42,6 @@ export interface PaymentSettings {
   bank_iban: string
 }
 
-export interface ShippingSettings {
-  free_shipping_threshold: number
-  default_shipping_cost: number
-  express_shipping_cost: number
-  same_day_cost: number
-  delivery_time_standard: string
-  delivery_time_express: string
-  delivery_time_same_day: string
-}
-
 export interface EmailSettings {
   smtp_host: string
   smtp_port: string
@@ -147,16 +137,6 @@ export function useSettingsData() {
     bank_iban: '',
   })
 
-  const [shippingSettings, setShippingSettings] = useState<ShippingSettings>({
-    free_shipping_threshold: 10000,
-    default_shipping_cost: 250,
-    express_shipping_cost: 500,
-    same_day_cost: 1000,
-    delivery_time_standard: '3-5 business days',
-    delivery_time_express: '1-2 business days',
-    delivery_time_same_day: 'Same day delivery',
-  })
-
   const [emailSettings, setEmailSettings] = useState<EmailSettings>({
     smtp_host: '',
     smtp_port: '587',
@@ -222,7 +202,6 @@ export function useSettingsData() {
     if (settings) {
       if (settings.general) setGeneralSettings((prev) => ({ ...prev, ...settings.general }))
       if (settings.payment) setPaymentSettings((prev) => ({ ...prev, ...settings.payment }))
-      if (settings.shipping) setShippingSettings((prev) => ({ ...prev, ...settings.shipping }))
       if (settings.email) setEmailSettings((prev) => ({ ...prev, ...settings.email }))
       if (settings.seo) setSeoSettings((prev) => ({ ...prev, ...settings.seo }))
       if (settings.notifications) setNotificationSettings((prev) => ({ ...prev, ...settings.notifications }))
@@ -252,8 +231,6 @@ export function useSettingsData() {
     setGeneralSettings,
     paymentSettings,
     setPaymentSettings,
-    shippingSettings,
-    setShippingSettings,
     emailSettings,
     setEmailSettings,
     seoSettings,

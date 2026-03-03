@@ -3,7 +3,6 @@ import {
   PhotoIcon,
   GlobeAltIcon,
   EnvelopeIcon,
-  TruckIcon,
   CreditCardIcon,
   Cog6ToothIcon,
   BellIcon,
@@ -15,7 +14,6 @@ import { useSettingsData } from './useSettingsData'
 import GeneralSettingsTab from './GeneralSettingsTab'
 import AppearanceSettingsTab from './AppearanceSettingsTab'
 import PaymentSettingsTab from './PaymentSettingsTab'
-import ShippingSettingsTab from './ShippingSettingsTab'
 import EmailSettingsTab from './EmailSettingsTab'
 import SeoSettingsTab from './SeoSettingsTab'
 import NotificationSettingsTab from './NotificationSettingsTab'
@@ -26,7 +24,6 @@ const tabs = [
   { id: 'general', label: 'General', icon: Cog6ToothIcon },
   { id: 'appearance', label: 'Appearance', icon: SwatchIcon },
   { id: 'payment', label: 'Payment', icon: CreditCardIcon },
-  { id: 'shipping', label: 'Shipping', icon: TruckIcon },
   { id: 'email', label: 'Email', icon: EnvelopeIcon },
   { id: 'seo', label: 'SEO', icon: GlobeAltIcon },
   { id: 'notifications', label: 'Notifications', icon: BellIcon },
@@ -49,8 +46,6 @@ export default function AdminSettings() {
     setGeneralSettings,
     paymentSettings,
     setPaymentSettings,
-    shippingSettings,
-    setShippingSettings,
     emailSettings,
     setEmailSettings,
     seoSettings,
@@ -124,13 +119,6 @@ export default function AdminSettings() {
             <PaymentSettingsTab
               paymentSettings={paymentSettings}
               setPaymentSettings={setPaymentSettings}
-              saveMutation={saveMutation}
-            />
-          )}
-          {activeTab === 'shipping' && (
-            <ShippingSettingsTab
-              shippingSettings={shippingSettings}
-              setShippingSettings={setShippingSettings}
               saveMutation={saveMutation}
             />
           )}
