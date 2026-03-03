@@ -268,9 +268,10 @@ class CheckoutController extends Controller
                 ];
 
             case 'bank_transfer':
-                // Mark order as pending payment verification
+                // Keep order in 'pending' status — admin verifies the payment proof
+                // ('pending_payment' is not in the status enum; 'pending' is correct here)
                 $order->update([
-                    'status' => 'pending_payment',
+                    'status' => 'pending',
                     'payment_status' => 'pending',
                 ]);
 
