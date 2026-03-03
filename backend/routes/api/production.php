@@ -12,6 +12,11 @@ Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin|productio
     Route::get('/production/products/{product}/variants', [SalesOrderController::class, 'getProductVariants']);
 });
 
+// Stats must be registered before the {order} wildcard to avoid being matched by it
+Route::middleware(['auth:sanctum', 'role:production_manager|admin|super-admin'])->group(function () {
+    Route::get('/production/orders/stats', [SalesOrderController::class, 'orderStats']);
+});
+
 Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group(function () {
     Route::get('/production/my-orders', [SalesOrderController::class, 'myOrders']);
     Route::post('/production/orders', [SalesOrderController::class, 'store']);
@@ -21,7 +26,6 @@ Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group
 // Production manager routes — view all orders, update status, manage inventory
 Route::middleware(['auth:sanctum', 'role:production_manager|admin|super-admin'])->group(function () {
     Route::get('/production/dashboard', [ProductionDashboardController::class, 'index']);
-    Route::get('/production/orders/stats', [SalesOrderController::class, 'orderStats']); // must be before {order}
     Route::get('/production/orders', [SalesOrderController::class, 'index']);
     Route::put('/production/orders/{order}/status', [SalesOrderController::class, 'updateStatus']);
     Route::get('/production/inventory', [ProductionInventoryController::class, 'index']);

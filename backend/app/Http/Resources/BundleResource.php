@@ -115,29 +115,37 @@ class BundleResource extends JsonResource
     {
         $products = [];
 
-        if ($this->isFixed() && $this->relationLoaded('items')) {
-            foreach ($this->items->take(4) as $item) {
-                if ($item->product) {
-                    $products[] = [
-                        'id' => $item->product->id,
-                        'name' => $item->product->name,
-                        'image' => $item->product->primary_image,
-                        'is_in_stock' => $item->product->is_in_stock,
-                    ];
+        try {
+            if ($this->isFixed() && $this->relationLoaded('items')) {
+                foreach ($this->items->take(4) as $item) {
+                    if ($item->product) {
+                        $products[] = [
+                            'id' => $item->product->id,
+                            'name' => $item->product->name,
+                            'image' => $item->product->primary_image,
+                            'is_in_stock' => $item->product->is_in_stock,
+                        ];
+                    }
+                }
+            } elseif ($this->isConfigurable() && $this->relationLoaded('slots')) {
+                foreach ($this->slots->take(4) as $slot) {
+                    // Use the eager-loaded relation if available, otherwise lazy-load
+                    $available = $slot->relationLoaded('availableProducts')
+                        ? $slot->availableProducts
+                        : $slot->availableProducts()->get();
+                    $firstProduct = $available->first();
+                    if ($firstProduct) {
+                        $products[] = [
+                            'id' => $firstProduct->id,
+                            'name' => $firstProduct->name,
+                            'image' => $firstProduct->primary_image ?? null,
+                            'is_in_stock' => $firstProduct->is_in_stock ?? false,
+                        ];
+                    }
                 }
             }
-        } elseif ($this->isConfigurable() && $this->relationLoaded('slots')) {
-            foreach ($this->slots->take(4) as $slot) {
-                $firstProduct = $slot->availableProducts->first();
-                if ($firstProduct) {
-                    $products[] = [
-                        'id' => $firstProduct->id,
-                        'name' => $firstProduct->name,
-                        'image' => $firstProduct->primary_image,
-                        'is_in_stock' => $firstProduct->is_in_stock,
-                    ];
-                }
-            }
+        } catch (\Throwable $e) {
+            \Log::warning('Bundle products preview error for bundle ' . $this->id . ': ' . $e->getMessage());
         }
 
         return $products;

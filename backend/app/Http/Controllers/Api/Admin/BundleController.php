@@ -33,7 +33,7 @@ class BundleController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Bundle::with(['items.product.images', 'slots', 'images']);
+            $query = Bundle::with(['items.product.images', 'slots.availableProducts', 'images']);
 
             // Search
             if ($request->search) {
@@ -80,7 +80,7 @@ class BundleController extends Controller
             $bundles = $query->paginate($perPage);
 
             return $this->paginated($bundles, BundleResource::class);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Bundle index error: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             return $this->error('Failed to load bundles: ' . $e->getMessage(), 500);
         }
