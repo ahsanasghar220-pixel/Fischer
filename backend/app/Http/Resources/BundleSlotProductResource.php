@@ -15,7 +15,7 @@ class BundleSlotProductResource extends JsonResource
             'product_id' => $this->product_id,
             'price_override' => $this->price_override ? (float) $this->price_override : null,
             'effective_price' => (float) $this->effective_price,
-            'product' => $this->when($this->relationLoaded('product'), fn() => [
+            'product' => $this->when($this->relationLoaded('product') && $this->product !== null, fn() => [
                 'id' => $this->product->id,
                 'name' => $this->product->name,
                 'slug' => $this->product->slug,

@@ -133,7 +133,7 @@ const menuItems: MenuItem[] = [
     icon: ChartBarIcon,
     permission: 'view-analytics',
     children: [
-      { path: '/admin/analytics', label: 'Overview', icon: ChartBarIcon, permission: 'view-analytics' },
+      { path: '/admin/analytics', label: 'Overview', icon: ChartBarIcon, permission: 'view-analytics', exact: true },
       { path: '/admin/analytics/realtime', label: 'Real-Time', icon: SignalIcon, permission: 'view-analytics' },
     ]
   },

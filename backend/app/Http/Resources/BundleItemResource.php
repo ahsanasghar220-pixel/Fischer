@@ -18,7 +18,7 @@ class BundleItemResource extends JsonResource
             'effective_price' => (float) $this->effective_price,
             'line_total' => (float) $this->line_total,
             'sort_order' => $this->sort_order,
-            'product' => $this->when($this->relationLoaded('product'), fn() => [
+            'product' => $this->when($this->relationLoaded('product') && $this->product !== null, fn() => [
                 'id' => $this->product->id,
                 'name' => $this->product->name,
                 'slug' => $this->product->slug,
