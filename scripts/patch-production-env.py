@@ -57,13 +57,16 @@ def main():
         "MAIL_PASSWORD":        os.environ.get("MAIL_PASSWORD", ""),
         "MAIL_ENCRYPTION":      os.environ.get("MAIL_ENCRYPTION", ""),
         "MAIL_FROM_ADDRESS":    os.environ.get("MAIL_FROM_ADDRESS", ""),
-        # Note: Paymob credentials are stored in the DB via Admin → Settings → Payment
+        # Ensures card payment callbacks redirect to the live site, not localhost
+        "APP_FRONTEND_URL":     os.environ.get("APP_FRONTEND_URL", ""),
+        # Note: Safepay credentials are stored in the DB via Admin → Settings → Payment
         # and do NOT need to be in .env
     }
 
-    # Skip entirely if no mail credentials are provided
+    # Skip entirely if there is nothing to patch
     has_mail = any([updates["MAIL_HOST"], updates["MAIL_USERNAME"]])
-    if not has_mail:
+    has_other = bool(updates["APP_FRONTEND_URL"])
+    if not has_mail and not has_other:
         print("No credentials to patch — skipping .env patch.")
         return
 

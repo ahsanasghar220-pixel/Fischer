@@ -10,5 +10,5 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   { id: 'jazzcash', name: 'JazzCash', description: 'Instant payment via JazzCash mobile wallet', icon: '📱' },
   { id: 'easypaisa', name: 'EasyPaisa', description: 'Instant payment via EasyPaisa mobile wallet', icon: '📱' },
   { id: 'bank_transfer', name: 'Bank Transfer', description: 'Transfer to our bank account (Requires verification)', icon: '🏦' },
-  { id: 'card', name: 'Credit/Debit Card', description: 'Pay securely with Visa or Mastercard via Checkout.com', icon: '💳' },
+  { id: 'card', name: 'Credit/Debit Card', description: 'Pay securely with Visa or Mastercard via Safepay', icon: '💳' },
 ]

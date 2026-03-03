@@ -231,9 +231,12 @@ class CheckoutController extends Controller
                 }
             );
 
-            // Send notification emails synchronously.
-            // defer() does not execute on Hostinger PHP-FPM (process terminates early).
-            $this->orderService->sendOrderNotifications($order, $user);
+            // Send notification emails only for immediate-payment methods.
+            // For card/jazzcash/easypaisa the user hasn't paid yet at this point —
+            // sendOrderNotifications is called from the payment callback instead.
+            if (in_array($method, ['cod', 'bank_transfer'])) {
+                $this->orderService->sendOrderNotifications($order, $user);
+            }
 
             return $this->success([
                 'order'   => $order,

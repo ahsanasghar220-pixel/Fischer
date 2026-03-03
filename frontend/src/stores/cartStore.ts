@@ -80,7 +80,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   total: 0,
   items_count: 0,
   total_weight: 0,
-  isLoading: false,
+  isLoading: true, // true until first fetchCart() completes — prevents empty-cart flash on hard refresh
 
   fetchCart: async () => {
     set({ isLoading: true })

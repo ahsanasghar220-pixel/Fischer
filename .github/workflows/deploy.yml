@@ -139,6 +139,8 @@ jobs:
           MAIL_PASSWORD:       ${{ secrets.MAIL_PASSWORD }}
           MAIL_ENCRYPTION:     ${{ secrets.MAIL_ENCRYPTION }}
           MAIL_FROM_ADDRESS:   ${{ secrets.MAIL_FROM_ADDRESS }}
+          # Frontend URL — card payment callbacks redirect here after Safepay
+          APP_FRONTEND_URL:    ${{ secrets.VITE_API_URL }}
         run: |
           pip install paramiko -q
           python3 scripts/patch-production-env.py

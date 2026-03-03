@@ -108,12 +108,12 @@ class PaymentService
 
         $baseUrl      = $sandbox ? 'https://sandbox.api.getsafepay.com' : 'https://api.getsafepay.com';
         $checkoutBase = $sandbox ? 'https://sandbox.api.getsafepay.com' : 'https://getsafepay.com';
-        $amountPaisa  = intval(round($order->total * 100));
+        $amount = intval($order->total); // Safepay expects whole PKR (not paisa)
 
         // ── Step 1: Init order and get tracker token ─────────────────────────
         $res = Http::timeout(15)->post("{$baseUrl}/order/v1/init", [
             'client'      => $apiKey,
-            'amount'      => $amountPaisa,
+            'amount'      => $amount,
             'currency'    => 'PKR',
             'environment' => $sandbox ? 'sandbox' : 'production',
         ]);

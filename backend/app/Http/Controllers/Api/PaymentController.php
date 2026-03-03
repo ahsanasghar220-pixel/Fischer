@@ -5,15 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\PaymentService;
+use App\Services\OrderCreationService;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
     protected PaymentService $paymentService;
+    protected OrderCreationService $orderService;
 
-    public function __construct(PaymentService $paymentService)
+    public function __construct(PaymentService $paymentService, OrderCreationService $orderService)
     {
         $this->paymentService = $paymentService;
+        $this->orderService   = $orderService;
     }
 
     public function jazzcashCallback(Request $request)
@@ -23,10 +26,10 @@ class PaymentController extends Controller
 
         $result = $this->paymentService->handleCallback('jazzcash', $request->all(), $order);
 
-        // Redirect to frontend with result
         $frontendUrl = config('app.frontend_url', config('app.url'));
 
         if ($result['success']) {
+            $this->orderService->sendOrderNotifications($order, $order->user);
             return redirect("{$frontendUrl}/order-success/{$order->order_number}");
         }
 
@@ -43,6 +46,7 @@ class PaymentController extends Controller
         $frontendUrl = config('app.frontend_url', config('app.url'));
 
         if ($result['success']) {
+            $this->orderService->sendOrderNotifications($order, $order->user);
             return redirect("{$frontendUrl}/order-success/{$order->order_number}");
         }
 
@@ -67,6 +71,7 @@ class PaymentController extends Controller
         $result = $this->paymentService->handleCallback('card', $request->all(), $order);
 
         if ($result['success']) {
+            $this->orderService->sendOrderNotifications($order, $order->user);
             return redirect("{$frontendUrl}/order-success/{$order->order_number}");
         }
 

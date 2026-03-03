@@ -129,8 +129,9 @@ export default function PaymentStep({
   const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Payment methods and bank details loaded from API, with hardcoded fallback
-  const [paymentMethods, setPaymentMethods] = useState(PAYMENT_METHODS)
+  // Payment methods loaded from API; null = still loading (shows skeleton to avoid flash)
+  const [paymentMethods, setPaymentMethods] = useState<typeof PAYMENT_METHODS | null>(null)
+  const [methodsLoading, setMethodsLoading] = useState(true)
   const [bankDetails, setBankDetails] = useState<{
     bank_name: string
     bank_branch: string
@@ -143,12 +144,11 @@ export default function PaymentStep({
     api.get('/api/settings/payment')
       .then(res => {
         const data = res.data?.data
-        if (Array.isArray(data?.methods) && data.methods.length > 0) {
-          setPaymentMethods(data.methods)
-        }
+        setPaymentMethods(Array.isArray(data?.methods) && data.methods.length > 0 ? data.methods : PAYMENT_METHODS)
         if (data?.bank_details) setBankDetails(data.bank_details)
       })
-      .catch(() => { /* keep hardcoded fallback */ })
+      .catch(() => { setPaymentMethods(PAYMENT_METHODS) })
+      .finally(() => { setMethodsLoading(false) })
   }, [])
 
   const handleReceiptChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,7 +204,20 @@ export default function PaymentStep({
       </h2>
 
       <div className="space-y-3">
-        {paymentMethods.map((method) => (
+        {methodsLoading ? (
+          // Skeleton — prevents the hardcoded list from flashing before API responds
+          [1, 2, 3].map((i) => (
+            <div key={i} className="p-4 border-2 border-dark-200 dark:border-dark-600 rounded-lg animate-pulse">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 bg-dark-200 dark:bg-dark-600 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-dark-200 dark:bg-dark-600 rounded w-32" />
+                  <div className="h-3 bg-dark-100 dark:bg-dark-700 rounded w-48" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (paymentMethods ?? []).map((method) => (
           <div
             key={method.id}
             onClick={() => onPaymentSelect(method.id)}
