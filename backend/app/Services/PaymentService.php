@@ -103,94 +103,51 @@ class PaymentService
     protected function createCardPayment(Order $order): string
     {
         // Read from DB settings, fall back to env config
-        $apiKey        = Setting::get('payment.paymob_api_key') ?: config('services.paymob.api_key');
-        $integrationId = (int) (Setting::get('payment.paymob_integration_id') ?: config('services.paymob.integration_id'));
-        $iframeId      = Setting::get('payment.paymob_iframe_id') ?: config('services.paymob.iframe_id');
+        $apiKey  = Setting::get('payment.safepay_api_key') ?: config('services.safepay.api_key');
+        $sandbox = (bool) (Setting::get('payment.safepay_sandbox') ?? config('services.safepay.sandbox', true));
 
-        $baseUrl     = 'https://pakistan.paymob.com/api';
-        $amountCents = intval(round($order->total * 100));
+        $baseUrl      = $sandbox ? 'https://sandbox.api.getsafepay.com' : 'https://api.getsafepay.com';
+        $checkoutBase = $sandbox ? 'https://sandbox.api.getsafepay.com' : 'https://getsafepay.com';
+        $amountPaisa  = intval(round($order->total * 100));
 
-        // ── Step 1: Authenticate ─────────────────────────────────────────────
-        $authRes = Http::timeout(15)->post("{$baseUrl}/auth/tokens", ['api_key' => $apiKey]);
-
-        if ($authRes->failed() || !$authRes->json('token')) {
-            \Log::error('Paymob auth failed', [
-                'status' => $authRes->status(),
-                'body'   => substr($authRes->body(), 0, 500),
-                'order'  => $order->order_number,
-            ]);
-            throw new \RuntimeException('Paymob authentication failed. Check your API Key in Payment Settings.');
-        }
-
-        $token = $authRes->json('token');
-
-        // ── Step 2: Create Paymob Order ─────────────────────────────────────
-        $orderRes = Http::timeout(15)->post("{$baseUrl}/ecommerce/orders", [
-            'auth_token'        => $token,
-            'delivery_needed'   => false,
-            'amount_cents'      => $amountCents,
-            'currency'          => 'PKR',
-            'merchant_order_id' => $order->order_number,
-            'items'             => [],
+        // ── Step 1: Init order and get tracker token ─────────────────────────
+        $res = Http::timeout(15)->post("{$baseUrl}/order/v1/init", [
+            'client'      => $apiKey,
+            'amount'      => $amountPaisa,
+            'currency'    => 'PKR',
+            'environment' => $sandbox ? 'sandbox' : 'production',
         ]);
 
-        if ($orderRes->failed() || !$orderRes->json('id')) {
-            \Log::error('Paymob order creation failed', [
-                'status' => $orderRes->status(),
-                'body'   => substr($orderRes->body(), 0, 500),
+        if ($res->failed() || !$res->json('data.token')) {
+            \Log::error('Safepay init failed', [
+                'status' => $res->status(),
+                'body'   => substr($res->body(), 0, 500),
                 'order'  => $order->order_number,
             ]);
-            throw new \RuntimeException('Paymob order creation failed. Please try again.');
+            throw new \RuntimeException('Safepay payment initialization failed. Check your API Key in Payment Settings.');
         }
 
-        $paymobOrderId = $orderRes->json('id');
+        $tracker = $res->json('data.token');
 
-        // ── Step 3: Generate Payment Key ─────────────────────────────────────
-        $keyRes = Http::timeout(15)->post("{$baseUrl}/acceptance/payment_keys", [
-            'auth_token'     => $token,
-            'amount_cents'   => $amountCents,
-            'expiration'     => 3600,
-            'order_id'       => $paymobOrderId,
-            'billing_data'   => [
-                'apartment'       => 'NA',
-                'email'           => $order->shipping_email ?? 'customer@na.com',
-                'floor'           => 'NA',
-                'first_name'      => $order->shipping_first_name ?? 'Customer',
-                'street'          => $order->shipping_address_line_1 ?? 'NA',
-                'building'        => 'NA',
-                'phone_number'    => $order->shipping_phone ?? '+92 300 0000000',
-                'shipping_method' => 'NA',
-                'postal_code'     => 'NA',
-                'city'            => $order->shipping_city ?? 'Lahore',
-                'country'         => 'PK',
-                'last_name'       => $order->shipping_last_name ?? 'NA',
-                'state'           => 'NA',
-            ],
-            'currency'       => 'PKR',
-            'integration_id' => $integrationId,
+        // ── Step 2: Build checkout redirect URL ──────────────────────────────
+        return $checkoutBase . '/checkout/pay?' . http_build_query([
+            'env'          => $sandbox ? 'sandbox' : 'production',
+            'beacon'       => $tracker,
+            'source'       => 'custom',
+            'order_id'     => $order->order_number,
+            'redirect_url' => url('/api/payments/card/callback'),
+            'cancel_url'   => config('app.frontend_url', config('app.url')) . '/checkout',
+            'webhooks'     => 'true',
         ]);
-
-        if ($keyRes->failed() || !$keyRes->json('token')) {
-            \Log::error('Paymob payment key failed', [
-                'status' => $keyRes->status(),
-                'body'   => substr($keyRes->body(), 0, 500),
-                'order'  => $order->order_number,
-            ]);
-            throw new \RuntimeException('Paymob payment key generation failed. Please try again.');
-        }
-
-        $paymentKey = $keyRes->json('token');
-
-        return "https://pakistan.paymob.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentKey}";
     }
 
     public function handleCallback(string $method, array $data, Order $order): array
     {
         return match ($method) {
-            'jazzcash' => $this->handleJazzCashCallback($data, $order),
+            'jazzcash'  => $this->handleJazzCashCallback($data, $order),
             'easypaisa' => $this->handleEasypaisaCallback($data, $order),
-            'card'      => $this->handlePaymobCallback($data, $order),
-            default => ['success' => false, 'message' => 'Unknown payment method'],
+            'card'      => $this->handleSafepayCallback($data, $order),
+            default     => ['success' => false, 'message' => 'Unknown payment method'],
         };
     }
 
@@ -248,58 +205,33 @@ class PaymentService
         ];
     }
 
-    protected function handlePaymobCallback(array $data, Order $order): array
+    protected function handleSafepayCallback(array $data, Order $order): array
     {
-        $hmacSecret   = Setting::get('payment.paymob_hmac_secret') ?: config('services.paymob.hmac_secret');
-        $receivedHmac = $data['hmac'] ?? '';
+        $v1Secret    = Setting::get('payment.safepay_v1_secret') ?: config('services.safepay.v1_secret');
+        $tracker     = $data['tracker'] ?? '';
+        $receivedSig = $data['sig'] ?? '';
 
-        // ── HMAC-SHA512 Verification ─────────────────────────────────────────
-        // Concatenate the values of specific fields in Paymob's documented order.
-        // PHP converts dots to underscores in $_GET keys (source_data.pan → source_data_pan).
-        $concatenated =
-            ($data['amount_cents']            ?? '') .
-            ($data['created_at']              ?? '') .
-            ($data['currency']                ?? '') .
-            ($data['error_occured']           ?? '') .
-            ($data['has_parent_transaction']  ?? '') .
-            ($data['id']                      ?? '') .
-            ($data['integration_id']          ?? '') .
-            ($data['is_3d_secure']            ?? '') .
-            ($data['is_auth']                 ?? '') .
-            ($data['is_capture']              ?? '') .
-            ($data['is_refunded']             ?? '') .
-            ($data['is_standalone_payment']   ?? '') .
-            ($data['is_voided']               ?? '') .
-            ($data['order']                   ?? '') .
-            ($data['owner']                   ?? '') .
-            ($data['pending']                 ?? '') .
-            ($data['source_data_pan']         ?? '') .
-            ($data['source_data_sub_type']    ?? '') .
-            ($data['source_data_type']        ?? '') .
-            ($data['success']                 ?? '');
+        if (empty($tracker) || empty($receivedSig)) {
+            \Log::warning('Safepay callback missing tracker or sig', ['order' => $order->order_number]);
+            return ['success' => false, 'message' => 'Invalid payment callback. Missing verification fields.'];
+        }
 
-        $expectedHmac = hash_hmac('sha512', $concatenated, $hmacSecret);
+        // ── HMAC-SHA256 verification (sign = hmac_sha256(tracker, v1_secret)) ─
+        $expectedSig = hash_hmac('sha256', $tracker, $v1Secret);
 
-        if (!hash_equals($expectedHmac, strtolower($receivedHmac))) {
-            \Log::warning('Paymob HMAC verification failed', [
+        if (!hash_equals($expectedSig, $receivedSig)) {
+            \Log::warning('Safepay signature verification failed', [
                 'order'    => $order->order_number,
-                'expected' => $expectedHmac,
-                'received' => $receivedHmac,
+                'expected' => $expectedSig,
+                'received' => $receivedSig,
             ]);
             return ['success' => false, 'message' => 'Payment verification failed. Invalid signature.'];
         }
 
-        // ── Check payment outcome ────────────────────────────────────────────
-        $success = filter_var($data['success'] ?? 'false', FILTER_VALIDATE_BOOLEAN);
+        $reference = $data['reference'] ?? $tracker;
 
-        if (!$success) {
-            return ['success' => false, 'message' => 'Payment was not successful. Please try again.'];
-        }
-
-        $transactionId = (string) ($data['id'] ?? '');
-
-        $order->markAsPaid($transactionId);
-        $order->updateStatus('confirmed', 'Payment received via Credit/Debit Card (Paymob)');
+        $order->markAsPaid($reference);
+        $order->updateStatus('confirmed', 'Payment received via Credit/Debit Card (Safepay)');
 
         if ($order->user_id && $order->loyalty_points_earned > 0) {
             $order->user->addLoyaltyPoints(
@@ -311,6 +243,47 @@ class PaymentService
         }
 
         return ['success' => true, 'message' => 'Card payment successful.'];
+    }
+
+    public function handleSafepayWebhook(string $rawBody, string $signature): array
+    {
+        $webhookSecret = Setting::get('payment.safepay_webhook_secret') ?: config('services.safepay.webhook_secret');
+        $expectedSig   = hash_hmac('sha512', $rawBody, $webhookSecret);
+
+        if (!hash_equals($expectedSig, $signature)) {
+            \Log::warning('Safepay webhook signature mismatch');
+            return ['success' => false, 'message' => 'Invalid webhook signature'];
+        }
+
+        $payload     = json_decode($rawBody, true) ?? [];
+        $state       = $payload['data']['state'] ?? '';
+        $orderNumber = $payload['data']['order_id'] ?? '';
+
+        if (!$orderNumber) {
+            return ['success' => false, 'message' => 'Missing order_id in webhook payload'];
+        }
+
+        $order = Order::where('order_number', $orderNumber)->first();
+        if (!$order) {
+            return ['success' => false, 'message' => 'Order not found'];
+        }
+
+        if ($state === 'paid' && $order->payment_status !== 'paid') {
+            $reference = $payload['data']['reference'] ?? '';
+            $order->markAsPaid($reference ?: $orderNumber);
+            $order->updateStatus('confirmed', 'Payment confirmed via Safepay webhook');
+
+            if ($order->user_id && $order->loyalty_points_earned > 0) {
+                $order->user->addLoyaltyPoints(
+                    $order->loyalty_points_earned,
+                    "Earned from order #{$order->order_number}",
+                    Order::class,
+                    $order->id
+                );
+            }
+        }
+
+        return ['success' => true, 'message' => 'Webhook processed'];
     }
 
     public function refund(Order $order, float $amount = null): array

@@ -60,18 +60,26 @@ class PaymentSettingsSeeder extends Seeder
             ['key' => 'payment.easypaisa_enabled', 'value' => 'false', 'group' => 'payment'],
             ['key' => 'payment.easypaisa_sandbox',  'value' => 'true',  'group' => 'payment'],
 
-            // Card (Paymob Pakistan) — keys are entered via Admin → Settings → Payment
-            ['key' => 'payment.card_enabled',            'value' => 'false', 'group' => 'payment'],
-            ['key' => 'payment.paymob_sandbox',          'value' => 'true',  'group' => 'payment'],
-            ['key' => 'payment.paymob_api_key',          'value' => '',      'group' => 'payment'],
-            ['key' => 'payment.paymob_integration_id',   'value' => '',      'group' => 'payment'],
-            ['key' => 'payment.paymob_iframe_id',        'value' => '',      'group' => 'payment'],
-            ['key' => 'payment.paymob_hmac_secret',      'value' => '',      'group' => 'payment'],
+            // Card (Safepay Pakistan) — keys are entered via Admin → Settings → Payment
+            ['key' => 'payment.card_enabled',             'value' => 'false', 'group' => 'payment'],
+            ['key' => 'payment.safepay_sandbox',          'value' => 'true',  'group' => 'payment'],
+            ['key' => 'payment.safepay_api_key',          'value' => '',      'group' => 'payment'],
+            ['key' => 'payment.safepay_v1_secret',        'value' => '',      'group' => 'payment'],
+            ['key' => 'payment.safepay_webhook_secret',   'value' => '',      'group' => 'payment'],
         ];
 
         foreach ($defaults as $item) {
             Setting::firstOrCreate(['key' => $item['key']], $item);
         }
+
+        // ── Step 3: Remove old Paymob keys ────────────────────────────────────
+        Setting::whereIn('key', [
+            'payment.paymob_sandbox',
+            'payment.paymob_api_key',
+            'payment.paymob_integration_id',
+            'payment.paymob_iframe_id',
+            'payment.paymob_hmac_secret',
+        ])->delete();
 
         // Clear the settings cache so changes are visible immediately
         Cache::forget('app_settings');

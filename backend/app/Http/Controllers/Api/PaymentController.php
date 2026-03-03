@@ -53,8 +53,8 @@ class PaymentController extends Controller
     {
         $frontendUrl = config('app.frontend_url', config('app.url'));
 
-        // Paymob sends merchant_order_id (= our order_number) in the GET params
-        $orderNumber = $request->query('merchant_order_id');
+        // Safepay POSTs with order_id (= our order_number)
+        $orderNumber = $request->input('order_id');
         if (!$orderNumber) {
             return redirect("{$frontendUrl}/order-failed?error=" . urlencode('Invalid payment callback. Order reference missing.'));
         }
@@ -71,6 +71,16 @@ class PaymentController extends Controller
         }
 
         return redirect("{$frontendUrl}/order-failed/{$order->order_number}?error=" . urlencode($result['message']));
+    }
+
+    public function safepayWebhook(Request $request)
+    {
+        $signature = $request->header('X-SFPY-SIGNATURE', '');
+        $rawBody   = $request->getContent();
+
+        $result = $this->paymentService->handleSafepayWebhook($rawBody, $signature);
+
+        return response()->json($result, $result['success'] ? 200 : 400);
     }
 
     public function verifyBankTransfer(Request $request, Order $order)

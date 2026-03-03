@@ -421,11 +421,11 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
         </InfoBox>
       </PaymentMethodCard>
 
-      {/* ── 4. Credit/Debit Card (Paymob Pakistan) ── */}
+      {/* ── 4. Credit/Debit Card (Safepay Pakistan) ── */}
       <PaymentMethodCard
         icon={<span className="text-2xl">💳</span>}
         name="Credit / Debit Card"
-        description="Visa, Mastercard and more via Paymob Pakistan"
+        description="Visa, Mastercard and more via Safepay Pakistan"
         enabled={paymentSettings.card_enabled}
         onToggle={(v) => set('card_enabled', v)}
         accentColor="purple"
@@ -434,11 +434,11 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
         <div>
           <SectionLabel>Mode</SectionLabel>
           <ModeToggle
-            sandbox={paymentSettings.paymob_sandbox}
-            onChange={(v) => set('paymob_sandbox', v)}
+            sandbox={paymentSettings.safepay_sandbox}
+            onChange={(v) => set('safepay_sandbox', v)}
           />
           <p className="text-xs text-dark-400 dark:text-dark-500 mt-2">
-            Test mode uses your Paymob test integration. Switch to Live when you are ready to accept real payments.
+            Test mode uses your Safepay sandbox credentials. Switch to Live when you are ready to accept real payments.
           </p>
         </div>
 
@@ -447,85 +447,73 @@ export default function PaymentSettingsTab({ paymentSettings, setPaymentSettings
           <SectionLabel>Credentials</SectionLabel>
           <div className="space-y-4">
             <div>
-              <FieldLabel required>API Key</FieldLabel>
+              <FieldLabel required>API Key (Public Key)</FieldLabel>
               <input
                 type="password"
-                value={paymentSettings.paymob_api_key}
-                onChange={(e) => set('paymob_api_key', e.target.value)}
-                placeholder="Your Paymob API Key"
+                value={paymentSettings.safepay_api_key}
+                onChange={(e) => set('safepay_api_key', e.target.value)}
+                placeholder="sec_..."
                 className={fieldClassMono}
                 autoComplete="new-password"
               />
               <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
-                Found in Paymob Dashboard → Settings → Account Info → API Key.
+                Found in Safepay Dashboard → Settings → API Keys. Starts with <code className="text-xs">sec_</code>.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <FieldLabel required>Integration ID</FieldLabel>
-                <input
-                  type="text"
-                  value={paymentSettings.paymob_integration_id}
-                  onChange={(e) => set('paymob_integration_id', e.target.value)}
-                  placeholder="e.g. 123456"
-                  className={fieldClassMono}
-                  autoComplete="off"
-                />
-                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
-                  Found in Paymob Dashboard → Integrations → Card Payment → Integration ID.
-                </p>
-              </div>
-              <div>
-                <FieldLabel required>iFrame ID</FieldLabel>
-                <input
-                  type="text"
-                  value={paymentSettings.paymob_iframe_id}
-                  onChange={(e) => set('paymob_iframe_id', e.target.value)}
-                  placeholder="e.g. 78901"
-                  className={fieldClassMono}
-                  autoComplete="off"
-                />
-                <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
-                  Found in Paymob Dashboard → Integrations → iFrames → iFrame ID.
-                </p>
-              </div>
-            </div>
             <div>
-              <FieldLabel required>HMAC Secret</FieldLabel>
+              <FieldLabel required>V1 Secret</FieldLabel>
               <input
                 type="password"
-                value={paymentSettings.paymob_hmac_secret}
-                onChange={(e) => set('paymob_hmac_secret', e.target.value)}
-                placeholder="Your Paymob HMAC Secret"
+                value={paymentSettings.safepay_v1_secret}
+                onChange={(e) => set('safepay_v1_secret', e.target.value)}
+                placeholder="Your Safepay V1 Secret"
                 className={fieldClassMono}
                 autoComplete="new-password"
               />
               <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
-                Found in Paymob Dashboard → Settings → Account Info → HMAC Secret. Used to verify payment callbacks.
+                Used to verify redirect callbacks (HMAC-SHA256). Found in Safepay Dashboard → Settings → API Keys.
+              </p>
+            </div>
+            <div>
+              <FieldLabel required>Webhook Secret</FieldLabel>
+              <input
+                type="password"
+                value={paymentSettings.safepay_webhook_secret}
+                onChange={(e) => set('safepay_webhook_secret', e.target.value)}
+                placeholder="Your Safepay Webhook Secret"
+                className={fieldClassMono}
+                autoComplete="new-password"
+              />
+              <p className="text-xs text-dark-400 dark:text-dark-500 mt-1.5">
+                Used to verify server webhook events (HMAC-SHA512). Found in Safepay Dashboard → Settings → Webhooks.
               </p>
             </div>
           </div>
         </div>
 
         <WarningBox>
-          <strong>Callback URL to configure in Paymob Dashboard:</strong>{' '}
-          Set both the <em>Processed Callback URL</em> and <em>Response URL</em> in your Paymob integration to:{' '}
+          <strong>URLs to configure in Safepay Dashboard:</strong>{' '}
+          Set your <em>Redirect URL</em> to:{' '}
           <code className="text-xs bg-amber-100 dark:bg-amber-900/30 px-1 rounded">
             {window.location.origin.replace(':5173', '').replace('localhost', '').trim() || 'https://yoursite.com'}/api/payments/card/callback
+          </code>
+          {' '}and your <em>Webhook URL</em> to:{' '}
+          <code className="text-xs bg-amber-100 dark:bg-amber-900/30 px-1 rounded">
+            {window.location.origin.replace(':5173', '').replace('localhost', '').trim() || 'https://yoursite.com'}/api/payments/safepay/webhook
           </code>
         </WarningBox>
 
         <InfoBox>
           <strong>Setup Guide:</strong> Register at{' '}
           <a
-            href="https://pakistan.paymob.com/portal2/en/register"
+            href="https://getsafepay.com"
             target="_blank"
             rel="noopener noreferrer"
             className="underline font-semibold hover:text-blue-900 dark:hover:text-blue-200 transition-colors"
           >
-            Paymob Pakistan
+            Safepay Pakistan
           </a>
-          , complete KYC (2-3 days), then create a Card payment integration to get your Integration ID and iFrame ID.
+          , complete onboarding, then retrieve your API Key, V1 Secret, and Webhook Secret from the dashboard.
         </InfoBox>
       </PaymentMethodCard>
 

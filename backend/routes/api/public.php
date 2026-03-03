@@ -60,6 +60,7 @@ Route::prefix('payments')->group(function () {
     Route::any('/jazzcash/callback', [App\Http\Controllers\Api\PaymentController::class, 'jazzcashCallback']);
     Route::any('/easypaisa/callback', [App\Http\Controllers\Api\PaymentController::class, 'easypaisaCallback']);
     Route::any('/card/callback', [App\Http\Controllers\Api\PaymentController::class, 'cardCallback']);
+    Route::post('/safepay/webhook', [App\Http\Controllers\Api\PaymentController::class, 'safepayWebhook']);
 });
 
 // Service requests (public submission and tracking)
