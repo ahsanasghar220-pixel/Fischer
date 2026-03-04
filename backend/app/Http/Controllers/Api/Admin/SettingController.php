@@ -219,7 +219,7 @@ class SettingController extends Controller
             $methods[] = ['id' => 'bank_transfer', 'name' => 'Bank Transfer', 'description' => 'Transfer to our bank account (Requires verification)', 'icon' => '🏦'];
         }
         if (filter_var($get('payment.card_enabled', false), FILTER_VALIDATE_BOOLEAN)) {
-            $methods[] = ['id' => 'card', 'name' => 'Credit/Debit Card', 'description' => 'Pay securely with Visa or Mastercard via Checkout.com', 'icon' => '💳'];
+            $methods[] = ['id' => 'card', 'name' => 'Credit/Debit Card', 'description' => 'Pay securely with Visa or Mastercard via Safepay', 'icon' => '💳'];
         }
 
         $bankDetails = null;
