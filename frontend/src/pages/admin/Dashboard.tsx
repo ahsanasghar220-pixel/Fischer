@@ -423,7 +423,7 @@ export default function AdminDashboard() {
                 <div key={product.id} className="flex items-center gap-3 px-5 py-3">
                   <div className="w-9 h-9 rounded-lg bg-dark-100 dark:bg-dark-700 overflow-hidden flex-shrink-0">
                     {product.image ? (
-                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-dark-400 text-xs">?</div>
                     )}
@@ -562,7 +562,7 @@ export default function AdminDashboard() {
                 </span>
                 <div className="w-10 h-10 bg-dark-100 dark:bg-dark-700 rounded-lg overflow-hidden flex-shrink-0">
                   {product.primary_image ? (
-                    <img src={product.primary_image} alt={product.name} className="w-full h-full object-cover" />
+                    <img src={product.primary_image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-dark-400 text-xs">?</div>
                   )}

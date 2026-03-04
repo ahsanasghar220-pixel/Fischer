@@ -73,6 +73,14 @@ try {
         }
     }
 
+    // Clear all per-key setting caches so admin-saved values are not stale
+    try {
+        \App\Models\Setting::clearCache();
+        $output[] = 'setting caches cleared';
+    } catch (\Throwable $e) {
+        $output[] = 'setting caches: skipped (' . $e->getMessage() . ')';
+    }
+
     // Rebuild caches
     Artisan::call('config:cache');
     Artisan::call('route:cache');

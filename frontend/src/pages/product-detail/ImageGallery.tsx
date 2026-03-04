@@ -227,7 +227,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
                       selectedImage === index ? 'border-white opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
                     }`}
                   >
-                    <img src={image.image} alt="" className="w-full h-full object-cover" draggable={false} />
+                    <img src={image.image} alt="" className="w-full h-full object-cover" loading="lazy" draggable={false} />
                   </button>
                 ))}
               </div>

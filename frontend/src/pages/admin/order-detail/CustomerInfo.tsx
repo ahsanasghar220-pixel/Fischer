@@ -6,6 +6,7 @@ import {
   TruckIcon,
   EnvelopeIcon,
   PhoneIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline'
 import { paymentStatusConfig } from './types'
 import type { Order } from './types'
@@ -98,6 +99,36 @@ export default function CustomerInfo({ order, onUpdatePayment }: CustomerInfoPro
           </div>
         </div>
       </div>
+
+      {/* Payment Receipt (bank transfer) */}
+      {order.payment_proof_url && (
+        <div className="bg-white dark:bg-dark-800 rounded-xl shadow-sm p-4">
+          <h3 className="font-semibold text-dark-900 dark:text-white mb-3 flex items-center gap-2">
+            <PhotoIcon className="w-5 h-5" />
+            Payment Receipt
+          </h3>
+          <a
+            href={order.payment_proof_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block group"
+          >
+            <img
+              src={order.payment_proof_url}
+              alt="Payment receipt"
+              className="w-full rounded-lg border border-dark-200 dark:border-dark-600 object-cover max-h-64 group-hover:opacity-90 transition-opacity"
+              onError={(e) => {
+                // If image fails (e.g. PDF), show a download link instead
+                const parent = (e.target as HTMLImageElement).parentElement
+                if (parent) {
+                  parent.innerHTML = `<span class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View receipt document →</span>`
+                }
+              }}
+            />
+            <p className="text-xs text-dark-400 dark:text-dark-500 mt-1 text-center">Click to open full size</p>
+          </a>
+        </div>
+      )}
 
       {/* Tracking Info */}
       {order.tracking_number && (

@@ -52,6 +52,8 @@ export interface Order {
   billing_city?: string
   customer_notes?: string
   admin_notes?: string
+  payment_proof?: string
+  payment_proof_url?: string
   tracking_number?: string
   tracking_url?: string
   courier?: string

@@ -118,7 +118,7 @@ export default function BundleGallery({
                     : 'border-transparent hover:border-dark-300 dark:hover:border-dark-600'
                 }`}
               >
-                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
               </button>
             ))}
           </div>

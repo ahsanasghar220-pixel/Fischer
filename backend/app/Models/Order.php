@@ -85,7 +85,7 @@ class Order extends Model
         'delivered_at' => 'datetime',
     ];
 
-    protected $appends = ['shipping_full_name', 'shipping_full_address', 'items_count'];
+    protected $appends = ['shipping_full_name', 'shipping_full_address', 'items_count', 'payment_proof_url'];
 
     // Relationships
     public function user(): BelongsTo
@@ -163,6 +163,14 @@ class Order extends Model
     public function getItemsCountAttribute(): int
     {
         return $this->items->sum('quantity');
+    }
+
+    public function getPaymentProofUrlAttribute(): ?string
+    {
+        if (!$this->payment_proof) {
+            return null;
+        }
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->payment_proof);
     }
 
     // Methods
