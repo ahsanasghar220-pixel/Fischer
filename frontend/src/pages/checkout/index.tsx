@@ -15,6 +15,7 @@ export default function Checkout() {
     setForm,
     selectedAddress,
     items,
+    isLoading,
     subtotal,
     discount,
     couponCode,
@@ -36,7 +37,7 @@ export default function Checkout() {
     ? [{ label: 'Shipping', internalStep: 1 }, { label: 'Payment', internalStep: 3 }]
     : [{ label: 'Shipping', internalStep: 1 }, { label: 'Delivery', internalStep: 2 }, { label: 'Payment', internalStep: 3 }]
 
-  if ((!items || items.length === 0) && !placeOrderMutation.isPending && !placeOrderMutation.isSuccess) {
+  if (!isLoading && (!items || items.length === 0) && !placeOrderMutation.isPending && !placeOrderMutation.isSuccess) {
     return (
       <motion.div
         className="min-h-screen bg-dark-50 dark:bg-dark-900 flex items-center justify-center transition-colors"

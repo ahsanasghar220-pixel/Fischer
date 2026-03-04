@@ -47,7 +47,7 @@ export interface CheckoutForm {
 
 export function useCheckout() {
   const navigate = useNavigate()
-  const { items, subtotal, discount, total, couponCode } = useCartStore()
+  const { items, subtotal, discount, total, couponCode, isLoading } = useCartStore()
   const { isAuthenticated, user } = useAuthStore()
   const [step, setStep] = useState(1)
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
@@ -179,8 +179,9 @@ export function useCheckout() {
     }
   }, [shippingMethods, form.shipping_method_id])
 
-  // True once methods have loaded AND there is exactly one — delivery step is redundant
-  const shouldSkipDeliveryStep = shippingMethods !== undefined && shippingMethods.length <= 1
+  // Optimistic: assume 2 steps until we confirm there are multiple methods.
+  // This prevents a 3-step flash before city is entered / methods load.
+  const shouldSkipDeliveryStep = !shippingMethods || shippingMethods.length <= 1
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -272,6 +273,7 @@ export function useCheckout() {
     form,
     setForm,
     selectedAddress,
+    isLoading,
     // Data
     items,
     subtotal,
