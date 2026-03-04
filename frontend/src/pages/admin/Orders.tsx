@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/api'
 import { formatPrice, formatDate } from '@/lib/utils'
 import { getAllOrders, getOrderStats, updateOrderStatus } from '@/api/b2b'
 import type { B2bOrder, B2bOrderStatus } from '@/types/b2b'
 import type { OrderStats } from '@/api/b2b'
+import toast from 'react-hot-toast'
 import {
   MagnifyingGlassIcon,
   EyeIcon,
@@ -24,6 +25,12 @@ import {
   UserGroupIcon,
   ArrowPathIcon,
   ClipboardDocumentListIcon,
+  PrinterIcon,
+  PhotoIcon,
+  PencilSquareIcon,
+  MapPinIcon,
+  CreditCardIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -46,6 +53,47 @@ interface B2cOrder {
 interface PaginatedB2cOrders {
   data: B2cOrder[]
   meta: { current_page: number; last_page: number; total: number; per_page: number }
+}
+
+interface FullB2cOrderItem {
+  id: number
+  product_name: string
+  product_sku: string
+  quantity: number
+  unit_price: string
+  total_price: string
+  product_image?: string
+  product?: { name: string; sku: string; slug: string }
+}
+
+interface FullB2cOrder {
+  id: number
+  order_number: string
+  status: string
+  payment_status: string
+  payment_method: string
+  payment_proof_url?: string
+  subtotal: string
+  shipping_amount: string
+  discount_amount?: string
+  total: string
+  customer_notes?: string
+  admin_notes?: string
+  tracking_number?: string
+  courier?: string
+  tracking_url?: string
+  created_at: string
+  shipping_first_name: string
+  shipping_last_name: string
+  shipping_email: string
+  shipping_phone: string
+  shipping_address_line_1: string
+  shipping_address_line_2?: string
+  shipping_city: string
+  shipping_state?: string
+  shipping_country: string
+  items: FullB2cOrderItem[]
+  user?: { id: number; first_name: string; last_name: string; email: string; phone?: string }
 }
 
 // ─── CSV export util ───────────────────────────────────────────────────────────
@@ -248,6 +296,7 @@ const B2C_STATUS_OPTS = [
 ]
 
 function B2cOrdersView() {
+  const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [paymentStatus, setPaymentStatus] = useState('')
@@ -257,6 +306,12 @@ function B2cOrdersView() {
   const [exporting, setExporting] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Drawer state
+  const [drawerOrderId, setDrawerOrderId] = useState<number | null>(null)
+  const [showStatusModal, setShowStatusModal] = useState(false)
+  const [newStatus, setNewStatus] = useState('')
+  const [statusNotes, setStatusNotes] = useState('')
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -318,6 +373,59 @@ function B2cOrdersView() {
         allOrders.map(o => [o.order_number, o.customer_name, o.customer_email, o.status, o.payment_status, o.payment_method, o.total, o.items_count, formatDate(o.created_at)])
       )
     } finally { setExporting(false) }
+  }
+
+  // Full order detail (fetched when drawer opens)
+  const { data: drawerOrder, isLoading: drawerLoading } = useQuery<FullB2cOrder>({
+    queryKey: ['b2c-order-detail', drawerOrderId],
+    queryFn: async () => {
+      const res = await api.get(`/api/admin/orders/${drawerOrderId}`)
+      return res.data.data.data || res.data.data
+    },
+    enabled: drawerOrderId !== null,
+    staleTime: 30_000,
+  })
+
+  const statusMutation = useMutation({
+    mutationFn: ({ status, notes }: { status: string; notes: string }) =>
+      api.post(`/api/admin/orders/${drawerOrder?.id}/status`, { status, notes }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
+      queryClient.invalidateQueries({ queryKey: ['b2c-order-detail', drawerOrderId] })
+      queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] })
+      toast.success('Order status updated')
+      setShowStatusModal(false)
+      setStatusNotes('')
+    },
+    onError: () => toast.error('Failed to update status'),
+  })
+
+  const openDrawer = (id: number) => { setDrawerOrderId(id); setShowStatusModal(false); setNewStatus(''); setStatusNotes('') }
+  const closeDrawer = () => { setDrawerOrderId(null); setShowStatusModal(false) }
+
+  const handlePrint = (order: FullB2cOrder) => {
+    const win = window.open('', '_blank')
+    if (!win) return
+    const rows = order.items.map(i =>
+      `<tr><td>${i.product_name}</td><td>${i.product_sku || '-'}</td><td style="text-align:right">${i.quantity}</td><td style="text-align:right">Rs. ${parseFloat(i.unit_price).toLocaleString()}</td><td style="text-align:right">Rs. ${parseFloat(i.total_price).toLocaleString()}</td></tr>`
+    ).join('')
+    win.document.write(`<!DOCTYPE html><html><head><title>Invoice - ${order.order_number}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;font-size:12px}.hdr{text-align:center;margin-bottom:24px;border-bottom:2px solid #000;padding-bottom:16px}.hdr h1{font-size:22px}.info{display:flex;justify-content:space-between;margin-bottom:24px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}.totals{width:260px;margin-left:auto}.totals td{border:none;padding:4px 8px}.total-row{font-weight:bold;font-size:13px;border-top:2px solid #000!important}.ftr{text-align:center;margin-top:32px;padding-top:16px;border-top:1px solid #ddd;color:#666}@media print{body{padding:0}}</style></head><body>
+      <div class="hdr"><h1>Fischer Pakistan</h1><p>Quality Home Appliances</p><p>Invoice #${order.order_number}</p></div>
+      <div class="info"><div><h3 style="margin-bottom:8px">Bill To</h3><p><strong>${order.shipping_first_name} ${order.shipping_last_name}</strong></p><p>${order.shipping_address_line_1}${order.shipping_address_line_2 ? ', ' + order.shipping_address_line_2 : ''}</p><p>${order.shipping_city}${order.shipping_state ? ', ' + order.shipping_state : ''}</p><p>${order.shipping_phone}</p></div><div style="text-align:right"><h3 style="margin-bottom:8px">Details</h3><p><strong>Invoice #:</strong> ${order.order_number}</p><p><strong>Date:</strong> ${new Date(order.created_at).toLocaleDateString()}</p><p><strong>Payment:</strong> ${order.payment_method?.toUpperCase()}</p><p><strong>Status:</strong> ${order.status?.toUpperCase()}</p></div></div>
+      <table><thead><tr><th>Item</th><th>SKU</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${rows}</tbody></table>
+      <table class="totals"><tr><td>Subtotal:</td><td style="text-align:right">Rs. ${parseFloat(order.subtotal || '0').toLocaleString()}</td></tr><tr><td>Shipping:</td><td style="text-align:right">Rs. ${parseFloat(order.shipping_amount || '0').toLocaleString()}</td></tr>${parseFloat(order.discount_amount || '0') > 0 ? `<tr><td>Discount:</td><td style="text-align:right">-Rs. ${parseFloat(order.discount_amount || '0').toLocaleString()}</td></tr>` : ''}<tr class="total-row"><td>Total:</td><td style="text-align:right">Rs. ${parseFloat(order.total || '0').toLocaleString()}</td></tr></table>
+      <div class="ftr"><p>Thank you for shopping with Fischer Pakistan!</p></div></body></html>`)
+    win.document.close()
+    win.print()
+  }
+
+  const STATUS_FLOW: Record<string, string[]> = {
+    pending: ['confirmed', 'cancelled'],
+    confirmed: ['processing', 'cancelled'],
+    processing: ['shipped', 'cancelled'],
+    shipped: ['delivered'],
+    delivered: [],
+    cancelled: [],
   }
 
   const clearFilters = () => { setStatus(''); setPaymentStatus(''); setDateFrom(''); setDateTo(''); setPage(1) }
@@ -467,11 +575,22 @@ function B2cOrdersView() {
                       <td className="px-5 py-4"><span className="text-sm font-semibold text-dark-900 dark:text-white tabular-nums">{formatPrice(order.total)}</span></td>
                       <td className="hidden lg:table-cell px-5 py-4 text-sm text-dark-400 dark:text-dark-500 tabular-nums whitespace-nowrap">{formatDate(order.created_at)}</td>
                       <td className="px-5 py-4">
-                        <Link to={`/admin/orders/${order.order_number}`}
-                          className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all opacity-0 group-hover:opacity-100"
-                          title="View order">
-                          <EyeIcon className="w-4 h-4" />
-                        </Link>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                          <button
+                            onClick={() => openDrawer(order.id)}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all"
+                            title="View details & actions"
+                          >
+                            <EyeIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => { openDrawer(order.id); setTimeout(() => setShowStatusModal(true), 50) }}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+                            title="Update status"
+                          >
+                            <PencilSquareIcon className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -506,6 +625,279 @@ function B2cOrdersView() {
           </>
         )}
       </div>
+
+      {/* ─── Order Detail Drawer ─────────────────────────────────────────── */}
+      {drawerOrderId !== null && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+            onClick={closeDrawer}
+          />
+          {/* Panel */}
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl flex flex-col bg-white dark:bg-dark-800 shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-dark-100 dark:border-dark-700 bg-dark-50/40 dark:bg-dark-700/20 flex-shrink-0">
+              {drawerLoading || !drawerOrder ? (
+                <div className="h-5 w-40 bg-dark-200 dark:bg-dark-600 rounded animate-pulse" />
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-sm font-bold text-dark-900 dark:text-white">#{drawerOrder.order_number}</span>
+                  <StatusBadge status={drawerOrder.status} config={ORDER_STATUS} />
+                  <StatusBadge status={drawerOrder.payment_status} config={PAYMENT_STATUS} />
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                {drawerOrder && (
+                  <>
+                    <button
+                      onClick={() => handlePrint(drawerOrder)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-dark-600 dark:text-dark-300 hover:text-dark-900 dark:hover:text-white border border-dark-200 dark:border-dark-600 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                    >
+                      <PrinterIcon className="w-3.5 h-3.5" /> Print
+                    </button>
+                    <Link
+                      to={`/admin/orders/${drawerOrder.order_number}`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-700/50 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+                    >
+                      Full page
+                    </Link>
+                  </>
+                )}
+                <button
+                  onClick={closeDrawer}
+                  className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-dark-700 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors ml-1"
+                >
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto">
+              {drawerLoading ? (
+                <div className="p-5 space-y-4">
+                  {[80, 120, 200, 100].map((h, i) => (
+                    <div key={i} className="bg-dark-100 dark:bg-dark-700 rounded-xl animate-pulse" style={{ height: h }} />
+                  ))}
+                </div>
+              ) : drawerOrder ? (
+                <div className="p-5 space-y-4">
+
+                  {/* Update Status */}
+                  <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-dark-900 dark:text-white">Order Status</h3>
+                      {STATUS_FLOW[drawerOrder.status]?.length > 0 && (
+                        <button
+                          onClick={() => { setNewStatus(''); setShowStatusModal(!showStatusModal) }}
+                          className="text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                        >
+                          {showStatusModal ? 'Cancel' : 'Update →'}
+                        </button>
+                      )}
+                    </div>
+                    <StatusBadge status={drawerOrder.status} config={ORDER_STATUS} />
+                    {showStatusModal && STATUS_FLOW[drawerOrder.status]?.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-xs text-dark-500 dark:text-dark-400 font-medium">Move to:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {STATUS_FLOW[drawerOrder.status].map(s => (
+                            <button
+                              key={s}
+                              onClick={() => setNewStatus(s)}
+                              className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors capitalize ${
+                                newStatus === s
+                                  ? 'bg-primary-500 text-white border-primary-500'
+                                  : 'border-dark-200 dark:border-dark-600 text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
+                              }`}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          value={statusNotes}
+                          onChange={e => setStatusNotes(e.target.value)}
+                          placeholder="Notes (optional)…"
+                          rows={2}
+                          className="w-full px-3 py-2 text-sm border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                        />
+                        <button
+                          onClick={() => newStatus && statusMutation.mutate({ status: newStatus, notes: statusNotes })}
+                          disabled={!newStatus || statusMutation.isPending}
+                          className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                        >
+                          {statusMutation.isPending ? 'Updating…' : `Confirm → ${newStatus}`}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Order Items */}
+                  <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl overflow-hidden">
+                    <div className="px-4 py-3 border-b border-dark-100 dark:border-dark-600">
+                      <h3 className="text-sm font-semibold text-dark-900 dark:text-white">
+                        Items ({drawerOrder.items?.length || 0})
+                      </h3>
+                    </div>
+                    <div className="divide-y divide-dark-100 dark:divide-dark-600">
+                      {drawerOrder.items?.map(item => (
+                        <div key={item.id} className="flex items-center gap-3 px-4 py-3">
+                          {item.product_image ? (
+                            <img src={item.product_image} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-dark-100 dark:bg-dark-700" loading="lazy" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-dark-100 dark:bg-dark-700 flex-shrink-0 flex items-center justify-center text-dark-400 text-xs">?</div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-dark-900 dark:text-white truncate">
+                              {item.product_name || item.product?.name}
+                            </p>
+                            <p className="text-xs text-dark-400 dark:text-dark-500">
+                              {item.product_sku || item.product?.sku} · Qty {item.quantity}
+                            </p>
+                          </div>
+                          <p className="text-sm font-semibold text-dark-900 dark:text-white tabular-nums flex-shrink-0">
+                            Rs. {parseFloat(item.total_price).toLocaleString()}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-4 py-3 bg-dark-50 dark:bg-dark-700 border-t border-dark-100 dark:border-dark-600 space-y-1">
+                      <div className="flex justify-between text-xs text-dark-500 dark:text-dark-400">
+                        <span>Subtotal</span>
+                        <span>Rs. {parseFloat(drawerOrder.subtotal || '0').toLocaleString()}</span>
+                      </div>
+                      {parseFloat(drawerOrder.shipping_amount || '0') > 0 && (
+                        <div className="flex justify-between text-xs text-dark-500 dark:text-dark-400">
+                          <span>Shipping</span>
+                          <span>Rs. {parseFloat(drawerOrder.shipping_amount).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {parseFloat(drawerOrder.discount_amount || '0') > 0 && (
+                        <div className="flex justify-between text-xs text-emerald-600 dark:text-emerald-400">
+                          <span>Discount</span>
+                          <span>-Rs. {parseFloat(drawerOrder.discount_amount!).toLocaleString()}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-sm font-bold text-dark-900 dark:text-white border-t border-dark-200 dark:border-dark-500 pt-1 mt-1">
+                        <span>Total</span>
+                        <span>Rs. {parseFloat(drawerOrder.total || '0').toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment + Receipt */}
+                  <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4 space-y-3">
+                    <h3 className="text-sm font-semibold text-dark-900 dark:text-white flex items-center gap-2">
+                      <CreditCardIcon className="w-4 h-4" /> Payment
+                    </h3>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-dark-500 dark:text-dark-400">Method</span>
+                      <span className="font-medium text-dark-900 dark:text-white capitalize">
+                        {drawerOrder.payment_method?.replace(/_/g, ' ')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-dark-500 dark:text-dark-400">Status</span>
+                      <StatusBadge status={drawerOrder.payment_status} config={PAYMENT_STATUS} />
+                    </div>
+                    {drawerOrder.payment_proof_url && (
+                      <div>
+                        <p className="text-xs text-dark-500 dark:text-dark-400 mb-2 flex items-center gap-1">
+                          <PhotoIcon className="w-3.5 h-3.5" /> Payment Receipt
+                        </p>
+                        <a href={drawerOrder.payment_proof_url} target="_blank" rel="noopener noreferrer" className="block group">
+                          <img
+                            src={drawerOrder.payment_proof_url}
+                            alt="Payment receipt"
+                            className="w-full rounded-lg border border-dark-200 dark:border-dark-600 object-cover max-h-52 group-hover:opacity-90 transition-opacity"
+                            onError={e => {
+                              const p = (e.target as HTMLImageElement).parentElement
+                              if (p) p.innerHTML = `<span class="text-sm text-primary-600 hover:underline">View receipt →</span>`
+                            }}
+                          />
+                          <p className="text-xs text-dark-400 mt-1 text-center">Click to open full size</p>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Customer + Address */}
+                  <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4 space-y-3">
+                    <h3 className="text-sm font-semibold text-dark-900 dark:text-white flex items-center gap-2">
+                      <UserIcon className="w-4 h-4" /> Customer
+                    </h3>
+                    <p className="text-sm font-medium text-dark-900 dark:text-white">
+                      {drawerOrder.user ? `${drawerOrder.user.first_name} ${drawerOrder.user.last_name}` : `${drawerOrder.shipping_first_name} ${drawerOrder.shipping_last_name}`}
+                    </p>
+                    <p className="text-xs text-dark-500 dark:text-dark-400">
+                      {drawerOrder.user?.email || drawerOrder.shipping_email}
+                    </p>
+                    <p className="text-xs text-dark-500 dark:text-dark-400">
+                      {drawerOrder.user?.phone || drawerOrder.shipping_phone}
+                    </p>
+                    <div className="pt-2 border-t border-dark-100 dark:border-dark-600">
+                      <p className="text-xs text-dark-500 dark:text-dark-400 mb-1 flex items-center gap-1">
+                        <MapPinIcon className="w-3.5 h-3.5" /> Shipping Address
+                      </p>
+                      <p className="text-xs text-dark-700 dark:text-dark-300 leading-relaxed">
+                        {drawerOrder.shipping_address_line_1}
+                        {drawerOrder.shipping_address_line_2 && <>, {drawerOrder.shipping_address_line_2}</>}
+                        <br />
+                        {drawerOrder.shipping_city}{drawerOrder.shipping_state && `, ${drawerOrder.shipping_state}`}
+                        {drawerOrder.shipping_country && `, ${drawerOrder.shipping_country}`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Tracking */}
+                  {drawerOrder.tracking_number && (
+                    <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4 space-y-2">
+                      <h3 className="text-sm font-semibold text-dark-900 dark:text-white flex items-center gap-2">
+                        <TruckIcon className="w-4 h-4" /> Tracking
+                      </h3>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-dark-500 dark:text-dark-400">Courier</span>
+                        <span className="text-dark-900 dark:text-white">{drawerOrder.courier || '-'}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-dark-500 dark:text-dark-400">Tracking #</span>
+                        <span className="text-dark-900 dark:text-white font-mono">{drawerOrder.tracking_number}</span>
+                      </div>
+                      {drawerOrder.tracking_url && (
+                        <a href={drawerOrder.tracking_url} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-primary-600 dark:text-primary-400 hover:underline block">
+                          Track Package →
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {(drawerOrder.customer_notes || drawerOrder.admin_notes) && (
+                    <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4 space-y-2">
+                      {drawerOrder.customer_notes && (
+                        <>
+                          <p className="text-xs font-semibold text-dark-500 dark:text-dark-400 uppercase tracking-wider">Customer Note</p>
+                          <p className="text-sm text-dark-700 dark:text-dark-300">{drawerOrder.customer_notes}</p>
+                        </>
+                      )}
+                      {drawerOrder.admin_notes && (
+                        <>
+                          <p className="text-xs font-semibold text-dark-500 dark:text-dark-400 uppercase tracking-wider mt-2">Admin Note</p>
+                          <p className="text-sm text-dark-700 dark:text-dark-300">{drawerOrder.admin_notes}</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
