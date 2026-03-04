@@ -31,6 +31,7 @@ import {
   MapPinIcon,
   CreditCardIcon,
   UserIcon,
+  EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -313,6 +314,15 @@ function B2cOrdersView() {
   const [newStatus, setNewStatus] = useState('')
   const [statusNotes, setStatusNotes] = useState('')
 
+  // Row dropdown
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null)
+  useEffect(() => {
+    if (openDropdownId === null) return
+    const close = () => setOpenDropdownId(null)
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [openDropdownId])
+
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => { setDebouncedSearch(search); setPage(1) }, 350)
@@ -402,6 +412,27 @@ function B2cOrdersView() {
 
   const openDrawer = (id: number) => { setDrawerOrderId(id); setShowStatusModal(false); setNewStatus(''); setStatusNotes('') }
   const closeDrawer = () => { setDrawerOrderId(null); setShowStatusModal(false) }
+
+  const paymentMutation = useMutation({
+    mutationFn: (payment_status: string) =>
+      api.put(`/api/admin/orders/${drawerOrder?.id}`, { payment_status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
+      queryClient.invalidateQueries({ queryKey: ['b2c-order-detail', drawerOrderId] })
+      toast.success('Payment status updated')
+    },
+    onError: () => toast.error('Failed to update payment status'),
+  })
+
+  const handleQuickPrint = async (orderId: number) => {
+    try {
+      const res = await api.get(`/api/admin/orders/${orderId}`)
+      const order: FullB2cOrder = res.data.data.data || res.data.data
+      handlePrint(order)
+    } catch {
+      toast.error('Could not load order for printing')
+    }
+  }
 
   const handlePrint = (order: FullB2cOrder) => {
     const win = window.open('', '_blank')
@@ -574,22 +605,39 @@ function B2cOrdersView() {
                       </td>
                       <td className="px-5 py-4"><span className="text-sm font-semibold text-dark-900 dark:text-white tabular-nums">{formatPrice(order.total)}</span></td>
                       <td className="hidden lg:table-cell px-5 py-4 text-sm text-dark-400 dark:text-dark-500 tabular-nums whitespace-nowrap">{formatDate(order.created_at)}</td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                      <td className="px-3 py-4">
+                        <div className="relative flex justify-end">
                           <button
-                            onClick={() => openDrawer(order.id)}
-                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all"
-                            title="View details & actions"
+                            onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === order.id ? null : order.id) }}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-dark-700 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 transition-all opacity-0 group-hover:opacity-100"
                           >
-                            <EyeIcon className="w-4 h-4" />
+                            <EllipsisVerticalIcon className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => { openDrawer(order.id); setTimeout(() => setShowStatusModal(true), 50) }}
-                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
-                            title="Update status"
-                          >
-                            <PencilSquareIcon className="w-4 h-4" />
-                          </button>
+                          {openDropdownId === order.id && (
+                            <div
+                              onClick={(e) => e.stopPropagation()}
+                              className="absolute right-0 top-full mt-1 z-30 w-44 bg-white dark:bg-dark-800 rounded-xl border border-dark-100 dark:border-dark-700 shadow-xl py-1"
+                            >
+                              <button
+                                onClick={() => { openDrawer(order.id); setOpenDropdownId(null) }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                              >
+                                <EyeIcon className="w-4 h-4 text-dark-400" /> View Details
+                              </button>
+                              <button
+                                onClick={() => { openDrawer(order.id); setShowStatusModal(true); setOpenDropdownId(null) }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                              >
+                                <PencilSquareIcon className="w-4 h-4 text-dark-400" /> Update Status
+                              </button>
+                              <button
+                                onClick={() => { handleQuickPrint(order.id); setOpenDropdownId(null) }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                              >
+                                <PrinterIcon className="w-4 h-4 text-dark-400" /> Print Invoice
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -802,6 +850,15 @@ function B2cOrdersView() {
                       <span className="text-dark-500 dark:text-dark-400">Status</span>
                       <StatusBadge status={drawerOrder.payment_status} config={PAYMENT_STATUS} />
                     </div>
+                    {drawerOrder.payment_method === 'bank_transfer' && drawerOrder.payment_status === 'pending' && (
+                      <button
+                        onClick={() => paymentMutation.mutate('paid')}
+                        disabled={paymentMutation.isPending}
+                        className="w-full py-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                      >
+                        {paymentMutation.isPending ? 'Updating…' : '✓ Mark as Paid (Receipt Verified)'}
+                      </button>
+                    )}
                     {drawerOrder.payment_proof_url && (
                       <div>
                         <p className="text-xs text-dark-500 dark:text-dark-400 mb-2 flex items-center gap-1">
