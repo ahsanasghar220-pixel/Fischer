@@ -255,32 +255,6 @@ function SalespersonStatsTable({ stats }: { stats: OrderStats['by_salesperson'] 
   )
 }
 
-function B2bStatusUpdater({ order, onUpdated }: { order: B2bOrder; onUpdated: (o: B2bOrder) => void }) {
-  const [saving, setSaving] = useState(false)
-  const handleChange = async (newStatus: string) => {
-    if (newStatus === order.status) return
-    setSaving(true)
-    try {
-      const updated = await updateOrderStatus(order.id, { status: newStatus as B2bOrderStatus })
-      onUpdated(updated)
-    } catch { /* ignore */ } finally { setSaving(false) }
-  }
-  return (
-    <div className="relative">
-      <select
-        value={order.status}
-        onChange={e => handleChange(e.target.value)}
-        disabled={saving}
-        className="text-xs font-semibold border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white py-1.5 pl-2.5 pr-7 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer disabled:opacity-50"
-      >
-        {Object.entries(B2B_STATUS).map(([v, c]) => (
-          <option key={v} value={v}>{c.label}</option>
-        ))}
-      </select>
-      {saving && <span className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 border border-primary-500 border-t-transparent rounded-full animate-spin" />}
-    </div>
-  )
-}
 
 // ─── B2C Orders view ───────────────────────────────────────────────────────────
 
@@ -984,8 +958,20 @@ function B2bOrdersView() {
   const [lastPage, setLastPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [expandedRows, setExpandedRows] = useState<number[]>([])
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Drawer + dropdown state
+  const [b2bDrawerOrder, setB2bDrawerOrder] = useState<B2bOrder | null>(null)
+  const [b2bShowStatusPanel, setB2bShowStatusPanel] = useState(false)
+  const [b2bNewStatus, setB2bNewStatus] = useState('')
+  const [b2bStatusSaving, setB2bStatusSaving] = useState(false)
+  const [openB2bDropdownId, setOpenB2bDropdownId] = useState<number | null>(null)
+  useEffect(() => {
+    if (openB2bDropdownId === null) return
+    const close = () => setOpenB2bDropdownId(null)
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [openB2bDropdownId])
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
   const { data: statsData, refetch: refetchStats } = useQuery<OrderStats>({
@@ -1035,10 +1021,40 @@ function B2bOrdersView() {
 
   const handleStatusUpdate = (updated: B2bOrder) => {
     setOrders(prev => prev.map(o => o.id === updated.id ? updated : o))
+    if (b2bDrawerOrder?.id === updated.id) setB2bDrawerOrder(updated)
     refetchStats()
   }
 
-  const toggleRow = (id: number) => setExpandedRows(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  const B2B_STATUS_FLOW: Record<string, string[]> = {
+    pending: ['in_production', 'cancelled'],
+    in_production: ['ready', 'cancelled'],
+    ready: ['delivered'],
+    delivered: [],
+    cancelled: [],
+  }
+
+  const openB2bDrawer = (order: B2bOrder, withStatus = false) => {
+    setB2bDrawerOrder(order)
+    setB2bShowStatusPanel(withStatus)
+    setB2bNewStatus('')
+  }
+  const closeB2bDrawer = () => { setB2bDrawerOrder(null); setB2bShowStatusPanel(false) }
+
+  const handleB2bStatusUpdate = async () => {
+    if (!b2bDrawerOrder || !b2bNewStatus) return
+    setB2bStatusSaving(true)
+    try {
+      const updated = await updateOrderStatus(b2bDrawerOrder.id, { status: b2bNewStatus as B2bOrderStatus })
+      handleStatusUpdate(updated)
+      setB2bShowStatusPanel(false)
+      setB2bNewStatus('')
+      toast.success('Order status updated')
+    } catch {
+      toast.error('Failed to update status')
+    } finally {
+      setB2bStatusSaving(false)
+    }
+  }
 
   const handleExport = async () => {
     setExporting(true)
@@ -1190,77 +1206,65 @@ function B2bOrdersView() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-dark-100 dark:border-dark-700">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider w-8" />
                     <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Order</th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Salesperson</th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Dealer / City</th>
                     <th className="hidden md:table-cell text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Brand</th>
                     <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Status</th>
                     <th className="hidden lg:table-cell text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Date</th>
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-dark-400 dark:text-dark-500 uppercase tracking-wider">Update</th>
+                    <th className="w-12 px-5 py-3" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-dark-100 dark:divide-dark-700/60">
-                  {orders.map(order => {
-                    const isExpanded = expandedRows.includes(order.id)
-                    return (
-                      <>
-                        <tr key={order.id} className="group hover:bg-dark-50/60 dark:hover:bg-dark-700/25 transition-colors">
-                          <td className="px-3 py-4">
-                            <button onClick={() => toggleRow(order.id)}
-                              className="w-7 h-7 flex items-center justify-center rounded-lg text-dark-400 hover:text-dark-700 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-600 transition-all">
-                              {isExpanded ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
-                            </button>
-                          </td>
-                          <td className="px-5 py-4">
-                            <span className="text-sm font-semibold text-dark-900 dark:text-white font-mono tracking-tight">#{order.order_number}</span>
-                            <p className="text-xs text-dark-400 dark:text-dark-500 mt-0.5">{order.items?.length ?? 0} item{(order.items?.length ?? 0) !== 1 ? 's' : ''}</p>
-                          </td>
-                          <td className="px-5 py-4">
-                            <p className="text-sm font-medium text-dark-900 dark:text-white">{order.salesperson?.full_name ?? '—'}</p>
-                          </td>
-                          <td className="px-5 py-4">
-                            <p className="text-sm font-medium text-dark-900 dark:text-white truncate max-w-[140px]">{order.dealer_name}</p>
-                            <p className="text-xs text-dark-400 dark:text-dark-500 mt-0.5">{order.city}</p>
-                          </td>
-                          <td className="hidden md:table-cell px-5 py-4">
-                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300">{order.brand_name}</span>
-                          </td>
-                          <td className="px-5 py-4"><B2bStatusBadge status={order.status} /></td>
-                          <td className="hidden lg:table-cell px-5 py-4 text-sm text-dark-400 dark:text-dark-500 whitespace-nowrap">{formatDate(order.created_at)}</td>
-                          <td className="px-5 py-4"><B2bStatusUpdater order={order} onUpdated={handleStatusUpdate} /></td>
-                        </tr>
-                        {isExpanded && (
-                          <tr key={`${order.id}-expanded`} className="bg-dark-50/50 dark:bg-dark-900/30">
-                            <td colSpan={8} className="px-8 py-4">
-                              <div className="space-y-2">
-                                {order.remarks && <p className="text-xs text-dark-500 dark:text-dark-400 italic mb-2">"{order.remarks}"</p>}
-                                <table className="w-full text-sm">
-                                  <thead>
-                                    <tr>
-                                      {['SKU', 'Product', 'Qty', 'Notes'].map(h => (
-                                        <th key={h} className="text-left text-xs font-semibold text-dark-400 dark:text-dark-500 pb-1.5 pr-4 uppercase tracking-wide">{h}</th>
-                                      ))}
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-dark-100 dark:divide-dark-700">
-                                    {(order.items ?? []).map(item => (
-                                      <tr key={item.id}>
-                                        <td className="py-1.5 pr-4 font-mono text-xs text-dark-500 dark:text-dark-400 whitespace-nowrap">{item.sku || '—'}</td>
-                                        <td className="py-1.5 pr-4 font-medium text-dark-900 dark:text-white">{item.product_name}</td>
-                                        <td className="py-1.5 pr-4 font-bold text-dark-900 dark:text-white w-12">{item.quantity}</td>
-                                        <td className="py-1.5 text-dark-400 dark:text-dark-500 text-xs">{item.notes || '—'}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </>
-                    )
-                  })}
+                  {orders.map(order => (
+                    <tr key={order.id} className="group hover:bg-dark-50/60 dark:hover:bg-dark-700/25 transition-colors">
+                      <td className="px-5 py-4">
+                        <span className="text-sm font-semibold text-dark-900 dark:text-white font-mono tracking-tight">#{order.order_number}</span>
+                        <p className="text-xs text-dark-400 dark:text-dark-500 mt-0.5">{order.items?.length ?? 0} item{(order.items?.length ?? 0) !== 1 ? 's' : ''}</p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="text-sm font-medium text-dark-900 dark:text-white">{order.salesperson?.full_name ?? '—'}</p>
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate max-w-[140px]">{order.dealer_name}</p>
+                        <p className="text-xs text-dark-400 dark:text-dark-500 mt-0.5">{order.city}</p>
+                      </td>
+                      <td className="hidden md:table-cell px-5 py-4">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300">{order.brand_name}</span>
+                      </td>
+                      <td className="px-5 py-4"><B2bStatusBadge status={order.status} /></td>
+                      <td className="hidden lg:table-cell px-5 py-4 text-sm text-dark-400 dark:text-dark-500 whitespace-nowrap">{formatDate(order.created_at)}</td>
+                      <td className="px-3 py-4">
+                        <div className="relative flex justify-end">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setOpenB2bDropdownId(openB2bDropdownId === order.id ? null : order.id) }}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-dark-700 dark:hover:text-dark-200 hover:bg-dark-100 dark:hover:bg-dark-700 transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            <EllipsisVerticalIcon className="w-4 h-4" />
+                          </button>
+                          {openB2bDropdownId === order.id && (
+                            <div
+                              onClick={(e) => e.stopPropagation()}
+                              className="absolute right-0 top-full mt-1 z-30 w-44 bg-white dark:bg-dark-800 rounded-xl border border-dark-100 dark:border-dark-700 shadow-xl py-1"
+                            >
+                              <button
+                                onClick={() => { openB2bDrawer(order); setOpenB2bDropdownId(null) }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                              >
+                                <EyeIcon className="w-4 h-4 text-dark-400" /> View Details
+                              </button>
+                              <button
+                                onClick={() => { openB2bDrawer(order, true); setOpenB2bDropdownId(null) }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-dark-700 dark:text-dark-200 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors"
+                              >
+                                <PencilSquareIcon className="w-4 h-4 text-dark-400" /> Update Status
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -1292,6 +1296,138 @@ function B2bOrdersView() {
           </>
         )}
       </div>
+
+      {/* ─── B2B Order Detail Drawer ─────────────────────────────────────── */}
+      {b2bDrawerOrder && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={closeB2bDrawer} />
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl flex flex-col bg-white dark:bg-dark-800 shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-dark-100 dark:border-dark-700 bg-dark-50/40 dark:bg-dark-700/20 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-sm font-bold text-dark-900 dark:text-white">#{b2bDrawerOrder.order_number}</span>
+                <B2bStatusBadge status={b2bDrawerOrder.status} />
+              </div>
+              <button
+                onClick={closeB2bDrawer}
+                className="flex items-center justify-center w-8 h-8 rounded-lg text-dark-400 hover:text-dark-700 dark:hover:text-white hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+
+              {/* Status Update */}
+              <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-dark-900 dark:text-white">Order Status</h3>
+                  {(B2B_STATUS_FLOW[b2bDrawerOrder.status]?.length ?? 0) > 0 && (
+                    <button
+                      onClick={() => { setB2bNewStatus(''); setB2bShowStatusPanel(!b2bShowStatusPanel) }}
+                      className="text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                    >
+                      {b2bShowStatusPanel ? 'Cancel' : 'Update →'}
+                    </button>
+                  )}
+                </div>
+                <B2bStatusBadge status={b2bDrawerOrder.status} />
+                {b2bShowStatusPanel && (B2B_STATUS_FLOW[b2bDrawerOrder.status]?.length ?? 0) > 0 && (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-xs text-dark-500 dark:text-dark-400 font-medium">Move to:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {B2B_STATUS_FLOW[b2bDrawerOrder.status].map(s => (
+                        <button
+                          key={s}
+                          onClick={() => setB2bNewStatus(s)}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors capitalize ${
+                            b2bNewStatus === s
+                              ? 'bg-primary-500 text-white border-primary-500'
+                              : 'border-dark-200 dark:border-dark-600 text-dark-700 dark:text-dark-300 hover:bg-dark-50 dark:hover:bg-dark-700'
+                          }`}
+                        >
+                          {B2B_STATUS[s]?.label ?? s}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleB2bStatusUpdate}
+                      disabled={!b2bNewStatus || b2bStatusSaving}
+                      className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                    >
+                      {b2bStatusSaving ? 'Updating…' : `Confirm → ${B2B_STATUS[b2bNewStatus]?.label ?? b2bNewStatus}`}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Order Items */}
+              <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-dark-100 dark:border-dark-600">
+                  <h3 className="text-sm font-semibold text-dark-900 dark:text-white">
+                    Items ({b2bDrawerOrder.items?.length ?? 0})
+                  </h3>
+                </div>
+                <div className="divide-y divide-dark-100 dark:divide-dark-600">
+                  {(b2bDrawerOrder.items ?? []).map(item => (
+                    <div key={item.id} className="flex items-center gap-3 px-4 py-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-dark-900 dark:text-white truncate">{item.product_name}</p>
+                        <p className="text-xs text-dark-400 dark:text-dark-500">
+                          {item.sku || '—'} · Qty <span className="font-bold text-dark-700 dark:text-dark-200">{item.quantity}</span>
+                          {item.notes && <span className="ml-2 italic">· {item.notes}</span>}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  {(!b2bDrawerOrder.items || b2bDrawerOrder.items.length === 0) && (
+                    <p className="px-4 py-4 text-sm text-dark-400 dark:text-dark-500">No items</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Dealer + Salesperson Info */}
+              <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4 space-y-3">
+                <h3 className="text-sm font-semibold text-dark-900 dark:text-white flex items-center gap-2">
+                  <UserIcon className="w-4 h-4" /> Dealer & Salesperson
+                </h3>
+                <div className="flex justify-between text-sm">
+                  <span className="text-dark-500 dark:text-dark-400">Dealer</span>
+                  <span className="font-medium text-dark-900 dark:text-white">{b2bDrawerOrder.dealer_name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-dark-500 dark:text-dark-400">City</span>
+                  <span className="text-dark-900 dark:text-white">{b2bDrawerOrder.city}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-dark-500 dark:text-dark-400">Brand</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300">
+                    {b2bDrawerOrder.brand_name}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-dark-500 dark:text-dark-400">Salesperson</span>
+                  <span className="text-dark-900 dark:text-white">{b2bDrawerOrder.salesperson?.full_name ?? '—'}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-dark-500 dark:text-dark-400">Date</span>
+                  <span className="text-dark-900 dark:text-white">{formatDate(b2bDrawerOrder.created_at)}</span>
+                </div>
+              </div>
+
+              {/* Remarks */}
+              {b2bDrawerOrder.remarks && (
+                <div className="bg-white dark:bg-dark-700/50 border border-dark-100 dark:border-dark-600 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-dark-500 dark:text-dark-400 uppercase tracking-wider mb-1">Remarks</p>
+                  <p className="text-sm text-dark-700 dark:text-dark-300 italic">"{b2bDrawerOrder.remarks}"</p>
+                </div>
+              )}
+
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
