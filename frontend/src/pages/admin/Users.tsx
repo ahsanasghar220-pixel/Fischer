@@ -338,8 +338,9 @@ export default function AdminUsers() {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-dark-800 rounded-xl w-full max-w-lg mt-2 mb-8 shadow-xl">
+        <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="bg-white dark:bg-dark-800 rounded-xl w-full max-w-lg shadow-xl">
             <div className="flex items-center justify-between p-6 border-b border-dark-200 dark:border-dark-700">
               <h2 className="text-lg font-semibold text-dark-900 dark:text-white">
                 {editingId ? 'Edit User' : 'Add User'}
@@ -508,6 +509,7 @@ export default function AdminUsers() {
                 </button>
               </div>
             </form>
+          </div>
           </div>
         </div>
       )}
