@@ -32,7 +32,7 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to')->nullable();
             $table->timestamp('resolved_at')->nullable();
             $table->text('resolution_notes')->nullable();
-            $table->foreignId('filed_by_id')->constrained('users')->nullOnDelete();
+            $table->foreignId('filed_by_id')->nullable()->constrained('users')->nullOnDelete();
             $table->enum('filed_by_type', ['salesperson', 'admin_staff', 'self']);
             $table->timestamps();
 

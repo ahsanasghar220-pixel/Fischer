@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('complaint_activity_log', function (Blueprint $table) {
             $table->id();
             $table->foreignId('complaint_id')->constrained('complaints')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->enum('action_type', ['status_change', 'assignment', 'comment', 'note']);
             $table->string('old_status')->nullable();
             $table->string('new_status')->nullable();

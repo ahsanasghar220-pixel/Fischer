@@ -31,7 +31,7 @@ class Complaint extends Model
         'assigned_to',
         'resolved_at',
         'resolution_notes',
-        'filed_by_id',
+        'filed_by_id',   // nullable — set to null if user deleted
         'filed_by_type',
     ];
 
