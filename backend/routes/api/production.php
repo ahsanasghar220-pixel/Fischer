@@ -19,6 +19,7 @@ Route::middleware(['auth:sanctum', 'role:production_manager|admin|super-admin'])
 
 Route::middleware(['auth:sanctum', 'role:salesperson|admin|super-admin'])->group(function () {
     Route::get('/production/my-orders', [SalesOrderController::class, 'myOrders']);
+    Route::get('/production/dealers', [SalesOrderController::class, 'dealers']);
     Route::post('/production/orders', [SalesOrderController::class, 'store']);
     Route::get('/production/orders/{order}', [SalesOrderController::class, 'show']);
 });

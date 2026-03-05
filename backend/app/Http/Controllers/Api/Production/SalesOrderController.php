@@ -319,6 +319,33 @@ class SalesOrderController extends Controller
     }
 
     /**
+     * GET /api/production/dealers?q=ayaz
+     * Returns distinct dealer names (+ last used city) from the salesperson's
+     * own past orders, filtered by search term.
+     */
+    public function dealers(Request $request): JsonResponse
+    {
+        $q = trim($request->get('q', ''));
+
+        $query = B2bOrder::where('salesperson_id', auth()->id())
+            ->select('dealer_name', DB::raw('MAX(city) as city'), DB::raw('MAX(created_at) as last_used'))
+            ->groupBy('dealer_name')
+            ->orderByDesc('last_used')
+            ->limit(10);
+
+        if ($q !== '') {
+            $query->where('dealer_name', 'like', "%{$q}%");
+        }
+
+        $dealers = $query->get()->map(fn($d) => [
+            'name' => $d->dealer_name,
+            'city' => $d->city,
+        ]);
+
+        return response()->json(['data' => $dealers]);
+    }
+
+    /**
      * GET /api/production/products/{product}/variants
      * Returns attribute dimensions + variants for the product picker variant selector.
      */
