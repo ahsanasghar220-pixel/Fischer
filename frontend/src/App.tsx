@@ -132,6 +132,7 @@ const Categories = lazy(() => import('./pages/categories'))
 
 // Marketing
 const AdminAttributes = lazy(() => import('./pages/admin/attributes'))
+const AdminStock = lazy(() => import('./pages/admin/stock'))
 const AdminMarketingDashboard = lazy(() => import('./pages/admin/marketing'))
 const AdminMarketingIntegrations = lazy(() => import('./pages/admin/marketing/integrations'))
 const AdminMarketingAbandonedCarts = lazy(() => import('./pages/admin/marketing/abandoned-carts'))
@@ -232,6 +233,7 @@ function App() {
           <Route path="coupons" element={<AdminCoupons />} />
           <Route path="sales" element={<AdminSales />} />
           <Route path="attributes" element={<AdminAttributes />} />
+          <Route path="stock" element={<AdminStock />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="marketing" element={<AdminMarketingDashboard />} />

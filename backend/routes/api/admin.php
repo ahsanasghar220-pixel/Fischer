@@ -180,6 +180,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:admin|super-admin|orde
         Route::put('/{id}/toggle', [App\Http\Controllers\Api\Admin\SaleController::class, 'toggle']);
     });
 
+    // Stock Management
+    Route::prefix('stock')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\Admin\StockController::class, 'index']);
+        Route::put('/bulk', [App\Http\Controllers\Api\Admin\StockController::class, 'bulk']);
+        Route::put('/set-all', [App\Http\Controllers\Api\Admin\StockController::class, 'setAll']);
+    });
+
     // User Management
     Route::prefix('users')->group(function () {
         Route::get('/', [App\Http\Controllers\Api\Admin\UserManagementController::class, 'index']);
