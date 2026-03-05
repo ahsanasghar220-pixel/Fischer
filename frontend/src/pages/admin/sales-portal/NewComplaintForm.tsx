@@ -199,6 +199,7 @@ export default function NewComplaintForm() {
 
     if (!complainantName.trim()) { setErrorMessage('Complainant name is required.'); return }
     if (!complainantPhone.trim()) { setErrorMessage('Phone number is required.'); return }
+    if (!complainantCity) { setErrorMessage('Please select a city.'); return }
     if (!category) { setErrorMessage('Please select a complaint category.'); return }
     if (description.trim().length < 20) { setErrorMessage('Description must be at least 20 characters.'); return }
 
@@ -386,7 +387,7 @@ export default function NewComplaintForm() {
                 />
               </div>
               <div>
-                <label className={LABEL_CLS}>City</label>
+                <label className={LABEL_CLS}>City *</label>
                 <select
                   value={complainantCity}
                   onChange={(e) => setComplainantCity(e.target.value)}

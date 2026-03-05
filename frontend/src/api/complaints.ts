@@ -56,7 +56,7 @@ export async function getComplaint(id: number): Promise<Complaint> {
 
 export async function createComplaint(payload: CreateComplaintPayload): Promise<Complaint> {
   const response = await api.post('/api/complaints', payload)
-  return response.data.data
+  return response.data.data.complaint
 }
 
 export async function updateComplaintStatus(
@@ -88,7 +88,7 @@ export async function uploadComplaintAttachment(
   file: File,
 ): Promise<ComplaintAttachment> {
   const formData = new FormData()
-  formData.append('attachment', file)
+  formData.append('file', file)
   const response = await api.post(`/api/complaints/${id}/attachments`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
