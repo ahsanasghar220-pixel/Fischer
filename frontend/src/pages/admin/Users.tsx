@@ -61,6 +61,9 @@ const roleLabels: Record<string, string> = {
   'admin': 'Admin',
   'order-manager': 'Order Manager',
   'content-manager': 'Content Manager',
+  'salesperson': 'Salesperson',
+  'production_manager': 'Production Manager',
+  'complaints_manager': 'Complaints Manager',
 }
 
 const roleBadge = (role: string) => {
@@ -73,6 +76,12 @@ const roleBadge = (role: string) => {
       return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
     case 'content-manager':
       return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+    case 'salesperson':
+      return 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400'
+    case 'production_manager':
+      return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
+    case 'complaints_manager':
+      return 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
     default:
       return 'bg-dark-100 text-dark-600 dark:bg-dark-700 dark:text-dark-400'
   }
@@ -330,7 +339,7 @@ export default function AdminUsers() {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-dark-800 rounded-xl w-full max-w-lg my-8 shadow-xl">
+          <div className="bg-white dark:bg-dark-800 rounded-xl w-full max-w-lg mt-2 mb-8 shadow-xl">
             <div className="flex items-center justify-between p-6 border-b border-dark-200 dark:border-dark-700">
               <h2 className="text-lg font-semibold text-dark-900 dark:text-white">
                 {editingId ? 'Edit User' : 'Add User'}
@@ -456,11 +465,17 @@ export default function AdminUsers() {
                   <option value="order-manager">Order Manager</option>
                   <option value="content-manager">Content Manager</option>
                   <option value="admin">Admin</option>
+                  <option value="salesperson">Salesperson</option>
+                  <option value="production_manager">Production Manager</option>
+                  <option value="complaints_manager">Complaints Manager</option>
                 </select>
                 <p className="text-xs text-dark-400 mt-1">
                   {form.role === 'order-manager' && 'Can manage orders, customers, and service requests'}
                   {form.role === 'content-manager' && 'Can manage products, categories, bundles, pages, reviews, and sales'}
                   {form.role === 'admin' && 'Full access to all admin features except user management'}
+                  {form.role === 'salesperson' && 'Can place B2B orders and file complaints via the Sales Portal'}
+                  {form.role === 'production_manager' && 'Can manage production inventory and view the production dashboard'}
+                  {form.role === 'complaints_manager' && 'Can manage and resolve customer complaints'}
                 </p>
               </div>
 
