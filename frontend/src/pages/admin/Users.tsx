@@ -338,7 +338,7 @@ export default function AdminUsers() {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto !mt-0">
           <div className="flex min-h-full items-center justify-center p-4">
           <div className="bg-white dark:bg-dark-800 rounded-xl w-full max-w-lg shadow-xl">
             <div className="flex items-center justify-between p-6 border-b border-dark-200 dark:border-dark-700">
