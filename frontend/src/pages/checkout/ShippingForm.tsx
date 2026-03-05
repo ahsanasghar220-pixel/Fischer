@@ -1,7 +1,100 @@
-import { ChevronDownIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
+import { ChevronDownIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import { PAKISTAN_CITIES } from '@/data'
 import type { Address, CheckoutForm } from './useCheckout'
+
+// ── Validation helpers ────────────────────────────────────────────────────────
+
+/**
+ * Pakistan phone validation.
+ * Accepts:
+ *   03XXXXXXXXX          — standard 11-digit mobile (all operators)
+ *   0300-1234567         — hyphenated
+ *   0300 1234567         — spaced
+ *   +923001234567        — international with +
+ *   00923001234567       — international with 0092
+ */
+function validatePhone(raw: string): string | null {
+  if (!raw.trim()) return 'Phone number is required'
+
+  // Strip formatting characters to get the digit-only form
+  let normalized = raw.trim().replace(/[\s\-()]/g, '')
+
+  // Normalize international prefix → local 0X format
+  if (normalized.startsWith('+92')) {
+    normalized = '0' + normalized.slice(3)
+  } else if (normalized.startsWith('0092')) {
+    normalized = '0' + normalized.slice(4)
+  }
+
+  // After stripping separators only digits should remain
+  if (!/^\d+$/.test(normalized)) {
+    return 'Only digits, spaces, hyphens, and + are allowed'
+  }
+
+  if (normalized.length !== 11) {
+    return `Must be 11 digits — you have ${normalized.length} (e.g., 03001234567)`
+  }
+
+  // Pakistan mobiles always start with 03
+  if (!normalized.startsWith('03')) {
+    return 'Pakistani mobile numbers start with 03 (e.g., 0300, 0311, 0321, 0333…)'
+  }
+
+  return null
+}
+
+/**
+ * Email validation covering the common Pakistani edge-cases:
+ * blocks spaces, consecutive dots, missing domain TLD, etc.
+ */
+function validateEmail(value: string): string | null {
+  if (!value.trim()) return 'Email address is required'
+  if (value.includes(' '))  return 'Email cannot contain spaces'
+  if (/\.{2,}/.test(value)) return 'Email cannot contain consecutive dots (..)'
+  if (value.startsWith('.') || value.endsWith('.')) return 'Email cannot start or end with a dot'
+
+  const parts = value.split('@')
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return 'Please enter a valid email (e.g., name@gmail.com)'
+
+  const [local, domain] = parts
+  if (!local) return 'Missing part before @'
+  if (!domain.includes('.')) return 'Domain must include a dot (e.g., gmail.com)'
+
+  const domainParts = domain.split('.')
+  if (domainParts.some(p => p.length === 0)) return 'Invalid domain format'
+  const tld = domainParts[domainParts.length - 1]
+  if (tld.length < 2) return 'Domain extension too short (e.g., .com, .pk, .net)'
+
+  // Standard RFC-5322-ish pattern
+  const re = /^[a-zA-Z0-9][a-zA-Z0-9._+\-]*[a-zA-Z0-9]?@[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/
+  if (!re.test(value)) return 'Please enter a valid email address'
+
+  return null
+}
+
+// Allow only digits + formatting keys on phone input
+function onPhoneKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  const nav = ['Backspace','Delete','Tab','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End']
+  if (nav.includes(e.key)) return
+  if ((e.ctrlKey || e.metaKey) && ['a','c','v','x','z'].includes(e.key.toLowerCase())) return
+  if (/^[\d+\-\s]$/.test(e.key)) return
+  e.preventDefault()
+}
+
+// Prevent paste of non-phone characters
+function onPhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+  const pasted = e.clipboardData.getData('text')
+  if (!/^[\d+\-\s()]+$/.test(pasted)) e.preventDefault()
+}
+
+// Block spaces in email field
+function onEmailKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key === ' ') e.preventDefault()
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 interface ShippingFormProps {
   form: CheckoutForm
@@ -13,6 +106,21 @@ interface ShippingFormProps {
   onNext: () => void
 }
 
+const inputBase =
+  'w-full px-4 py-2 border rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 transition-colors'
+const inputNormal = `${inputBase} border-dark-200 dark:border-dark-600 focus:ring-primary-500`
+const inputError  = `${inputBase} border-red-400 dark:border-red-500 focus:ring-red-400`
+
+function FieldError({ msg }: { msg?: string }) {
+  if (!msg) return null
+  return (
+    <p className="mt-1 flex items-center gap-1 text-xs text-red-500 dark:text-red-400">
+      <ExclamationCircleIcon className="w-3.5 h-3.5 shrink-0" />
+      {msg}
+    </p>
+  )
+}
+
 export default function ShippingForm({
   form,
   addresses,
@@ -22,6 +130,48 @@ export default function ShippingForm({
   handleAddressSelect,
   onNext,
 }: ShippingFormProps) {
+  const [errors, setErrors]   = useState<{ email?: string; phone?: string }>({})
+  const [touched, setTouched] = useState<{ email?: boolean; phone?: boolean }>({})
+
+  // Live-validate if already touched
+  const liveValidate = (field: 'email' | 'phone', value: string) => {
+    if (!touched[field]) return
+    setErrors(prev => ({
+      ...prev,
+      [field]: (field === 'email' ? validateEmail(value) : validatePhone(value)) ?? undefined,
+    }))
+  }
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.includes(' ')) return          // block spaces silently
+    handleInputChange(e)
+    liveValidate('email', e.target.value)
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e)
+    liveValidate('phone', e.target.value)
+  }
+
+  const blurEmail = () => {
+    setTouched(p => ({ ...p, email: true }))
+    setErrors(p => ({ ...p, email: validateEmail(form.email) ?? undefined }))
+  }
+
+  const blurPhone = () => {
+    setTouched(p => ({ ...p, phone: true }))
+    setErrors(p => ({ ...p, phone: validatePhone(form.shipping_phone) ?? undefined }))
+  }
+
+  const handleNext = () => {
+    const emailErr = validateEmail(form.email)
+    const phoneErr = validatePhone(form.shipping_phone)
+    setTouched({ email: true, phone: true })
+    setErrors({ email: emailErr ?? undefined, phone: phoneErr ?? undefined })
+    if (emailErr || phoneErr) return
+    onNext()
+  }
+
   return (
     <motion.div
       key="step1"
@@ -36,9 +186,7 @@ export default function ShippingForm({
       {/* Saved Addresses */}
       {addresses && addresses.length > 0 && (
         <div className="mb-6">
-          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">
-            Saved Addresses
-          </label>
+          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">Saved Addresses</label>
           <div className="grid gap-3">
             {addresses.map((address) => (
               <div
@@ -56,21 +204,13 @@ export default function ShippingForm({
                     {address.is_default && (
                       <span className="ml-2 text-xs bg-dark-100 dark:bg-dark-700 text-dark-600 dark:text-dark-300 px-2 py-0.5 rounded">Default</span>
                     )}
-                    <p className="text-sm text-dark-600 dark:text-dark-400 mt-1">
-                      {address.name} • {address.phone}
-                    </p>
-                    <p className="text-sm text-dark-500 dark:text-dark-400">
-                      {address.address_line_1}, {address.city}
-                    </p>
+                    <p className="text-sm text-dark-600 dark:text-dark-400 mt-1">{address.name} • {address.phone}</p>
+                    <p className="text-sm text-dark-500 dark:text-dark-400">{address.address_line_1}, {address.city}</p>
                   </div>
                   <div className={`w-5 h-5 rounded-full border-2 ${
-                    selectedAddress?.id === address.id
-                      ? 'border-primary-500 bg-primary-500'
-                      : 'border-dark-300 dark:border-dark-500'
+                    selectedAddress?.id === address.id ? 'border-primary-500 bg-primary-500' : 'border-dark-300 dark:border-dark-500'
                   }`}>
-                    {selectedAddress?.id === address.id && (
-                      <CheckCircleIcon className="w-full h-full text-white" />
-                    )}
+                    {selectedAddress?.id === address.id && <CheckCircleIcon className="w-full h-full text-white" />}
                   </div>
                 </div>
               </div>
@@ -82,20 +222,28 @@ export default function ShippingForm({
         </div>
       )}
 
-      {/* Guest Email */}
-      {!isAuthenticated && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Email *</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-            required
-          />
-        </div>
-      )}
+      {/* Email — always shown */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
+          Email Address *
+          {isAuthenticated && (
+            <span className="ml-2 text-xs font-normal text-dark-400">(used for order confirmation)</span>
+          )}
+        </label>
+        <input
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={handleEmailChange}
+          onBlur={blurEmail}
+          onKeyDown={onEmailKeyDown}
+          autoComplete="email"
+          placeholder="you@example.com"
+          className={touched.email && errors.email ? inputError : inputNormal}
+          required
+        />
+        <FieldError msg={touched.email ? errors.email : undefined} />
+      </div>
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
@@ -105,23 +253,31 @@ export default function ShippingForm({
             name="shipping_name"
             value={form.shipping_name}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className={inputNormal}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Phone *</label>
+          <label className="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">Phone Number *</label>
           <input
             type="tel"
             name="shipping_phone"
             value={form.shipping_phone}
-            onChange={handleInputChange}
-            placeholder="03XX-XXXXXXX or 03XX XXXXXXX"
-            pattern="^03[0-9]{2}[-\s]?[0-9]{7}$"
-            title="Please enter a valid Pakistani phone number (e.g., 03001234567, 0300-1234567, or 0300 1234567)"
-            className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            onChange={handlePhoneChange}
+            onBlur={blurPhone}
+            onKeyDown={onPhoneKeyDown}
+            onPaste={onPhonePaste}
+            autoComplete="tel"
+            placeholder="03001234567 or +923001234567"
+            className={touched.phone && errors.phone ? inputError : inputNormal}
             required
           />
+          <FieldError msg={touched.phone ? errors.phone : undefined} />
+          {!errors.phone && (
+            <p className="mt-1 text-xs text-dark-400">
+              Jazz / Zong / Telenor / Ufone — 11 digits (e.g., 03001234567)
+            </p>
+          )}
         </div>
       </div>
 
@@ -133,7 +289,7 @@ export default function ShippingForm({
           value={form.shipping_address_line_1}
           onChange={handleInputChange}
           placeholder="Street address, house number"
-          className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className={inputNormal}
           required
         />
       </div>
@@ -146,7 +302,7 @@ export default function ShippingForm({
           value={form.shipping_address_line_2}
           onChange={handleInputChange}
           placeholder="Apartment, suite, unit, etc. (optional)"
-          className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className={inputNormal}
         />
       </div>
 
@@ -175,9 +331,7 @@ export default function ShippingForm({
             </p>
           )}
           {form.shipping_city && form.shipping_city.toLowerCase() !== 'lahore' && (
-            <p className="mt-1.5 text-xs text-dark-500 dark:text-dark-400">
-              Standard delivery charges apply
-            </p>
+            <p className="mt-1.5 text-xs text-dark-500 dark:text-dark-400">Standard delivery charges apply</p>
           )}
         </div>
         <div>
@@ -205,7 +359,7 @@ export default function ShippingForm({
             name="shipping_postal_code"
             value={form.shipping_postal_code}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-dark-200 dark:border-dark-600 rounded-lg bg-white dark:bg-dark-700 text-dark-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className={inputNormal}
           />
         </div>
       </div>
@@ -213,12 +367,12 @@ export default function ShippingForm({
       <div className="mt-6 flex justify-end">
         <motion.button
           type="button"
-          onClick={onNext}
+          onClick={handleNext}
           className="w-full sm:w-auto btn btn-primary px-8 min-h-[44px]"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          Continue to Delivery
+          Continue to Payment
         </motion.button>
       </div>
     </motion.div>

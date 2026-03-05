@@ -211,16 +211,14 @@ export function useCheckout() {
         toast.error('Please fill in all required shipping fields')
         return false
       }
-      if (!isAuthenticated && !form.email) {
+      if (!form.email) {
         toast.error('Please enter your email address')
         return false
       }
-      if (!isAuthenticated && form.email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(form.email)) {
-          toast.error('Please enter a valid email address')
-          return false
-        }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(form.email)) {
+        toast.error('Please enter a valid email address')
+        return false
       }
     }
     if (stepNum === 2) {
