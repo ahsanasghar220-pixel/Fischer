@@ -17,7 +17,7 @@ class UserManagementController extends Controller
             $perPage = 15;
 
             $query = User::whereHas('roles', function ($q) {
-                $q->whereIn('name', ['super-admin', 'admin', 'order-manager', 'content-manager']);
+                $q->whereIn('name', ['super-admin', 'admin', 'order-manager', 'content-manager', 'salesperson', 'production_manager', 'complaints_manager']);
             });
 
             if ($search) {
@@ -70,7 +70,7 @@ class UserManagementController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'confirmed', 'min:8'],
-            'role' => 'required|string|in:admin,order-manager,content-manager',
+            'role' => 'required|string|in:admin,order-manager,content-manager,salesperson,production_manager,complaints_manager',
             'status' => 'sometimes|string|in:active,inactive',
         ]);
 
@@ -119,7 +119,7 @@ class UserManagementController extends Controller
             'first_name' => 'sometimes|string|max:255',
             'last_name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
-            'role' => 'sometimes|string|in:admin,order-manager,content-manager',
+            'role' => 'sometimes|string|in:admin,order-manager,content-manager,salesperson,production_manager,complaints_manager',
             'status' => 'sometimes|string|in:active,inactive',
         ];
 
