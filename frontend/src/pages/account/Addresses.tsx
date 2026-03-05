@@ -274,8 +274,9 @@ export default function Addresses() {
               <button
                 type="submit"
                 disabled={saveMutation.isPending}
-                className="btn btn-primary"
+                className="btn btn-primary flex items-center gap-2"
               >
+                {saveMutation.isPending && <LoadingSpinner size="sm" />}
                 {saveMutation.isPending ? 'Saving...' : editingId ? 'Update Address' : 'Add Address'}
               </button>
               <button type="button" onClick={resetForm} className="btn btn-dark-outline">

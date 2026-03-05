@@ -1,5 +1,6 @@
 import { ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline'
 import type { Product } from '@/types'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 interface ProductCardActionsProps {
   product: Product
@@ -32,14 +33,9 @@ export default function ProductCardActions({
                   }
                   ${isAddingToCart ? 'opacity-70' : ''}`}
       >
-        <ShoppingCartIcon className="w-4 h-4" />
-        {product.stock_status === 'out_of_stock'
-          ? 'Out of Stock'
-          : isAddingToCart
-            ? 'Adding...'
-            : product.has_variants
-            ? 'Select Options'
-            : 'Add to Cart'
+        {isAddingToCart
+          ? <><LoadingSpinner size="sm" className="border-white border-t-white/40" />Adding...</>
+          : <><ShoppingCartIcon className="w-4 h-4" />{product.stock_status === 'out_of_stock' ? 'Out of Stock' : product.has_variants ? 'Select Options' : 'Add to Cart'}</>
         }
       </button>
       {/* Hide Quick View on touch - users can tap the card itself */}

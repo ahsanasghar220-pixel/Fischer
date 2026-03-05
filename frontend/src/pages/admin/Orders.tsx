@@ -748,8 +748,9 @@ function B2cOrdersView() {
                         <button
                           onClick={() => newStatus && statusMutation.mutate({ status: newStatus, notes: statusNotes })}
                           disabled={!newStatus || statusMutation.isPending}
-                          className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                          className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
                         >
+                          {statusMutation.isPending && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
                           {statusMutation.isPending ? 'Updating…' : `Confirm → ${newStatus}`}
                         </button>
                       </div>
@@ -828,8 +829,9 @@ function B2cOrdersView() {
                       <button
                         onClick={() => paymentMutation.mutate('paid')}
                         disabled={paymentMutation.isPending}
-                        className="w-full py-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                        className="w-full py-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
                       >
+                        {paymentMutation.isPending && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
                         {paymentMutation.isPending ? 'Updating…' : '✓ Mark as Paid (Receipt Verified)'}
                       </button>
                     )}
@@ -1354,8 +1356,9 @@ function B2bOrdersView() {
                     <button
                       onClick={handleB2bStatusUpdate}
                       disabled={!b2bNewStatus || b2bStatusSaving}
-                      className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                      className="w-full py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
                     >
+                      {b2bStatusSaving && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
                       {b2bStatusSaving ? 'Updating…' : `Confirm → ${B2B_STATUS[b2bNewStatus]?.label ?? b2bNewStatus}`}
                     </button>
                   </div>

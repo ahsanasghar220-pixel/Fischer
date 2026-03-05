@@ -20,6 +20,7 @@ import toast from 'react-hot-toast'
 import api from '@/lib/api'
 import ProductConfigurator from '@/pages/product-detail/ProductConfigurator'
 import AddToCartModal from '@/components/cart/AddToCartModal'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import type { Product, ProductConfigurator as ConfiguratorType, ConfiguratorVariant } from '@/types'
 
 interface QuickViewModalProps {
@@ -386,14 +387,10 @@ const QuickViewModal = memo(function QuickViewModal({
                             : 'bg-primary-500 hover:bg-primary-600'
                         }`}
                       >
-                        <ShoppingCartIcon className="w-4 h-4" />
                         {isAddingToCart
-                          ? 'Adding...'
-                          : isOutOfStock
-                          ? 'Out of Stock'
-                          : !canAddToCart
-                          ? 'Select Options'
-                          : 'Add to Cart'}
+                          ? <><LoadingSpinner size="sm" className="border-white border-t-white/40" />Adding...</>
+                          : <><ShoppingCartIcon className="w-4 h-4" />{isOutOfStock ? 'Out of Stock' : !canAddToCart ? 'Select Options' : 'Add to Cart'}</>
+                        }
                       </button>
 
                       {/* Wishlist Button */}

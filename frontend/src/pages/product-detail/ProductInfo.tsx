@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import { formatPrice, formatDescription } from '@/lib/utils'
 import type { Product, ProductVariant, ProductConfigurator as ProductConfiguratorData, ConfiguratorVariant } from '@/types'
 import ProductConfiguratorWidget from './ProductConfigurator'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 interface ProductInfoProps {
   product: Product
@@ -288,7 +289,7 @@ export default function ProductInfo({
         <motion.button
           onClick={onAddToCart}
           disabled={isAddingToCart || needsSelection || currentStock === 0 || product.stock_status === 'out_of_stock'}
-          className={`flex-1 py-2.5 px-6 rounded-lg font-semibold text-white transition-colors duration-200 ${
+          className={`flex-1 py-2.5 px-6 rounded-lg font-semibold text-white transition-colors duration-200 flex items-center justify-center gap-2 ${
             needsSelection
               ? 'bg-dark-300 dark:bg-dark-600 cursor-not-allowed'
               : currentStock === 0 || product.stock_status === 'out_of_stock'
@@ -303,7 +304,7 @@ export default function ProductInfo({
             : currentStock === 0 || product.stock_status === 'out_of_stock'
             ? '✕ Out of Stock'
             : isAddingToCart
-              ? 'Adding...'
+              ? <><LoadingSpinner size="sm" className="border-white border-t-white/40" />Adding...</>
               : 'Add to Cart'
           }
         </motion.button>

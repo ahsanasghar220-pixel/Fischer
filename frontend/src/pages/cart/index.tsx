@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -21,10 +22,22 @@ export default function Cart() {
     applyCoupon,
     removeCoupon,
   } = useCartStore()
+  const [updatingItemId, setUpdatingItemId] = useState<number | null>(null)
 
   const handleQuantityChange = async (itemId: number, newQuantity: number) => {
     if (newQuantity < 1) return
-    await updateQuantity(itemId, newQuantity)
+    setUpdatingItemId(itemId)
+    try {
+      await updateQuantity(itemId, newQuantity)
+    } finally {
+      setUpdatingItemId(null)
+    }
+  }
+
+  const handleRemoveItem = async (itemId: number) => {
+    setUpdatingItemId(itemId)
+    await removeItem(itemId)
+    setUpdatingItemId(null)
   }
 
   if (isLoading) {
@@ -109,8 +122,9 @@ export default function Cart() {
                       key={item.id}
                       item={item}
                       index={index}
+                      isLoading={updatingItemId === item.id}
                       onQuantityChange={handleQuantityChange}
-                      onRemove={removeItem}
+                      onRemove={handleRemoveItem}
                     />
                   ))}
                 </div>

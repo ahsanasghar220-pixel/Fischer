@@ -9,6 +9,7 @@ import {
   ChevronUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/outline'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -222,9 +223,11 @@ function OrderRow({ order, onStatusChange, updating }: OrderRowProps) {
               <button
                 onClick={handleStatusSave}
                 disabled={updating}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-1.5"
               >
-                Save
+                {updating ? (
+                  <><ArrowPathIcon className="w-3.5 h-3.5 animate-spin" />Saving...</>
+                ) : 'Save'}
               </button>
             )}
           </div>

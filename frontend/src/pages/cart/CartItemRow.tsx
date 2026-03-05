@@ -59,11 +59,12 @@ interface CartItemData {
 interface CartItemRowProps {
   item: CartItemData
   index: number
+  isLoading?: boolean
   onQuantityChange: (itemId: number, quantity: number) => void
   onRemove: (itemId: number) => void
 }
 
-export default function CartItemRow({ item, index, onQuantityChange, onRemove }: CartItemRowProps) {
+export default function CartItemRow({ item, index, isLoading, onQuantityChange, onRemove }: CartItemRowProps) {
   const isBundle = item.bundle_id && item.bundle
 
   if (isBundle) {
@@ -71,6 +72,7 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
       <BundleCartItem
         item={item}
         index={index}
+        isLoading={isLoading}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
       />
@@ -140,8 +142,8 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
           <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-lg">
             <motion.button
               onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-              className="p-1.5 sm:p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
-              disabled={item.quantity <= 1}
+              className="p-1.5 sm:p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={item.quantity <= 1 || isLoading}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -158,7 +160,7 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
             </motion.span>
             <motion.button
               onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-              disabled={item.quantity >= (item.product?.stock_quantity || 99)}
+              disabled={item.quantity >= (item.product?.stock_quantity || 99) || isLoading}
               className="p-1.5 sm:p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -169,7 +171,8 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
           {/* Mobile: Remove button next to quantity */}
           <motion.button
             onClick={() => onRemove(item.id)}
-            className="md:hidden p-2 text-dark-400 hover:text-red-500 transition-colors"
+            disabled={isLoading}
+            className="md:hidden p-2 text-dark-400 hover:text-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -189,7 +192,8 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
           </motion.span>
           <motion.button
             onClick={() => onRemove(item.id)}
-            className="p-2 text-dark-400 hover:text-red-500 transition-colors"
+            disabled={isLoading}
+            className="p-2 text-dark-400 hover:text-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -217,7 +221,7 @@ export default function CartItemRow({ item, index, onQuantityChange, onRemove }:
 }
 
 // Bundle Cart Item Component
-function BundleCartItem({ item, index, onQuantityChange, onRemove }: CartItemRowProps) {
+function BundleCartItem({ item, index, isLoading, onQuantityChange, onRemove }: CartItemRowProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const bundle = item.bundle
   if (!bundle) return null
@@ -349,8 +353,8 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: CartItemRow
           <div className="flex items-center border border-dark-200 dark:border-dark-600 rounded-lg">
             <motion.button
               onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-              className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
-              disabled={item.quantity <= 1}
+              className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={item.quantity <= 1 || isLoading}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -367,7 +371,8 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: CartItemRow
             </motion.span>
             <motion.button
               onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-              className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300"
+              disabled={isLoading}
+              className="p-2 hover:bg-dark-50 dark:hover:bg-dark-700 transition-colors text-dark-600 dark:text-dark-300 disabled:opacity-40 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -388,7 +393,8 @@ function BundleCartItem({ item, index, onQuantityChange, onRemove }: CartItemRow
           </motion.span>
           <motion.button
             onClick={() => onRemove(item.id)}
-            className="p-2 text-dark-400 hover:text-red-500 transition-colors"
+            disabled={isLoading}
+            className="p-2 text-dark-400 hover:text-red-500 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >

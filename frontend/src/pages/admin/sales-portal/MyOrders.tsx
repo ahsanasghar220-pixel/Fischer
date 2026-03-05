@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { getMyOrders } from '@/api/b2b'
 import type { B2bOrder, B2bOrderStatus } from '@/types/b2b'
 
@@ -169,8 +170,10 @@ export default function MyOrders() {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">My Orders</h2>
         <button
           onClick={() => fetchOrders(currentPage)}
-          className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          disabled={loading}
+          className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 disabled:opacity-50"
         >
+          <ArrowPathIcon className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           Refresh
         </button>
       </div>
