@@ -39,7 +39,16 @@ export default function Login() {
       // Get updated user from store to check if admin
       const user = useAuthStore.getState().user
       if (user?.is_admin) {
-        navigate('/admin', { replace: true })
+        const roles = user.roles || []
+        if (roles.includes('salesperson')) {
+          navigate('/admin/sales-portal', { replace: true })
+        } else if (roles.includes('production_manager')) {
+          navigate('/admin/production', { replace: true })
+        } else if (roles.includes('complaints_manager')) {
+          navigate('/admin/complaints', { replace: true })
+        } else {
+          navigate('/admin', { replace: true })
+        }
       } else {
         navigate(from, { replace: true })
       }

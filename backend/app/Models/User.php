@@ -123,7 +123,7 @@ class User extends Authenticatable
     // Helper methods
     public function isAdmin(): bool
     {
-        return $this->hasRole(['admin', 'super-admin', 'order-manager', 'content-manager']);
+        return $this->hasRole(['admin', 'super-admin', 'order-manager', 'content-manager', 'salesperson', 'production_manager', 'complaints_manager']);
     }
 
     public function isDealer(): bool
