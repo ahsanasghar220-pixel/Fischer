@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import { useAuthStore } from '@/stores/authStore'
 import {
   CurrencyDollarIcon,
   ShoppingCartIcon,
@@ -92,7 +93,124 @@ function getStatusColor(status: string): string {
   return colors[status] || 'bg-dark-100 dark:bg-dark-700 text-dark-700 dark:text-dark-300'
 }
 
+// ── Salesperson Dashboard ─────────────────────────────────────────────────────
+function SalespersonDashboard() {
+  const { user } = useAuthStore()
+
+  const { data: ordersData } = useQuery<any>({
+    queryKey: ['salesperson-my-orders'],
+    queryFn: async () => {
+      const res = await api.get('/api/production/my-orders?per_page=8')
+      return res.data.data
+    },
+  })
+
+  const orders: any[] = ordersData?.data || []
+  const total    = ordersData?.meta?.total ?? 0
+  const pending  = orders.filter((o: any) => o.status === 'pending').length
+  const approved = orders.filter((o: any) => o.status === 'approved').length
+
+  const statusColor: Record<string, string> = {
+    pending:   'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    approved:  'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    in_production: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+    dispatched: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+    delivered: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    cancelled: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-dark-900 dark:text-white">
+          Welcome, {user?.first_name || 'Salesperson'}
+        </h1>
+        <p className="text-sm text-dark-500 dark:text-dark-400 mt-0.5">
+          {new Date().toLocaleDateString('en-PK', { dateStyle: 'long' })}
+        </p>
+      </div>
+
+      {/* KPI strip */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { label: 'My Total Orders', value: total, color: 'text-dark-900 dark:text-white' },
+          { label: 'Pending Approval', value: pending, color: 'text-amber-600 dark:text-amber-400' },
+          { label: 'Approved', value: approved, color: 'text-blue-600 dark:text-blue-400' },
+        ].map(k => (
+          <div key={k.label} className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm p-5">
+            <p className={`text-3xl font-black ${k.color}`}>{k.value}</p>
+            <p className="text-sm text-dark-500 dark:text-dark-400 mt-1">{k.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick actions */}
+      <div className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm p-5">
+        <h2 className="text-sm font-semibold text-dark-500 dark:text-dark-400 uppercase tracking-wide mb-3">Quick Actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: 'New Order', to: '/admin/sales-portal?tab=new_order', bg: 'bg-primary-500 hover:bg-primary-600' },
+            { label: 'My Orders', to: '/admin/sales-portal?tab=my_orders', bg: 'bg-blue-600 hover:bg-blue-700' },
+            { label: 'New Complaint', to: '/admin/sales-portal?tab=new_complaint', bg: 'bg-amber-500 hover:bg-amber-600' },
+            { label: 'My Complaints', to: '/admin/sales-portal?tab=my_complaints', bg: 'bg-dark-700 hover:bg-dark-600' },
+          ].map(a => (
+            <Link key={a.label} to={a.to}
+              className={`flex items-center justify-center p-4 rounded-xl ${a.bg} text-white text-sm font-semibold transition-all hover:scale-105 active:scale-95 shadow-sm`}>
+              {a.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent orders */}
+      <div className="bg-white dark:bg-dark-800 rounded-2xl border border-dark-200 dark:border-dark-700 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between p-5 pb-3 border-b border-dark-100 dark:border-dark-700">
+          <h2 className="text-base font-semibold text-dark-900 dark:text-white">My Recent Orders</h2>
+          <Link to="/admin/sales-portal?tab=my_orders" className="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium">View All</Link>
+        </div>
+        {orders.length === 0 ? (
+          <div className="p-10 text-center text-sm text-dark-400">No orders placed yet</div>
+        ) : (
+          <div className="divide-y divide-dark-100 dark:divide-dark-700">
+            {orders.map((order: any) => (
+              <div key={order.id} className="flex items-center gap-3 px-5 py-3.5">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-dark-900 dark:text-white">{order.reference_number || `#${order.id}`}</p>
+                  <p className="text-xs text-dark-500 dark:text-dark-400 truncate">{order.dealer_name || order.customer_name || '—'}</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-sm font-bold text-dark-900 dark:text-white">
+                    {order.total_items ?? (order.items?.length ?? 0)} item{(order.total_items ?? order.items?.length ?? 0) !== 1 ? 's' : ''}
+                  </p>
+                  <span className={`inline-block text-xs px-2 py-0.5 rounded-full mt-0.5 font-medium ${statusColor[order.status] || 'bg-dark-100 text-dark-600'}`}>
+                    {order.status?.replace(/_/g, ' ')}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Main Dashboard (role-gated) ───────────────────────────────────────────────
 export default function AdminDashboard() {
+  const { user } = useAuthStore()
+  const roles = user?.roles || []
+
+  // Salesperson: show their own portal dashboard
+  if (roles.includes('salesperson')) return <SalespersonDashboard />
+  // Production manager: go directly to production dashboard
+  if (roles.includes('production_manager')) return <Navigate to="/admin/production" replace />
+  // Complaints manager: go directly to complaints
+  if (roles.includes('complaints_manager')) return <Navigate to="/admin/complaints" replace />
+
+  return <AdminFullDashboard />
+}
+
+function AdminFullDashboard() {
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery<DashboardStats>({
