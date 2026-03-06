@@ -11,6 +11,7 @@ use App\Models\ComplaintAttachment;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ComplaintController extends Controller
@@ -148,15 +149,20 @@ class ComplaintController extends Controller
         $data['filed_by_id'] = $user->id;
         $data['status']      = 'open';
 
-        $complaint = Complaint::create($data);
+        $complaint = DB::transaction(function () use ($data, $user) {
+            $complaint = Complaint::create($data);
 
-        // Auto-log initial activity
-        ComplaintActivityLog::create([
-            'complaint_id' => $complaint->id,
-            'user_id'      => $user->id,
-            'action_type'  => 'note',
-            'body'         => 'Complaint filed',
-        ]);
+            // Auto-log initial activity
+            ComplaintActivityLog::create([
+                'complaint_id' => $complaint->id,
+                'user_id'      => $user->id,
+                'action_type'  => 'status_change',
+                'new_status'   => 'open',
+                'body'         => 'Complaint filed',
+            ]);
+
+            return $complaint;
+        });
 
         $complaint->load(['filedBy:id,first_name,last_name', 'product:id,name,sku']);
 

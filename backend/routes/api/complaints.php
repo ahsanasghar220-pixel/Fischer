@@ -14,11 +14,15 @@ Route::middleware(['auth:sanctum', 'role:salesperson|complaints_manager|admin|su
     Route::get('/complaints/{complaint}', [ComplaintController::class, 'show']);
 });
 
+// Salesperson — can upload attachments to their own complaints
+Route::middleware(['auth:sanctum', 'role:salesperson|complaints_manager|admin|super-admin'])->group(function () {
+    Route::post('/complaints/{complaint}/attachments', [ComplaintController::class, 'uploadAttachment']);
+});
+
 // Complaints manager + admin — full management
 Route::middleware(['auth:sanctum', 'role:complaints_manager|admin|super-admin'])->group(function () {
     Route::get('/complaints', [ComplaintController::class, 'index']);
     Route::put('/complaints/{complaint}/status', [ComplaintController::class, 'updateStatus']);
     Route::post('/complaints/{complaint}/assign', [ComplaintController::class, 'assign']);
     Route::post('/complaints/{complaint}/comments', [ComplaintController::class, 'addComment']);
-    Route::post('/complaints/{complaint}/attachments', [ComplaintController::class, 'uploadAttachment']);
 });
