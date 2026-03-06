@@ -23,28 +23,28 @@ Route::get('/settings/brand-color', [AdminSettingController::class, 'brandColor'
 Route::get('/settings/payment', [AdminSettingController::class, 'getPublicPaymentSettings']);
 
 // Home page data
-Route::get('/home', [HomeController::class, 'index']);
+Route::get('/home', [HomeController::class, 'index'])->middleware('public.cache:600,120');
 
 // Products
 Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/search', [ProductController::class, 'search']);
-    Route::get('/featured', [ProductController::class, 'featured']);
-    Route::get('/new-arrivals', [ProductController::class, 'newArrivals']);
-    Route::get('/bestsellers', [ProductController::class, 'bestsellers']);
+    Route::get('/', [ProductController::class, 'index'])->middleware('public.cache:120,60');
+    Route::get('/search', [ProductController::class, 'search'])->middleware('throttle:30,1');
+    Route::get('/featured', [ProductController::class, 'featured'])->middleware('public.cache:300,60');
+    Route::get('/new-arrivals', [ProductController::class, 'newArrivals'])->middleware('public.cache:300,60');
+    Route::get('/bestsellers', [ProductController::class, 'bestsellers'])->middleware('public.cache:300,60');
     Route::get('/recently-viewed', [ProductController::class, 'recentlyViewed']);
-    Route::get('/category/{slug}', [ProductController::class, 'byCategory']);
-    Route::get('/{slug}', [ProductController::class, 'show']);
-    Route::get('/{slug}/reviews', [ProductController::class, 'reviews']);
+    Route::get('/category/{slug}', [ProductController::class, 'byCategory'])->middleware('public.cache:120,60');
+    Route::get('/{slug}', [ProductController::class, 'show'])->middleware('public.cache:300,60');
+    Route::get('/{slug}/reviews', [ProductController::class, 'reviews'])->middleware('public.cache:300,60');
 });
 
 // Categories
 Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/featured', [CategoryController::class, 'featured']);
-    Route::get('/tree', [CategoryController::class, 'tree']);
-    Route::get('/with-count', [CategoryController::class, 'withProductCount']);
-    Route::get('/{slug}', [CategoryController::class, 'show']);
+    Route::get('/', [CategoryController::class, 'index'])->middleware('public.cache:600,120');
+    Route::get('/featured', [CategoryController::class, 'featured'])->middleware('public.cache:600,120');
+    Route::get('/tree', [CategoryController::class, 'tree'])->middleware('public.cache:600,120');
+    Route::get('/with-count', [CategoryController::class, 'withProductCount'])->middleware('public.cache:600,120');
+    Route::get('/{slug}', [CategoryController::class, 'show'])->middleware('public.cache:120,60');
 });
 
 // Brands (public)

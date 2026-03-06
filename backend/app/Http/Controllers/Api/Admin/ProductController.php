@@ -176,8 +176,12 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
-        // Clear dashboard cache
+        // Clear all public product caches
         Cache::forget('admin_dashboard');
+        Cache::forget('homepage_data');
+        Cache::forget('products_featured');
+        Cache::forget('products_new_arrivals');
+        Cache::forget('products_bestsellers');
 
         return $this->success([
             'data' => $product,
@@ -226,10 +230,17 @@ class ProductController extends Controller
             }
         }
 
+        $oldSlug = $product->slug;
         $product->update($validated);
 
-        // Clear dashboard cache
+        // Clear all public product caches (including old slug in case name changed)
         Cache::forget('admin_dashboard');
+        Cache::forget('homepage_data');
+        Cache::forget('products_featured');
+        Cache::forget('products_new_arrivals');
+        Cache::forget('products_bestsellers');
+        Cache::forget("product_detail_{$oldSlug}");
+        Cache::forget("product_detail_{$product->fresh()->slug}");
 
         return $this->success([
             'data' => $product->fresh(),
@@ -239,10 +250,16 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        $slug = $product->slug;
         $product->delete();
 
-        // Clear dashboard cache
+        // Clear all public product caches
         Cache::forget('admin_dashboard');
+        Cache::forget('homepage_data');
+        Cache::forget('products_featured');
+        Cache::forget('products_new_arrivals');
+        Cache::forget('products_bestsellers');
+        Cache::forget("product_detail_{$slug}");
 
         return $this->success(null, 'Product deleted successfully');
     }

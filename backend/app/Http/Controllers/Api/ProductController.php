@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\RecentlyViewed;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -111,123 +112,132 @@ class ProductController extends Controller
 
     public function show(Request $request, string $slug)
     {
-        $product = Product::with([
-            'category',
-            'brand',
-            'images',
-            'variants.attributeValues.attribute',
-            'attributes.values',
-            'approvedReviews' => function ($query) {
-                $query->with('user:id,first_name,last_name,avatar')
-                    ->latest()
-                    ->limit(10);
-            },
-        ])
-        ->where('slug', $slug)
-        ->active()
-        ->firstOrFail();
+        // Cache the heavy DB work (product + relations + related + configurator) for 30 min
+        $data = Cache::remember("product_detail_{$slug}", 1800, function () use ($slug) {
+            $product = Product::with([
+                'category',
+                'brand',
+                'images',
+                'variants.attributeValues.attribute',
+                'attributes.values',
+                'approvedReviews' => function ($query) {
+                    $query->with('user:id,first_name,last_name,avatar')
+                        ->latest()
+                        ->limit(10);
+                },
+            ])
+            ->where('slug', $slug)
+            ->active()
+            ->firstOrFail();
 
-        // Track view
-        $product->incrementViewCount();
+            // Get related products
+            $relatedProducts = $product->getRelatedProducts(4);
 
-        // Add to recently viewed
-        $this->trackRecentlyViewed($request, $product->id);
+            // Build Apple-style configurator data if product has attribute-based variants
+            $configurator = null;
+            if ($product->has_variants && $product->variants->isNotEmpty()) {
+                $hasAttributes = $product->variants->some(fn($v) => $v->attributeValues->isNotEmpty());
 
-        // Get related products
-        $relatedProducts = $product->getRelatedProducts(4);
+                if ($hasAttributes) {
+                    $configuratorAttributes = $product->attributes->map(function ($attr) use ($product) {
+                        $usedValueIds = $product->variants
+                            ->flatMap(fn($v) => $v->attributeValues->where('attribute_id', $attr->id))
+                            ->pluck('id')
+                            ->unique();
 
-        // Build Apple-style configurator data if product has attribute-based variants
-        $configurator = null;
-        if ($product->has_variants && $product->variants->isNotEmpty()) {
-            $hasAttributes = $product->variants->some(fn($v) => $v->attributeValues->isNotEmpty());
+                        $values = $attr->values
+                            ->filter(fn($v) => $usedValueIds->contains($v->id))
+                            ->map(fn($v) => [
+                                'id'         => $v->id,
+                                'value'      => $v->value,
+                                'color_code' => $v->color_code,
+                            ])->values();
 
-            if ($hasAttributes) {
-                $configuratorAttributes = $product->attributes->map(function ($attr) use ($product) {
-                    $usedValueIds = $product->variants
-                        ->flatMap(fn($v) => $v->attributeValues->where('attribute_id', $attr->id))
-                        ->pluck('id')
-                        ->unique();
+                        return ['id' => $attr->id, 'name' => $attr->name, 'type' => $attr->type ?? 'button', 'values' => $values];
+                    })->filter(fn($a) => count($a['values']) > 0)->values();
 
-                    $values = $attr->values
-                        ->filter(fn($v) => $usedValueIds->contains($v->id))
-                        ->map(fn($v) => [
-                            'id'         => $v->id,
-                            'value'      => $v->value,
-                            'color_code' => $v->color_code,
-                        ])->values();
+                    $variantMap = [];
+                    foreach ($product->variants->where('is_active', true) as $variant) {
+                        if ($variant->attributeValues->isNotEmpty()) {
+                            $key = $variant->attributeValues->pluck('id')->sort()->values()->implode(',');
+                            $variantMap[$key] = [
+                                'id'            => $variant->id,
+                                'price'         => (float) ($variant->price ?? $product->price),
+                                'compare_price' => $variant->compare_price ? (float) $variant->compare_price : null,
+                                'sku'           => $variant->sku,
+                                'stock'         => $variant->stock_quantity,
+                                'image'         => $variant->image,
+                            ];
+                        }
+                    }
 
-                    return ['id' => $attr->id, 'name' => $attr->name, 'type' => $attr->type ?? 'button', 'values' => $values];
-                })->filter(fn($a) => count($a['values']) > 0)->values();
-
-                $variantMap = [];
-                foreach ($product->variants->where('is_active', true) as $variant) {
-                    if ($variant->attributeValues->isNotEmpty()) {
-                        $key = $variant->attributeValues->pluck('id')->sort()->values()->implode(',');
-                        $variantMap[$key] = [
-                            'id'            => $variant->id,
-                            'price'         => (float) ($variant->price ?? $product->price),
-                            'compare_price' => $variant->compare_price ? (float) $variant->compare_price : null,
-                            'sku'           => $variant->sku,
-                            'stock'         => $variant->stock_quantity,
-                            'image'         => $variant->image,
+                    if (!empty($variantMap)) {
+                        $configurator = [
+                            'attributes'  => $configuratorAttributes,
+                            'variant_map' => $variantMap,
                         ];
                     }
                 }
-
-                if (!empty($variantMap)) {
-                    $configurator = [
-                        'attributes'  => $configuratorAttributes,
-                        'variant_map' => $variantMap,
-                    ];
-                }
             }
-        }
 
-        return $this->success([
-            'product'          => $product,
-            'related_products' => $relatedProducts,
-            'configurator'     => $configurator,
-        ]);
+            return [
+                'product'          => $product,
+                'related_products' => $relatedProducts,
+                'configurator'     => $configurator,
+            ];
+        });
+
+        // Side effects run on every request (lightweight — simple increments/session writes)
+        $data['product']->incrementViewCount();
+        $this->trackRecentlyViewed($request, $data['product']->id);
+
+        return $this->success($data);
     }
 
     public function featured()
     {
-        $products = Product::with(['category', 'brand', 'images'])
-            ->withMin('variants', 'price')
-            ->withMax('variants', 'price')
-            ->active()
-            ->featured()
-            ->orderByDesc('created_at')
-            ->limit(8)
-            ->get();
+        $products = Cache::remember('products_featured', 1800, function () {
+            return Product::with(['category', 'brand', 'images'])
+                ->withMin('variants', 'price')
+                ->withMax('variants', 'price')
+                ->active()
+                ->featured()
+                ->orderByDesc('created_at')
+                ->limit(8)
+                ->get();
+        });
 
         return $this->success($products);
     }
 
     public function newArrivals()
     {
-        $products = Product::with(['category', 'brand', 'images'])
-            ->withMin('variants', 'price')
-            ->withMax('variants', 'price')
-            ->active()
-            ->new()
-            ->orderByDesc('created_at')
-            ->limit(8)
-            ->get();
+        $products = Cache::remember('products_new_arrivals', 1800, function () {
+            return Product::with(['category', 'brand', 'images'])
+                ->withMin('variants', 'price')
+                ->withMax('variants', 'price')
+                ->active()
+                ->new()
+                ->orderByDesc('created_at')
+                ->limit(8)
+                ->get();
+        });
 
         return $this->success($products);
     }
 
     public function bestsellers()
     {
-        $products = Product::with(['category', 'brand', 'images'])
-            ->withMin('variants', 'price')
-            ->withMax('variants', 'price')
-            ->active()
-            ->bestseller()
-            ->orderByDesc('sales_count')
-            ->limit(8)
-            ->get();
+        $products = Cache::remember('products_bestsellers', 1800, function () {
+            return Product::with(['category', 'brand', 'images'])
+                ->withMin('variants', 'price')
+                ->withMax('variants', 'price')
+                ->active()
+                ->bestseller()
+                ->orderByDesc('sales_count')
+                ->limit(8)
+                ->get();
+        });
 
         return $this->success($products);
     }

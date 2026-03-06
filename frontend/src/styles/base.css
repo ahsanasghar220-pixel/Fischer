@@ -127,3 +127,14 @@ html.lenis, html.lenis body {
     accent-color: rgb(var(--color-primary-600));
   }
 }
+
+/* Prevent iOS Safari auto-zoom on input focus.
+   iOS zooms in whenever an input has font-size < 16px.
+   This rule forces 16px on mobile only — desktop keeps text-sm. */
+@media screen and (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

@@ -8,6 +8,7 @@ import type {
   CreateComplaintPayload,
 } from '@/types/complaints'
 import ProductPickerModal, { type PickedProduct } from './ProductPickerModal'
+import DealerAutocomplete from './DealerAutocomplete'
 import {
   UserIcon,
   CubeIcon,
@@ -368,13 +369,26 @@ export default function NewComplaintForm() {
               <label className={LABEL_CLS}>
                 {complainantType === 'dealer' ? 'Dealer Name' : 'Customer Name'} *
               </label>
-              <input
-                type="text"
-                value={complainantName}
-                onChange={(e) => setComplainantName(e.target.value)}
-                placeholder="Full name"
-                className={INPUT_CLS}
-              />
+              {complainantType === 'dealer' ? (
+                <DealerAutocomplete
+                  value={complainantName}
+                  onChange={setComplainantName}
+                  onSelectDealer={(d) => {
+                    setComplainantName(d.name)
+                    if (d.city) setComplainantCity(d.city)
+                  }}
+                  placeholder="Dealer / shop name"
+                  inputClassName={INPUT_CLS}
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={complainantName}
+                  onChange={(e) => setComplainantName(e.target.value)}
+                  placeholder="Full name"
+                  className={INPUT_CLS}
+                />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -604,12 +618,14 @@ export default function NewComplaintForm() {
             {showDealerShopField && (
               <div>
                 <label className={LABEL_CLS}>Dealer / Shop Name</label>
-                <input
-                  type="text"
+                <DealerAutocomplete
                   value={dealerShopName}
-                  onChange={(e) => setDealerShopName(e.target.value)}
+                  onChange={setDealerShopName}
+                  onSelectDealer={(d) => {
+                    setDealerShopName(d.name)
+                  }}
                   placeholder="Name of the shop or dealer"
-                  className={INPUT_CLS}
+                  inputClassName={INPUT_CLS}
                 />
               </div>
             )}
