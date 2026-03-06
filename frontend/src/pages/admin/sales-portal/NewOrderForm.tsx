@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import toast from 'react-hot-toast'
 import { createOrder } from '@/api/b2b'
 import api from '@/lib/api'
 import type { BrandName, NewOrderItem } from '@/types/b2b'
@@ -418,8 +419,6 @@ export default function NewOrderForm() {
   const [remarks, setRemarks] = useState('')
   const [items, setItems] = useState<OrderItemDraft[]>([makeEmptyItem()])
   const [submitting, setSubmitting] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
 
   // Product picker modal state
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -495,21 +494,18 @@ export default function NewOrderForm() {
   }, [updateItem])
 
   const handleSubmit = async () => {
-    setErrorMessage('')
-    setSuccessMessage('')
-
     if (!dealerName.trim()) {
-      setErrorMessage('Dealer name is required.')
+      toast.error('Dealer name is required.')
       return
     }
     if (!city) {
-      setErrorMessage('Please select a city.')
+      toast.error('Please select a city.')
       return
     }
 
     const validItems = items.filter((i) => i.sku.trim() || i.product_id)
     if (validItems.length === 0) {
-      setErrorMessage('Please add at least one product.')
+      toast.error('Please add at least one product.')
       return
     }
 
@@ -531,7 +527,7 @@ export default function NewOrderForm() {
         items: orderItems,
       })
 
-      setSuccessMessage(`Order ${result.order_number} submitted!`)
+      toast.success(`Order ${result.order_number} submitted successfully!`, { duration: 6000 })
       setDealerName('')
       setCity('')
       setBrand('Fischer')
@@ -539,9 +535,7 @@ export default function NewOrderForm() {
       setItems([makeEmptyItem()])
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } }
-      setErrorMessage(
-        axiosErr?.response?.data?.message || 'Failed to submit order. Please try again.',
-      )
+      toast.error(axiosErr?.response?.data?.message || 'Failed to submit order. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -552,27 +546,6 @@ export default function NewOrderForm() {
   return (
     <>
       <div className="space-y-5 max-w-2xl mx-auto pb-8">
-
-        {/* ── Success Banner ──────────────────────────────── */}
-        {successMessage && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-2xl p-4 flex items-start gap-3">
-            <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-bold text-green-800 dark:text-green-200">{successMessage}</p>
-              <p className="text-sm text-green-700 dark:text-green-300 mt-0.5">
-                Your order has been submitted for production.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* ── Error Banner ────────────────────────────────── */}
-        {errorMessage && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-2xl p-4 flex items-start gap-3">
-            <ExclamationCircleIcon className="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-800 dark:text-red-200">{errorMessage}</p>
-          </div>
-        )}
 
         {/* ── Dealer Info Card ────────────────────────────── */}
         <div className={SECTION_CLS}>

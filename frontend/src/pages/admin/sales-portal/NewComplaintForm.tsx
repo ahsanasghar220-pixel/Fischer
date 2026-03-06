@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { createComplaint, uploadComplaintAttachment } from '@/api/complaints'
 import type {
   ComplainantType,
@@ -235,13 +236,14 @@ export default function NewComplaintForm() {
         )
       }
 
+      toast.success(`Complaint ${complaint.complaint_number} filed successfully!`, { duration: 6000 })
       setSuccessInfo({ number: complaint.complaint_number })
       resetForm()
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } }
-      setErrorMessage(
-        axiosErr?.response?.data?.message || 'Failed to submit complaint. Please try again.',
-      )
+      const msg = axiosErr?.response?.data?.message || 'Failed to submit complaint. Please try again.'
+      toast.error(msg)
+      setErrorMessage(msg)
     } finally {
       setSubmitting(false)
     }
