@@ -108,29 +108,7 @@ jobs:
               set net:reconnect-interval-base 10;
               set net:reconnect-interval-multiplier 1;
               open -u ${{ secrets.SSH_USERNAME }},${{ secrets.SSH_PASSWORD }} ftp://${{ secrets.SSH_HOST }};
-
-              # Step 1: Sync code/assets — only-newer (timestamps matter for PHP/JS/CSS)
-              # Exclude images and videos — handled separately below
-              mirror --reverse --verbose --only-newer --no-perms --parallel=4
-                --exclude-glob .git*
-                --exclude-glob .env
-                --exclude-glob node_modules/
-                --exclude-glob public/images/
-                --exclude-glob public/videos/
-                ./deploy/ ${{ secrets.FTP_SERVER_DIR }};
-
-              # Step 2: Sync images — no-overwrite (skip files already on server)
-              # Images are content-addressed by name; re-uploading identical files is wasteful.
-              # To force-update an image, delete it from the server first.
-              mirror --reverse --verbose --no-overwrite --no-perms --parallel=4
-                --exclude-glob .git*
-                ./deploy/public/images/ ${{ secrets.FTP_SERVER_DIR }}public/images/;
-
-              # Step 3: Sync videos — no-overwrite (same logic as images)
-              mirror --reverse --verbose --no-overwrite --no-perms --parallel=2
-                --exclude-glob .git*
-                ./deploy/public/videos/ ${{ secrets.FTP_SERVER_DIR }}public/videos/;
-
+              mirror --reverse --verbose --only-newer --no-perms --parallel=2 --exclude-glob .git* --exclude-glob .env --exclude-glob node_modules/ ./deploy/ ${{ secrets.FTP_SERVER_DIR }};
               bye"; then
               echo "✓ FTP upload complete"
               break
