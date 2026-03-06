@@ -7,8 +7,6 @@ import ProductPickerModal, { type PickedProduct } from './ProductPickerModal'
 import {
   PlusIcon,
   TrashIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
   ShoppingBagIcon,
   BuildingStorefrontIcon,
   ChevronRightIcon,
